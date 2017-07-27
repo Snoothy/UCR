@@ -23,9 +23,9 @@ namespace UCR.Models
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
 
-        public DeviceGroup<Device> Keyboards { get; set; }
-        public DeviceGroup<Device> Mice { get; set; }
-        public DeviceGroup<Device> Joysticks { get; set; }
+        public DeviceGroup<Keyboard> Keyboards { get; set; }
+        public DeviceGroup<Mouse> Mice { get; set; }
+        public DeviceGroup<Joystick> Joysticks { get; set; }
 
         public bool InheritFromParent { get; set; }
 
@@ -82,7 +82,7 @@ namespace UCR.Models
 
         public Device GetDevice(Binding binding)
         {
-            List<Device> deviceList;
+            dynamic deviceList;
             switch (binding.DeviceType)
             {
                 case DeviceType.Keyboard:

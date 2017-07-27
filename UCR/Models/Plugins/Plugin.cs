@@ -23,8 +23,6 @@ namespace UCR.Models.Plugins
             Outputs = new List<Binding>();
         }
 
-        public abstract void Initialize();
-
         public bool Activate(UCRContext ctx)
         {
             bool success = true;
@@ -34,7 +32,8 @@ namespace UCR.Models.Plugins
 
         protected void WriteOutput(Binding output, long value)
         {
-            switch (output.DeviceType)
+            if (output?.DeviceType == null || output?.KeyValue == null) return;
+            switch (output?.DeviceType)
             {
                 case DeviceType.Keyboard:
                     throw new NotImplementedException();
@@ -82,7 +81,17 @@ namespace UCR.Models.Plugins
             return success;
         }
 
-        protected Binding InitializeMapping(BindingType bindingType, Binding.ValueChanged callbackFunc)
+        protected Binding InitializeInputMapping(Binding.ValueChanged callbackFunc)
+        {
+            return InitializeMapping(BindingType.Input, callbackFunc);
+        }
+
+        protected Binding InitializeOutputMapping()
+        {
+            return InitializeMapping(BindingType.Output, null);
+        }
+
+        private Binding InitializeMapping(BindingType bindingType, Binding.ValueChanged callbackFunc)
         {
             Binding binding = new Binding(callbackFunc);
             switch(bindingType)

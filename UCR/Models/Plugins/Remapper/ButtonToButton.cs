@@ -14,12 +14,8 @@ namespace UCR.Models.Plugins.Remapper
 
         public ButtonToButton(Profile profile) : base(profile)
         {
-
-        }
-
-        public override void Initialize()
-        {
-            Input = InitializeMapping(BindingType.Input, InputChanged);
+            Input = InitializeInputMapping(InputChanged);
+            Output = InitializeOutputMapping();
         }
 
         private void InputChanged(long value)
