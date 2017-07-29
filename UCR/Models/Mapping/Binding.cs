@@ -15,6 +15,7 @@ namespace UCR.Models.Mapping
 
     public class Binding
     {
+        // Persistence
         // Keyboard, mouse, joystick
         public DeviceType? DeviceType { get; set; }
         // Index in its device list
@@ -23,8 +24,8 @@ namespace UCR.Models.Mapping
         public int KeyType { get; set; }
         public int KeyValue { get; set; }
 
+        // Runtime
         public String PluginName { get; set; }
-
         public delegate void ValueChanged(long value);
         public ValueChanged Callback { get; set; }
 

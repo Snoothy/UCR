@@ -25,23 +25,22 @@ namespace UCR.Views
         {
             InitializeComponent();
             Title = question;
-            //lblQuestion.Content = question + ":";
-            txtAnswer.Text = answer;
+            TxtAnswer.Text = answer;
         }
 
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            txtAnswer.SelectAll();
-            txtAnswer.Focus();
+            TxtAnswer.SelectAll();
+            TxtAnswer.Focus();
         }
 
         private void BtnDialogOk_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtAnswer.Text))
+            if (!string.IsNullOrEmpty(TxtAnswer.Text))
             {
                 DialogResult = true;
-                TextResult = txtAnswer.Text;
+                TextResult = TxtAnswer.Text;
             }
             else
             {

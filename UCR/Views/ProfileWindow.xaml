@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UCR.Views"
+        xmlns:plugins="clr-namespace:UCR.Models.Plugins"
+        xmlns:controls="clr-namespace:UCR.Views.Controls"
         mc:Ignorable="d"
         Title="ProfileWindow" Height="600" Width="480">
-    <Grid>
+    <controls:Plugin x:Name="Plugin" Margin="10">
+        <controls:Plugin.PluginView>
+            <Label>Test sf  dsf df sddhgjhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhf</Label>
+        </controls:Plugin.PluginView>
         
-    </Grid>
+        <controls:Plugin.PluginTitle>
+            kjhkjhkj
+        </controls:Plugin.PluginTitle>
+    </controls:Plugin>
 </Window>

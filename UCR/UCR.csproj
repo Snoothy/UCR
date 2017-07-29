@@ -84,6 +84,9 @@
     <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
+    <Compile Include="Views\Controls\Plugin.xaml.cs">
+      <DependentUpon>Plugin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
     <Compile Include="Views\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\Controls\Plugin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TextDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -33,9 +33,9 @@ namespace UCR.Models.Plugins
 
         protected void WriteOutput(Binding output, long value)
         {
-            if (output?.DeviceType == null || output?.KeyValue == null) return;
-
             Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
+            if (output?.DeviceType == null || output?.KeyValue == null) return;
+            
             return; // TODO remove;
             // TODO Implement
             switch (output?.DeviceType)

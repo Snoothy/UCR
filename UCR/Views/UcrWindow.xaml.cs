@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using UCR.Models;
 using UCR.ViewModels;
 
@@ -22,6 +23,20 @@ namespace UCR.Views
 
             ReloadProfileTree();
             ctx.ActivateProfile(ctx.Profiles[0]);
+            AddHandler(KeyDownEvent, new RoutedEventHandler(Window_Loaded), true);
+        }
+
+        private bool GetSelectedItem(out ProfileItem profileItem)
+        {
+            var pi = ProfileTree.SelectedItem as ProfileItem;
+            if (pi == null)
+            {
+                MessageBox.Show("Please select a profile", "No profile selected!",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                profileItem = null;
+                return false;
+            }
+            profileItem = pi;
+            return true;
         }
 
         private void ReloadProfileTree()
@@ -32,7 +47,8 @@ namespace UCR.Views
 
         private void AddChildProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
             var w = new TextDialog("Profile name");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
@@ -53,14 +69,16 @@ namespace UCR.Views
 
         private void EditProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
-            ProfileWindow win = new ProfileWindow(ctx, pi.profile);
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
+            var win = new ProfileWindow(ctx, pi.profile);
             win.Show();
         }
 
         private void RenameProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
             var w = new TextDialog("Rename profile", pi.profile.Title);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
@@ -73,7 +91,8 @@ namespace UCR.Views
             MessageBox.Show("Not yet implemented", "We're sorry...", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             return;
 
-            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
             MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
@@ -84,13 +103,12 @@ namespace UCR.Views
 
         private void DeleteProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title +"'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                pi.profile.Delete(ctx);
-                ReloadProfileTree();
-            }
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
+            var result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title +"'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result != MessageBoxResult.Yes) return;
+            pi.profile.Delete(ctx);
+            ReloadProfileTree();
         }
 
         private void ShowDevices(object sender, RoutedEventArgs e)
@@ -98,5 +116,19 @@ namespace UCR.Views
             ctx.ActiveProfile.Joysticks.Devices[0].Test();
         }
 
+
+        // Test below
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+        }
+
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Subtract)
+            {
+                ShowDevices(sender, e);
+            }
+        }
     }
 }
