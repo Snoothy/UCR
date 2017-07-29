@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IOWrapper">
+      <HintPath>..\..\IOWrapper\IOWrapper\IOWrapper\bin\Debug\IOWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -72,12 +75,14 @@
     </ApplicationDefinition>
     <Compile Include="Models\Devices\Device.cs" />
     <Compile Include="Models\Devices\DeviceGroup.cs" />
+    <Compile Include="Models\Devices\GenericDevice.cs" />
     <Compile Include="Models\Devices\Mouse.cs" />
     <Compile Include="Models\Devices\Keyboard.cs" />
     <Compile Include="Models\Devices\Joystick.cs" />
     <Compile Include="Models\Mapping\Binding.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRContext.cs" />
+    <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
     <Compile Include="Views\UCRWindow.xaml.cs">
       <DependentUpon>UCRWindow.xaml</DependentUpon>
@@ -129,6 +134,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\Input\" />
     <Folder Include="Views\Plugins\" />
   </ItemGroup>
   <ItemGroup>

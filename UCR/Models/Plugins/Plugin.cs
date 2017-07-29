@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using UCR.Models.Devices;
@@ -13,8 +14,8 @@ namespace UCR.Models.Plugins
     {
         public String Title { get; set; }
         private Profile Profile { get; set; }
-        private List<Binding> Inputs { get; set; }
-        private List<Binding> Outputs { get; set; }
+        public List<Binding> Inputs { get; set; } // TODO Private
+        public List<Binding> Outputs { get; set; } // TODO Private
 
         public Plugin(Profile profile)
         {
@@ -33,6 +34,10 @@ namespace UCR.Models.Plugins
         protected void WriteOutput(Binding output, long value)
         {
             if (output?.DeviceType == null || output?.KeyValue == null) return;
+
+            Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
+            return; // TODO remove;
+            // TODO Implement
             switch (output?.DeviceType)
             {
                 case DeviceType.Keyboard:
@@ -54,6 +59,8 @@ namespace UCR.Models.Plugins
             bool success = true;
             foreach (var input in Inputs)
             {
+                input.PluginName = Title;
+                if (input.DeviceType == null) continue;
                 var device = Profile.GetDevice(input);
                 if (device != null)
                 {

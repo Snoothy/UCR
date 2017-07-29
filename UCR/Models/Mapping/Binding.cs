@@ -16,14 +16,16 @@ namespace UCR.Models.Mapping
     public class Binding
     {
         // Keyboard, mouse, joystick
-        public DeviceType DeviceType { get; set; }
+        public DeviceType? DeviceType { get; set; }
         // Index in its device list
         public int DeviceNumber { get; set; }
         // Subscription key
-        public dynamic KeyValue { get; set; }
+        public int KeyType { get; set; }
+        public int KeyValue { get; set; }
+
+        public String PluginName { get; set; }
 
         public delegate void ValueChanged(long value);
-
         public ValueChanged Callback { get; set; }
 
         public Binding(ValueChanged callback)

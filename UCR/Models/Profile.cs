@@ -9,6 +9,7 @@ using System.Windows.Data;
 using UCR.Models.Devices;
 using UCR.Models.Plugins;
 using UCR.Models.Mapping;
+using UCR.Utilities;
 using UCR.ViewModels;
 using Binding = UCR.Models.Mapping.Binding;
 
@@ -16,20 +17,24 @@ namespace UCR.Models
 {
     public class Profile
     {
-
+        // Persistence
         public String Title { get; set; }
         public Profile Parent { get; set; }
         public long Id { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
+        public String KeyboardList { get; set; }
+        public String MiceList { get; set; }
+        public String JoystickList { get; set; }
 
+        // Runtime
         public DeviceGroup<Keyboard> Keyboards { get; set; }
         public DeviceGroup<Mouse> Mice { get; set; }
         public DeviceGroup<Joystick> Joysticks { get; set; }
 
         public bool InheritFromParent { get; set; }
 
-        public Profile(Profile parent)
+        public Profile(Profile parent = null)
         {
             Parent = parent;
             Plugins = new List<Plugin>();
@@ -39,6 +44,7 @@ namespace UCR.Models
         public bool Activate(UCRContext ctx)
         {
             bool success = true;
+            InitializeDeviceGroups(ctx);
             foreach (var plugin in Plugins)
             {
                 success &= plugin.Activate(ctx);
@@ -50,6 +56,30 @@ namespace UCR.Models
             }
 
             return success;
+        }
+
+        public void InitializeDeviceGroups(UCRContext ctx)
+        {
+            Joysticks = new DeviceGroup<Joystick>()
+            {
+                GUID = JoystickList,
+                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickList)?.Devices)
+            };
+
+            Keyboards = new DeviceGroup<Keyboard>()
+            {
+                GUID = KeyboardList,
+                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardList)?.Devices)
+            };
+
+            Mice = new DeviceGroup<Mouse>()
+            {
+                GUID = MiceList,
+                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceList)?.Devices)
+            };
+
+            // TODO Generic
+
         }
 
         public void AddNewChildProfile(String title)
@@ -68,6 +98,7 @@ namespace UCR.Models
             {
                 Parent.ChildProfiles.Remove(this);
             }
+            ctx.IsNotSaved = true;
         }
 
         public static Profile CreateProfile(String title, Profile parent)
@@ -97,15 +128,21 @@ namespace UCR.Models
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            if (binding.DeviceNumber <= deviceList.Count)
+            if (binding.DeviceNumber < deviceList.Count)
             {
                 return deviceList[binding.DeviceNumber];
             }
             if (InheritFromParent && Parent != null)
             {
+                // TODO Parent devices should be fetched to the active profile instead of using parents cache
                 return Parent.GetDevice(binding);
             }
             return null;
+        }
+
+        public void AddPlugin(Plugin plugin)
+        {
+            Plugins.Add(plugin);
         }
 
     }

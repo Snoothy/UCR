@@ -7,15 +7,10 @@ using UCR.Models.Mapping;
 
 namespace UCR.Models.Devices
 {
-    public sealed class Mouse : Device
+    public sealed class GenericDevice : Device
     {
-        public Mouse() : base(DeviceType.Mouse)
+        public GenericDevice() : base(DeviceType.Mouse)
         {
-        }
-
-        Mouse(Mouse mouse) : base(mouse)
-        {
-            // TODO copy vars
         }
 
         public override bool Subscribe(Binding binding)

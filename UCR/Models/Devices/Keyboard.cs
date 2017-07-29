@@ -7,11 +7,15 @@ using UCR.Models.Mapping;
 
 namespace UCR.Models.Devices
 {
-    public class Keyboard : Device
+    public sealed class Keyboard : Device
     {
-        public Keyboard()
+        public Keyboard() : base(DeviceType.Keyboard)
         {
-            DeviceType = DeviceType.Keyboard;
+        }
+
+        public Keyboard(Keyboard keyboard) : base(keyboard)
+        {
+            // TODO Copy vars
         }
 
         public override bool Subscribe(Binding binding)
@@ -20,6 +24,11 @@ namespace UCR.Models.Devices
         }
 
         public override void ClearSubscribers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Activate()
         {
             throw new NotImplementedException();
         }

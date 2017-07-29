@@ -17,7 +17,11 @@ namespace UCR.Views
             InitializeComponent();
             ctx = new UCRContext();
 
+            //var Io = new IOWrapper.IOController();
+            //var list = Io.GetInputList();
+
             ReloadProfileTree();
+            ctx.ActivateProfile(ctx.Profiles[0]);
         }
 
         private void ReloadProfileTree()
@@ -56,8 +60,12 @@ namespace UCR.Views
             {
                 pi.profile.Delete(ctx);
                 ReloadProfileTree();
-                ctx.IsNotSaved = true;
             }
+        }
+
+        private void ShowDevices(object sender, RoutedEventArgs e)
+        {
+            ctx.ActiveProfile.Joysticks.Devices[0].Test();
         }
 
     }

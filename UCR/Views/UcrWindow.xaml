@@ -25,7 +25,7 @@
                 <MenuItem Header="Delete" Click="DeleteProfile" />
             </MenuItem>
             <MenuItem Header="_Devices">
-                <MenuItem Header="Show available input devices" />
+                <MenuItem Header="Show available input devices" Click="ShowDevices" />
                 <MenuItem Header="Manage device groups" />
             </MenuItem>
         </Menu>
