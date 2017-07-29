@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace UCR.Models
 {
     public class Profile
     {
+        public static String GlobalProfileTitle = "Global";
+
         // Persistence
         public String Title { get; set; }
         public Profile Parent { get; set; }
@@ -82,8 +85,9 @@ namespace UCR.Models
 
         }
 
-        public void AddNewChildProfile(String title)
+        public void AddNewChildProfile(string title)
         {
+            if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
             ChildProfiles.Add(CreateProfile(title, this));
         }
@@ -101,8 +105,15 @@ namespace UCR.Models
             ctx.IsNotSaved = true;
         }
 
-        public static Profile CreateProfile(String title, Profile parent)
+        public bool Rename(string title)
         {
+            if (IsGlobalProfileTitle(title)) return false;
+            Title = title;
+            return true;
+        }
+        public static Profile CreateProfile(string title, Profile parent = null)
+        {
+            if (IsGlobalProfileTitle(title)) title += " not allowed";
             Profile profile = new Profile(parent)
             {
                 Title = title
@@ -143,6 +154,11 @@ namespace UCR.Models
         public void AddPlugin(Plugin plugin)
         {
             Plugins.Add(plugin);
+        }
+
+        public static bool IsGlobalProfileTitle(string title)
+        {
+            return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
     }

@@ -17,10 +17,10 @@
             <MenuItem Header="_Profile">
                 <MenuItem Header="New" Click="AddProfile" />
                 <MenuItem Header="Add child" Click="AddChildProfile" />
-                <MenuItem Header="Copy" />
+                <MenuItem Header="Copy" Click="CopyProfile"/>
                 <Separator />
                 <MenuItem Header="Edit" Click="EditProfile" />
-                <MenuItem Header="Rename" />
+                <MenuItem Header="Rename" Click="RenameProfile" />
                 <Separator />
                 <MenuItem Header="Delete" Click="DeleteProfile" />
             </MenuItem>
@@ -30,7 +30,7 @@
             </MenuItem>
         </Menu>
 
-        <TreeView Name="ProfileTree" Margin="10">
+        <TreeView Name="ProfileTree" Margin="10,5,10,10">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True"/>

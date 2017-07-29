@@ -33,14 +33,20 @@ namespace UCR.Views
         private void AddChildProfile(object sender, RoutedEventArgs e)
         {
             ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
-            pi.profile.AddNewChildProfile("TODO Add title");
+            var w = new TextDialog("Profile name");
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            pi.profile.AddNewChildProfile(w.TextResult);
             ReloadProfileTree();
             ctx.IsNotSaved = true;
         }
 
         private void AddProfile(object sender, RoutedEventArgs e)
         {
-            ctx.Profiles.Add(Profile.CreateProfile("TODO Title root",null));
+            var w = new TextDialog("Profile name");
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            ctx.Profiles.Add(Profile.CreateProfile(w.TextResult));
             ReloadProfileTree();
             ctx.IsNotSaved = true;
         }
@@ -50,6 +56,30 @@ namespace UCR.Views
             ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
             ProfileWindow win = new ProfileWindow(ctx, pi.profile);
             win.Show();
+        }
+
+        private void RenameProfile(object sender, RoutedEventArgs e)
+        {
+            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
+            var w = new TextDialog("Rename profile", pi.profile.Title);
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            pi.profile.Title = w.TextResult;
+            ReloadProfileTree();
+        }
+
+        private void CopyProfile(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Not yet implemented", "We're sorry...", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            return;
+
+            ProfileItem pi = ProfileTree.SelectedItem as ProfileItem;
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                pi.profile.Delete(ctx);
+                ReloadProfileTree();
+            }
         }
 
         private void DeleteProfile(object sender, RoutedEventArgs e)
