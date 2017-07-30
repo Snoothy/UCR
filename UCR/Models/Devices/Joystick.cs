@@ -91,9 +91,17 @@ namespace UCR.Models.Devices
             PovCallbacks = new Dictionary<int, Dictionary<string, Binding.ValueChanged>>();
         }
 
-        public override void Activate()
+        public override void Activate(UCRContext ctx)
         {
-            int a = 0;
+            foreach (var buttonCallback in ButtonCallbacks)
+            {
+                foreach (var binding in buttonCallback.Value)
+                {
+                    ctx.IOController.SubscribeButton(SubscriberPluginName, Guid, (uint) buttonCallback.Key+1,
+                        new Action<long>(
+                            (value) => binding.Value(value)));
+                }
+            }
             // TODO Bind to IOWrapper
             //throw new NotImplementedException();
         }

@@ -50,11 +50,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IOWrapper">
-      <HintPath>..\..\IOWrapper\IOWrapper\IOWrapper\bin\Debug\IOWrapper.dll</HintPath>
+    <Reference Include="IOWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IOWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="PluginContracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\PluginContracts.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -84,8 +90,8 @@
     <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
-    <Compile Include="Views\Controls\Plugin.xaml.cs">
-      <DependentUpon>Plugin.xaml</DependentUpon>
+    <Compile Include="Views\Controls\PluginView.xaml.cs">
+      <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
@@ -101,7 +107,11 @@
     <Compile Include="Views\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\Controls\Plugin.xaml">
+    <Page Include="Views\Controls\PluginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Plugins\ButtonToButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -149,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Input\" />
-    <Folder Include="Views\Plugins\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

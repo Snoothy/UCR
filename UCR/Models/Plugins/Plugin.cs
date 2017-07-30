@@ -5,17 +5,25 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using UCR.Models.Devices;
 using UCR.Models.Mapping;
+using UCR.Views.Controls;
+using Binding = UCR.Models.Mapping.Binding;
 
 namespace UCR.Models.Plugins
 {
     public abstract class Plugin
     {
+        // Persistence
         public String Title { get; set; }
         private Profile Profile { get; set; }
         public List<Binding> Inputs { get; set; } // TODO Private
         public List<Binding> Outputs { get; set; } // TODO Private
+
+        // Runtime
+        public DataTemplate PluginTemplate { get; set; }
 
         public Plugin(Profile profile)
         {
@@ -34,6 +42,7 @@ namespace UCR.Models.Plugins
         protected void WriteOutput(Binding output, long value)
         {
             Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
+            if (value != 0) SendKeys.SendWait("a");
             if (output?.DeviceType == null || output?.KeyValue == null) return;
             
             return; // TODO remove;

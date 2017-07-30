@@ -29,7 +29,7 @@ namespace UCR.Views
             Profile = profile;
             InitializeComponent();
             Title = "Edit " + profile.Title;
-            var a = this.Plugin.PluginView;
+            DataContext = Profile;
         }
     }
 }

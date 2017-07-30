@@ -18,13 +18,14 @@ namespace UCR.Models.Devices
     {
         public String Title { get; set; }
         public String Guid { get; set; }
+        public String SubscriberPluginName { get; set; }
         public String VID { get; set; }
         public String PID { get; set; }
         public DeviceType DeviceType { get; }
 
         public abstract bool Subscribe(Binding binding);
         public abstract void ClearSubscribers();
-        public abstract void Activate();
+        public abstract void Activate(UCRContext ctx);
 
         public Device()
         {
@@ -43,6 +44,7 @@ namespace UCR.Models.Devices
             Guid = device.Guid;
             VID = device.VID;
             PID = device.PID;
+            SubscriberPluginName = device.SubscriberPluginName;
         }
 
         public static List<T> CopyDeviceList<T>(List<T> devicelist) where T : new()

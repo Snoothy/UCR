@@ -18,21 +18,21 @@ namespace UCR.Views.Controls
     /// <summary>
     /// Interaction logic for Plugin.xaml
     /// </summary>
-    public partial class Plugin : UserControl
+    public partial class PluginView : UserControl
     {
-        public static readonly DependencyProperty PluginViewProperty = DependencyProperty.Register("PluginView", typeof(object), typeof(Plugin), new PropertyMetadata(default(object)));
-        public static readonly DependencyProperty PluginTitleProperty = DependencyProperty.Register("PluginTitle", typeof(object), typeof(Plugin), new PropertyMetadata(default(object)));
+        public static readonly DependencyProperty PluginViewContentProperty = DependencyProperty.Register("PluginViewContent", typeof(object), typeof(PluginView), new PropertyMetadata(default(object)));
+        public static readonly DependencyProperty PluginTitleProperty = DependencyProperty.Register("PluginTitle", typeof(object), typeof(PluginView), new PropertyMetadata(default(object)));
 
-        public Plugin()
+        public PluginView()
         {
             InitializeComponent();
-            LayoutRoot.DataContext = this;
+            
         }
 
-        public object PluginView
+        public object PluginViewContent
         {
-            get { return (object) GetValue(PluginViewProperty); }
-            set { SetValue(PluginViewProperty, value); }
+            get { return (object) GetValue(PluginViewContentProperty); }
+            set { SetValue(PluginViewContentProperty, value); }
         }
 
         public object PluginTitle

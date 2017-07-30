@@ -28,7 +28,7 @@ namespace UCR.Models.Devices
             throw new NotImplementedException();
         }
 
-        public override void Activate()
+        public override void Activate(UCRContext ctx)
         {
             throw new NotImplementedException();
         }
