@@ -93,13 +93,14 @@ namespace UCR.Models.Devices
 
         public override void Activate(UCRContext ctx)
         {
+            // Subscribe buttons
             foreach (var buttonCallback in ButtonCallbacks)
             {
                 foreach (var binding in buttonCallback.Value)
                 {
-                    ctx.IOController.SubscribeButton(SubscriberPluginName, Guid, (uint) buttonCallback.Key+1,
-                        new Action<long>(
-                            (value) => binding.Value(value)));
+                    // TODO Save guid for unsubscription
+                    var SubGuid = ctx.IOController.SubscribeButton(SubscriberPluginName, Guid, (uint) buttonCallback.Key,
+                        new Action<long>((value) => binding.Value(value)));
                 }
             }
             // TODO Bind to IOWrapper

@@ -27,24 +27,8 @@ namespace UCR.Models
         public UCRContext()
         {
             IsNotSaved = false;
-            Init();
-
             IOController = new IOWrapper.IOController();
-            var list = IOController.GetInputList();
-            string deviceHandle = null;
-
-            for (var i = 0; i < list.Count && deviceHandle == null; i++)
-            {
-                foreach (var device in list[i].Devices)
-                {
-                    if (device.PluginName == "SharpDX_DirectInput")
-                    {
-                        JoystickGroups[0].Devices[0].Guid = device.DeviceHandle;
-                        JoystickGroups[0].Devices[0].SubscriberPluginName = device.PluginName;
-                        break;
-                    }
-                }
-            }
+            Init();
         }
 
         public void Init()
@@ -105,18 +89,6 @@ namespace UCR.Models
                 }
             };
 
-            Profile global = GetGlobalProfile();
-
-            Plugin plugin = new ButtonToButton(global)
-            {
-                Title = "B2b test"
-            };
-
-            plugin.Inputs[0].DeviceType = DeviceType.Joystick;
-            plugin.Inputs[0].KeyType = (int)KeyType.Button;
-
-            global.AddPlugin(plugin);
-
             JoystickGroups = new List<DeviceGroup<Joystick>>()
             {
                 new DeviceGroup<Joystick>()
@@ -129,6 +101,44 @@ namespace UCR.Models
                 Title = "Joystick mock name",
                 Guid = "JOYSTICKGUID"
             });
+
+
+            var list = IOController.GetInputList();
+            string deviceHandle = null;
+
+            for (var i = 0; i < list.Count && deviceHandle == null; i++)
+            {
+                foreach (var device in list[i].Devices)
+                {
+                    if (device.PluginName == "SharpDX_DirectInput")
+                    {
+                        JoystickGroups[0].Devices[0].Guid = device.DeviceHandle;
+                        JoystickGroups[0].Devices[0].SubscriberPluginName = device.PluginName;
+                        JoystickGroups[0].Devices[0].MaxButtons = (int)device.ButtonCount;
+                        break;
+                    }
+                }
+            }
+
+            Profile global = GetGlobalProfile();
+
+            for (int i = 0; i < JoystickGroups[0].Devices[0].MaxButtons; i++)
+            {
+                Plugin plugin = new ButtonToButton(global)
+                {
+                    Title = "B2b test"+i
+                };
+
+                plugin.Inputs[0].DeviceType = DeviceType.Joystick;
+                plugin.Inputs[0].KeyType = (int)KeyType.Button;
+                plugin.Inputs[0].KeyValue = i;
+                plugin.Outputs[0].KeyValue = i;
+
+                global.AddPlugin(plugin);
+            }
+            
+
+
         }
     }
 }

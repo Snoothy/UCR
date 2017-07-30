@@ -42,7 +42,7 @@ namespace UCR.Models.Plugins
         protected void WriteOutput(Binding output, long value)
         {
             Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
-            if (value != 0) SendKeys.SendWait("a");
+            if (value != 0) SendKeys.SendWait(""+output.KeyValue);
             if (output?.DeviceType == null || output?.KeyValue == null) return;
             
             return; // TODO remove;
