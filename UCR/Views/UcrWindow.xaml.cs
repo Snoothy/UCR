@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using UCR.Models;
@@ -129,6 +131,33 @@ namespace UCR.Views
             {
                 ShowDevices(sender, e);
             }
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (ctx.IsNotSaved)
+            {
+                var result = MessageBox.Show("Do you want to save before closing?", "Unsaved data", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                switch (result)
+                {
+                    case MessageBoxResult.None:
+                    case MessageBoxResult.Cancel:
+                        e.Cancel = true;
+                        break;
+                    case MessageBoxResult.Yes:
+                        // TODO save everything
+                        break;
+                    case MessageBoxResult.No:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private void MainWindow_OnClosed(object sender, EventArgs e)
+        {
+            ctx.IOController = null;
         }
     }
 }

@@ -6,7 +6,9 @@
         xmlns:commands="clr-namespace:UCR.Utilities.Commands"
         xmlns:viewModels="clr-namespace:UCR.ViewModels"
         mc:Ignorable="d"
-        Title="UCR 2.0" Height="525" Width="300">
+        Title="UCR 2.0" Height="525" Width="300"
+        Closing="MainWindow_OnClosing"
+        Closed="MainWindow_OnClosed">
     <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">

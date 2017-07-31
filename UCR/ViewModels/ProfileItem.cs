@@ -31,7 +31,7 @@ namespace UCR.ViewModels
                 profileItems.Add(new ProfileItem()
                 {
                     Title = profile.Title,
-                    Id = profile.Id,
+                    Id = profile.Guid,
                     Items = GetProfileTree(profile.ChildProfiles),
                     profile = profile
                 });

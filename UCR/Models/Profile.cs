@@ -23,7 +23,7 @@ namespace UCR.Models
         // Persistence
         public String Title { get; set; }
         public Profile Parent { get; set; }
-        public long Id { get; set; }
+        public long Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
         public String KeyboardList { get; set; }
@@ -37,11 +37,15 @@ namespace UCR.Models
 
         public bool InheritFromParent { get; set; }
 
-        public Profile(Profile parent = null)
+        public Profile()
         {
-            Parent = parent;
             Plugins = new List<Plugin>();
             InheritFromParent = true;
+        }
+
+        public Profile(Profile parent = null) : base()
+        {
+            Parent = parent;
         }
 
         public bool Activate(UCRContext ctx)

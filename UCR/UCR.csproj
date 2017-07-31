@@ -86,6 +86,7 @@
     <Compile Include="Models\Devices\Keyboard.cs" />
     <Compile Include="Models\Devices\Joystick.cs" />
     <Compile Include="Models\Mapping\Binding.cs" />
+    <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Views\Controls\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -107,6 +109,12 @@
     <Compile Include="Views\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
+    <DesignData Include="SampleData\ProfilesSampleData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
+    <Page Include="SampleData\ButtonToButtonSampleData.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\PluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

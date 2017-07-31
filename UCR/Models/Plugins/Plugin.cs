@@ -25,6 +25,11 @@ namespace UCR.Models.Plugins
         // Runtime
         public DataTemplate PluginTemplate { get; set; }
 
+        public Plugin()
+        {
+            
+        }
+
         public Plugin(Profile profile)
         {
             Profile = profile;

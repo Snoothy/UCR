@@ -8,14 +8,14 @@ using UCR.Views.Controls;
 
 namespace UCR.Models.Plugins.Remapper
 {
-    class ButtonToButton : Plugin
+    class ButtonToAxis : Plugin
     {
         Binding Input { get; set; }
         Binding Output { get; set; }
 
-        public ButtonToButton() { }
+        public ButtonToAxis() { }
 
-        public ButtonToButton(Profile profile) : base(profile)
+        public ButtonToAxis(Profile profile) : base(profile)
         {
             Input = InitializeInputMapping(InputChanged);
             Output = InitializeOutputMapping();

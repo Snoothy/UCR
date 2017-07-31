@@ -8,7 +8,7 @@ namespace UCR.Models.Devices
 {
     public class DeviceGroup<T> where T : Device
     {
-        // Id used for persistance
+        // Guid used for persistance
         public String GUID { get; set; }
 
         // Runtime objects

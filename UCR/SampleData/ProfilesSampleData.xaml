@@ -1,0 +1,12 @@
+﻿<models:Profile xmlns:models="clr-namespace:UCR.Models"
+                xmlns:plugins="clr-namespace:UCR.Models.Plugins"
+                xmlns:remapper="clr-namespace:UCR.Models.Plugins.Remapper">
+    <models:Profile.Title>Test profile</models:Profile.Title>
+    <models:Profile.Plugins>
+        <remapper:ButtonToButton Title="Remap button Joy1 DataSample"/>
+        <remapper:ButtonToButton Title="Remap button Joy2 DataSample"/>
+        <remapper:ButtonToAxis Title="Remap button Joy2 Axis DataSample"/>
+    </models:Profile.Plugins>
+</models:Profile>
+    
+    

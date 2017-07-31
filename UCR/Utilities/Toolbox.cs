@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,19 @@ namespace UCR.Utilities
 
                 return (T)formatter.Deserialize(ms);
             }
+        }
+
+        public static IEnumerable<T> GetEnumerableOfType<T>(params object[] constructorArgs) where T : class //, IComparable<T>
+        {
+            var objects = new List<T>();
+            foreach (var type in
+                Assembly.GetAssembly(typeof(T)).GetTypes()
+                    .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
+            {
+                objects.Add((T)Activator.CreateInstance(type, constructorArgs));
+            }
+            //objects.Sort();
+            return objects;
         }
     }
 }

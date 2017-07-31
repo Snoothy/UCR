@@ -5,18 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UCR.Views.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="300" d:DataContext="{d:DesignData }">
-    <Grid x:Name="LayoutRoot" Height="auto"  Background="{x:Static SystemColors.ControlBrush}">
-
-        
-        <Grid Margin="5,35,5,5">
-            <ContentPresenter            
-                Content="{Binding Path=PluginViewContent}">
-            </ContentPresenter>
-        </Grid>
+             d:DesignHeight="100" d:DesignWidth="300" d:DataContext="{d:DesignData Source=/SampleData/ButtonToButtonSampleData.xaml}"
+             x:Name="PluginViewName" Margin="0,0,0,5">
+    
+    <StackPanel x:Name="LayoutRoot" Height="auto" Background="{x:Static SystemColors.ControlBrush}" >
         <DockPanel Background="{x:Static SystemColors.ControlDarkBrush}" HorizontalAlignment="Left" Height="30" LastChildFill="False" VerticalAlignment="Top"
-                   Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}">
-            <Label Content="{Binding Path=PluginTitle}" VerticalAlignment="Center"/>
+                   Width="{Binding ActualWidth, ElementName=PluginViewName}">
+            <Label Content="{Binding Title}" VerticalAlignment="Center"/>
         </DockPanel>
-    </Grid>
+        <Grid Margin="5" Height="auto">
+            <ContentPresenter ContentTemplate="{Binding PluginViewContent, ElementName=PluginViewName}"/>
+        </Grid>
+    </StackPanel>
 </UserControl>

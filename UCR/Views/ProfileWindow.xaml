@@ -9,17 +9,24 @@
         xmlns:models="clr-namespace:UCR.Models"
         xmlns:commands="clr-namespace:UCR.Utilities.Commands"
         mc:Ignorable="d"
-        Title="ProfileWindow" Height="600" Width="480">
+        d:DataContext="{d:DesignData Source=/SampleData/ProfilesSampleData.xaml}"
+        Title="{Binding Title}" Height="600" Width="480">
     <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
                 <MenuItem Header="TODO" />
             </MenuItem>
         </Menu>
-        <ListBox Margin="10,5,10,10" x:Name="PluginListBox" ItemsSource="{Binding Plugins}">
+        <ListBox Margin="10,5,10,10" x:Name="PluginListBox" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type plugins:Plugin}">
-                    <controls:PluginView PluginViewContent="{Binding PluginTemplate}"/>
+                    <controls:PluginView>
+                        <controls:PluginView.PluginViewContent>
+                            <DataTemplate>
+                                <Label Height="30">sdf</Label>
+                            </DataTemplate>
+                        </controls:PluginView.PluginViewContent>
+                    </controls:PluginView>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
