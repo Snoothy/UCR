@@ -17,15 +17,21 @@ namespace UCR.Views
 
         public MainWindow()
         {
+            InitResources();
             InitializeComponent();
             ctx = new UCRContext();
-
-            //var Io = new IOWrapper.IOController();
-            //var list = Io.GetInputList();
-
             ReloadProfileTree();
-            ctx.ActivateProfile(ctx.Profiles[0]);
-            AddHandler(KeyDownEvent, new RoutedEventHandler(Window_Loaded), true);
+
+            ctx.ActivateProfile(ctx.Profiles[0]); // TODO Mock data
+        }
+
+        private void InitResources()
+        {
+            // TODO Load all resourecs dynamicly
+            var foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToButton.xaml");
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
+            foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToAxis.xaml");
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
         }
 
         private bool GetSelectedItem(out ProfileItem profileItem)
@@ -90,6 +96,7 @@ namespace UCR.Views
 
         private void CopyProfile(object sender, RoutedEventArgs e)
         {
+            // TODO: Implement
             MessageBox.Show("Not yet implemented", "We're sorry...", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             return;
 
@@ -115,24 +122,10 @@ namespace UCR.Views
 
         private void ShowDevices(object sender, RoutedEventArgs e)
         {
-            ctx.ActiveProfile.Joysticks.Devices[0].Test();
+            // TODO
         }
 
-
-        // Test below
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
-        }
-
-        void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Subtract)
-            {
-                ShowDevices(sender, e);
-            }
-        }
-
+        // TODO Fix
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (ctx.IsNotSaved)
@@ -155,6 +148,7 @@ namespace UCR.Views
             }
         }
 
+        // TODO Dispose backend
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
             ctx.IOController = null;

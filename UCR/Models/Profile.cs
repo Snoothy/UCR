@@ -12,7 +12,6 @@ using UCR.Models.Plugins;
 using UCR.Models.Mapping;
 using UCR.Utilities;
 using UCR.ViewModels;
-using Binding = UCR.Models.Mapping.Binding;
 
 namespace UCR.Models
 {
@@ -126,10 +125,10 @@ namespace UCR.Models
             return profile;
         }
 
-        public Device GetDevice(Binding binding)
+        public Device GetDevice(DeviceBinding deviceBinding)
         {
             dynamic deviceList;
-            switch (binding.DeviceType)
+            switch (deviceBinding.DeviceType)
             {
                 case DeviceType.Keyboard:
                     deviceList = Keyboards.Devices;
@@ -143,14 +142,14 @@ namespace UCR.Models
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            if (binding.DeviceNumber < deviceList.Count)
+            if (deviceBinding.DeviceNumber < deviceList.Count)
             {
-                return deviceList[binding.DeviceNumber];
+                return deviceList[deviceBinding.DeviceNumber];
             }
             if (InheritFromParent && Parent != null)
             {
                 // TODO Parent devices should be fetched to the active profile instead of using parents cache
-                return Parent.GetDevice(binding);
+                return Parent.GetDevice(deviceBinding);
             }
             return null;
         }

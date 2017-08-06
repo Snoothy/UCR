@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using UCR.Models.Devices;
 using UCR.Models.Mapping;
 using UCR.Views.Controls;
-using Binding = UCR.Models.Mapping.Binding;
 
 namespace UCR.Models.Plugins
 {
@@ -19,22 +18,22 @@ namespace UCR.Models.Plugins
         // Persistence
         public String Title { get; set; }
         private Profile Profile { get; set; }
-        public List<Binding> Inputs { get; set; } // TODO Private
-        public List<Binding> Outputs { get; set; } // TODO Private
+        public List<DeviceBinding> Inputs { get; set; } // TODO Private
+        public List<DeviceBinding> Outputs { get; set; } // TODO Private
 
         // Runtime
-        public DataTemplate PluginTemplate { get; set; }
+        public String PluginName { get; set; }
 
         public Plugin()
         {
-            
+            PluginName = "ButtonToButton";
         }
 
-        public Plugin(Profile profile)
+        public Plugin(Profile profile) : base()
         {
             Profile = profile;
-            Inputs = new List<Binding>();
-            Outputs = new List<Binding>();
+            Inputs = new List<DeviceBinding>();
+            Outputs = new List<DeviceBinding>();
         }
 
         public bool Activate(UCRContext ctx)
@@ -44,7 +43,7 @@ namespace UCR.Models.Plugins
             return success;
         }
 
-        protected void WriteOutput(Binding output, long value)
+        protected void WriteOutput(DeviceBinding output, long value)
         {
             Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
             if (value != 0) SendKeys.SendWait(""+output.KeyValue);
@@ -68,10 +67,15 @@ namespace UCR.Models.Plugins
             }
         }
 
+        public virtual List<DeviceBinding> GetInputs()
+        {
+            return Inputs.Select(input => new DeviceBinding(input)).ToList();
+        }
+
         private bool SubscribeInputs(UCRContext ctx)
         {
             bool success = true;
-            foreach (var input in Inputs)
+            foreach (var input in GetInputs())
             {
                 input.PluginName = Title;
                 if (input.DeviceType == null) continue;
@@ -102,31 +106,31 @@ namespace UCR.Models.Plugins
             return success;
         }
 
-        protected Binding InitializeInputMapping(Binding.ValueChanged callbackFunc)
+        protected DeviceBinding InitializeInputMapping(DeviceBinding.ValueChanged callbackFunc)
         {
-            return InitializeMapping(BindingType.Input, callbackFunc);
+            return InitializeMapping(DeviceBindingType.Input, callbackFunc);
         }
 
-        protected Binding InitializeOutputMapping()
+        protected DeviceBinding InitializeOutputMapping()
         {
-            return InitializeMapping(BindingType.Output, null);
+            return InitializeMapping(DeviceBindingType.Output, null);
         }
 
-        private Binding InitializeMapping(BindingType bindingType, Binding.ValueChanged callbackFunc)
+        private DeviceBinding InitializeMapping(DeviceBindingType deviceBindingType, DeviceBinding.ValueChanged callbackFunc)
         {
-            Binding binding = new Binding(callbackFunc);
-            switch(bindingType)
+            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc);
+            switch(deviceBindingType)
             {
-                case BindingType.Input:
-                    Inputs.Add(binding);
+                case DeviceBindingType.Input:
+                    Inputs.Add(deviceBinding);
                     break;
-                case BindingType.Output:
-                    Outputs.Add(binding);
+                case DeviceBindingType.Output:
+                    Outputs.Add(deviceBinding);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(bindingType), bindingType, null);
+                    throw new ArgumentOutOfRangeException(nameof(deviceBindingType), deviceBindingType, null);
             }
-            return binding;
+            return deviceBinding;
         }
     }
 }

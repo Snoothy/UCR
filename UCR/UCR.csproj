@@ -85,7 +85,8 @@
     <Compile Include="Models\Devices\Mouse.cs" />
     <Compile Include="Models\Devices\Keyboard.cs" />
     <Compile Include="Models\Devices\Joystick.cs" />
-    <Compile Include="Models\Mapping\Binding.cs" />
+    <Compile Include="Models\Mapping\DeviceBinding.cs" />
+    <Compile Include="Models\Plugins\PluginGroup.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRContext.cs" />
@@ -118,6 +119,10 @@
     <Page Include="Views\Controls\PluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Plugins\ButtonToAxis.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Plugins\ButtonToButton.xaml">
       <SubType>Designer</SubType>

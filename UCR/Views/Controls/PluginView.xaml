@@ -7,14 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300" d:DataContext="{d:DesignData Source=/SampleData/ButtonToButtonSampleData.xaml}"
              x:Name="PluginViewName" Margin="0,0,0,5">
-    
+    <UserControl.Resources>
+        <local:PluginViewTemplateSelector x:Key="PluginViewTemplateSelector" />
+    </UserControl.Resources>
     <StackPanel x:Name="LayoutRoot" Height="auto" Background="{x:Static SystemColors.ControlBrush}" >
         <DockPanel Background="{x:Static SystemColors.ControlDarkBrush}" HorizontalAlignment="Left" Height="30" LastChildFill="False" VerticalAlignment="Top"
                    Width="{Binding ActualWidth, ElementName=PluginViewName}">
             <Label Content="{Binding Title}" VerticalAlignment="Center"/>
         </DockPanel>
         <Grid Margin="5" Height="auto">
-            <ContentPresenter ContentTemplate="{Binding PluginViewContent, ElementName=PluginViewName}"/>
+            <ContentPresenter Content="{Binding}" ContentTemplateSelector="{StaticResource PluginViewTemplateSelector}"/>
         </Grid>
     </StackPanel>
 </UserControl>

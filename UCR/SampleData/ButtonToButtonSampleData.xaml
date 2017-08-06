@@ -1,6 +1,7 @@
 ﻿<remapper:ButtonToButton xmlns:remapper="clr-namespace:UCR.Models.Plugins.Remapper"
                          xmlns:plugins="clr-namespace:UCR.Views.Plugins"
-                         Title="Button to button name">
+                         Title="Button to button name"
+                         PluginName="ButtonToButton">
 
 </remapper:ButtonToButton>
     

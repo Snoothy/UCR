@@ -124,10 +124,21 @@ namespace UCR.Models
 
             for (int i = 0; i < JoystickGroups[0].Devices[0].MaxButtons; i++)
             {
-                Plugin plugin = new ButtonToButton(global)
+                Plugin plugin;
+                if (i % 2 == 0)
                 {
-                    Title = "B2b test"+i
-                };
+                    plugin = new ButtonToButton(global)
+                    {
+                        Title = "B2b test" + i
+                    };
+                }
+                else
+                {
+                    plugin = new ButtonToAxis(global)
+                    {
+                        Title = "B2A test" + i
+                    };
+                }
 
                 plugin.Inputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Inputs[0].KeyType = (int)KeyType.Button;

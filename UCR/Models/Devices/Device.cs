@@ -23,7 +23,7 @@ namespace UCR.Models.Devices
         public String PID { get; set; }
         public DeviceType DeviceType { get; }
 
-        public abstract bool Subscribe(Binding binding);
+        public abstract bool Subscribe(DeviceBinding deviceBinding);
         public abstract void ClearSubscribers();
         public abstract void Activate(UCRContext ctx);
 

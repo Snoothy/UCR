@@ -7,13 +7,13 @@ using UCR.Models.Devices;
 
 namespace UCR.Models.Mapping
 {
-    public enum BindingType
+    public enum DeviceBindingType
     {
         Input,
         Output
     }
 
-    public class Binding
+    public class DeviceBinding
     {
         // Persistence
         // Keyboard, mouse, joystick
@@ -29,9 +29,19 @@ namespace UCR.Models.Mapping
         public delegate void ValueChanged(long value);
         public ValueChanged Callback { get; set; }
 
-        public Binding(ValueChanged callback)
+        public DeviceBinding(ValueChanged callback)
         {
             Callback = callback;
+        }
+
+        public DeviceBinding(DeviceBinding deviceBinding)
+        {
+            DeviceType = deviceBinding.DeviceType;
+            DeviceNumber = deviceBinding.DeviceNumber;
+            KeyType = deviceBinding.KeyType;
+            KeyValue = deviceBinding.KeyValue;
+            PluginName = deviceBinding.PluginName;
+            Callback = deviceBinding.Callback;
         }
     }
 }

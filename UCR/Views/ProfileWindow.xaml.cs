@@ -22,6 +22,7 @@ namespace UCR.Views
     {
         private UCRContext Ctx { get; set; }
         private Profile Profile { get; set; }
+        public DataTemplate DataTemplateTest { get; set; }
 
         public ProfileWindow(UCRContext ctx, Profile profile)
         {
@@ -30,6 +31,9 @@ namespace UCR.Views
             InitializeComponent();
             Title = "Edit " + profile.Title;
             DataContext = Profile;
+            //DataTemplateTest = (DataTemplate) FindResource("ButtonToButton");
         }
+
+
     }
 }

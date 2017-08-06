@@ -18,7 +18,7 @@ namespace UCR.Models.Devices
             // TODO Copy vars
         }
 
-        public override bool Subscribe(Binding binding)
+        public override bool Subscribe(DeviceBinding deviceBinding)
         {
             throw new NotImplementedException();
         }

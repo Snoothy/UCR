@@ -33,9 +33,9 @@ namespace UCR.Models.Devices
 
         // Runtime
         // Subscriptions
-        private Dictionary<int, Dictionary<String, Binding.ValueChanged>> ButtonCallbacks;
-        private Dictionary<int, Dictionary<String, Binding.ValueChanged>> AxisCallbacks;
-        private Dictionary<int, Dictionary<String, Binding.ValueChanged>> PovCallbacks;
+        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> ButtonCallbacks;
+        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> AxisCallbacks;
+        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> PovCallbacks;
 
         public Joystick(InputType inputType) : base(DeviceType.Joystick)
         {
@@ -54,18 +54,18 @@ namespace UCR.Models.Devices
             ClearSubscribers();
         }
 
-        public override bool Subscribe(Binding binding)
+        public override bool Subscribe(DeviceBinding deviceBinding)
         {
-            switch ((KeyType)binding.KeyType)
+            switch ((KeyType)deviceBinding.KeyType)
             {
                 case KeyType.Button:
-                    AddSubscriber(ButtonCallbacks, binding);
+                    AddSubscriber(ButtonCallbacks, deviceBinding);
                     break;
                 case KeyType.Axis:
-                    AddSubscriber(AxisCallbacks, binding);
+                    AddSubscriber(AxisCallbacks, deviceBinding);
                     break;
                 case KeyType.Pov:
-                    AddSubscriber(PovCallbacks, binding);
+                    AddSubscriber(PovCallbacks, deviceBinding);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -73,22 +73,22 @@ namespace UCR.Models.Devices
             return true;
         }
 
-        private void AddSubscriber(Dictionary<int, Dictionary<String, Binding.ValueChanged>> keylist, Binding binding)
+        private void AddSubscriber(Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> keylist, DeviceBinding deviceBinding)
         {
-            if (!keylist.ContainsKey(binding.KeyValue))
+            if (!keylist.ContainsKey(deviceBinding.KeyValue))
             {
-                keylist.Add(binding.KeyValue, new Dictionary<String, Binding.ValueChanged>());
+                keylist.Add(deviceBinding.KeyValue, new Dictionary<String, DeviceBinding.ValueChanged>());
             }
 
-            var subscriberlist = keylist[binding.KeyValue];
-            subscriberlist[binding.PluginName] = binding.Callback;
+            var subscriberlist = keylist[deviceBinding.KeyValue];
+            subscriberlist[deviceBinding.PluginName] = deviceBinding.Callback;
         }
 
         public override void ClearSubscribers()
         {
-            ButtonCallbacks = new Dictionary<int, Dictionary<string, Binding.ValueChanged>>();
-            AxisCallbacks = new Dictionary<int, Dictionary<string, Binding.ValueChanged>>();
-            PovCallbacks = new Dictionary<int, Dictionary<string, Binding.ValueChanged>>();
+            ButtonCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
+            AxisCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
+            PovCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
         }
 
         public override void Activate(UCRContext ctx)
@@ -105,17 +105,6 @@ namespace UCR.Models.Devices
             }
             // TODO Bind to IOWrapper
             //throw new NotImplementedException();
-        }
-
-        public void Test()
-        {
-            foreach (var buttonCallback in ButtonCallbacks)
-            {
-                foreach (var valueChanged in buttonCallback.Value)
-                {
-                    valueChanged.Value(10);
-                }
-            }
         }
     }
 }

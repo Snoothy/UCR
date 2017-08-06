@@ -13,7 +13,7 @@ namespace UCR.Models.Devices
         {
         }
 
-        public override bool Subscribe(Binding binding)
+        public override bool Subscribe(DeviceBinding deviceBinding)
         {
             throw new NotImplementedException();
         }
