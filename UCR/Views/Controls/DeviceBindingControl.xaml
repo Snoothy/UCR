@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="UCR.Views.Controls.DeviceBindingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UCR.Views.Controls"
+             xmlns:devices="clr-namespace:UCR.Models.Devices"
+             xmlns:viewModels="clr-namespace:UCR.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="120" d:DesignWidth="300"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200">
+        <StackPanel Margin="5">
+            <Label Content="{Binding Title}" />
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="100" ItemsSource="{Binding Source={viewModels:EnumerationExtension {x:Type devices:DeviceType}}}" DisplayMemberPath="Description" SelectedValue="Joystick" SelectedValuePath="Value"/>
+                <ComboBox Width="83" SelectedValue="1" SelectedValuePath="Value">
+                    <ComboBoxItem>1</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <Button Margin="0,5">
+                Click to enter bind mode
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Axis">
+                            <MenuItem Header="X" />
+                            <MenuItem Header="Y" />
+                            <MenuItem Header="Lx" />
+                            <MenuItem Header="Rx" />
+                            <MenuItem Header="Ly" />
+                            <MenuItem Header="Ry" />
+                        </MenuItem>
+                        <MenuItem Header="Button">
+                            <MenuItem Header="Test" />
+                        </MenuItem>
+                        <MenuItem Header="POV">
+                            <MenuItem Header="Test" />
+                        </MenuItem>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+        </StackPanel>
+    </Border>
+</UserControl>

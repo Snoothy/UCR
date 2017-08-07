@@ -91,7 +91,11 @@
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
+    <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
+    <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
+      <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
@@ -115,6 +119,10 @@
     </DesignData>
     <Page Include="SampleData\ButtonToButtonSampleData.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\DeviceBindingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\PluginView.xaml">
       <SubType>Designer</SubType>

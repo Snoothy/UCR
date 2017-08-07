@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,14 @@ namespace UCR.Models.Devices
 {
     public enum DeviceType
     {
+        [Description("Keyboard")]
         Keyboard,
+        [Description("Mouse")]
         Mouse,
-        Joystick
+        [Description("Joystick")]
+        Joystick,
+        [Description("Generic device")]
+        Generic
     }
 
     public abstract class Device

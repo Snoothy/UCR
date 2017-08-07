@@ -129,14 +129,14 @@ namespace UCR.Models
                 {
                     plugin = new ButtonToButton(global)
                     {
-                        Title = "B2b test" + i
+                        Title = "ButtonToButton test " + i
                     };
                 }
                 else
                 {
                     plugin = new ButtonToAxis(global)
                     {
-                        Title = "B2A test" + i
+                        Title = "ButtonToAxis test " + i
                     };
                 }
 
