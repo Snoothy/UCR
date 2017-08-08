@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200">
+    <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200" Margin="0,0,0,5">
         <StackPanel Margin="5">
             <Label Content="{Binding Title}" />
             <StackPanel Orientation="Horizontal">

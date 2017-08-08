@@ -20,29 +20,45 @@ namespace UCR.Models
         public static String GlobalProfileTitle = "Global";
 
         // Persistence
-        public String Title { get; set; }
+        public string Title { get; set; }
         public Profile Parent { get; set; }
         public long Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
-        public String KeyboardList { get; set; }
-        public String MiceList { get; set; }
-        public String JoystickList { get; set; }
+        // Inputs
+        public string KeyboardInputList { get; set; }
+        public string MiceInputList { get; set; }
+        public string JoystickInputList { get; set; }
+        public string GenericInputList { get; set; }
+        // Outputs
+        public string KeyboardOutputList { get; set; }
+        public string MiceOutputList { get; set; }
+        public string JoystickOutputList { get; set; }
+        public string GenericOutputList { get; set; }
 
         // Runtime
-        public DeviceGroup<Keyboard> Keyboards { get; set; }
-        public DeviceGroup<Mouse> Mice { get; set; }
-        public DeviceGroup<Joystick> Joysticks { get; set; }
+        public UCRContext ctx;
+
+        private DeviceGroup<Keyboard> InputKeyboards { get; set; }
+        private DeviceGroup<Mouse> InputMice { get; set; }
+        private DeviceGroup<Joystick> InputJoysticks { get; set; }
+        private DeviceGroup<GenericDevice> InputGenerics { get; set; }
+
+        private DeviceGroup<Keyboard> OutputKeyboards { get; set; }
+        private DeviceGroup<Mouse> OutputMice { get; set; }
+        private DeviceGroup<Joystick> OutputJoysticks { get; set; }
+        private DeviceGroup<GenericDevice> OutputGenerics { get; set; }
 
         public bool InheritFromParent { get; set; }
 
-        public Profile()
+        public Profile(UCRContext ctx)
         {
+            this.ctx = ctx;
             Plugins = new List<Plugin>();
             InheritFromParent = true;
         }
 
-        public Profile(Profile parent = null) : base()
+        public Profile(UCRContext ctx, Profile parent = null) : this(ctx)
         {
             Parent = parent;
         }
@@ -64,38 +80,78 @@ namespace UCR.Models
             return success;
         }
 
+        private bool SubscribeOutputDevices()
+        {
+            bool success = true;
+            success &= OutputJoysticks.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            success &= OutputKeyboards.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            success &= OutputMice.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            success &= OutputGenerics.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            return success;
+        }
+
         public void InitializeDeviceGroups(UCRContext ctx)
         {
-            Joysticks = new DeviceGroup<Joystick>()
+            // TODO Merge with devices from parent profiles
+            // Input
+            InputJoysticks = new DeviceGroup<Joystick>()
             {
-                GUID = JoystickList,
-                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickList)?.Devices)
+                GUID = JoystickInputList,
+                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices)
             };
 
-            Keyboards = new DeviceGroup<Keyboard>()
+            InputKeyboards = new DeviceGroup<Keyboard>()
             {
-                GUID = KeyboardList,
-                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardList)?.Devices)
+                GUID = KeyboardInputList,
+                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardInputList)?.Devices)
             };
 
-            Mice = new DeviceGroup<Mouse>()
+            InputMice = new DeviceGroup<Mouse>()
             {
-                GUID = MiceList,
-                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceList)?.Devices)
+                GUID = MiceInputList,
+                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceInputList)?.Devices)
             };
 
-            // TODO Generic
+            InputGenerics = new DeviceGroup<GenericDevice>()
+            {
+                GUID = GenericInputList,
+                Devices = Device.CopyDeviceList<GenericDevice>(DeviceGroup<GenericDevice>.FindDeviceGroup(ctx.GenericDeviceGroups, MiceInputList)?.Devices)
+            };
 
+            // Output
+            OutputJoysticks = new DeviceGroup<Joystick>()
+            {
+                GUID = JoystickOutputList,
+                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickOutputList)?.Devices)
+            };
+
+            OutputKeyboards = new DeviceGroup<Keyboard>()
+            {
+                GUID = KeyboardOutputList,
+                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardInputList)?.Devices)
+            };
+
+            OutputMice = new DeviceGroup<Mouse>()
+            {
+                GUID = MiceOutputList,
+                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceInputList)?.Devices)
+            };
+
+            OutputGenerics = new DeviceGroup<GenericDevice>()
+            {
+                GUID = GenericOutputList,
+                Devices = Device.CopyDeviceList<GenericDevice>(DeviceGroup<GenericDevice>.FindDeviceGroup(ctx.GenericDeviceGroups, MiceInputList)?.Devices)
+            };
         }
 
         public void AddNewChildProfile(string title)
         {
             if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
-            ChildProfiles.Add(CreateProfile(title, this));
+            ChildProfiles.Add(CreateProfile(ctx, title, this));
         }
 
-        public void Delete(UCRContext ctx)
+        public void Delete()
         {
             if (Parent == null)
             {
@@ -114,10 +170,10 @@ namespace UCR.Models
             Title = title;
             return true;
         }
-        public static Profile CreateProfile(string title, Profile parent = null)
+        public static Profile CreateProfile(UCRContext ctx, string title, Profile parent = null)
         {
             if (IsGlobalProfileTitle(title)) title += " not allowed";
-            Profile profile = new Profile(parent)
+            Profile profile = new Profile(ctx, parent)
             {
                 Title = title
             };
@@ -125,19 +181,37 @@ namespace UCR.Models
             return profile;
         }
 
-        public Device GetDevice(DeviceBinding deviceBinding)
+        public void SubscribeDeviceLists()
+        {
+
+            foreach (var device in InputJoysticks.Devices)
+            {
+                device.SubscribeDeviceBindings(ctx);
+            }
+            foreach (var device in InputKeyboards.Devices)
+            {
+                device.SubscribeDeviceBindings(ctx);
+            }
+            foreach (var device in InputMice.Devices)
+            {
+                device.SubscribeDeviceBindings(ctx);
+            }
+            var success = SubscribeOutputDevices();
+        }
+
+        public Device GetInputDevice(DeviceBinding deviceBinding)
         {
             dynamic deviceList;
             switch (deviceBinding.DeviceType)
             {
                 case DeviceType.Keyboard:
-                    deviceList = Keyboards.Devices;
+                    deviceList = InputKeyboards.Devices;
                     break;
                 case DeviceType.Mouse:
-                    deviceList = Mice.Devices;
+                    deviceList = InputMice.Devices;
                     break;
                 case DeviceType.Joystick:
-                    deviceList = Joysticks.Devices;
+                    deviceList = InputJoysticks.Devices;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -146,10 +220,29 @@ namespace UCR.Models
             {
                 return deviceList[deviceBinding.DeviceNumber];
             }
-            if (InheritFromParent && Parent != null)
+            return null;
+        }
+
+        public Device GetOutputDevice(DeviceBinding deviceBinding)
+        {
+            dynamic deviceList;
+            switch (deviceBinding.DeviceType)
             {
-                // TODO Parent devices should be fetched to the active profile instead of using parents cache
-                return Parent.GetDevice(deviceBinding);
+                case DeviceType.Keyboard:
+                    deviceList = OutputKeyboards.Devices;
+                    break;
+                case DeviceType.Mouse:
+                    deviceList = OutputMice.Devices;
+                    break;
+                case DeviceType.Joystick:
+                    deviceList = OutputJoysticks.Devices;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            if (deviceBinding.DeviceNumber < deviceList.Count)
+            {
+                return deviceList[deviceBinding.DeviceNumber];
             }
             return null;
         }

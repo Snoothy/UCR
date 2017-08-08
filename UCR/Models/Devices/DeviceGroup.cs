@@ -19,9 +19,9 @@ namespace UCR.Models.Devices
             Devices = new List<T>();
         }
 
-        public static DeviceGroup<T> FindDeviceGroup<T>(List<DeviceGroup<T>> deviceGroups, String GUID) where T : Device
+        public static DeviceGroup<T> FindDeviceGroup<T>(List<DeviceGroup<T>> deviceGroups, string GUID) where T : Device
         {
-            if (GUID == null) return null;
+            if (GUID == null) return new DeviceGroup<T>();
             return deviceGroups?.FirstOrDefault(deviceGroup => deviceGroup.GUID == GUID);
         }
     }

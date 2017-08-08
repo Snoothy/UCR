@@ -16,22 +16,21 @@ namespace UCR.Models.Plugins
     public abstract class Plugin
     {
         // Persistence
-        public String Title { get; set; }
-        private Profile Profile { get; set; }
+        public string Title { get; set; }
+        private Profile ParentProfile { get; set; }
         public List<DeviceBinding> Inputs { get; set; } // TODO Private
         public List<DeviceBinding> Outputs { get; set; } // TODO Private
 
         // Runtime
-        public String PluginName { get; set; }
+
 
         public Plugin()
         {
-            PluginName = "ButtonToButton";
         }
 
-        public Plugin(Profile profile) : base()
+        public Plugin(Profile parentProfile) : base()
         {
-            Profile = profile;
+            ParentProfile = parentProfile;
             Inputs = new List<DeviceBinding>();
             Outputs = new List<DeviceBinding>();
         }
@@ -45,26 +44,9 @@ namespace UCR.Models.Plugins
 
         protected void WriteOutput(DeviceBinding output, long value)
         {
-            Console.WriteLine("Input button pressed on devicetype " + output.DeviceType + " Value:" + value);
-            if (value != 0) SendKeys.SendWait(""+output.KeyValue);
-            if (output?.DeviceType == null || output?.KeyValue == null) return;
-            
-            return; // TODO remove;
-            // TODO Implement
-            switch (output?.DeviceType)
-            {
-                case DeviceType.Keyboard:
-                    throw new NotImplementedException();
-                    break;
-                case DeviceType.Mouse:
-                    throw new NotImplementedException();
-                    break;
-                case DeviceType.Joystick:
-                    throw new NotImplementedException();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (output?.DeviceType == null) return;
+            var device = ParentProfile.GetOutputDevice(output);
+            device.WriteOutput(ParentProfile.ctx, output, value);
         }
 
         public virtual List<DeviceBinding> GetInputs()
@@ -77,22 +59,21 @@ namespace UCR.Models.Plugins
             bool success = true;
             foreach (var input in GetInputs())
             {
-                input.PluginName = Title;
                 if (input.DeviceType == null) continue;
-                var device = Profile.GetDevice(input);
+                var device = ctx.ActiveProfile.GetInputDevice(input);
                 if (device != null)
                 {
                     // TODO test if switch is needed (type erasure?)
                     switch (input.DeviceType)
                     {
                         case DeviceType.Keyboard:
-                            success &= ((Keyboard) device).Subscribe(input);
+                            success &= ((Keyboard) device).SubscribeInput(input);
                             break;
                         case DeviceType.Mouse:
-                            success &= ((Mouse)device).Subscribe(input);
+                            success &= ((Mouse)device).SubscribeInput(input);
                             break;
                         case DeviceType.Joystick:
-                            success &= ((Joystick)device).Subscribe(input);
+                            success &= ((Joystick)device).SubscribeInput(input);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -118,7 +99,7 @@ namespace UCR.Models.Plugins
 
         private DeviceBinding InitializeMapping(DeviceBindingType deviceBindingType, DeviceBinding.ValueChanged callbackFunc)
         {
-            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc);
+            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc, this);
             switch(deviceBindingType)
             {
                 case DeviceBindingType.Input:

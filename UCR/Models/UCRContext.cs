@@ -18,6 +18,7 @@ namespace UCR.Models
         public List<DeviceGroup<Keyboard>> KeyboardGroups { get; set; }
         public List<DeviceGroup<Mouse>> MiceGroups { get; set; }
         public List<DeviceGroup<Joystick>> JoystickGroups { get; set; }
+        public List<DeviceGroup<GenericDevice>> GenericDeviceGroups { get; set; }
 
         // Runtime
         public bool IsNotSaved { get; set; }
@@ -42,29 +43,17 @@ namespace UCR.Models
         public void ActivateProfile(Profile profile)
         {
             bool success = true;
-            success &= GetGlobalProfile().Activate(this);
+            var lastActiveProfile = ActiveProfile;
+            ActiveProfile = profile;
             success &= profile.Activate(this);
             if (success)
             {
-                ActiveProfile = profile;
-                SubscribeDeviceLists();
+                ActiveProfile.SubscribeDeviceLists();
             }
-        }
-        
-        private void SubscribeDeviceLists()
-        {
-
-            foreach(var device in ActiveProfile.Joysticks.Devices)
+            else
             {
-                device.Activate(this);
-            }
-            foreach (var device in ActiveProfile.Keyboards.Devices)
-            {
-                device.Activate(this);
-            }
-            foreach (var device in ActiveProfile.Mice.Devices)
-            {
-                device.Activate(this);
+                // Activation failed, old profile is still active
+                ActiveProfile = lastActiveProfile;
             }
         }
 
@@ -78,12 +67,13 @@ namespace UCR.Models
         {
             Profiles = new List<Profile>
             {
-                new Profile()
+                new Profile(this)
                 {
                     Title = "Global",
-                    JoystickList = "FAKEGUID"
+                    JoystickInputList = "FAKEGUID",
+                    JoystickOutputList = "FAKEGUIDOUTPUT"
                 },
-                new Profile()
+                new Profile(this)
                 {
                     Title = "N64"
                 }
@@ -94,6 +84,10 @@ namespace UCR.Models
                 new DeviceGroup<Joystick>()
                 {
                     GUID = "FAKEGUID"
+                },
+                new DeviceGroup<Joystick>()
+                {
+                    GUID = "FAKEGUIDOUTPUT"
                 }
             };
             JoystickGroups[0].Devices.Add(new Joystick(InputType.DirectInput)
@@ -102,19 +96,42 @@ namespace UCR.Models
                 Guid = "JOYSTICKGUID"
             });
 
+            // Output
+            JoystickGroups[1].Devices.Add(new Joystick(InputType.DirectInput)
+            {
+                Title = "Joystick mock name",
+                Guid = "JOYSTICKGUIDOUTPUT"
+            });
+
 
             var list = IOController.GetInputList();
             string deviceHandle = null;
 
-            for (var i = 0; i < list.Count && deviceHandle == null; i++)
+            foreach (var providerList in list)
             {
-                foreach (var device in list[i].Devices)
+                foreach (var device in providerList.Value.Devices)
                 {
-                    if (device.PluginName == "SharpDX_DirectInput")
+                    if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName == "usb gamepad           ")
                     {
-                        JoystickGroups[0].Devices[0].Guid = device.DeviceHandle;
-                        JoystickGroups[0].Devices[0].SubscriberPluginName = device.PluginName;
-                        JoystickGroups[0].Devices[0].MaxButtons = (int)device.ButtonCount;
+                        JoystickGroups[0].Devices[0].Guid = device.Value.DeviceHandle;
+                        JoystickGroups[0].Devices[0].SubscriberProviderName = device.Value.ProviderName;
+                        JoystickGroups[0].Devices[0].MaxButtons = (int)device.Value.ButtonCount;
+                        break;
+                    }
+                }
+            }
+
+            list = IOController.GetOutputList();
+
+            foreach (var providerList in list)
+            {
+                foreach (var device in providerList.Value.Devices)
+                {
+                    if (device.Value.ProviderName == "Core_vJoyInterfaceWrap")
+                    {
+                        JoystickGroups[1].Devices[0].Guid = device.Value.DeviceHandle;
+                        JoystickGroups[1].Devices[0].SubscriberProviderName = device.Value.ProviderName;
+                        JoystickGroups[1].Devices[0].MaxButtons = (int)device.Value.ButtonCount;
                         break;
                     }
                 }
@@ -122,7 +139,7 @@ namespace UCR.Models
 
             Profile global = GetGlobalProfile();
 
-            for (int i = 0; i < JoystickGroups[0].Devices[0].MaxButtons; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Plugin plugin;
                 if (i % 2 == 0)
@@ -136,13 +153,16 @@ namespace UCR.Models
                 {
                     plugin = new ButtonToAxis(global)
                     {
-                        Title = "ButtonToAxis test " + i
+                        Title = "ButtonToAxis test" + i
                     };
                 }
 
                 plugin.Inputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Inputs[0].KeyType = (int)KeyType.Button;
                 plugin.Inputs[0].KeyValue = i;
+
+                plugin.Outputs[0].DeviceType = DeviceType.Joystick;
+                plugin.Outputs[0].KeyType = (int)KeyType.Button;
                 plugin.Outputs[0].KeyValue = i;
 
                 global.AddPlugin(plugin);

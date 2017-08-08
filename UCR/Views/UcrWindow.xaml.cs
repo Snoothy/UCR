@@ -70,7 +70,7 @@ namespace UCR.Views
             var w = new TextDialog("Profile name");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            ctx.Profiles.Add(Profile.CreateProfile(w.TextResult));
+            ctx.Profiles.Add(Profile.CreateProfile(ctx, w.TextResult));
             ReloadProfileTree();
             ctx.IsNotSaved = true;
         }
@@ -105,7 +105,7 @@ namespace UCR.Views
             MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                pi.profile.Delete(ctx);
+                pi.profile.Delete();
                 ReloadProfileTree();
             }
         }
@@ -116,7 +116,7 @@ namespace UCR.Views
             if (!GetSelectedItem(out pi)) return;
             var result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title +"'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            pi.profile.Delete(ctx);
+            pi.profile.Delete();
             ReloadProfileTree();
         }
 

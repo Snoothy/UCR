@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UCR.Models.Devices;
+using UCR.Models.Plugins;
 
 namespace UCR.Models.Mapping
 {
@@ -25,13 +26,14 @@ namespace UCR.Models.Mapping
         public int KeyValue { get; set; }
 
         // Runtime
-        public String PluginName { get; set; }
+        public Plugin Plugin { get; set; }
         public delegate void ValueChanged(long value);
         public ValueChanged Callback { get; set; }
 
-        public DeviceBinding(ValueChanged callback)
+        public DeviceBinding(ValueChanged callback, Plugin plugin)
         {
             Callback = callback;
+            Plugin = plugin;
         }
 
         public DeviceBinding(DeviceBinding deviceBinding)
@@ -40,7 +42,7 @@ namespace UCR.Models.Mapping
             DeviceNumber = deviceBinding.DeviceNumber;
             KeyType = deviceBinding.KeyType;
             KeyValue = deviceBinding.KeyValue;
-            PluginName = deviceBinding.PluginName;
+            Plugin = deviceBinding.Plugin;
             Callback = deviceBinding.Callback;
         }
     }

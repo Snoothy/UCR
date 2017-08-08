@@ -15,7 +15,7 @@ namespace UCR.Models.Plugins.Remapper
 
         public ButtonToAxis() { }
 
-        public ButtonToAxis(Profile profile) : base(profile)
+        public ButtonToAxis(Profile parentProfile) : base(parentProfile)
         {
             Input = InitializeInputMapping(InputChanged);
             Output = InitializeOutputMapping();

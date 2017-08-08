@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using Providers;
 using UCR.Models.Mapping;
 
 namespace UCR.Models.Devices
@@ -33,9 +34,9 @@ namespace UCR.Models.Devices
 
         // Runtime
         // Subscriptions
-        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> ButtonCallbacks;
-        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> AxisCallbacks;
-        private Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> PovCallbacks;
+        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> ButtonCallbacks;
+        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> AxisCallbacks;
+        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> PovCallbacks;
 
         public Joystick(InputType inputType) : base(DeviceType.Joystick)
         {
@@ -54,7 +55,7 @@ namespace UCR.Models.Devices
             ClearSubscribers();
         }
 
-        public override bool Subscribe(DeviceBinding deviceBinding)
+        public override bool SubscribeInput(DeviceBinding deviceBinding)
         {
             switch ((KeyType)deviceBinding.KeyType)
             {
@@ -73,15 +74,20 @@ namespace UCR.Models.Devices
             return true;
         }
 
-        private void AddSubscriber(Dictionary<int, Dictionary<String, DeviceBinding.ValueChanged>> keylist, DeviceBinding deviceBinding)
+        public override bool SubscribeOutput(DeviceBinding deviceBinding)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddSubscriber(Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> keylist, DeviceBinding deviceBinding)
         {
             if (!keylist.ContainsKey(deviceBinding.KeyValue))
             {
-                keylist.Add(deviceBinding.KeyValue, new Dictionary<String, DeviceBinding.ValueChanged>());
+                keylist.Add(deviceBinding.KeyValue, new Dictionary<string, DeviceBinding.ValueChanged>());
             }
 
             var subscriberlist = keylist[deviceBinding.KeyValue];
-            subscriberlist[deviceBinding.PluginName] = deviceBinding.Callback;
+            subscriberlist[deviceBinding.Plugin.Title] = deviceBinding.Callback;
         }
 
         public override void ClearSubscribers()
@@ -91,16 +97,24 @@ namespace UCR.Models.Devices
             PovCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
         }
 
-        public override void Activate(UCRContext ctx)
+        public override void SubscribeDeviceBindings(UCRContext ctx)
         {
             // Subscribe buttons
             foreach (var buttonCallback in ButtonCallbacks)
             {
                 foreach (var binding in buttonCallback.Value)
                 {
-                    // TODO Save guid for unsubscription
-                    var SubGuid = ctx.IOController.SubscribeButton(SubscriberPluginName, Guid, (uint) buttonCallback.Key,
-                        new Action<long>((value) => binding.Value(value)));
+                   // TODO Save guid for unsubscription
+                    var SubGuid = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
+                    {
+                        InputType = Providers.InputType.BUTTON,
+                        Callback = binding.Value,
+                        ProviderName = SubscriberProviderName,
+                        DeviceHandle = Guid,
+                        InputIndex = (uint) buttonCallback.Key,
+                        SubscriberGuid = new Guid() // TODO Save on devicebinding
+
+                    });
                 }
             }
             // TODO Bind to IOWrapper

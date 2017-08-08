@@ -15,7 +15,7 @@ namespace UCR.Models.Plugins.Remapper
 
         public ButtonToButton() { }
 
-        public ButtonToButton(Profile profile) : base(profile)
+        public ButtonToButton(Profile parentProfile) : base(parentProfile)
         {
             Input = InitializeInputMapping(InputChanged);
             Output = InitializeOutputMapping();
