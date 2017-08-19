@@ -13,8 +13,8 @@
             <Label x:Name="DeviceBindingLabel" />
             <StackPanel Orientation="Horizontal">
                 <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="100" ItemsSource="{Binding Source={viewModels:EnumerationExtension {x:Type devices:DeviceType}}}" DisplayMemberPath="Description" SelectedValue="Joystick" SelectedValuePath="Value"/>
-                <ComboBox Width="83" SelectedValue="1" SelectedValuePath="Value">
-                    <ComboBoxItem>1</ComboBoxItem>
+                <ComboBox Width="83" x:Name="DeviceNumberBox" DisplayMemberPath="Content" SelectedValuePath="Tag" SelectedValue="SelectedDeviceNumber" >
+
                 </ComboBox>
             </StackPanel>
             <Button Name="BindButton" Margin="0,5">

@@ -34,21 +34,13 @@ namespace UCR.Models.Plugins
 
         public Device GetDevice(DeviceBinding deviceBinding)
         {
-            switch (deviceBinding.DeviceBindingType)
-            {
-                case DeviceBindingType.Input:
-                    return ParentProfile.GetInputDevice(deviceBinding);
-                case DeviceBindingType.Output:
-                    return ParentProfile.GetOutputDevice(deviceBinding);
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return ParentProfile.GetDevice(deviceBinding);
         }
 
         protected void WriteOutput(DeviceBinding output, long value)
         {
             if (output?.DeviceType == null) return;
-            var device = ParentProfile.GetOutputDevice(output);
+            var device = ParentProfile.GetDevice(output);
             device.WriteOutput(ParentProfile.ctx, output, value);
         }
 
@@ -63,7 +55,7 @@ namespace UCR.Models.Plugins
             foreach (var input in GetInputs())
             {
                 if (input.DeviceType == null) continue;
-                var device = ctx.ActiveProfile.GetInputDevice(input);
+                var device = ctx.ActiveProfile.GetDevice(input);
                 if (device != null)
                 {
                     // TODO test if switch is needed (type erasure?)
@@ -117,9 +109,9 @@ namespace UCR.Models.Plugins
             return deviceBinding;
         }
 
-        public List<Device> GetDeviceList(DeviceType? deviceBindingDeviceType)
+        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
-            return ParentProfile.GetDeviceList(deviceBindingDeviceType);
+            return ParentProfile.GetDeviceList(deviceBinding);
         }
     }
 }

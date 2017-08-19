@@ -114,6 +114,7 @@ namespace UCR.Models
                 {
                     if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName == "usb gamepad           ")
                     {
+                        JoystickGroups[0].Devices[0].Title = device.Value.DeviceName;
                         JoystickGroups[0].Devices[0].DeviceHandle = device.Value.DeviceHandle;
                         JoystickGroups[0].Devices[0].SubscriberProviderName = device.Value.ProviderName;
                         JoystickGroups[0].Devices[0].MaxButtons = device.Value.ButtonList.Count;
@@ -130,6 +131,7 @@ namespace UCR.Models
                 {
                     if (device.Value.ProviderName == "Core_vJoyInterfaceWrap")
                     {
+                        JoystickGroups[1].Devices[0].Title = device.Value.DeviceName;
                         JoystickGroups[1].Devices[0].DeviceHandle = device.Value.DeviceHandle;
                         JoystickGroups[1].Devices[0].SubscriberProviderName = device.Value.ProviderName;
                         JoystickGroups[1].Devices[0].MaxButtons = device.Value.ButtonList.Count;

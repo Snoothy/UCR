@@ -39,15 +39,9 @@ namespace UCR.Models
         // Runtime
         public UCRContext ctx;
 
-        private DeviceGroup<Keyboard> InputKeyboards { get; set; }
-        private DeviceGroup<Mouse> InputMice { get; set; }
-        private DeviceGroup<Device> InputJoysticks { get; set; }
-        private DeviceGroup<GenericDevice> InputGenerics { get; set; }
-
-        private DeviceGroup<Keyboard> OutputKeyboards { get; set; }
-        private DeviceGroup<Mouse> OutputMice { get; set; }
-        private DeviceGroup<Joystick> OutputJoysticks { get; set; }
-        private DeviceGroup<GenericDevice> OutputGenerics { get; set; }
+        private Dictionary<DeviceType, DeviceGroup<Device>> InputGroups { get; set; }
+        private Dictionary<DeviceType, DeviceGroup<Device>> OutputGroups { get; set; }
+        private Dictionary<DeviceBindingType, Dictionary<DeviceType, string>> DeviceListNames { get; set; }
 
         public bool InheritFromParent { get; set; }
 
@@ -57,6 +51,32 @@ namespace UCR.Models
             Plugins = new List<Plugin>();
             InheritFromParent = true;
             Guid = Guid.NewGuid();
+
+            InputGroups = new Dictionary<DeviceType, DeviceGroup<Device>>();
+            OutputGroups = new Dictionary<DeviceType, DeviceGroup<Device>>();
+
+            SetDeviceListNames();
+        }
+
+        private void SetDeviceListNames()
+        {
+            DeviceListNames = new Dictionary<DeviceBindingType, Dictionary<DeviceType, string>>()
+            {
+                {DeviceBindingType.Input, new Dictionary<DeviceType, string>()
+                {
+                    {DeviceType.Generic, GenericInputList},
+                    {DeviceType.Joystick, JoystickInputList},
+                    {DeviceType.Keyboard, KeyboardInputList},
+                    {DeviceType.Mouse, MiceInputList}
+                } },
+                {DeviceBindingType.Output, new Dictionary<DeviceType, string>()
+                {
+                    {DeviceType.Generic, GenericOutputList},
+                    {DeviceType.Joystick, JoystickOutputList},
+                    {DeviceType.Keyboard, KeyboardOutputList},
+                    {DeviceType.Mouse, MiceOutputList}
+                } }
+            };
         }
 
         public Profile(UCRContext ctx, Profile parent = null) : this(ctx)
@@ -67,7 +87,7 @@ namespace UCR.Models
         public bool Activate(UCRContext ctx)
         {
             bool success = true;
-            InitializeDeviceGroups(ctx);
+            InitializeDeviceGroups();
             foreach (var plugin in Plugins)
             {
                 success &= plugin.Activate(ctx);
@@ -89,69 +109,65 @@ namespace UCR.Models
         private bool SubscribeOutputDevices()
         {
             bool success = true;
-            success &= OutputJoysticks.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
-            success &= OutputKeyboards.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
-            success &= OutputMice.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
-            success &= OutputGenerics.Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+            {
+                success &= OutputGroups[(DeviceType)type].Devices.Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            }
             return success;
         }
 
-        public void InitializeDeviceGroups(UCRContext ctx, bool reload = false)
+        private static List<Device> CopyDeviceList<T>(List<DeviceGroup<T>> group, string groupGuid) where T : Device, new()
         {
-            if (!reload && !(InputJoysticks == null || InputKeyboards == null || InputMice == null || InputGenerics == null)) return;
+            return Device.CopyDeviceList(DeviceGroup<T>.FindDeviceGroup(group, groupGuid)?.Devices).Cast<Device>().ToList();
+        }
+
+        private List<Device> GetCopiedList(DeviceType deviceType, string groupGuid)
+        {
+            switch (deviceType)
+            {
+                case DeviceType.Keyboard:
+                    return CopyDeviceList(ctx.KeyboardGroups, groupGuid);
+                case DeviceType.Mouse:
+                    return CopyDeviceList(ctx.MiceGroups, groupGuid);
+                case DeviceType.Joystick:
+                    return CopyDeviceList(ctx.JoystickGroups, groupGuid);
+                case DeviceType.Generic:
+                    return CopyDeviceList(ctx.GenericDeviceGroups, groupGuid);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
+            }
+        }
+
+        public void InitializeDeviceGroups(bool reload = false)
+        {
+            if (!reload)
+            {
+                reload = Enum.GetValues(typeof(DeviceType)).Cast<object>().Aggregate(reload, (current, type) => current || !InputGroups.ContainsKey((DeviceType) type));
+                if (!reload) return;
+            }
+            SetDeviceListNames();
             // TODO Merge with devices from parent profiles
             // TODO Unsubscribe on reload
-            // Input
             
-            InputJoysticks = new DeviceGroup<Device>()
+            // Input
+            foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                GUID = JoystickInputList,
-                Devices = DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices.OfType<Joystick>().Cast<Device>().ToList()
-                //Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices)
-            };
-
-            InputKeyboards = new DeviceGroup<Keyboard>()
-            {
-                GUID = KeyboardInputList,
-                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardInputList)?.Devices)
-            };
-
-            InputMice = new DeviceGroup<Mouse>()
-            {
-                GUID = MiceInputList,
-                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceInputList)?.Devices)
-            };
-
-            InputGenerics = new DeviceGroup<GenericDevice>()
-            {
-                GUID = GenericInputList,
-                Devices = Device.CopyDeviceList<GenericDevice>(DeviceGroup<GenericDevice>.FindDeviceGroup(ctx.GenericDeviceGroups, MiceInputList)?.Devices)
-            };
+                InputGroups[(DeviceType) type] = new DeviceGroup<Device>()
+                {
+                    GUID = DeviceListNames[DeviceBindingType.Input][(DeviceType)type],
+                    Devices = GetCopiedList((DeviceType)type, DeviceListNames[DeviceBindingType.Input][(DeviceType)type])
+                };
+            }
 
             // Output
-            OutputJoysticks = new DeviceGroup<Joystick>()
+            foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                GUID = JoystickOutputList,
-                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickOutputList)?.Devices)
-            };
-
-            OutputKeyboards = new DeviceGroup<Keyboard>()
-            {
-                GUID = KeyboardOutputList,
-                Devices = Device.CopyDeviceList<Keyboard>(DeviceGroup<Keyboard>.FindDeviceGroup(ctx.KeyboardGroups, KeyboardInputList)?.Devices)
-            };
-
-            OutputMice = new DeviceGroup<Mouse>()
-            {
-                GUID = MiceOutputList,
-                Devices = Device.CopyDeviceList<Mouse>(DeviceGroup<Mouse>.FindDeviceGroup(ctx.MiceGroups, MiceInputList)?.Devices)
-            };
-
-            OutputGenerics = new DeviceGroup<GenericDevice>()
-            {
-                GUID = GenericOutputList,
-                Devices = Device.CopyDeviceList<GenericDevice>(DeviceGroup<GenericDevice>.FindDeviceGroup(ctx.GenericDeviceGroups, MiceInputList)?.Devices)
-            };
+                OutputGroups[(DeviceType)type] = new DeviceGroup<Device>()
+                {
+                    GUID = DeviceListNames[DeviceBindingType.Output][(DeviceType)type],
+                    Devices = GetCopiedList((DeviceType)type, DeviceListNames[DeviceBindingType.Output][(DeviceType)type])
+                };
+            }
         }
 
         public void AddNewChildProfile(string title)
@@ -193,70 +209,14 @@ namespace UCR.Models
 
         public void SubscribeDeviceLists()
         {
-
-            foreach (var device in InputJoysticks.Devices)
+            foreach (var deviceGroup in InputGroups)
             {
-                device.SubscribeDeviceBindings(ctx);
-            }
-            foreach (var device in InputKeyboards.Devices)
-            {
-                device.SubscribeDeviceBindings(ctx);
-            }
-            foreach (var device in InputMice.Devices)
-            {
-                device.SubscribeDeviceBindings(ctx);
+                foreach (var device in deviceGroup.Value.Devices)
+                {
+                    device.SubscribeDeviceBindings(ctx);
+                }
             }
             var success = SubscribeOutputDevices();
-        }
-
-        public Device GetInputDevice(DeviceBinding deviceBinding)
-        {
-            InitializeDeviceGroups(ctx);
-            dynamic deviceList;
-            switch (deviceBinding.DeviceType)
-            {
-                case DeviceType.Keyboard:
-                    deviceList = InputKeyboards.Devices;
-                    break;
-                case DeviceType.Mouse:
-                    deviceList = InputMice.Devices;
-                    break;
-                case DeviceType.Joystick:
-                    deviceList = InputJoysticks.Devices;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            if (deviceBinding.DeviceNumber < deviceList.Count)
-            {
-                return deviceList[deviceBinding.DeviceNumber];
-            }
-            return null;
-        }
-
-        public Device GetOutputDevice(DeviceBinding deviceBinding)
-        {
-            InitializeDeviceGroups(ctx);
-            dynamic deviceList;
-            switch (deviceBinding.DeviceType)
-            {
-                case DeviceType.Keyboard:
-                    deviceList = OutputKeyboards.Devices;
-                    break;
-                case DeviceType.Mouse:
-                    deviceList = OutputMice.Devices;
-                    break;
-                case DeviceType.Joystick:
-                    deviceList = OutputJoysticks.Devices;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            if (deviceBinding.DeviceNumber < deviceList.Count)
-            {
-                return deviceList[deviceBinding.DeviceNumber];
-            }
-            return null;
         }
 
         public void AddPlugin(Plugin plugin)
@@ -278,7 +238,7 @@ namespace UCR.Models
             foreach (var deviceBinding in plugin.GetInputs())
             {
                 // TODO Resubscribe bindings
-                GetInputDevice(deviceBinding).SubscribeDeviceBindingInput(ctx,deviceBinding);
+                GetDevice(deviceBinding).SubscribeDeviceBindingInput(ctx,deviceBinding);
             }
         }
 
@@ -291,11 +251,20 @@ namespace UCR.Models
             return ctx.ActiveProfile != null && ctx.ActiveProfile.Guid == Guid;
         }
 
-        public List<Device> GetDeviceList(DeviceType? deviceType)
+
+        public Device GetDevice(DeviceBinding deviceBinding)
         {
-            // TODO Implement
-            return new List<Device>();
-            throw new NotImplementedException();
+            var deviceList = GetDeviceList(deviceBinding);
+            return deviceBinding.DeviceNumber < deviceList.Count ? deviceList[deviceBinding.DeviceNumber] : null;
+        }
+
+        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
+        {
+            InitializeDeviceGroups();
+            if (deviceBinding.DeviceType == null) return null; // TODO Log
+            var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
+            var deviceList = deviceGroups[deviceBinding.DeviceType.Value].Devices;
+            return deviceList;
         }
     }
 }

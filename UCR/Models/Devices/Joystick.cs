@@ -61,8 +61,7 @@ namespace UCR.Models.Devices
 
         public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
         {
-            // TODO subguid?
-            var SubGuid = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
+            var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
             {
                 InputType = MapDeviceBindingInputType(deviceBinding),
                 Callback = deviceBinding.Callback,

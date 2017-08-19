@@ -57,7 +57,18 @@ namespace UCR.Views.Controls
 
         private void LoadDevices()
         {
-            DeviceBinding.Plugin.GetDeviceList(DeviceBinding.DeviceType);
+            var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
+            Devices = new ObservableCollection<ComboBoxItem>();
+            for(var i = 0; i < devicelist.Count; i++)
+            {
+                Devices.Add(new ComboBoxItem()
+                {
+                    Content = i+1 + ". " + devicelist[i].Title,
+                    Tag = i.ToString()
+                });
+            }
+
+            DeviceNumberBox.ItemsSource = Devices;
         }
 
         private void LoadContextMenu()
