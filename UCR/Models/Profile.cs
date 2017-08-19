@@ -288,7 +288,7 @@ namespace UCR.Models
         /// <returns></returns>
         public bool IsActive()
         {
-            return ctx.ActiveProfile.Guid == Guid;
+            return ctx.ActiveProfile != null && ctx.ActiveProfile.Guid == Guid;
         }
 
         public List<Device> GetDeviceList(DeviceType? deviceType)

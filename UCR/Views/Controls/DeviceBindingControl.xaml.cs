@@ -117,6 +117,32 @@ namespace UCR.Views.Controls
             }
         }
 
+        private void BuildOutputContextMenu()
+        {
+            BindMenu = new ObservableCollection<ContextMenuItem>();
+
+            switch (DeviceBinding.DeviceType)
+            {
+                case DeviceType.Keyboard:
+                    // TODO
+                    break;
+                case DeviceType.Mouse:
+                    // TODO
+                    break;
+                case DeviceType.Joystick:
+                    var device = DeviceBinding.Plugin.GetDevice(DeviceBinding) as Joystick;
+                    if (device.MaxButtons > 0) BindMenu.Add(new ContextMenuItem("Buttons", BuildButtonSubMenu(device.MaxButtons, (int)KeyType.Button)));
+                    break;
+                case DeviceType.Generic:
+                    // TODO
+                    break;
+                case null:
+                default:
+                    // TODO Log warning
+                    break;
+            }
+        }
+
         private ObservableCollection<ContextMenuItem> BuildButtonSubMenu(int numberOfButtons, int keyType)
         {
             var topMenu = new ObservableCollection<ContextMenuItem>();
@@ -124,17 +150,9 @@ namespace UCR.Views.Controls
             {
                 var i1 = i;
                 var cmd = new RelayCommand(c => DeviceBinding.SetKeyTypeValue(keyType, i1));
-                topMenu.Add(new ContextMenuItem((i+1).ToString(), new ObservableCollection<ContextMenuItem>(), cmd));
+                topMenu.Add(new ContextMenuItem((i + 1).ToString(), new ObservableCollection<ContextMenuItem>(), cmd));
             }
             return topMenu;
         }
-
-        private void BuildOutputContextMenu()
-        {
-            BindMenu = new ObservableCollection<ContextMenuItem>();
-            // TODO
-        }
-
-
     }
 }
