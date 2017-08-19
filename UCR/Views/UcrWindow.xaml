@@ -30,12 +30,18 @@
                 <MenuItem Header="Show available input devices" Click="ShowDevices" />
                 <MenuItem Header="Manage device groups" />
             </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="Help" />
+                <Separator />
+                <MenuItem Header="About" />
+            </MenuItem>
         </Menu>
 
         <TreeView Name="ProfileTree" Margin="10,5,10,10">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>

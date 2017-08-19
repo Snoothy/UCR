@@ -34,6 +34,7 @@ namespace UCR.Models.Devices
         public abstract bool SubscribeOutput(DeviceBinding deviceBinding);
         public abstract void ClearSubscribers();
         public abstract void SubscribeDeviceBindings(UCRContext ctx);
+        public abstract void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding);
 
         public Device()
         {

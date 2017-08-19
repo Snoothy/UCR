@@ -22,7 +22,7 @@ namespace UCR.Views
             ctx = new UCRContext();
             ReloadProfileTree();
 
-            ctx.ActivateProfile(ctx.Profiles[0]); // TODO Mock data
+            //ctx.ActivateProfile(ctx.Profiles[0]); // TODO Mock data
         }
 
         private void InitResources()
@@ -90,7 +90,7 @@ namespace UCR.Views
             var w = new TextDialog("Rename profile", pi.profile.Title);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            pi.profile.Title = w.TextResult;
+            pi.profile.Rename(w.TextResult);
             ReloadProfileTree();
         }
 

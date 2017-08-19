@@ -37,5 +37,10 @@ namespace UCR.Models.Devices
         {
             throw new NotImplementedException();
         }
+
+        public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

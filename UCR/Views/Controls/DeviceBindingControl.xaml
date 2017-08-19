@@ -7,35 +7,27 @@
              xmlns:devices="clr-namespace:UCR.Models.Devices"
              xmlns:viewModels="clr-namespace:UCR.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="300"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             d:DesignHeight="120" d:DesignWidth="300">
     <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200" Margin="0,0,0,5">
         <StackPanel Margin="5">
-            <Label Content="{Binding Title}" />
+            <Label x:Name="DeviceBindingLabel" />
             <StackPanel Orientation="Horizontal">
                 <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="100" ItemsSource="{Binding Source={viewModels:EnumerationExtension {x:Type devices:DeviceType}}}" DisplayMemberPath="Description" SelectedValue="Joystick" SelectedValuePath="Value"/>
                 <ComboBox Width="83" SelectedValue="1" SelectedValuePath="Value">
                     <ComboBoxItem>1</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
-            <Button Margin="0,5">
+            <Button Name="BindButton" Margin="0,5">
                 Click to enter bind mode
                 <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Axis">
-                            <MenuItem Header="X" />
-                            <MenuItem Header="Y" />
-                            <MenuItem Header="Lx" />
-                            <MenuItem Header="Rx" />
-                            <MenuItem Header="Ly" />
-                            <MenuItem Header="Ry" />
-                        </MenuItem>
-                        <MenuItem Header="Button">
-                            <MenuItem Header="Test" />
-                        </MenuItem>
-                        <MenuItem Header="POV">
-                            <MenuItem Header="Test" />
-                        </MenuItem>
+                    <ContextMenu x:Name="Ddl">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="{x:Type MenuItem}">
+                                <Setter Property="MenuItem.Header" Value="{Binding Name}" />
+                                <Setter Property="MenuItem.ItemsSource" Value ="{Binding Children}" />
+                                <Setter Property="Command" Value="{Binding MenuCommand}"/>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

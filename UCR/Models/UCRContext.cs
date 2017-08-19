@@ -28,7 +28,7 @@ namespace UCR.Models
         public UCRContext()
         {
             IsNotSaved = false;
-            IOController = new IOWrapper.IOController();
+            IOController = new IOController();
             Init();
         }
 
@@ -90,14 +90,14 @@ namespace UCR.Models
                     GUID = "FAKEGUIDOUTPUT"
                 }
             };
-            JoystickGroups[0].Devices.Add(new Joystick(InputType.DirectInput)
+            JoystickGroups[0].Devices.Add(new Joystick()
             {
                 Title = "Joystick mock name",
                 Guid = "JOYSTICKGUID"
             });
 
             // Output
-            JoystickGroups[1].Devices.Add(new Joystick(InputType.DirectInput)
+            JoystickGroups[1].Devices.Add(new Joystick()
             {
                 Title = "Joystick mock name",
                 Guid = "JOYSTICKGUIDOUTPUT"
@@ -160,6 +160,11 @@ namespace UCR.Models
                 plugin.Inputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Inputs[0].KeyType = (int)KeyType.Button;
                 plugin.Inputs[0].KeyValue = i;
+
+                if (i == 1)
+                {
+                    plugin.Inputs[0].KeyType = (int)KeyType.Axis;
+                }
 
                 plugin.Outputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Outputs[0].KeyType = (int)KeyType.Button;

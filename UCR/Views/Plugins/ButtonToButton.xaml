@@ -3,8 +3,8 @@
                     xmlns:controls="clr-namespace:UCR.Views.Controls">
     <DataTemplate x:Key="ButtonToButton">
         <DockPanel>
-            <controls:DeviceBindingControl Title="Button Input" DockPanel.Dock="Left" DeviceBinding="{Binding Input}"/>
-            <controls:DeviceBindingControl Title="Button Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
+            <controls:DeviceBindingControl Label="Button Input" DockPanel.Dock="Left" DeviceBinding="{Binding Input}"/>
+            <controls:DeviceBindingControl Label="Button Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
         </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

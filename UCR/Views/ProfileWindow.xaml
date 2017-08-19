@@ -15,12 +15,15 @@
     <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
+                <MenuItem Header="Activate profile" Click="ActivateProfile" />
                 <MenuItem Header="TODO" />
+                <Separator/>
+                <MenuItem Header="Close" />
             </MenuItem>
         </Menu>
         <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type plugins:Plugin}">
+                <DataTemplate >
                     <controls:PluginView />
                 </DataTemplate>
             </ListBox.ItemTemplate>

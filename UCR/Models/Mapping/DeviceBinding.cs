@@ -26,14 +26,21 @@ namespace UCR.Models.Mapping
         public int KeyValue { get; set; }
 
         // Runtime
+        public Guid Guid { get; }
         public Plugin Plugin { get; set; }
+        public DeviceBindingType DeviceBindingType { get; }
+        public bool IsBound { get; private set; }
+
         public delegate void ValueChanged(long value);
         public ValueChanged Callback { get; set; }
 
-        public DeviceBinding(ValueChanged callback, Plugin plugin)
+        public DeviceBinding(ValueChanged callback, Plugin plugin, DeviceBindingType deviceBindingType)
         {
             Callback = callback;
             Plugin = plugin;
+            DeviceBindingType = deviceBindingType;
+            Guid = new Guid();
+            IsBound = false;
         }
 
         public DeviceBinding(DeviceBinding deviceBinding)
@@ -44,6 +51,18 @@ namespace UCR.Models.Mapping
             KeyValue = deviceBinding.KeyValue;
             Plugin = deviceBinding.Plugin;
             Callback = deviceBinding.Callback;
+        }
+
+        public void SetDeviceNumber(int number)
+        {
+            DeviceNumber = number;
+        }
+
+        public void SetKeyTypeValue(int type, int value)
+        {
+            KeyType = type;
+            KeyValue = value;
+            IsBound = true;
         }
     }
 }

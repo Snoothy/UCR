@@ -17,7 +17,7 @@ namespace UCR.Models
 {
     public class Profile
     {
-        public static String GlobalProfileTitle = "Global";
+        public static string GlobalProfileTitle = "Global";
 
         // Persistence
         public string Title { get; set; }
@@ -80,6 +80,11 @@ namespace UCR.Models
             return success;
         }
 
+        /// <summary>
+        /// Subscribes individual output devices so the active profile can write to them
+        /// Used when activating the profile
+        /// </summary>
+        /// <returns>Returns true if all devices successfully subscribed</returns>
         private bool SubscribeOutputDevices()
         {
             bool success = true;
@@ -90,9 +95,11 @@ namespace UCR.Models
             return success;
         }
 
-        public void InitializeDeviceGroups(UCRContext ctx)
+        public void InitializeDeviceGroups(UCRContext ctx, bool reload = false)
         {
+            if (!reload && !(InputJoysticks == null || InputKeyboards == null || InputMice == null || InputGenerics == null)) return;
             // TODO Merge with devices from parent profiles
+            // TODO Unsubscribe on reload
             // Input
             InputJoysticks = new DeviceGroup<Joystick>()
             {
@@ -173,7 +180,7 @@ namespace UCR.Models
         public static Profile CreateProfile(UCRContext ctx, string title, Profile parent = null)
         {
             if (IsGlobalProfileTitle(title)) title += " not allowed";
-            Profile profile = new Profile(ctx, parent)
+            var profile = new Profile(ctx, parent)
             {
                 Title = title
             };
@@ -201,6 +208,7 @@ namespace UCR.Models
 
         public Device GetInputDevice(DeviceBinding deviceBinding)
         {
+            InitializeDeviceGroups(ctx);
             dynamic deviceList;
             switch (deviceBinding.DeviceType)
             {
@@ -225,6 +233,7 @@ namespace UCR.Models
 
         public Device GetOutputDevice(DeviceBinding deviceBinding)
         {
+            InitializeDeviceGroups(ctx);
             dynamic deviceList;
             switch (deviceBinding.DeviceType)
             {

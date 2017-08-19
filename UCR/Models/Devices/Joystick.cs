@@ -9,12 +9,6 @@ using UCR.Models.Mapping;
 
 namespace UCR.Models.Devices
 {
-    public enum InputType
-    {
-        DirectInput,
-        XInput
-    }
-
     public enum KeyType
     {
         Button = 0,
@@ -25,52 +19,30 @@ namespace UCR.Models.Devices
     public sealed class Joystick : Device
     {
         // Persistence
-        public InputType InputType { get; }
 
+        // Runtime
         // TODO Limits
         public int MaxButtons { get; set; }
         // axis array
         // pov
-
-        // Runtime
+        
         // Subscriptions
-        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> ButtonCallbacks;
-        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> AxisCallbacks;
-        private Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> PovCallbacks;
+        private Dictionary<string, DeviceBinding> Subscriptions;
 
-        public Joystick(InputType inputType) : base(DeviceType.Joystick)
+        public Joystick() : base(DeviceType.Joystick)
         {
-            InputType = inputType;
             ClearSubscribers();
-        }
-
-        public Joystick()
-        {
-
         }
 
         public Joystick(Joystick joystick) : base(joystick)
         {
-            InputType = joystick.InputType;
+            MaxButtons = joystick.MaxButtons;
             ClearSubscribers();
         }
 
         public override bool SubscribeInput(DeviceBinding deviceBinding)
         {
-            switch ((KeyType)deviceBinding.KeyType)
-            {
-                case KeyType.Button:
-                    AddSubscriber(ButtonCallbacks, deviceBinding);
-                    break;
-                case KeyType.Axis:
-                    AddSubscriber(AxisCallbacks, deviceBinding);
-                    break;
-                case KeyType.Pov:
-                    AddSubscriber(PovCallbacks, deviceBinding);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            Subscriptions[deviceBinding.Plugin.Title] = deviceBinding;
             return true;
         }
 
@@ -78,47 +50,48 @@ namespace UCR.Models.Devices
         {
             throw new NotImplementedException();
         }
-
-        private void AddSubscriber(Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>> keylist, DeviceBinding deviceBinding)
-        {
-            if (!keylist.ContainsKey(deviceBinding.KeyValue))
-            {
-                keylist.Add(deviceBinding.KeyValue, new Dictionary<string, DeviceBinding.ValueChanged>());
-            }
-
-            var subscriberlist = keylist[deviceBinding.KeyValue];
-            subscriberlist[deviceBinding.Plugin.Title] = deviceBinding.Callback;
-        }
-
+        
         public override void ClearSubscribers()
         {
-            ButtonCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
-            AxisCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
-            PovCallbacks = new Dictionary<int, Dictionary<string, DeviceBinding.ValueChanged>>();
+            Subscriptions = new Dictionary<string, DeviceBinding>();
         }
 
         public override void SubscribeDeviceBindings(UCRContext ctx)
         {
-            // Subscribe buttons
-            foreach (var buttonCallback in ButtonCallbacks)
+            foreach (var deviceBinding in Subscriptions)
             {
-                foreach (var binding in buttonCallback.Value)
-                {
-                   // TODO Save guid for unsubscription
-                    var SubGuid = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
-                    {
-                        InputType = Providers.InputType.BUTTON,
-                        Callback = binding.Value,
-                        ProviderName = SubscriberProviderName,
-                        DeviceHandle = Guid,
-                        InputIndex = (uint) buttonCallback.Key,
-                        SubscriberGuid = new Guid() // TODO Save on devicebinding
-
-                    });
-                }
+                SubscribeDeviceBindingInput(ctx, deviceBinding.Value);
             }
-            // TODO Bind to IOWrapper
-            //throw new NotImplementedException();
+        }
+
+        public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            // TODO subguid?
+            var SubGuid = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
+            {
+                InputType = MapDeviceBindingInputType(deviceBinding),
+                Callback = deviceBinding.Callback,
+                ProviderName = SubscriberProviderName,
+                DeviceHandle = Guid,
+                InputIndex = (uint)deviceBinding.KeyValue,
+                SubscriberGuid = deviceBinding.Guid
+
+            });
+        }
+
+        private InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
+        {
+            switch ((KeyType)deviceBinding.KeyType)
+            {
+                case KeyType.Button:
+                    return InputType.BUTTON;
+                case KeyType.Axis:
+                    return InputType.AXIS;
+                case KeyType.Pov:
+                    return InputType.POV;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

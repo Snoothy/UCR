@@ -8,10 +8,10 @@ using UCR.Views.Controls;
 
 namespace UCR.Models.Plugins.Remapper
 {
-    class ButtonToAxis : Plugin
+    public class ButtonToAxis : Plugin
     {
-        DeviceBinding Input { get; set; }
-        DeviceBinding Output { get; set; }
+        public DeviceBinding Input { get; set; }
+        public DeviceBinding Output { get; set; }
 
         public ButtonToAxis() { }
 

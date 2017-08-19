@@ -90,7 +90,9 @@
     <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRContext.cs" />
+    <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
+    <Compile Include="ViewModels\ContextMenuItem.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">

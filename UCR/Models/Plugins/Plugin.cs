@@ -42,6 +42,19 @@ namespace UCR.Models.Plugins
             return success;
         }
 
+        public Device GetDevice(DeviceBinding deviceBinding)
+        {
+            switch (deviceBinding.DeviceBindingType)
+            {
+                case DeviceBindingType.Input:
+                    return ParentProfile.GetInputDevice(deviceBinding);
+                case DeviceBindingType.Output:
+                    return ParentProfile.GetOutputDevice(deviceBinding);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         protected void WriteOutput(DeviceBinding output, long value)
         {
             if (output?.DeviceType == null) return;
@@ -99,7 +112,7 @@ namespace UCR.Models.Plugins
 
         private DeviceBinding InitializeMapping(DeviceBindingType deviceBindingType, DeviceBinding.ValueChanged callbackFunc)
         {
-            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc, this);
+            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc, this, deviceBindingType);
             switch(deviceBindingType)
             {
                 case DeviceBindingType.Input:

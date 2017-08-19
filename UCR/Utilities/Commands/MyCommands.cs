@@ -4,6 +4,7 @@ using System.Windows.Input;
 
 namespace UCR.Utilities.Commands
 {
+    // TODO Refactor
     public static class MyCommands
     {
         private static readonly ICommand appCloseCmd = new ApplicationCloseCommand();
