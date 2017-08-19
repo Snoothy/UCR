@@ -12,10 +12,8 @@ namespace UCR.Models.Plugins.Remapper
     {
         public DeviceBinding Input { get; set; }
         public DeviceBinding Output { get; set; }
-
-        public ButtonToButton() { }
-
-        public ButtonToButton(Profile parentProfile) : base(parentProfile)
+        
+        public ButtonToButton()
         {
             Input = InitializeInputMapping(InputChanged);
             Output = InitializeOutputMapping();

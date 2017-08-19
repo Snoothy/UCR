@@ -40,15 +40,10 @@ namespace UCR.Models.Devices
             ClearSubscribers();
         }
 
-        public override bool SubscribeInput(DeviceBinding deviceBinding)
+        public override bool AddDeviceBinding(DeviceBinding deviceBinding)
         {
             Subscriptions[deviceBinding.Plugin.Title] = deviceBinding;
             return true;
-        }
-
-        public override bool SubscribeOutput(DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
         }
         
         public override void ClearSubscribers()
@@ -72,14 +67,15 @@ namespace UCR.Models.Devices
                 InputType = MapDeviceBindingInputType(deviceBinding),
                 Callback = deviceBinding.Callback,
                 ProviderName = SubscriberProviderName,
-                DeviceHandle = Guid,
+                DeviceHandle = DeviceHandle,
                 InputIndex = (uint)deviceBinding.KeyValue,
-                SubscriberGuid = deviceBinding.Guid
-
+                SubscriberGuid = deviceBinding.Guid,
+                ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
+                //InputSubId = TODO
             });
         }
 
-        private InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
+        protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
         {
             switch ((KeyType)deviceBinding.KeyType)
             {

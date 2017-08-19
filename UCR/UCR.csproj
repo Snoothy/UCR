@@ -52,11 +52,10 @@
   <ItemGroup>
     <Reference Include="IOWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\IOWrapper.dll</HintPath>
+      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IOWrapper.dll</HintPath>
     </Reference>
-    <Reference Include="PluginContracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\PluginContracts.dll</HintPath>
+    <Reference Include="IProvider">
+      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

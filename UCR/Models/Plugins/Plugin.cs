@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
 using UCR.Models.Devices;
 using UCR.Models.Mapping;
-using UCR.Views.Controls;
 
 namespace UCR.Models.Plugins
 {
@@ -17,20 +10,17 @@ namespace UCR.Models.Plugins
     {
         // Persistence
         public string Title { get; set; }
-        private Profile ParentProfile { get; set; }
+
+        internal Profile ParentProfile { get; set; }
         public List<DeviceBinding> Inputs { get; set; } // TODO Private
         public List<DeviceBinding> Outputs { get; set; } // TODO Private
 
         // Runtime
+        public delegate void PluginBindingChanged(Plugin plugin);
+        public PluginBindingChanged BindingCallback { get; set; }
 
-
-        public Plugin()
+        public Plugin() : base()
         {
-        }
-
-        public Plugin(Profile parentProfile) : base()
-        {
-            ParentProfile = parentProfile;
             Inputs = new List<DeviceBinding>();
             Outputs = new List<DeviceBinding>();
         }
@@ -80,13 +70,13 @@ namespace UCR.Models.Plugins
                     switch (input.DeviceType)
                     {
                         case DeviceType.Keyboard:
-                            success &= ((Keyboard) device).SubscribeInput(input);
+                            success &= ((Keyboard) device).AddDeviceBinding(input);
                             break;
                         case DeviceType.Mouse:
-                            success &= ((Mouse)device).SubscribeInput(input);
+                            success &= ((Mouse)device).AddDeviceBinding(input);
                             break;
                         case DeviceType.Joystick:
-                            success &= ((Joystick)device).SubscribeInput(input);
+                            success &= ((Joystick)device).AddDeviceBinding(input);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -125,6 +115,11 @@ namespace UCR.Models.Plugins
                     throw new ArgumentOutOfRangeException(nameof(deviceBindingType), deviceBindingType, null);
             }
             return deviceBinding;
+        }
+
+        public List<Device> GetDeviceList(DeviceType? deviceBindingDeviceType)
+        {
+            return ParentProfile.GetDeviceList(deviceBindingDeviceType);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace UCR.Models
         // Persistence
         public string Title { get; set; }
         public Profile Parent { get; set; }
-        public long Guid { get; set; }
+        public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
         // Inputs
@@ -41,7 +41,7 @@ namespace UCR.Models
 
         private DeviceGroup<Keyboard> InputKeyboards { get; set; }
         private DeviceGroup<Mouse> InputMice { get; set; }
-        private DeviceGroup<Joystick> InputJoysticks { get; set; }
+        private DeviceGroup<Device> InputJoysticks { get; set; }
         private DeviceGroup<GenericDevice> InputGenerics { get; set; }
 
         private DeviceGroup<Keyboard> OutputKeyboards { get; set; }
@@ -56,6 +56,7 @@ namespace UCR.Models
             this.ctx = ctx;
             Plugins = new List<Plugin>();
             InheritFromParent = true;
+            Guid = Guid.NewGuid();
         }
 
         public Profile(UCRContext ctx, Profile parent = null) : this(ctx)
@@ -101,10 +102,12 @@ namespace UCR.Models
             // TODO Merge with devices from parent profiles
             // TODO Unsubscribe on reload
             // Input
-            InputJoysticks = new DeviceGroup<Joystick>()
+            
+            InputJoysticks = new DeviceGroup<Device>()
             {
                 GUID = JoystickInputList,
-                Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices)
+                Devices = DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices.OfType<Joystick>().Cast<Device>().ToList()
+                //Devices = Device.CopyDeviceList<Joystick>(DeviceGroup<Joystick>.FindDeviceGroup(ctx.JoystickGroups, JoystickInputList)?.Devices)
             };
 
             InputKeyboards = new DeviceGroup<Keyboard>()
@@ -258,6 +261,8 @@ namespace UCR.Models
 
         public void AddPlugin(Plugin plugin)
         {
+            plugin.BindingCallback = OnDeviceBindingChange;
+            plugin.ParentProfile = this;
             Plugins.Add(plugin);
         }
 
@@ -266,5 +271,31 @@ namespace UCR.Models
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
+
+        private void OnDeviceBindingChange(Plugin plugin)
+        {
+            if (!IsActive()) return;
+            foreach (var deviceBinding in plugin.GetInputs())
+            {
+                // TODO Resubscribe bindings
+                GetInputDevice(deviceBinding).SubscribeDeviceBindingInput(ctx,deviceBinding);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if bindings are currently subscribed to the backend
+        /// </summary>
+        /// <returns></returns>
+        public bool IsActive()
+        {
+            return ctx.ActiveProfile.Guid == Guid;
+        }
+
+        public List<Device> GetDeviceList(DeviceType? deviceType)
+        {
+            // TODO Implement
+            return new List<Device>();
+            throw new NotImplementedException();
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace UCR.ViewModels
         }
 
         public string Title { get; set; }
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public Profile profile { get; set; }
 
         public ObservableCollection<ProfileItem> Items { get; set; }

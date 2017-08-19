@@ -49,6 +49,7 @@ namespace UCR.Models
             if (success)
             {
                 ActiveProfile.SubscribeDeviceLists();
+                IOController.SetProfileState(ActiveProfile.Guid, true);
             }
             else
             {
@@ -93,14 +94,14 @@ namespace UCR.Models
             JoystickGroups[0].Devices.Add(new Joystick()
             {
                 Title = "Joystick mock name",
-                Guid = "JOYSTICKGUID"
+                DeviceHandle = "JOYSTICKGUID"
             });
 
             // Output
             JoystickGroups[1].Devices.Add(new Joystick()
             {
                 Title = "Joystick mock name",
-                Guid = "JOYSTICKGUIDOUTPUT"
+                DeviceHandle = "JOYSTICKGUIDOUTPUT"
             });
 
 
@@ -113,9 +114,9 @@ namespace UCR.Models
                 {
                     if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName == "usb gamepad           ")
                     {
-                        JoystickGroups[0].Devices[0].Guid = device.Value.DeviceHandle;
+                        JoystickGroups[0].Devices[0].DeviceHandle = device.Value.DeviceHandle;
                         JoystickGroups[0].Devices[0].SubscriberProviderName = device.Value.ProviderName;
-                        JoystickGroups[0].Devices[0].MaxButtons = (int)device.Value.ButtonCount;
+                        JoystickGroups[0].Devices[0].MaxButtons = device.Value.ButtonList.Count;
                         break;
                     }
                 }
@@ -129,9 +130,9 @@ namespace UCR.Models
                 {
                     if (device.Value.ProviderName == "Core_vJoyInterfaceWrap")
                     {
-                        JoystickGroups[1].Devices[0].Guid = device.Value.DeviceHandle;
+                        JoystickGroups[1].Devices[0].DeviceHandle = device.Value.DeviceHandle;
                         JoystickGroups[1].Devices[0].SubscriberProviderName = device.Value.ProviderName;
-                        JoystickGroups[1].Devices[0].MaxButtons = (int)device.Value.ButtonCount;
+                        JoystickGroups[1].Devices[0].MaxButtons = device.Value.ButtonList.Count;
                         break;
                     }
                 }
@@ -144,14 +145,14 @@ namespace UCR.Models
                 Plugin plugin;
                 if (i % 2 == 0)
                 {
-                    plugin = new ButtonToButton(global)
+                    plugin = new ButtonToButton()
                     {
                         Title = "ButtonToButton test " + i
                     };
                 }
                 else
                 {
-                    plugin = new ButtonToAxis(global)
+                    plugin = new ButtonToAxis()
                     {
                         Title = "ButtonToAxis test" + i
                     };
@@ -172,8 +173,6 @@ namespace UCR.Models
 
                 global.AddPlugin(plugin);
             }
-            
-
 
         }
     }

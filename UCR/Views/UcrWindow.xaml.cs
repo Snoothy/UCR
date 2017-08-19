@@ -80,7 +80,8 @@ namespace UCR.Views
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
             var win = new ProfileWindow(ctx, pi.profile);
-            win.Show();
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
         }
 
         private void RenameProfile(object sender, RoutedEventArgs e)

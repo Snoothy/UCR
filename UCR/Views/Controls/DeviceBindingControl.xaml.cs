@@ -30,7 +30,14 @@ namespace UCR.Views.Controls
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
 
+        // DDL Device number
+        private ObservableCollection<ComboBoxItem> Devices { get; set; }
+        private ComboBoxItem SelectedDevice { get; set; }
+
+        // ContextMenu
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
+
+        
         
         public DeviceBindingControl()
         {
@@ -44,10 +51,16 @@ namespace UCR.Views.Controls
         {
             if (DeviceBinding == null) return; // TODO Error logging
             DeviceBindingLabel.Content = Label;
-            LoadDdl();
+            LoadDevices();
+            LoadContextMenu();
         }
 
-        private void LoadDdl()
+        private void LoadDevices()
+        {
+            DeviceBinding.Plugin.GetDeviceList(DeviceBinding.DeviceType);
+        }
+
+        private void LoadContextMenu()
         {
             if (DeviceBinding == null) return;
             if (DeviceBinding.DeviceBindingType.Equals(DeviceBindingType.Input))
@@ -111,7 +124,7 @@ namespace UCR.Views.Controls
             {
                 var i1 = i;
                 var cmd = new RelayCommand(c => DeviceBinding.SetKeyTypeValue(keyType, i1));
-                topMenu.Add(new ContextMenuItem((i+1).ToString(), new ObservableCollection<ContextMenuItem>(), cmd)); // TODO add command
+                topMenu.Add(new ContextMenuItem((i+1).ToString(), new ObservableCollection<ContextMenuItem>(), cmd));
             }
             return topMenu;
         }

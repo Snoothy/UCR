@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Providers;
 using UCR.Models.Mapping;
 
 namespace UCR.Models.Devices
@@ -18,12 +19,7 @@ namespace UCR.Models.Devices
             // TODO copy vars
         }
 
-        public override bool SubscribeInput(DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool SubscribeOutput(DeviceBinding deviceBinding)
+        public override bool AddDeviceBinding(DeviceBinding deviceBinding)
         {
             throw new NotImplementedException();
         }
@@ -39,6 +35,11 @@ namespace UCR.Models.Devices
         }
 
         public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
         {
             throw new NotImplementedException();
         }
