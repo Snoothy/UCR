@@ -10,18 +10,35 @@ namespace UCR.Models.Plugins.Remapper
 {
     public class ButtonToAxis : Plugin
     {
-        public DeviceBinding Input { get; set; }
+        public DeviceBinding InputHigh { get; set; }
+        public DeviceBinding InputLow { get; set; }
         public DeviceBinding Output { get; set; }
-        
+
+        private long direction = 0;
+
         public ButtonToAxis()
         {
-            Input = InitializeInputMapping(InputChanged);
+            InputLow = InitializeInputMapping(InputLowChanged);
+            InputHigh = InitializeInputMapping(InputHighChanged);
             Output = InitializeOutputMapping();
         }
 
-        private void InputChanged(long value)
+        private void InputLowChanged(long value)
         {
-            WriteOutput(Output, value);
+            direction += value == 0 ? 1 : -1;
+            WriteOutput();
+        }
+
+        private void InputHighChanged(long value)
+        {
+            direction += value == 0 ? -1 : 1;
+            WriteOutput();
+        }
+
+        private void WriteOutput()
+        {
+            direction = Math.Sign(direction);
+            WriteOutput(Output, direction*UCRConstants.AxisMaxValue);
         }
     }
 }

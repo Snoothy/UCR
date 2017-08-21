@@ -21,10 +21,6 @@ namespace UCR.Models.Devices
         // Persistence
 
         // Runtime
-        // TODO Limits
-        public int MaxButtons { get; set; }
-        // axis array
-        // pov
         
         // Subscriptions
         private Dictionary<string, DeviceBinding> Subscriptions;
@@ -36,7 +32,6 @@ namespace UCR.Models.Devices
 
         public Joystick(Joystick joystick) : base(joystick)
         {
-            MaxButtons = joystick.MaxButtons;
             ClearSubscribers();
         }
 

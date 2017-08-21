@@ -4,10 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UCR.Views"
-        xmlns:plugins="clr-namespace:UCR.Models.Plugins"
         xmlns:controls="clr-namespace:UCR.Views.Controls"
-        xmlns:models="clr-namespace:UCR.Models"
-        xmlns:commands="clr-namespace:UCR.Utilities.Commands"
         mc:Ignorable="d"
         d:DataContext="{d:DesignData Source=/SampleData/ProfilesSampleData.xaml}"
         x:Name="ProfileWindowName"
@@ -21,12 +18,26 @@
                 <MenuItem Header="Close" />
             </MenuItem>
         </Menu>
-        <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate >
-                    <controls:PluginView />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" ScrollViewer.IsDeferredScrollingEnabled="True">
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border 
+                            Name="Border" 
+                            Background="{x:Static SystemColors.MenuBrush}"
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            CornerRadius="0">
+                            <ItemsPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate >
+                        <controls:PluginView />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
     </DockPanel>
 </Window>

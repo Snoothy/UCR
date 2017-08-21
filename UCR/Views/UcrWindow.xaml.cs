@@ -28,10 +28,11 @@ namespace UCR.Views
         private void InitResources()
         {
             // TODO Load all resourecs dynamicly
-            var foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToButton.xaml");
+            var foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToAxis.xaml");
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
-            foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToAxis.xaml");
+            foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToButton.xaml");
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
+            
         }
 
         private bool GetSelectedItem(out ProfileItem profileItem)
@@ -137,7 +138,7 @@ namespace UCR.Views
                     case MessageBoxResult.None:
                     case MessageBoxResult.Cancel:
                         e.Cancel = true;
-                        break;
+                        return;
                     case MessageBoxResult.Yes:
                         // TODO save everything
                         break;
@@ -147,6 +148,7 @@ namespace UCR.Views
                         throw new ArgumentOutOfRangeException();
                 }
             }
+            ctx.IOController.Dispose();
         }
 
         // TODO Dispose backend

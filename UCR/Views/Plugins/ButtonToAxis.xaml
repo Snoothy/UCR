@@ -4,10 +4,10 @@
     <DataTemplate x:Key="ButtonToAxis">
         <DockPanel>
             <StackPanel>
-                <controls:DeviceBindingControl Label="Button Input low" DockPanel.Dock="Left" DataContext="{Binding Input}"/>
-                <controls:DeviceBindingControl Label="Button Input high" DockPanel.Dock="Left" DataContext="{Binding Input}"/>
+                <controls:DeviceBindingControl Label="Button Input low" DockPanel.Dock="Left" DeviceBinding="{Binding InputLow}"/>
+                <controls:DeviceBindingControl Label="Button Input high" DockPanel.Dock="Left" DeviceBinding="{Binding InputHigh}"/>
             </StackPanel>
-            <controls:DeviceBindingControl Label="Axis Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DataContext="{Binding Output}"/>
+            <controls:DeviceBindingControl Label="Axis Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
         </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

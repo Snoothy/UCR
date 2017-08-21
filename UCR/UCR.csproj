@@ -59,6 +59,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,9 +89,11 @@
     <Compile Include="Models\Plugins\PluginGroup.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
+    <Compile Include="Models\UCRConstants.cs" />
     <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
+    <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />

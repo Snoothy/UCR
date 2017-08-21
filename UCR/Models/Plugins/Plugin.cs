@@ -19,7 +19,7 @@ namespace UCR.Models.Plugins
         public delegate void PluginBindingChanged(Plugin plugin);
         public PluginBindingChanged BindingCallback { get; set; }
 
-        public Plugin() : base()
+        protected Plugin()
         {
             Inputs = new List<DeviceBinding>();
             Outputs = new List<DeviceBinding>();
@@ -27,7 +27,7 @@ namespace UCR.Models.Plugins
 
         public bool Activate(UCRContext ctx)
         {
-            bool success = true;
+            var success = true;
             success &= SubscribeInputs(ctx);
             return success;
         }
@@ -51,7 +51,7 @@ namespace UCR.Models.Plugins
 
         private bool SubscribeInputs(UCRContext ctx)
         {
-            bool success = true;
+            var success = true;
             foreach (var input in GetInputs())
             {
                 if (input.DeviceType == null) continue;

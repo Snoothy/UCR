@@ -21,7 +21,7 @@ namespace UCR.Models.Plugins.Remapper
 
         private void InputChanged(long value)
         {
-            WriteOutput(Output, value);
+            WriteOutput(Output, Math.Max(Math.Min(value, 1),0));
         }
     }
 }

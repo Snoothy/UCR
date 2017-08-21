@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,12 +13,12 @@ namespace UCR.Models.Devices
 {
     public enum DeviceType
     {
+        [Description("Joystick")]
+        Joystick,
         [Description("Keyboard")]
         Keyboard,
         [Description("Mouse")]
         Mouse,
-        [Description("Joystick")]
-        Joystick,
         [Description("Generic device")]
         Generic
     }
@@ -32,6 +33,10 @@ namespace UCR.Models.Devices
 
         // Runtime
         public Guid Guid { get; }
+        public bool IsAcquired { get; set; }
+
+        public List<KeyValuePair<int,string>> SupportedButtons { get; set; }
+        public List<KeyValuePair<int,string>> SupportedAxes { get; set; }
 
         // Abstract methods
         public abstract bool AddDeviceBinding(DeviceBinding deviceBinding);
@@ -44,6 +49,7 @@ namespace UCR.Models.Devices
         {
             DeviceType = deviceType;
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
+            IsAcquired = false;
         }
 
         protected Device(Device device)
@@ -52,6 +58,9 @@ namespace UCR.Models.Devices
             DeviceType = device.DeviceType;
             DeviceHandle = device.DeviceHandle;
             SubscriberProviderName = device.SubscriberProviderName;
+            SupportedButtons = device.SupportedButtons;
+            SupportedAxes = device.SupportedAxes;
+            Guid = device.Guid;
         }
 
         public virtual void WriteOutput(UCRContext ctx, DeviceBinding binding, long value)
@@ -73,6 +82,8 @@ namespace UCR.Models.Devices
                 // TODO Log error
                 return false;
             }
+            if (IsAcquired) return true;
+            IsAcquired = true;
             return ctx.IOController.SubscribeOutput(new OutputSubscriptionRequest()
             {
                 DeviceHandle = DeviceHandle,
@@ -92,6 +103,17 @@ namespace UCR.Models.Devices
             }
 
             return newDevicelist;
+        }
+
+        public static List<KeyValuePair<int, string>> ZipValuesWithName(List<int> values, Dictionary<int, string> names)
+        {
+            var result = new List<KeyValuePair<int,string>>();
+            foreach (var value in values)
+            {
+                var name = names != null ? names[value] : value.ToString();
+                result.Add(new KeyValuePair<int, string>(value, name));
+            }
+            return result;
         }
     }
 

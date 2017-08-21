@@ -18,7 +18,7 @@ namespace UCR.Models.Mapping
     {
         // Persistence
         // Keyboard, mouse, joystick
-        public DeviceType? DeviceType { get; set; }
+        public DeviceType DeviceType { get; set; }
         // Index in its device list
         public int DeviceNumber { get; set; }
         // Subscription key
@@ -41,6 +41,7 @@ namespace UCR.Models.Mapping
             DeviceBindingType = deviceBindingType;
             Guid = Guid.NewGuid();
             IsBound = false;
+            DeviceType = DeviceType.Joystick;
         }
 
         public DeviceBinding(DeviceBinding deviceBinding)

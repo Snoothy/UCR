@@ -31,8 +31,7 @@ namespace UCR.Views.Controls
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
 
         // DDL Device number
-        private ObservableCollection<ComboBoxItem> Devices { get; set; }
-        private ComboBoxItem SelectedDevice { get; set; }
+        private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
 
         // ContextMenu
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
@@ -51,6 +50,11 @@ namespace UCR.Views.Controls
         {
             if (DeviceBinding == null) return; // TODO Error logging
             DeviceBindingLabel.Content = Label;
+            ReloadGui();
+        }
+
+        private void ReloadGui()
+        {
             LoadDevices();
             LoadContextMenu();
         }
@@ -58,17 +62,37 @@ namespace UCR.Views.Controls
         private void LoadDevices()
         {
             var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
-            Devices = new ObservableCollection<ComboBoxItem>();
-            for(var i = 0; i < devicelist.Count; i++)
+            Devices = new ObservableCollection<ComboBoxItemViewModel>();
+            for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, UCRConstants.MaxDevices); i++)
             {
-                Devices.Add(new ComboBoxItem()
+                if (devicelist != null && i < devicelist.Count)
                 {
-                    Content = i+1 + ". " + devicelist[i].Title,
-                    Tag = i.ToString()
-                });
+                    Devices.Add(new ComboBoxItemViewModel(i + 1 + ". " + devicelist[i].Title, i));
+                }
+                else
+                {
+                    Devices.Add(new ComboBoxItemViewModel(i + 1+". N/A", i));
+                }
+                
             }
 
+            ComboBoxItemViewModel selectedDevice = null;
+            
+            foreach (var comboBoxItem in Devices)
+            {
+                if (comboBoxItem.Value == DeviceBinding.DeviceNumber)
+                {
+                    selectedDevice = comboBoxItem;
+                    break;
+                }
+            }
+            if (selectedDevice == null)
+            {
+                selectedDevice = new ComboBoxItemViewModel(DeviceBinding.DeviceNumber+1+ ". N/A", DeviceBinding.DeviceNumber);
+                Devices.Add(selectedDevice);
+            }
             DeviceNumberBox.ItemsSource = Devices;
+            DeviceNumberBox.SelectedItem = selectedDevice;
         }
 
         private void LoadContextMenu()
@@ -105,6 +129,8 @@ namespace UCR.Views.Controls
         private void BuildInputContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
+            var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
+            if (device == null) return;
 
             switch (DeviceBinding.DeviceType)
             {
@@ -115,13 +141,12 @@ namespace UCR.Views.Controls
                     // TODO
                     break;
                 case DeviceType.Joystick:
-                    var device = DeviceBinding.Plugin.GetDevice(DeviceBinding) as Joystick;
-                    if (device.MaxButtons > 0) BindMenu.Add(new ContextMenuItem("Buttons", BuildButtonSubMenu(device.MaxButtons, (int)KeyType.Button)));
+                    BindMenu.Add(new ContextMenuItem("Button", BuildButtonSubMenu(device.SupportedButtons, (int)KeyType.Button)));
+                    BindMenu.Add(new ContextMenuItem("Axis", BuildButtonSubMenu(device.SupportedAxes, (int)KeyType.Axis)));
                     break;
                 case DeviceType.Generic:
                     // TODO
                     break;
-                case null:
                 default:
                     // TODO Log warning
                     break;
@@ -131,6 +156,8 @@ namespace UCR.Views.Controls
         private void BuildOutputContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
+            var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
+            if (device == null) return;
 
             switch (DeviceBinding.DeviceType)
             {
@@ -141,29 +168,39 @@ namespace UCR.Views.Controls
                     // TODO
                     break;
                 case DeviceType.Joystick:
-                    var device = DeviceBinding.Plugin.GetDevice(DeviceBinding) as Joystick;
-                    if (device.MaxButtons > 0) BindMenu.Add(new ContextMenuItem("Buttons", BuildButtonSubMenu(device.MaxButtons, (int)KeyType.Button)));
+                    BindMenu.Add(new ContextMenuItem("Button", BuildButtonSubMenu(device.SupportedButtons, (int)KeyType.Button)));
+                    BindMenu.Add(new ContextMenuItem("Axis", BuildButtonSubMenu(device.SupportedAxes, (int)KeyType.Axis)));
                     break;
                 case DeviceType.Generic:
                     // TODO
                     break;
-                case null:
                 default:
                     // TODO Log warning
                     break;
             }
         }
 
-        private ObservableCollection<ContextMenuItem> BuildButtonSubMenu(int numberOfButtons, int keyType)
+        private ObservableCollection<ContextMenuItem> BuildButtonSubMenu(List<KeyValuePair<int,string>> io, int keyType)
         {
             var topMenu = new ObservableCollection<ContextMenuItem>();
-            for (var i = 0; i < numberOfButtons; i++)
+            for (var i = 0; i < io.Count; i++)
             {
                 var i1 = i;
-                var cmd = new RelayCommand(c => DeviceBinding.SetKeyTypeValue(keyType, i1));
-                topMenu.Add(new ContextMenuItem((i + 1).ToString(), new ObservableCollection<ContextMenuItem>(), cmd));
+                var cmd = new RelayCommand(c =>
+                {
+                    DeviceBinding.SetKeyTypeValue(keyType, io[i1].Key);
+                    ReloadGui();
+                });
+                topMenu.Add(new ContextMenuItem(io[i1].Value, new ObservableCollection<ContextMenuItem>(), cmd));
             }
             return topMenu;
+        }
+
+        private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)
+        {
+            if (DeviceNumberBox.SelectedItem == null) return;
+            DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
+            LoadContextMenu();
         }
     }
 }

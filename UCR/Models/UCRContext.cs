@@ -91,39 +91,33 @@ namespace UCR.Models
                     GUID = "FAKEGUIDOUTPUT"
                 }
             };
-            JoystickGroups[0].Devices.Add(new Joystick()
-            {
-                Title = "Joystick mock name",
-                DeviceHandle = "JOYSTICKGUID"
-            });
-
-            // Output
-            JoystickGroups[1].Devices.Add(new Joystick()
-            {
-                Title = "Joystick mock name",
-                DeviceHandle = "JOYSTICKGUIDOUTPUT"
-            });
-
 
             var list = IOController.GetInputList();
             string deviceHandle = null;
+
+            var deviceNumber = 0;
 
             foreach (var providerList in list)
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName == "usb gamepad           ")
+                    if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName != "vJoy Device")
                     {
-                        JoystickGroups[0].Devices[0].Title = device.Value.DeviceName;
-                        JoystickGroups[0].Devices[0].DeviceHandle = device.Value.DeviceHandle;
-                        JoystickGroups[0].Devices[0].SubscriberProviderName = device.Value.ProviderName;
-                        JoystickGroups[0].Devices[0].MaxButtons = device.Value.ButtonList.Count;
-                        break;
+                        JoystickGroups[0].Devices.Add(new Joystick()
+                        {
+                            Title = device.Value.DeviceName,
+                            DeviceHandle = device.Value.DeviceHandle,
+                            SubscriberProviderName = device.Value.ProviderName,
+                            SupportedButtons = Device.ZipValuesWithName(device.Value.ButtonList, device.Value.ButtonNames),
+                            SupportedAxes = Device.ZipValuesWithName(device.Value.AxisList, device.Value.AxisNames)
+                        });
+                        deviceNumber++;
                     }
                 }
             }
 
             list = IOController.GetOutputList();
+            deviceNumber = 0;
 
             foreach (var providerList in list)
             {
@@ -131,11 +125,15 @@ namespace UCR.Models
                 {
                     if (device.Value.ProviderName == "Core_vJoyInterfaceWrap")
                     {
-                        JoystickGroups[1].Devices[0].Title = device.Value.DeviceName;
-                        JoystickGroups[1].Devices[0].DeviceHandle = device.Value.DeviceHandle;
-                        JoystickGroups[1].Devices[0].SubscriberProviderName = device.Value.ProviderName;
-                        JoystickGroups[1].Devices[0].MaxButtons = device.Value.ButtonList.Count;
-                        break;
+                        JoystickGroups[1].Devices.Add(new Joystick()
+                        {
+                            Title = device.Value.DeviceName,
+                            DeviceHandle = device.Value.DeviceHandle,
+                            SubscriberProviderName = device.Value.ProviderName,
+                            SupportedButtons = Device.ZipValuesWithName(device.Value.ButtonList, device.Value.ButtonNames),
+                            SupportedAxes = Device.ZipValuesWithName(device.Value.AxisList, device.Value.AxisNames)
+                        });
+                        deviceNumber++;
                     }
                 }
             }

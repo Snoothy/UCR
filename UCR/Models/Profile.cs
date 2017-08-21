@@ -261,9 +261,8 @@ namespace UCR.Models
         public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             InitializeDeviceGroups();
-            if (deviceBinding.DeviceType == null) return null; // TODO Log
             var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
-            var deviceList = deviceGroups[deviceBinding.DeviceType.Value].Devices;
+            var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
             return deviceList;
         }
     }
