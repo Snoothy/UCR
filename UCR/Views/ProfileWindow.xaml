@@ -18,26 +18,15 @@
                 <MenuItem Header="Close" />
             </MenuItem>
         </Menu>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" ScrollViewer.IsDeferredScrollingEnabled="True">
-                <ListBox.Template>
-                    <ControlTemplate TargetType="ListBox">
-                        <Border 
-                            Name="Border" 
-                            Background="{x:Static SystemColors.MenuBrush}"
-                            BorderBrush="Black"
-                            BorderThickness="1"
-                            CornerRadius="0">
-                            <ItemsPresenter />
-                        </Border>
-                    </ControlTemplate>
-                </ListBox.Template>
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <controls:PluginView />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
+
+        <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing='True'
+                     VirtualizingPanel.IsVirtualizingWhenGrouping='True'
+                     VirtualizingPanel.ScrollUnit='Pixel'>
+            <ListBox.ItemTemplate>
+                <DataTemplate >
+                    <controls:PluginView />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </DockPanel>
 </Window>

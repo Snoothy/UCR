@@ -101,18 +101,15 @@ namespace UCR.Models
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    if (device.Value.ProviderName == "SharpDX_DirectInput" && device.Value.DeviceName != "vJoy Device")
+                    JoystickGroups[0].Devices.Add(new Joystick()
                     {
-                        JoystickGroups[0].Devices.Add(new Joystick()
-                        {
-                            Title = device.Value.DeviceName,
-                            DeviceHandle = device.Value.DeviceHandle,
-                            SubscriberProviderName = device.Value.ProviderName,
-                            SupportedButtons = Device.ZipValuesWithName(device.Value.ButtonList, device.Value.ButtonNames),
-                            SupportedAxes = Device.ZipValuesWithName(device.Value.AxisList, device.Value.AxisNames)
-                        });
-                        deviceNumber++;
-                    }
+                        Title = device.Value.DeviceName,
+                        DeviceHandle = device.Value.DeviceHandle,
+                        SubscriberProviderName = device.Value.ProviderName,
+                        SupportedButtons = device.Value.ButtonList,
+                        SupportedAxes = device.Value.AxisList
+                    });
+                    deviceNumber++;
                 }
             }
 
@@ -123,18 +120,15 @@ namespace UCR.Models
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    if (device.Value.ProviderName == "Core_vJoyInterfaceWrap")
+                    JoystickGroups[1].Devices.Add(new Joystick()
                     {
-                        JoystickGroups[1].Devices.Add(new Joystick()
-                        {
-                            Title = device.Value.DeviceName,
-                            DeviceHandle = device.Value.DeviceHandle,
-                            SubscriberProviderName = device.Value.ProviderName,
-                            SupportedButtons = Device.ZipValuesWithName(device.Value.ButtonList, device.Value.ButtonNames),
-                            SupportedAxes = Device.ZipValuesWithName(device.Value.AxisList, device.Value.AxisNames)
-                        });
-                        deviceNumber++;
-                    }
+                        Title = device.Value.DeviceName,
+                        DeviceHandle = device.Value.DeviceHandle,
+                        SubscriberProviderName = device.Value.ProviderName,
+                        SupportedButtons = device.Value.ButtonList,
+                        SupportedAxes = device.Value.AxisList
+                    });
+                    deviceNumber++;
                 }
             }
 
@@ -161,6 +155,7 @@ namespace UCR.Models
                 plugin.Inputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Inputs[0].KeyType = (int)KeyType.Button;
                 plugin.Inputs[0].KeyValue = i;
+                plugin.Inputs[0].IsBound = true;
 
                 if (i == 1)
                 {
@@ -170,6 +165,7 @@ namespace UCR.Models
                 plugin.Outputs[0].DeviceType = DeviceType.Joystick;
                 plugin.Outputs[0].KeyType = (int)KeyType.Button;
                 plugin.Outputs[0].KeyValue = i;
+                plugin.Outputs[0].IsBound = true;
 
                 global.AddPlugin(plugin);
             }

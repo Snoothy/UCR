@@ -29,7 +29,7 @@ namespace UCR.Models.Mapping
         public Guid Guid { get; }
         public Plugin Plugin { get; set; }
         public DeviceBindingType DeviceBindingType { get; }
-        public bool IsBound { get; private set; }
+        public bool IsBound { get; set; }
 
         public delegate void ValueChanged(long value);
         public ValueChanged Callback { get; set; }
@@ -67,6 +67,12 @@ namespace UCR.Models.Mapping
             KeyValue = value;
             IsBound = true;
             Plugin.BindingCallback(Plugin);
+        }
+
+        public string BoundName()
+        {
+            var device = Plugin.GetDevice(this);
+            return device.GetBindingName(this);
         }
     }
 }

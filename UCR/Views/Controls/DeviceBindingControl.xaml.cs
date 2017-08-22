@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Providers;
 using UCR.Models;
 using UCR.Models.Devices;
 using UCR.Models.Mapping;
@@ -55,11 +56,30 @@ namespace UCR.Views.Controls
 
         private void ReloadGui()
         {
-            LoadDevices();
+            LoadDeviceList();
+            LoadDeviceInputs();
             LoadContextMenu();
+            LoadBindingName();
         }
 
-        private void LoadDevices()
+        private void LoadBindingName()
+        {
+            if (DeviceBinding.IsBound)
+            {
+                BindButton.Content = DeviceBinding.BoundName();
+            }
+            else
+            {
+                BindButton.Content = "Click to enter bind mode";
+            }
+        }
+
+        private void LoadDeviceList()
+        {
+            DeviceTypeBox.SelectedItem = DeviceBinding.DeviceType;
+        }
+
+        private void LoadDeviceInputs()
         {
             var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
@@ -141,8 +161,9 @@ namespace UCR.Views.Controls
                     // TODO
                     break;
                 case DeviceType.Joystick:
-                    BindMenu.Add(new ContextMenuItem("Button", BuildButtonSubMenu(device.SupportedButtons, (int)KeyType.Button)));
-                    BindMenu.Add(new ContextMenuItem("Axis", BuildButtonSubMenu(device.SupportedAxes, (int)KeyType.Axis)));
+                    BuildSubMenu("Button", device.SupportedButtons.Cast<InputInfo>().ToList(), (int)KeyType.Button);
+                    BuildSubMenu("Axis", device.SupportedAxes.FindAll(i => !i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
+                    BuildSubMenu("Trigger", device.SupportedAxes.FindAll(i => i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
                     break;
                 case DeviceType.Generic:
                     // TODO
@@ -168,8 +189,9 @@ namespace UCR.Views.Controls
                     // TODO
                     break;
                 case DeviceType.Joystick:
-                    BindMenu.Add(new ContextMenuItem("Button", BuildButtonSubMenu(device.SupportedButtons, (int)KeyType.Button)));
-                    BindMenu.Add(new ContextMenuItem("Axis", BuildButtonSubMenu(device.SupportedAxes, (int)KeyType.Axis)));
+                    BuildSubMenu("Button", device.SupportedButtons.Cast<InputInfo>().ToList(), (int)KeyType.Button);
+                    BuildSubMenu("Axis",device.SupportedAxes.FindAll(i => !i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
+                    BuildSubMenu("Trigger",device.SupportedAxes.FindAll(i => i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
                     break;
                 case DeviceType.Generic:
                     // TODO
@@ -180,7 +202,7 @@ namespace UCR.Views.Controls
             }
         }
 
-        private ObservableCollection<ContextMenuItem> BuildButtonSubMenu(List<KeyValuePair<int,string>> io, int keyType)
+        private void BuildSubMenu(string itemName, List<InputInfo> io, int keyType)
         {
             var topMenu = new ObservableCollection<ContextMenuItem>();
             for (var i = 0; i < io.Count; i++)
@@ -188,12 +210,13 @@ namespace UCR.Views.Controls
                 var i1 = i;
                 var cmd = new RelayCommand(c =>
                 {
-                    DeviceBinding.SetKeyTypeValue(keyType, io[i1].Key);
+                    DeviceBinding.SetKeyTypeValue(keyType, io[i1].Index);
                     ReloadGui();
                 });
-                topMenu.Add(new ContextMenuItem(io[i1].Value, new ObservableCollection<ContextMenuItem>(), cmd));
+                topMenu.Add(new ContextMenuItem(io[i1].Name, new ObservableCollection<ContextMenuItem>(), cmd));
             }
-            return topMenu;
+            if (topMenu.Count == 0) return;
+            BindMenu.Add(new ContextMenuItem(itemName, topMenu));
         }
 
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)
@@ -201,6 +224,7 @@ namespace UCR.Views.Controls
             if (DeviceNumberBox.SelectedItem == null) return;
             DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
             LoadContextMenu();
+            LoadBindingName();
         }
     }
 }
