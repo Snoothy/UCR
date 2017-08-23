@@ -76,7 +76,15 @@ namespace UCR.Models
                 },
                 new Profile(this)
                 {
-                    Title = "N64"
+                    Title = "Button Test",
+                    JoystickInputList = "FAKEGUID",
+                    JoystickOutputList = "FAKEGUIDOUTPUT"
+                },
+                new Profile(this)
+                {
+                    Title = "Axis Test",
+                    JoystickInputList = "FAKEGUID",
+                    JoystickOutputList = "FAKEGUIDOUTPUT"
                 }
             };
 
@@ -170,6 +178,16 @@ namespace UCR.Models
                 global.AddPlugin(plugin);
             }
 
+
+            Profiles[1].AddPlugin(new ButtonToButton()
+            {
+                Title = "Button test"
+            });
+
+            Profiles[2].AddPlugin(new ButtonToAxis()
+            {
+                Title = "Axis test"
+            });
         }
     }
 }

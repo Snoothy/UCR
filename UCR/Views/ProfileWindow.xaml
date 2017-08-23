@@ -17,6 +17,15 @@
                 <Separator/>
                 <MenuItem Header="Close" />
             </MenuItem>
+            <MenuItem Header="_Plugins">
+                <MenuItem Header="Add plugin..." />
+                <Separator/>
+                <MenuItem Header="Rename plugin" />
+                <MenuItem Header="Delete plugin" />
+            </MenuItem>
+            <MenuItem Header="_Devices">
+                <MenuItem Header="Show device lists..." />
+            </MenuItem>
         </Menu>
 
         <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing='True'

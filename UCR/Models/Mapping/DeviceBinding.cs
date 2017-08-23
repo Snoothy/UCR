@@ -53,12 +53,13 @@ namespace UCR.Models.Mapping
             Plugin = deviceBinding.Plugin;
             Callback = deviceBinding.Callback;
             Guid = deviceBinding.Guid;
+            IsBound = deviceBinding.IsBound;
         }
 
         public void SetDeviceNumber(int number)
         {
             DeviceNumber = number;
-            Plugin.BindingCallback(Plugin);
+            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
         }
 
         public void SetKeyTypeValue(int type, int value)
@@ -66,7 +67,7 @@ namespace UCR.Models.Mapping
             KeyType = type;
             KeyValue = value;
             IsBound = true;
-            Plugin.BindingCallback(Plugin);
+            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
         }
 
         public string BoundName()

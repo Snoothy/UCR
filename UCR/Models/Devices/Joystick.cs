@@ -17,14 +17,7 @@ namespace UCR.Models.Devices
     }
 
     public sealed class Joystick : Device
-    {
-        // Persistence
-
-        // Runtime
-        
-        // Subscriptions
-        private Dictionary<string, DeviceBinding> Subscriptions;
-
+    {        
         public Joystick() : base(DeviceType.Joystick)
         {
             ClearSubscribers();
@@ -33,40 +26,6 @@ namespace UCR.Models.Devices
         public Joystick(Joystick joystick) : base(joystick)
         {
             ClearSubscribers();
-        }
-
-        public override bool AddDeviceBinding(DeviceBinding deviceBinding)
-        {
-            Subscriptions[deviceBinding.Plugin.Title] = deviceBinding;
-            return true;
-        }
-        
-        public override void ClearSubscribers()
-        {
-            Subscriptions = new Dictionary<string, DeviceBinding>();
-        }
-
-        public override void SubscribeDeviceBindings(UCRContext ctx)
-        {
-            foreach (var deviceBinding in Subscriptions)
-            {
-                SubscribeDeviceBindingInput(ctx, deviceBinding.Value);
-            }
-        }
-
-        public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
-        {
-            var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
-            {
-                InputType = MapDeviceBindingInputType(deviceBinding),
-                Callback = deviceBinding.Callback,
-                ProviderName = SubscriberProviderName,
-                DeviceHandle = DeviceHandle,
-                InputIndex = (uint)deviceBinding.KeyValue,
-                SubscriberGuid = deviceBinding.Guid,
-                ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
-                //InputSubId = TODO
-            });
         }
 
         protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)

@@ -211,7 +211,7 @@ namespace UCR.Views.Controls
                 var cmd = new RelayCommand(c =>
                 {
                     DeviceBinding.SetKeyTypeValue(keyType, io[i1].Index);
-                    ReloadGui();
+                    LoadBindingName();
                 });
                 topMenu.Add(new ContextMenuItem(io[i1].Name, new ObservableCollection<ContextMenuItem>(), cmd));
             }

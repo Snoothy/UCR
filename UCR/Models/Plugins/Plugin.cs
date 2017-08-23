@@ -54,25 +54,10 @@ namespace UCR.Models.Plugins
             var success = true;
             foreach (var input in GetInputs())
             {
-                if (input.DeviceType == null) continue;
                 var device = ctx.ActiveProfile.GetDevice(input);
                 if (device != null)
                 {
-                    // TODO test if switch is needed (type erasure?)
-                    switch (input.DeviceType)
-                    {
-                        case DeviceType.Keyboard:
-                            success &= ((Keyboard) device).AddDeviceBinding(input);
-                            break;
-                        case DeviceType.Mouse:
-                            success &= ((Mouse)device).AddDeviceBinding(input);
-                            break;
-                        case DeviceType.Joystick:
-                            success &= ((Joystick)device).AddDeviceBinding(input);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    success &= device.AddDeviceBinding(input);
                 }
                 else
                 {

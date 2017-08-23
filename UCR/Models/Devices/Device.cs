@@ -39,11 +39,10 @@ namespace UCR.Models.Devices
         public List<ButtonInfo> SupportedButtons { get; set; }
         public List<AxisInfo> SupportedAxes { get; set; }
 
+        // Subscriptions
+        private Dictionary<string, List<DeviceBinding>> Subscriptions;
+
         // Abstract methods
-        public abstract bool AddDeviceBinding(DeviceBinding deviceBinding);
-        public abstract void ClearSubscribers();
-        public abstract void SubscribeDeviceBindings(UCRContext ctx);
-        public abstract void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding);
         protected abstract InputType MapDeviceBindingInputType(DeviceBinding deviceBinding);
 
         protected Device(DeviceType deviceType, Guid guid = new Guid())
@@ -74,6 +73,73 @@ namespace UCR.Models.Devices
                 DeviceHandle = DeviceHandle,
                 SubscriberGuid = Guid
             }, MapDeviceBindingInputType(binding), (uint)binding.KeyValue, (int)value);
+        }
+
+        public bool AddDeviceBinding(DeviceBinding deviceBinding)
+        {
+            List<DeviceBinding> currentSub = null;
+            if (Subscriptions.ContainsKey(deviceBinding.Plugin.Title))
+            {
+                currentSub = Subscriptions[deviceBinding.Plugin.Title];
+            }
+
+            if (currentSub == null || currentSub.Count == 0)
+            {
+                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
+                return true;
+            }
+            else
+            {
+                // Override bindings if Profile parent does not match. Root is loaded first and active profile last
+                if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
+                {
+                    Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
+                }
+                else
+                {
+                    var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
+                    if (existingBinding != null)
+                    {
+                        // Remove existing binding if it exists
+                        Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
+                    }
+                    Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
+                }
+            }
+             
+            return true;
+        }
+
+        public void ClearSubscribers()
+        {
+            Subscriptions = new Dictionary<string, List<DeviceBinding>>();
+        }
+
+        public void SubscribeDeviceBindings(UCRContext ctx)
+        {
+            foreach (var deviceBindingList in Subscriptions)
+            {
+                foreach (var deviceBinding in deviceBindingList.Value)
+                {
+                    SubscribeDeviceBindingInput(ctx, deviceBinding);
+                }
+            }
+        }
+
+        public void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            if (!deviceBinding.IsBound) return;
+            var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
+            {
+                InputType = MapDeviceBindingInputType(deviceBinding),
+                Callback = deviceBinding.Callback,
+                ProviderName = SubscriberProviderName,
+                DeviceHandle = DeviceHandle,
+                InputIndex = (uint)deviceBinding.KeyValue,
+                SubscriberGuid = deviceBinding.Guid,
+                ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
+                //InputSubId = TODO
+            });
         }
 
         public virtual string GetBindingName(DeviceBinding deviceBinding)

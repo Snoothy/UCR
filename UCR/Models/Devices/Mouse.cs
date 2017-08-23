@@ -19,26 +19,6 @@ namespace UCR.Models.Devices
             // TODO copy vars
         }
 
-        public override bool AddDeviceBinding(DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void ClearSubscribers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SubscribeDeviceBindings(UCRContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
         {
             throw new NotImplementedException();
