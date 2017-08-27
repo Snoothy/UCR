@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Providers;
 using UCR.Models.Mapping;
+using BindingInfo = Providers.BindingInfo;
 
 namespace UCR.Models.Devices
 {
@@ -35,16 +36,11 @@ namespace UCR.Models.Devices
         // Runtime
         public Guid Guid { get; }
         public bool IsAcquired { get; set; }
-
-        public List<ButtonInfo> SupportedButtons { get; set; }
-        public List<AxisInfo> SupportedAxes { get; set; }
+        public List<BindingInfo> Bindings { get; set; }
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
-
-        // Abstract methods
-        protected abstract InputType MapDeviceBindingInputType(DeviceBinding deviceBinding);
-
+        
         protected Device(DeviceType deviceType, Guid guid = new Guid())
         {
             DeviceType = deviceType;
@@ -58,21 +54,19 @@ namespace UCR.Models.Devices
             DeviceType = device.DeviceType;
             DeviceHandle = device.DeviceHandle;
             SubscriberProviderName = device.SubscriberProviderName;
-            SupportedButtons = device.SupportedButtons;
-            SupportedAxes = device.SupportedAxes;
+            Bindings = device.Bindings;
             Guid = device.Guid;
         }
 
-        public virtual void WriteOutput(UCRContext ctx, DeviceBinding binding, long value)
+        public void WriteOutput(UCRContext ctx, DeviceBinding deviceBinding, long value)
         {
             if (DeviceHandle == null || SubscriberProviderName == null) return;
-            //SendKeys.SendWait(binding.KeyValue.ToString()); // TODO Keyboard debug
             ctx.IOController.SetOutputstate(new OutputSubscriptionRequest()
             {
                 ProviderName = SubscriberProviderName,
                 DeviceHandle = DeviceHandle,
                 SubscriberGuid = Guid
-            }, MapDeviceBindingInputType(binding), (uint)binding.KeyValue, (int)value);
+            }, (InputType)deviceBinding.KeyType, (uint)deviceBinding.KeyValue, (int)value);
         }
 
         public bool AddDeviceBinding(DeviceBinding deviceBinding)
@@ -110,7 +104,7 @@ namespace UCR.Models.Devices
             return true;
         }
 
-        public void ClearSubscribers()
+        protected void ClearSubscribers()
         {
             Subscriptions = new Dictionary<string, List<DeviceBinding>>();
         }
@@ -128,39 +122,41 @@ namespace UCR.Models.Devices
 
         public void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
         {
-            if (!deviceBinding.IsBound) return;
+            if (!deviceBinding.IsBound) return; // TODO unsubscribe binding
             var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
             {
-                InputType = MapDeviceBindingInputType(deviceBinding),
-                Callback = deviceBinding.Callback,
                 ProviderName = SubscriberProviderName,
                 DeviceHandle = DeviceHandle,
+                InputType = (InputType)deviceBinding.KeyType,
                 InputIndex = (uint)deviceBinding.KeyValue,
+                InputSubId = deviceBinding.KeySubValue,
+                Callback = deviceBinding.Callback,
                 SubscriberGuid = deviceBinding.Guid,
                 ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
-                //InputSubId = TODO
             });
         }
 
-        public virtual string GetBindingName(DeviceBinding deviceBinding)
+        public string GetBindingName(DeviceBinding deviceBinding)
         {
-            // TODO override
-            if (deviceBinding.KeyType == (int) KeyType.Axis)
+            if (!deviceBinding.IsBound) return "Not bound";
+            return GetBindingName(deviceBinding, Bindings) ?? "Unknown input";
+        }
+
+        private static string GetBindingName(DeviceBinding deviceBinding, List<BindingInfo> bindingInfos)
+        {
+            foreach (var bindingInfo in bindingInfos)
             {
-                if (deviceBinding.KeyValue < SupportedAxes.Count)
+                if (bindingInfo.IsBinding && (int)bindingInfo.InputType == deviceBinding.KeyType && bindingInfo.InputIndex == deviceBinding.KeyValue)
                 {
-                    return "Axis " + SupportedAxes[deviceBinding.KeyValue].Name;
+                    return bindingInfo.Title;
                 }
-                return "Unknown Axis";
-            }
-            else
-            {
-                if (deviceBinding.KeyValue < SupportedButtons.Count)
+                var name = GetBindingName(deviceBinding, bindingInfo.SubBindings);
+                if (name != null)
                 {
-                    return "Button " + SupportedButtons[deviceBinding.KeyValue].Name;
+                    return bindingInfo.Title + ", " + name;
                 }
-                return "Unknown button";
             }
+            return null;
         }
 
         public bool SubscribeOutput(UCRContext ctx)

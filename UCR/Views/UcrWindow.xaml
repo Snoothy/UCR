@@ -28,7 +28,7 @@
             </MenuItem>
             <MenuItem Header="_Devices">
                 <MenuItem Header="Show available input devices" Click="ShowDevices" />
-                <MenuItem Header="Manage device groups" />
+                <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="Help" />

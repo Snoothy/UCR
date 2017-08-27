@@ -156,5 +156,12 @@ namespace UCR.Views
         {
             ctx.IOController = null;
         }
+
+        private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new DeviceListWindow();
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
+        }
     }
 }

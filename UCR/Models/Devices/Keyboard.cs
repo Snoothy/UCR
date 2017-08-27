@@ -18,10 +18,5 @@ namespace UCR.Models.Devices
         {
             // TODO Copy vars
         }
-
-        protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

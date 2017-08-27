@@ -118,27 +118,8 @@ namespace UCR.Views.Controls
         private void LoadContextMenu()
         {
             if (DeviceBinding == null) return;
-            if (DeviceBinding.DeviceBindingType.Equals(DeviceBindingType.Input))
-            {
-                BuildInputContextMenu();
-            }
-            else
-            {
-                BuildOutputContextMenu();
-            }
+            BuildContextMenu();
             Ddl.ItemsSource = BindMenu;
-        }
-
-        public DeviceBinding DeviceBinding
-        {
-            get { return (DeviceBinding) GetValue(DeviceBindingProperty); }
-            set { SetValue(DeviceBindingProperty, value); }
-        }
-
-        public string Label
-        {
-            get { return (string) GetValue(LabelProperty); }
-            set { SetValue(LabelProperty, value); }
         }
 
         private void LoadDeviceBinding()
@@ -146,77 +127,44 @@ namespace UCR.Views.Controls
             // TODO load device binding and update gui accordingly
         }
 
-        private void BuildInputContextMenu()
+        private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
             var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
             if (device == null) return;
-
-            switch (DeviceBinding.DeviceType)
-            {
-                case DeviceType.Keyboard:
-                    // TODO
-                    break;
-                case DeviceType.Mouse:
-                    // TODO
-                    break;
-                case DeviceType.Joystick:
-                    BuildSubMenu("Button", device.SupportedButtons.Cast<InputInfo>().ToList(), (int)KeyType.Button);
-                    BuildSubMenu("Axis", device.SupportedAxes.FindAll(i => !i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
-                    BuildSubMenu("Trigger", device.SupportedAxes.FindAll(i => i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
-                    break;
-                case DeviceType.Generic:
-                    // TODO
-                    break;
-                default:
-                    // TODO Log warning
-                    break;
-            }
+            BindMenu = BuildMenu(device.Bindings);
         }
 
-        private void BuildOutputContextMenu()
+        private ObservableCollection<ContextMenuItem> BuildMenu(List<BindingInfo> bindingInfos)
         {
-            BindMenu = new ObservableCollection<ContextMenuItem>();
-            var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
-            if (device == null) return;
-
-            switch (DeviceBinding.DeviceType)
+            var menuList = new ObservableCollection<ContextMenuItem>();
+            if (bindingInfos == null) return menuList;
+            foreach (var bindingInfo in bindingInfos)
             {
-                case DeviceType.Keyboard:
-                    // TODO
-                    break;
-                case DeviceType.Mouse:
-                    // TODO
-                    break;
-                case DeviceType.Joystick:
-                    BuildSubMenu("Button", device.SupportedButtons.Cast<InputInfo>().ToList(), (int)KeyType.Button);
-                    BuildSubMenu("Axis",device.SupportedAxes.FindAll(i => !i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
-                    BuildSubMenu("Trigger",device.SupportedAxes.FindAll(i => i.IsUnsigned).Cast<InputInfo>().ToList(), (int)KeyType.Axis);
-                    break;
-                case DeviceType.Generic:
-                    // TODO
-                    break;
-                default:
-                    // TODO Log warning
-                    break;
-            }
-        }
-
-        private void BuildSubMenu(string itemName, List<InputInfo> io, int keyType)
-        {
-            var topMenu = new ObservableCollection<ContextMenuItem>();
-            for (var i = 0; i < io.Count; i++)
-            {
-                var i1 = i;
-                var cmd = new RelayCommand(c =>
+                RelayCommand cmd = null;
+                if (bindingInfo.IsBinding)
                 {
-                    DeviceBinding.SetKeyTypeValue(keyType, io[i1].Index);
-                    LoadBindingName();
-                });
-                topMenu.Add(new ContextMenuItem(io[i1].Name, new ObservableCollection<ContextMenuItem>(), cmd));
+                    cmd = new RelayCommand(c =>
+                    {
+                        DeviceBinding.SetKeyTypeValue((int)bindingInfo.InputType, bindingInfo.InputIndex, bindingInfo.InputSubIndex);
+                        LoadBindingName();
+                    });
+                }
+                menuList.Add(new ContextMenuItem(bindingInfo.Title, BuildMenu(bindingInfo.SubBindings), cmd));
             }
-            if (topMenu.Count == 0) return;
-            BindMenu.Add(new ContextMenuItem(itemName, topMenu));
+            return menuList;
+        }
+
+        public DeviceBinding DeviceBinding
+        {
+            get { return (DeviceBinding)GetValue(DeviceBindingProperty); }
+            set { SetValue(DeviceBindingProperty, value); }
+        }
+
+        public string Label
+        {
+            get { return (string)GetValue(LabelProperty); }
+            set { SetValue(LabelProperty, value); }
         }
 
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)

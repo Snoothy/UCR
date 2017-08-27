@@ -6,15 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Providers;
 using UCR.Models.Mapping;
+using BindingInfo = Providers.BindingInfo;
 
 namespace UCR.Models.Devices
 {
-    public enum KeyType
-    {
-        Button = 0,
-        Axis = 1,
-        Pov = 2
-    }
 
     public sealed class Joystick : Device
     {        
@@ -28,19 +23,5 @@ namespace UCR.Models.Devices
             ClearSubscribers();
         }
 
-        protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
-        {
-            switch ((KeyType)deviceBinding.KeyType)
-            {
-                case KeyType.Button:
-                    return InputType.BUTTON;
-                case KeyType.Axis:
-                    return InputType.AXIS;
-                case KeyType.Pov:
-                    return InputType.POV;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
     }
 }

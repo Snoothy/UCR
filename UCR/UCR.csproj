@@ -104,6 +104,9 @@
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
+    <Compile Include="Views\DeviceListWindow.xaml.cs">
+      <DependentUpon>DeviceListWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\PluginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

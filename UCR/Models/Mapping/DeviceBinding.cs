@@ -24,6 +24,7 @@ namespace UCR.Models.Mapping
         // Subscription key
         public int KeyType { get; set; }
         public int KeyValue { get; set; }
+        public int KeySubValue { get; set; }
 
         // Runtime
         public Guid Guid { get; }
@@ -62,18 +63,18 @@ namespace UCR.Models.Mapping
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
         }
 
-        public void SetKeyTypeValue(int type, int value)
+        public void SetKeyTypeValue(int type, int value, int subValue)
         {
             KeyType = type;
             KeyValue = value;
+            KeySubValue = subValue;
             IsBound = true;
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
         }
 
         public string BoundName()
         {
-            var device = Plugin.GetDevice(this);
-            return device.GetBindingName(this);
+            return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
         }
     }
 }

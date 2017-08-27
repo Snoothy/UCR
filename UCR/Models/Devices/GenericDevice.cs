@@ -13,10 +13,5 @@ namespace UCR.Models.Devices
         public GenericDevice() : base(DeviceType.Mouse)
         {
         }
-
-        protected override InputType MapDeviceBindingInputType(DeviceBinding deviceBinding)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

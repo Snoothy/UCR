@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using IOWrapper;
+using Providers;
 using UCR.Models.Devices;
 using UCR.Models.Plugins;
 using UCR.Models.Plugins.Remapper;
@@ -114,8 +115,7 @@ namespace UCR.Models
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,
                         SubscriberProviderName = device.Value.ProviderName,
-                        SupportedButtons = device.Value.ButtonList,
-                        SupportedAxes = device.Value.AxisList
+                        Bindings = device.Value.Bindings
                     });
                     deviceNumber++;
                 }
@@ -133,8 +133,7 @@ namespace UCR.Models
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,
                         SubscriberProviderName = device.Value.ProviderName,
-                        SupportedButtons = device.Value.ButtonList,
-                        SupportedAxes = device.Value.AxisList
+                        Bindings = device.Value.Bindings
                     });
                     deviceNumber++;
                 }
@@ -161,17 +160,17 @@ namespace UCR.Models
                 }
 
                 plugin.Inputs[0].DeviceType = DeviceType.Joystick;
-                plugin.Inputs[0].KeyType = (int)KeyType.Button;
+                plugin.Inputs[0].KeyType = (int)InputType.BUTTON;
                 plugin.Inputs[0].KeyValue = i;
                 plugin.Inputs[0].IsBound = true;
 
                 if (i == 1)
                 {
-                    plugin.Inputs[0].KeyType = (int)KeyType.Axis;
+                    plugin.Inputs[0].KeyType = (int)InputType.AXIS;
                 }
 
                 plugin.Outputs[0].DeviceType = DeviceType.Joystick;
-                plugin.Outputs[0].KeyType = (int)KeyType.Button;
+                plugin.Outputs[0].KeyType = (int)InputType.BUTTON;
                 plugin.Outputs[0].KeyValue = i;
                 plugin.Outputs[0].IsBound = true;
 
