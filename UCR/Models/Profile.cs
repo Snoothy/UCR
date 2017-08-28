@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -219,8 +220,11 @@ namespace UCR.Models
             var success = SubscribeOutputDevices();
         }
 
-        public void AddPlugin(Plugin plugin)
+        
+
+        public void AddPlugin(Plugin plugin, string title = "Untitled")
         {
+            if (plugin.Title == null) plugin.Title = title;
             plugin.BindingCallback = OnDeviceBindingChange;
             plugin.ParentProfile = this;
             Plugins.Add(plugin);
@@ -264,6 +268,12 @@ namespace UCR.Models
             var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
             var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
             return deviceList;
+        }
+
+        public void RemovePlugin(Plugin plugin)
+        {
+            Plugins.Remove(plugin);
+            ctx.IsNotSaved = true;
         }
     }
 }

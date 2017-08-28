@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UCR.Models.Mapping;
-using UCR.Views.Controls;
 
 namespace UCR.Models.Plugins.Remapper
 {
@@ -14,7 +9,12 @@ namespace UCR.Models.Plugins.Remapper
         public DeviceBinding InputLow { get; set; }
         public DeviceBinding Output { get; set; }
 
-        private long direction = 0;
+        private long _direction = 0;
+
+        public override string PluginName()
+        {
+            return "Button to Axis";
+        }
 
         public ButtonToAxis()
         {
@@ -25,20 +25,20 @@ namespace UCR.Models.Plugins.Remapper
 
         private void InputLowChanged(long value)
         {
-            direction += value == 0 ? 1 : -1;
+            _direction += value == 0 ? 1 : -1;
             WriteOutput();
         }
 
         private void InputHighChanged(long value)
         {
-            direction += value == 0 ? -1 : 1;
+            _direction += value == 0 ? -1 : 1;
             WriteOutput();
         }
 
         private void WriteOutput()
         {
-            direction = Math.Sign(direction);
-            WriteOutput(Output, direction*UCRConstants.AxisMaxValue);
+            _direction = Math.Sign(_direction);
+            WriteOutput(Output, _direction*UCRConstants.AxisMaxValue);
         }
     }
 }

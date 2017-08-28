@@ -103,6 +103,9 @@
     <Compile Include="Views\DeviceListWindow.xaml.cs">
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Profile\PluginDialog.xaml.cs">
+      <DependentUpon>PluginDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -114,7 +117,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Commands\MyCommands.cs" />
-    <Compile Include="Views\ProfileWindow.xaml.cs">
+    <Compile Include="Views\Profile\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <DesignData Include="SampleData\ProfilesSampleData.xaml">
@@ -143,6 +146,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Profile\PluginDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\TextDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,7 +158,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ProfileWindow.xaml">
+    <Page Include="Views\Profile\ProfileWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

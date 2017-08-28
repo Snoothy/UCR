@@ -19,6 +19,9 @@ namespace UCR.Models.Plugins
         public delegate void PluginBindingChanged(Plugin plugin);
         public PluginBindingChanged BindingCallback { get; set; }
 
+        // Abstract
+        public abstract string PluginName();
+
         protected Plugin()
         {
             Inputs = new List<DeviceBinding>();
@@ -97,6 +100,12 @@ namespace UCR.Models.Plugins
         public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDeviceList(deviceBinding);
+        }
+
+        public void Rename(string title)
+        {
+            Title = title;
+            ParentProfile.ctx.IsNotSaved = true;
         }
     }
 }

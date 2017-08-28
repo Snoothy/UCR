@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using IOWrapper;
 using Providers;
 using UCR.Models.Devices;
 using UCR.Models.Plugins;
 using UCR.Models.Plugins.Remapper;
+using UCR.Utilities;
 
 namespace UCR.Models
 {
@@ -68,6 +64,14 @@ namespace UCR.Models
 
         private void InitMock()
         {
+            var plugins = Toolbox.GetEnumerableOfType<Plugin>();
+
+            foreach (var plugin in plugins)
+            {
+                var a = plugin.GetType();
+                var b = 2;
+            }
+
             Profiles = new List<Profile>
             {
                 new Profile(this)
@@ -87,7 +91,14 @@ namespace UCR.Models
                     Title = "Axis Test",
                     JoystickInputList = "FAKEGUID",
                     JoystickOutputList = "FAKEGUIDOUTPUT"
+                },
+                new Profile(this)
+                {
+                    Title = "Blank",
+                    JoystickInputList = "FAKEGUID",
+                    JoystickOutputList = "FAKEGUIDOUTPUT"
                 }
+
             };
 
             JoystickGroups = new List<DeviceGroup<Device>>()

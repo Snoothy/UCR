@@ -1,4 +1,4 @@
-﻿<Window x:Class="UCR.Views.ProfileWindow"
+﻿<Window x:Class="UCR.Views.Profile.ProfileWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,22 +13,26 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
                 <MenuItem Header="Activate profile" Click="ActivateProfile" />
-                <MenuItem Header="TODO" />
                 <Separator/>
-                <MenuItem Header="Close" />
+                <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
             <MenuItem Header="_Plugins">
-                <MenuItem Header="Add plugin..." />
+                <MenuItem Header="Add plugin…" Click="AddPlugin_OnClick" />
                 <Separator/>
-                <MenuItem Header="Rename plugin" />
-                <MenuItem Header="Delete plugin" />
+                <MenuItem Header="Rename plugin…" Click="RenamePlugin_OnClick" />
+                <MenuItem Header="Remove plugin" Click="RemovePlugin_OnClick" />
             </MenuItem>
             <MenuItem Header="_Devices">
-                <MenuItem Header="Show device lists..." />
+                <MenuItem Header="Show device lists…" />
+                <Separator/>
+                <MenuItem Header="Select Joystick list…" />
+                <MenuItem Header="Select Keyboard list…" />
+                <MenuItem Header="Select Mouse list…" />
+                <MenuItem Header="Select Generic list…" />
             </MenuItem>
         </Menu>
 
-        <ListBox Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing='True'
+        <ListBox x:Name="PluginsListBox" Margin="10,5,10,10" ItemsSource="{Binding Plugins}" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing='True'
                      VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                      VirtualizingPanel.ScrollUnit='Pixel'>
             <ListBox.ItemTemplate>

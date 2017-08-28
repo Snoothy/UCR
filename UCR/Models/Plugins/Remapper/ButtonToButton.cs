@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UCR.Models.Mapping;
-using UCR.Views.Controls;
 
 namespace UCR.Models.Plugins.Remapper
 {
@@ -12,7 +7,12 @@ namespace UCR.Models.Plugins.Remapper
     {
         public DeviceBinding Input { get; set; }
         public DeviceBinding Output { get; set; }
-        
+
+        public override string PluginName()
+        {
+            return "Button to Button";
+        }
+
         public ButtonToButton()
         {
             Input = InitializeInputMapping(InputChanged);

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UCR.Models.Mapping;
 
 namespace UCR.Models.Plugins
 {
-    class PluginGroup : Plugin
+    public abstract class PluginGroup : Plugin
     {
         public List<Plugin> Plugins { get; set; }
 

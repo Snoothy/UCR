@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Input;
 using UCR.Models;
 using UCR.ViewModels;
+using UCR.Views.Profile;
 
 namespace UCR.Views
 {
@@ -21,8 +20,6 @@ namespace UCR.Views
             InitializeComponent();
             ctx = new UCRContext();
             ReloadProfileTree();
-
-            //ctx.ActivateProfile(ctx.Profiles[0]); // TODO Mock data
         }
 
         private void InitResources()
@@ -71,7 +68,7 @@ namespace UCR.Views
             var w = new TextDialog("Profile name");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            ctx.Profiles.Add(Profile.CreateProfile(ctx, w.TextResult));
+            ctx.Profiles.Add(Models.Profile.CreateProfile(ctx, w.TextResult));
             ReloadProfileTree();
             ctx.IsNotSaved = true;
         }

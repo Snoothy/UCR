@@ -1,19 +1,34 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using UCR.Models.Plugins;
+using UCR.Utilities;
+using UCR.ViewModels;
 
-namespace UCR.Views
+namespace UCR.Views.Profile
 {
-    public partial class TextDialog: Window
+    public partial class PluginDialog: Window
     {
         public string TextResult { get; set; }
+        public Plugin Plugin { get; set; }
 
-        public TextDialog(string question, string answer="")
+        public PluginDialog(string question, string answer="")
         {
             InitializeComponent();
             Title = question;
             TxtAnswer.Text = answer;
+            InitComboBox();
         }
 
+        private void InitComboBox()
+        {
+            var plugins = new ObservableCollection<ComboBoxItemViewModel>();
+            foreach (var plugin in Toolbox.GetEnumerableOfType<Plugin>())
+            {
+                plugins.Add(new ComboBoxItemViewModel(plugin.PluginName(), plugin));
+            }
+            PluginsComboBox.ItemsSource = plugins;
+        }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
@@ -27,6 +42,7 @@ namespace UCR.Views
             {
                 DialogResult = true;
                 TextResult = TxtAnswer.Text;
+                Plugin = ((ComboBoxItemViewModel) PluginsComboBox.SelectedItem).Value;
             }
             else
             {
