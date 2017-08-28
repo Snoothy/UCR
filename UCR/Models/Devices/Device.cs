@@ -25,13 +25,13 @@ namespace UCR.Models.Devices
         Generic
     }
 
-    public abstract class Device
+    public class Device
     {
         // Persistance
         public string Title { get; set; }
         public string DeviceHandle { get; set; }
         public string SubscriberProviderName { get; set; }
-        public DeviceType DeviceType { get; }
+        public string SubscriberSubProviderName { get; set; }
 
         // Runtime
         public Guid Guid { get; }
@@ -41,19 +41,19 @@ namespace UCR.Models.Devices
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
         
-        protected Device(DeviceType deviceType, Guid guid = new Guid())
+        public Device(Guid guid = new Guid())
         {
-            DeviceType = deviceType;
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
             IsAcquired = false;
+            ClearSubscribers();
         }
 
-        protected Device(Device device)
+        public Device(Device device) : this(device.Guid)
         {
             Title = device.Title;
-            DeviceType = device.DeviceType;
             DeviceHandle = device.DeviceHandle;
             SubscriberProviderName = device.SubscriberProviderName;
+            SubscriberSubProviderName = device.SubscriberSubProviderName;
             Bindings = device.Bindings;
             Guid = device.Guid;
         }
@@ -104,7 +104,7 @@ namespace UCR.Models.Devices
             return true;
         }
 
-        protected void ClearSubscribers()
+        private void ClearSubscribers()
         {
             Subscriptions = new Dictionary<string, List<DeviceBinding>>();
         }
@@ -126,6 +126,7 @@ namespace UCR.Models.Devices
             var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
             {
                 ProviderName = SubscriberProviderName,
+                SubProviderName = SubscriberSubProviderName,
                 DeviceHandle = DeviceHandle,
                 InputType = (InputType)deviceBinding.KeyType,
                 InputIndex = (uint)deviceBinding.KeyValue,
@@ -172,33 +173,18 @@ namespace UCR.Models.Devices
             {
                 DeviceHandle = DeviceHandle,
                 ProviderName = SubscriberProviderName,
+                SubProviderName = SubscriberSubProviderName,
                 SubscriberGuid = Guid
             });
         }
 
-        public static List<T> CopyDeviceList<T>(List<T> devicelist) where T : new()
+        public static List<Device> CopyDeviceList(List<Device> devicelist)
         {
-            List<T> newDevicelist = new List<T>();
+            var newDevicelist = new List<Device>();
             if (devicelist == null) return newDevicelist;
 
-            foreach (var device in devicelist)
-            {
-                newDevicelist.Add((T)Activator.CreateInstance(typeof(T), device));
-            }
-
+            newDevicelist.AddRange(devicelist);
             return newDevicelist;
         }
-
-        public static List<KeyValuePair<int, string>> ZipValuesWithName(List<int> values, Dictionary<int, string> names)
-        {
-            var result = new List<KeyValuePair<int,string>>();
-            foreach (var value in values)
-            {
-                var name = (names?[value] != null) ? names[value] : value.ToString();
-                result.Add(new KeyValuePair<int, string>(value, name));
-            }
-            return result;
-        }
     }
-
 }

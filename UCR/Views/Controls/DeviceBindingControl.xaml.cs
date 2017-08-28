@@ -31,11 +31,14 @@ namespace UCR.Views.Controls
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
 
-        // DDL Device number
+        // DDL
         private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
+        private ObservableCollection<ComboBoxItemViewModel> DeviceTypes { get; set; }
 
         // ContextMenu
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
+
+        private DeviceType SelectedDeviceType = DeviceType.Joystick;
 
         
         
@@ -56,7 +59,7 @@ namespace UCR.Views.Controls
 
         private void ReloadGui()
         {
-            LoadDeviceList();
+            LoadDeviceTypeList();
             LoadDeviceInputs();
             LoadContextMenu();
             LoadBindingName();
@@ -74,9 +77,18 @@ namespace UCR.Views.Controls
             }
         }
 
-        private void LoadDeviceList()
+        private void LoadDeviceTypeList()
         {
-            DeviceTypeBox.SelectedItem = DeviceBinding.DeviceType;
+            DeviceTypes = new ObservableCollection<ComboBoxItemViewModel>();
+            ComboBoxItemViewModel selectedItem = null;
+            foreach (DeviceType deviceType in Enum.GetValues(typeof(DeviceType)))
+            {
+                var item = new ComboBoxItemViewModel(deviceType.ToString(), deviceType);
+                if (deviceType == DeviceBinding.DeviceType) selectedItem = item;
+                DeviceTypes.Add(item);
+            }
+            DeviceTypeBox.ItemsSource = DeviceTypes;
+            DeviceTypeBox.SelectedItem = selectedItem;
         }
 
         private void LoadDeviceInputs()
@@ -171,6 +183,14 @@ namespace UCR.Views.Controls
         {
             if (DeviceNumberBox.SelectedItem == null) return;
             DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
+            LoadContextMenu();
+            LoadBindingName();
+        }
+
+        private void DeviceTypeBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DeviceBinding.SetDeviceType((DeviceType)((ComboBoxItemViewModel) DeviceTypeBox.SelectedItem).Value);
+            LoadDeviceInputs();
             LoadContextMenu();
             LoadBindingName();
         }

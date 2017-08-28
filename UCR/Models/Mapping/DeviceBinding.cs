@@ -76,5 +76,18 @@ namespace UCR.Models.Mapping
         {
             return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
         }
+
+        public void SetDeviceType(DeviceType deviceType)
+        {
+            // Unsubscribe old input
+            IsBound = false;
+            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
+
+            // Set new input
+            DeviceType = deviceType;
+            KeyType = 0;
+            KeyValue = 0;
+            KeySubValue = 0;
+        }
     }
 }

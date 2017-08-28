@@ -9,9 +9,9 @@ namespace UCR.ViewModels
     public class ComboBoxItemViewModel
     {
         public string Name { get; set; }
-        public int Value { get; set; }
+        public dynamic Value { get; set; }
 
-        public ComboBoxItemViewModel(string name, int value)
+        public ComboBoxItemViewModel(string name, dynamic value)
         {
             Name = name;
             Value = value;

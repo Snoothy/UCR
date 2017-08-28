@@ -116,9 +116,9 @@ namespace UCR.Models
             return success;
         }
 
-        private static List<Device> CopyDeviceList<T>(List<DeviceGroup<T>> group, string groupGuid) where T : Device, new()
+        private static List<Device> CopyDeviceList(List<DeviceGroup<Device>> group, string groupGuid)
         {
-            return Device.CopyDeviceList(DeviceGroup<T>.FindDeviceGroup(group, groupGuid)?.Devices).Cast<Device>().ToList();
+            return Device.CopyDeviceList(DeviceGroup<Device>.FindDeviceGroup(group, groupGuid)?.Devices);
         }
 
         private List<Device> GetCopiedList(DeviceType deviceType, string groupGuid)

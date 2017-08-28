@@ -81,10 +81,6 @@
     </ApplicationDefinition>
     <Compile Include="Models\Devices\Device.cs" />
     <Compile Include="Models\Devices\DeviceGroup.cs" />
-    <Compile Include="Models\Devices\GenericDevice.cs" />
-    <Compile Include="Models\Devices\Mouse.cs" />
-    <Compile Include="Models\Devices\Keyboard.cs" />
-    <Compile Include="Models\Devices\Joystick.cs" />
     <Compile Include="Models\Mapping\DeviceBinding.cs" />
     <Compile Include="Models\Plugins\PluginGroup.cs" />
     <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />

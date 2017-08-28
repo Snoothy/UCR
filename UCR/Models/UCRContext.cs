@@ -16,10 +16,10 @@ namespace UCR.Models
     {
         // Persistence
         public List<Profile> Profiles { get; set; }
-        public List<DeviceGroup<Keyboard>> KeyboardGroups { get; set; }
-        public List<DeviceGroup<Mouse>> MiceGroups { get; set; }
-        public List<DeviceGroup<Joystick>> JoystickGroups { get; set; }
-        public List<DeviceGroup<GenericDevice>> GenericDeviceGroups { get; set; }
+        public List<DeviceGroup<Device>> KeyboardGroups { get; set; }
+        public List<DeviceGroup<Device>> MiceGroups { get; set; }
+        public List<DeviceGroup<Device>> JoystickGroups { get; set; }
+        public List<DeviceGroup<Device>> GenericDeviceGroups { get; set; }
 
         // Runtime
         public bool IsNotSaved { get; set; }
@@ -33,11 +33,12 @@ namespace UCR.Models
             Init();
         }
 
-        public void Init()
+        private void Init()
         {
-            KeyboardGroups = new List<DeviceGroup<Keyboard>>();
-            MiceGroups = new List<DeviceGroup<Mouse>>();
-            JoystickGroups = new List<DeviceGroup<Joystick>>();
+            KeyboardGroups = new List<DeviceGroup<Device>>();
+            MiceGroups = new List<DeviceGroup<Device>>();
+            JoystickGroups = new List<DeviceGroup<Device>>();
+            GenericDeviceGroups = new List<DeviceGroup<Device>>();
             InitMock();
         }
 
@@ -89,53 +90,48 @@ namespace UCR.Models
                 }
             };
 
-            JoystickGroups = new List<DeviceGroup<Joystick>>()
+            JoystickGroups = new List<DeviceGroup<Device>>()
             {
-                new DeviceGroup<Joystick>()
+                new DeviceGroup<Device>()
                 {
                     GUID = "FAKEGUID"
                 },
-                new DeviceGroup<Joystick>()
+                new DeviceGroup<Device>()
                 {
                     GUID = "FAKEGUIDOUTPUT"
                 }
             };
 
             var list = IOController.GetInputList();
-            string deviceHandle = null;
-
-            var deviceNumber = 0;
 
             foreach (var providerList in list)
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    JoystickGroups[0].Devices.Add(new Joystick()
+                    JoystickGroups[0].Devices.Add(new Device()
                     {
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,
                         SubscriberProviderName = device.Value.ProviderName,
+                        SubscriberSubProviderName = device.Value.SubProviderName,
                         Bindings = device.Value.Bindings
                     });
-                    deviceNumber++;
                 }
             }
 
             list = IOController.GetOutputList();
-            deviceNumber = 0;
 
             foreach (var providerList in list)
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    JoystickGroups[1].Devices.Add(new Joystick()
+                    JoystickGroups[1].Devices.Add(new Device()
                     {
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,
                         SubscriberProviderName = device.Value.ProviderName,
                         Bindings = device.Value.Bindings
                     });
-                    deviceNumber++;
                 }
             }
 
@@ -159,7 +155,7 @@ namespace UCR.Models
                     };
                 }
 
-                plugin.Inputs[0].DeviceType = DeviceType.Joystick;
+                plugin.Inputs[0].DeviceType = (DeviceType)(i%4);
                 plugin.Inputs[0].KeyType = (int)InputType.BUTTON;
                 plugin.Inputs[0].KeyValue = i;
                 plugin.Inputs[0].IsBound = true;
