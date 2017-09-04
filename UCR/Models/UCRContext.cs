@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using IOWrapper;
 using Providers;
 using UCR.Models.Devices;
@@ -12,10 +13,10 @@ namespace UCR.Models
     {
         // Persistence
         public List<Profile> Profiles { get; set; }
-        public List<DeviceGroup<Device>> KeyboardGroups { get; set; }
-        public List<DeviceGroup<Device>> MiceGroups { get; set; }
-        public List<DeviceGroup<Device>> JoystickGroups { get; set; }
-        public List<DeviceGroup<Device>> GenericDeviceGroups { get; set; }
+        public List<DeviceGroup> KeyboardGroups { get; set; }
+        public List<DeviceGroup> MiceGroups { get; set; }
+        public List<DeviceGroup> JoystickGroups { get; set; }
+        public List<DeviceGroup> GenericDeviceGroups { get; set; }
 
         // Runtime
         public bool IsNotSaved { get; set; }
@@ -31,10 +32,10 @@ namespace UCR.Models
 
         private void Init()
         {
-            KeyboardGroups = new List<DeviceGroup<Device>>();
-            MiceGroups = new List<DeviceGroup<Device>>();
-            JoystickGroups = new List<DeviceGroup<Device>>();
-            GenericDeviceGroups = new List<DeviceGroup<Device>>();
+            KeyboardGroups = new List<DeviceGroup>();
+            MiceGroups = new List<DeviceGroup>();
+            JoystickGroups = new List<DeviceGroup>();
+            GenericDeviceGroups = new List<DeviceGroup>();
             InitMock();
         }
 
@@ -64,52 +65,49 @@ namespace UCR.Models
 
         private void InitMock()
         {
-            var plugins = Toolbox.GetEnumerableOfType<Plugin>();
-
-            foreach (var plugin in plugins)
-            {
-                var a = plugin.GetType();
-                var b = 2;
-            }
+            var inputGuid = Guid.NewGuid();
+            var outputGuid = Guid.NewGuid();
 
             Profiles = new List<Profile>
             {
                 new Profile(this)
                 {
                     Title = "Global",
-                    JoystickInputList = "FAKEGUID",
-                    JoystickOutputList = "FAKEGUIDOUTPUT"
+                    JoystickInputList = inputGuid,
+                    JoystickOutputList = outputGuid
                 },
                 new Profile(this)
                 {
                     Title = "Button Test",
-                    JoystickInputList = "FAKEGUID",
-                    JoystickOutputList = "FAKEGUIDOUTPUT"
+                    JoystickInputList = inputGuid,
+                    JoystickOutputList = outputGuid
                 },
                 new Profile(this)
                 {
                     Title = "Axis Test",
-                    JoystickInputList = "FAKEGUID",
-                    JoystickOutputList = "FAKEGUIDOUTPUT"
+                    JoystickInputList = inputGuid,
+                    JoystickOutputList = outputGuid
                 },
                 new Profile(this)
                 {
                     Title = "Blank",
-                    JoystickInputList = "FAKEGUID",
-                    JoystickOutputList = "FAKEGUIDOUTPUT"
+                    JoystickInputList = inputGuid,
+                    JoystickOutputList = outputGuid
                 }
 
             };
 
-            JoystickGroups = new List<DeviceGroup<Device>>()
+            JoystickGroups = new List<DeviceGroup>()
             {
-                new DeviceGroup<Device>()
+                new DeviceGroup()
                 {
-                    GUID = "FAKEGUID"
+                    Title = "Test input group",
+                    Guid = inputGuid
                 },
-                new DeviceGroup<Device>()
+                new DeviceGroup()
                 {
-                    GUID = "FAKEGUIDOUTPUT"
+                    Title = "vJoy output group",
+                    Guid = outputGuid
                 }
             };
 

@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace UCR.Models.Devices
 {
-    public class DeviceGroup<T> where T : Device
+    public class DeviceGroup
     {
         // Guid used for persistance
-        public String GUID { get; set; }
-
-        // Runtime objects
-        public List<T> Devices { get; set; }
+        public string Title { get; set; }
+        public Guid Guid { get; set; }
+        public List<Device> Devices { get; set; }
 
         public DeviceGroup()
         {
-            Devices = new List<T>();
+            Devices = new List<Device>();
         }
 
-        public static DeviceGroup<T> FindDeviceGroup<T>(List<DeviceGroup<T>> deviceGroups, string GUID) where T : Device
+        public static DeviceGroup FindDeviceGroup(List<DeviceGroup> deviceGroups, Guid Guid)
         {
-            if (GUID == null) return new DeviceGroup<T>();
-            return deviceGroups?.FirstOrDefault(deviceGroup => deviceGroup.GUID == GUID);
+            return deviceGroups?.FirstOrDefault(deviceGroup => deviceGroup.Guid == Guid);
         }
     }
 }

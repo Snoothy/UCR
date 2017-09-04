@@ -91,18 +91,24 @@
     <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
+    <Compile Include="ViewModels\Device\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
+      <DependentUpon>DeviceListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
-    <Compile Include="Views\DeviceListWindow.xaml.cs">
+    <Compile Include="ViewModels\Device\DeviceListControlViewModel.cs" />
+    <Compile Include="Views\Device\DeviceListWindow.xaml.cs">
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Device\DeviceListWindowViewModel.cs" />
     <Compile Include="Views\Profile\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
@@ -120,13 +126,20 @@
     <Compile Include="Views\Profile\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
-    <DesignData Include="SampleData\ProfilesSampleData.xaml">
+    <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
     <Page Include="SampleData\ButtonToButtonSampleData.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <DesignData Include="SampleData\ProfilesSampleData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DeviceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,7 +147,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DeviceListWindow.xaml">
+    <Page Include="Views\Device\DeviceListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

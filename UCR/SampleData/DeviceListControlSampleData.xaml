@@ -1,0 +1,23 @@
+﻿<device:DeviceListControlViewModel xmlns:device="clr-namespace:UCR.ViewModels.Device"
+                xmlns:devices="clr-namespace:UCR.Models.Devices">
+    <device:DeviceListControlViewModel.InputDeviceGroups>
+        <device:DeviceGroupViewModel>
+            <device:DeviceGroupViewModel.Name>SharpDX</device:DeviceGroupViewModel.Name>
+            <device:DeviceGroupViewModel.Devices>
+                <devices:Device>
+                    <devices:Device.Title>USB Gamepad</devices:Device.Title>
+                </devices:Device>
+                <devices:Device>
+                    <devices:Device.Title>vJoy 1</devices:Device.Title>
+                </devices:Device>
+                <devices:Device>
+                    <devices:Device.Title>vJoy 2</devices:Device.Title>
+                </devices:Device>
+            </device:DeviceGroupViewModel.Devices>
+        </device:DeviceGroupViewModel>
+    </device:DeviceListControlViewModel.InputDeviceGroups>
+</device:DeviceListControlViewModel>
+    
+    
+    
+    

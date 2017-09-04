@@ -46,7 +46,20 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:ProfileItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}" />
+                    <TextBlock Text="{Binding Title}" >
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add child" Click="AddChildProfile" />
+                                <MenuItem Header="Copy" Click="CopyProfile"/>
+                                <Separator />
+                                <MenuItem Header="Edit" Click="EditProfile" />
+                                <MenuItem Header="Rename" Click="RenameProfile" />
+                                <Separator />
+                                <MenuItem Header="Delete" Click="DeleteProfile" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                    
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

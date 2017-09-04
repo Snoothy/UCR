@@ -1,0 +1,27 @@
+﻿<Window x:Class="UCR.Views.Device.DeviceListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UCR.Views"
+        xmlns:controls="clr-namespace:UCR.Views.Controls"
+        xmlns:device="clr-namespace:UCR.ViewModels.Device"
+        mc:Ignorable="d"
+        Title="Device lists" Height="600" Width="600">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Joystick lists">
+                <controls:DeviceListControl DataContext="{Binding JoystickDeviceList}" />
+            </TabItem>
+            <TabItem Header="Keyboard lists">
+                <controls:DeviceListControl DataContext="{Binding KeyboardDeviceList}" />
+            </TabItem>
+            <TabItem Header="Mice lists">
+                <controls:DeviceListControl DataContext="{Binding MiceDeviceList}" />
+            </TabItem>
+            <TabItem Header="Generic lists">
+                <controls:DeviceListControl DataContext="{Binding GenericDeviceList}" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

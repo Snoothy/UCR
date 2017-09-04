@@ -37,10 +37,16 @@ namespace UCR.Models.Devices
         public Guid Guid { get; }
         public bool IsAcquired { get; set; }
         public List<BindingInfo> Bindings { get; set; }
+        public string Api { get; }
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
-        
+
+        public Device()
+        {
+            
+        }
+
         public Device(Guid guid = new Guid())
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
@@ -56,6 +62,16 @@ namespace UCR.Models.Devices
             SubscriberSubProviderName = device.SubscriberSubProviderName;
             Bindings = device.Bindings;
             Guid = device.Guid;
+        }
+
+        public Device(IOWrapperDevice device) : this()
+        {
+            Title = device.DeviceName;
+            DeviceHandle = device.DeviceHandle;
+            SubscriberProviderName = device.ProviderName;
+            SubscriberSubProviderName = device.SubProviderName;
+            Bindings = device.Bindings;
+            Api = device.API;
         }
 
         public void WriteOutput(UCRContext ctx, DeviceBinding deviceBinding, long value)

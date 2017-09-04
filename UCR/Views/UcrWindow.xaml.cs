@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using UCR.Models;
 using UCR.ViewModels;
+using UCR.Views.Device;
 using UCR.Views.Profile;
 
 namespace UCR.Views
@@ -20,6 +21,7 @@ namespace UCR.Views
             InitializeComponent();
             ctx = new UCRContext();
             ReloadProfileTree();
+            ManageDeviceLists_OnClick(null, null);
         }
 
         private void InitResources()
@@ -156,7 +158,7 @@ namespace UCR.Views
 
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new DeviceListWindow();
+            var win = new DeviceListWindow(ctx);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }

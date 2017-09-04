@@ -27,22 +27,22 @@ namespace UCR.Models
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
         // Inputs
-        public string KeyboardInputList { get; set; }
-        public string MiceInputList { get; set; }
-        public string JoystickInputList { get; set; }
-        public string GenericInputList { get; set; }
+        public Guid KeyboardInputList { get; set; }
+        public Guid MiceInputList { get; set; }
+        public Guid JoystickInputList { get; set; }
+        public Guid GenericInputList { get; set; }
         // Outputs
-        public string KeyboardOutputList { get; set; }
-        public string MiceOutputList { get; set; }
-        public string JoystickOutputList { get; set; }
-        public string GenericOutputList { get; set; }
+        public Guid KeyboardOutputList { get; set; }
+        public Guid MiceOutputList { get; set; }
+        public Guid JoystickOutputList { get; set; }
+        public Guid GenericOutputList { get; set; }
 
         // Runtime
         public UCRContext ctx;
 
-        private Dictionary<DeviceType, DeviceGroup<Device>> InputGroups { get; set; }
-        private Dictionary<DeviceType, DeviceGroup<Device>> OutputGroups { get; set; }
-        private Dictionary<DeviceBindingType, Dictionary<DeviceType, string>> DeviceListNames { get; set; }
+        private Dictionary<DeviceType, DeviceGroup> InputGroups { get; set; }
+        private Dictionary<DeviceType, DeviceGroup> OutputGroups { get; set; }
+        private Dictionary<DeviceBindingType, Dictionary<DeviceType, Guid>> DeviceListNames { get; set; }
 
         public bool InheritFromParent { get; set; }
 
@@ -53,24 +53,24 @@ namespace UCR.Models
             InheritFromParent = true;
             Guid = Guid.NewGuid();
 
-            InputGroups = new Dictionary<DeviceType, DeviceGroup<Device>>();
-            OutputGroups = new Dictionary<DeviceType, DeviceGroup<Device>>();
+            InputGroups = new Dictionary<DeviceType, DeviceGroup>();
+            OutputGroups = new Dictionary<DeviceType, DeviceGroup>();
 
             SetDeviceListNames();
         }
 
         private void SetDeviceListNames()
         {
-            DeviceListNames = new Dictionary<DeviceBindingType, Dictionary<DeviceType, string>>()
+            DeviceListNames = new Dictionary<DeviceBindingType, Dictionary<DeviceType, Guid>>()
             {
-                {DeviceBindingType.Input, new Dictionary<DeviceType, string>()
+                {DeviceBindingType.Input, new Dictionary<DeviceType, Guid>()
                 {
                     {DeviceType.Generic, GenericInputList},
                     {DeviceType.Joystick, JoystickInputList},
                     {DeviceType.Keyboard, KeyboardInputList},
                     {DeviceType.Mouse, MiceInputList}
                 } },
-                {DeviceBindingType.Output, new Dictionary<DeviceType, string>()
+                {DeviceBindingType.Output, new Dictionary<DeviceType, Guid>()
                 {
                     {DeviceType.Generic, GenericOutputList},
                     {DeviceType.Joystick, JoystickOutputList},
@@ -117,12 +117,12 @@ namespace UCR.Models
             return success;
         }
 
-        private static List<Device> CopyDeviceList(List<DeviceGroup<Device>> group, string groupGuid)
+        private static List<Device> CopyDeviceList(List<DeviceGroup> group, Guid groupGuid)
         {
-            return Device.CopyDeviceList(DeviceGroup<Device>.FindDeviceGroup(group, groupGuid)?.Devices);
+            return Device.CopyDeviceList(DeviceGroup.FindDeviceGroup(group, groupGuid)?.Devices);
         }
 
-        private List<Device> GetCopiedList(DeviceType deviceType, string groupGuid)
+        private List<Device> GetCopiedList(DeviceType deviceType, Guid groupGuid)
         {
             switch (deviceType)
             {
@@ -153,9 +153,9 @@ namespace UCR.Models
             // Input
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                InputGroups[(DeviceType) type] = new DeviceGroup<Device>()
+                InputGroups[(DeviceType) type] = new DeviceGroup()
                 {
-                    GUID = DeviceListNames[DeviceBindingType.Input][(DeviceType)type],
+                    Guid = DeviceListNames[DeviceBindingType.Input][(DeviceType)type],
                     Devices = GetCopiedList((DeviceType)type, DeviceListNames[DeviceBindingType.Input][(DeviceType)type])
                 };
             }
@@ -163,9 +163,9 @@ namespace UCR.Models
             // Output
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                OutputGroups[(DeviceType)type] = new DeviceGroup<Device>()
+                OutputGroups[(DeviceType)type] = new DeviceGroup()
                 {
-                    GUID = DeviceListNames[DeviceBindingType.Output][(DeviceType)type],
+                    Guid = DeviceListNames[DeviceBindingType.Output][(DeviceType)type],
                     Devices = GetCopiedList((DeviceType)type, DeviceListNames[DeviceBindingType.Output][(DeviceType)type])
                 };
             }
