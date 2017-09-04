@@ -117,7 +117,7 @@ namespace UCR.Models
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    JoystickGroups[0].Devices.Add(new Device()
+                    JoystickGroups[0].Devices.Add(new Device(new Guid())
                     {
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,
@@ -134,7 +134,7 @@ namespace UCR.Models
             {
                 foreach (var device in providerList.Value.Devices)
                 {
-                    JoystickGroups[1].Devices.Add(new Device()
+                    JoystickGroups[1].Devices.Add(new Device(new Guid())
                     {
                         Title = device.Value.DeviceName,
                         DeviceHandle = device.Value.DeviceHandle,

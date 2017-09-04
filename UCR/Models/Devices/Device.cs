@@ -64,7 +64,7 @@ namespace UCR.Models.Devices
             Guid = device.Guid;
         }
 
-        public Device(IOWrapperDevice device) : this()
+        public Device(IOWrapperDevice device) : this(new Guid())
         {
             Title = device.DeviceName;
             DeviceHandle = device.DeviceHandle;
