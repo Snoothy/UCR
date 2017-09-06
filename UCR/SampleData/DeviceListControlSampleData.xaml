@@ -2,7 +2,7 @@
                 xmlns:devices="clr-namespace:UCR.Models.Devices">
     <device:DeviceListControlViewModel.InputDeviceGroups>
         <device:DeviceGroupViewModel>
-            <device:DeviceGroupViewModel.Name>SharpDX</device:DeviceGroupViewModel.Name>
+            <device:DeviceGroupViewModel.Title>SharpDX</device:DeviceGroupViewModel.Title>
             <device:DeviceGroupViewModel.Devices>
                 <devices:Device>
                     <devices:Device.Title>USB Gamepad</devices:Device.Title>

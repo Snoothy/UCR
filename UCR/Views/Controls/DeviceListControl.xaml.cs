@@ -14,5 +14,14 @@ namespace UCR.Views.Controls
         {
             InitializeComponent();
         }
+
+        private void AddDeviceGroup_OnClick(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as DeviceListControlViewModel;
+            var w = new TextDialog("Device group name");
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            viewModel.AddDeviceGroup(w.TextResult);
+        }
     }
 }

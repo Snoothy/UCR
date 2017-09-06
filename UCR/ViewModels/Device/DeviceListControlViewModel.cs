@@ -8,8 +8,8 @@ namespace UCR.ViewModels.Device
 {
     public class DeviceListControlViewModel
     {
-        private UCRContext ctx;
-        private DeviceType deviceType;
+        public UCRContext ctx { get; }
+        private readonly DeviceType _deviceType;
 
         public ObservableCollection<DeviceGroupViewModel> InputDeviceGroups { get; set; }
         public ObservableCollection<DeviceGroupViewModel> OutputDeviceGroups { get; set; }
@@ -17,7 +17,7 @@ namespace UCR.ViewModels.Device
         public DeviceListControlViewModel(UCRContext ctx, DeviceType deviceType) : this()
         {
             this.ctx = ctx;
-            this.deviceType = deviceType;
+            _deviceType = deviceType;
             GenerateInputList();
             GenerateOutputList();
         }
@@ -28,13 +28,19 @@ namespace UCR.ViewModels.Device
             OutputDeviceGroups = new ObservableCollection<DeviceGroupViewModel>();
         }
 
+        public void AddDeviceGroup(string title)
+        {
+            var guid = ctx.AddDeviceGroup(title, _deviceType);
+            OutputDeviceGroups.Add(new DeviceGroupViewModel(title, guid));
+        }
+
         private void GenerateInputList()
         {
             foreach (var providerReport in ctx.IOController.GetInputList())
             {
                 var deviceGroupViewModel = new DeviceGroupViewModel()
                 {
-                    Name = providerReport.Key
+                    Title = providerReport.Key
                 };
                 foreach (var ioWrapperDevice in providerReport.Value.Devices)
                 {
@@ -47,7 +53,7 @@ namespace UCR.ViewModels.Device
         private void GenerateOutputList()
         {
             List<DeviceGroup> deviceList;
-            switch (deviceType)
+            switch (_deviceType)
             {
                 case DeviceType.Joystick:
                     deviceList = ctx.JoystickGroups;
@@ -67,11 +73,7 @@ namespace UCR.ViewModels.Device
 
             foreach (var deviceGroup in deviceList)
             {
-                var deviceGroupViewModel = new DeviceGroupViewModel()
-                {
-                    Name = deviceGroup.Title,
-                    Devices = deviceGroup.Devices
-                };
+                var deviceGroupViewModel = new DeviceGroupViewModel(deviceGroup);
                 OutputDeviceGroups.Add(deviceGroupViewModel);
             }
         }

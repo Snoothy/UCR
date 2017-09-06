@@ -24,7 +24,7 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Devices}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type devices:Device}">
@@ -40,13 +40,13 @@
         </StackPanel>
         <DockPanel Margin="5,0,5,0" Grid.Column="2" Grid.Row="0">
             <Label>Your device lists</Label>
-            <Button HorizontalAlignment="Right" Padding="5,0">Add list</Button>
+            <Button HorizontalAlignment="Right" Padding="5,0" Click="AddDeviceGroup_OnClick">Add list</Button>
         </DockPanel>
         <TreeView Margin="5" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding OutputDeviceGroups}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Devices}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type devices:Device}">

@@ -12,8 +12,8 @@
         <StackPanel Margin="5">
             <Label x:Name="DeviceBindingLabel" />
             <StackPanel Orientation="Horizontal">
-                <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="83" DisplayMemberPath="Name" SelectedValuePath="Value" SelectionChanged="DeviceTypeBox_OnSelectionChanged"/>
-                <ComboBox Width="100" x:Name="DeviceNumberBox" DisplayMemberPath="Name" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+                <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="83" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceTypeBox_OnSelectionChanged"/>
+                <ComboBox Width="100" x:Name="DeviceNumberBox" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             </StackPanel>
             <Button Name="BindButton" Margin="0,5">
                 Click to enter bind mode

@@ -57,6 +57,31 @@ namespace UCR.Models
             }
         }
 
+        public Guid AddDeviceGroup(string Title, DeviceType deviceType)
+        {
+            var deviceGroup = new DeviceGroup(Title);
+            getDeviceGroup(deviceType).Add(deviceGroup);
+            IsNotSaved = true;
+            return deviceGroup.Guid;
+        }
+
+        private List<DeviceGroup> getDeviceGroup(DeviceType deviceType)
+        {
+            switch (deviceType)
+            {
+                case DeviceType.Joystick:
+                    return JoystickGroups;
+                case DeviceType.Keyboard:
+                    return KeyboardGroups;
+                case DeviceType.Mouse:
+                    return MiceGroups;
+                case DeviceType.Generic:
+                    return GenericDeviceGroups;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
+            }
+        }
+
         private Profile GetGlobalProfile()
         {
             // TODO Find it properly
