@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UCR.Models;
 using UCR.Models.Devices;
 
@@ -32,6 +33,19 @@ namespace UCR.ViewModels.Device
         {
             var guid = ctx.AddDeviceGroup(title, _deviceType);
             OutputDeviceGroups.Add(new DeviceGroupViewModel(title, guid));
+        }
+
+        public void AddDeviceToDeviceGroup(Models.Devices.Device device, Guid deviceGroupGuid)
+        {
+            ctx.AddDeviceToDeviceGroup(device, _deviceType, deviceGroupGuid);
+            OutputDeviceGroups.First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
+        }
+
+        public void RemoveDeviceFromDeviceGroup(Models.Devices.Device device)
+        {
+            var deviceGroupViewModel = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(OutputDeviceGroups, device);
+            ctx.RemoveDeviceFromDeviceGroup(device, _deviceType, deviceGroupViewModel.Guid);
+            deviceGroupViewModel.Devices.Remove(device);
         }
 
         private void GenerateInputList()

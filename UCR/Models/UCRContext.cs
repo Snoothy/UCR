@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using IOWrapper;
 using Providers;
 using UCR.Models.Devices;
@@ -60,12 +61,24 @@ namespace UCR.Models
         public Guid AddDeviceGroup(string Title, DeviceType deviceType)
         {
             var deviceGroup = new DeviceGroup(Title);
-            getDeviceGroup(deviceType).Add(deviceGroup);
+            GetDeviceGroup(deviceType).Add(deviceGroup);
             IsNotSaved = true;
             return deviceGroup.Guid;
         }
 
-        private List<DeviceGroup> getDeviceGroup(DeviceType deviceType)
+        public void AddDeviceToDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
+        {
+            GetDeviceGroup(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
+            IsNotSaved = true;
+        }
+
+        public void RemoveDeviceFromDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
+        {
+            GetDeviceGroup(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.RemoveAll(d => d.Guid == device.Guid);
+            IsNotSaved = true;
+        }
+
+        private List<DeviceGroup> GetDeviceGroup(DeviceType deviceType)
         {
             switch (deviceType)
             {
