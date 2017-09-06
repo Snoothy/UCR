@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Providers;
 using UCR.Models;
 using UCR.Models.Devices;
 
@@ -19,8 +20,8 @@ namespace UCR.ViewModels.Device
         {
             this.ctx = ctx;
             _deviceType = deviceType;
-            GenerateInputList();
-            GenerateOutputList();
+            GenerateDeviceList();
+            GenerateDeviceGroupList();
         }
 
         public DeviceListControlViewModel()
@@ -48,9 +49,19 @@ namespace UCR.ViewModels.Device
             deviceGroupViewModel.Devices.Remove(device);
         }
 
-        private void GenerateInputList()
+        private void GenerateDeviceList()
         {
-            foreach (var providerReport in ctx.IOController.GetInputList())
+            InputDeviceGroups.Add(PopulateDeviceList(ctx.IOController.GetInputList(), "Input devices"));
+            InputDeviceGroups.Add(PopulateDeviceList(ctx.IOController.GetOutputList(), "Output devices"));
+        }
+
+        private DeviceGroupViewModel PopulateDeviceList(SortedDictionary<string, ProviderReport> list, string title)
+        {
+            var result = new DeviceGroupViewModel()
+            {
+                Title = title
+            };
+            foreach (var providerReport in list)
             {
                 var deviceGroupViewModel = new DeviceGroupViewModel()
                 {
@@ -60,11 +71,12 @@ namespace UCR.ViewModels.Device
                 {
                     deviceGroupViewModel.Devices.Add(new Models.Devices.Device(ioWrapperDevice.Value));
                 }
-                InputDeviceGroups.Add(deviceGroupViewModel);
+                result.Groups.Add(deviceGroupViewModel);
             }
+            return result;
         }
 
-        private void GenerateOutputList()
+        private void GenerateDeviceGroupList()
         {
             List<DeviceGroup> deviceList;
             switch (_deviceType)

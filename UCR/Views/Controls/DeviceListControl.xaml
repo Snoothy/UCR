@@ -22,7 +22,7 @@
         <Label Grid.Column="0" Margin="5,0,5,0">Available devices</Label>
         <TreeView x:Name="DeviceTreeView" Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding InputDeviceGroups}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Devices}">
+                <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
@@ -44,7 +44,7 @@
         </DockPanel>
         <TreeView x:Name="DeviceGroupTreeView" Margin="5" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding OutputDeviceGroups}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Devices}">
+                <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
