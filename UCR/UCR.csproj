@@ -87,6 +87,7 @@
     <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
     <Compile Include="Models\UCRConstants.cs" />
     <Compile Include="Models\UCRContext.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />

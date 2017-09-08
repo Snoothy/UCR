@@ -61,24 +61,40 @@ namespace UCR.Models
         public Guid AddDeviceGroup(string Title, DeviceType deviceType)
         {
             var deviceGroup = new DeviceGroup(Title);
-            GetDeviceGroup(deviceType).Add(deviceGroup);
+            GetDeviceGroups(deviceType).Add(deviceGroup);
             IsNotSaved = true;
             return deviceGroup.Guid;
         }
 
+        public bool RemoveDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType)
+        {
+            var deviceGroups = GetDeviceGroups(deviceType);
+            if (!deviceGroups.Remove(DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid))) return false;
+            IsNotSaved = true;
+            return true;
+        }
+
+        public bool RenameDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType, string title)
+        {
+            var deviceGroups = GetDeviceGroups(deviceType);
+            DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid).Title = title;
+            IsNotSaved = true;
+            return true;
+        }
+
         public void AddDeviceToDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
         {
-            GetDeviceGroup(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
+            GetDeviceGroups(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
             IsNotSaved = true;
         }
 
         public void RemoveDeviceFromDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
         {
-            GetDeviceGroup(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.RemoveAll(d => d.Guid == device.Guid);
+            GetDeviceGroups(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.RemoveAll(d => d.Guid == device.Guid);
             IsNotSaved = true;
         }
 
-        private List<DeviceGroup> GetDeviceGroup(DeviceType deviceType)
+        private List<DeviceGroup> GetDeviceGroups(DeviceType deviceType)
         {
             switch (deviceType)
             {

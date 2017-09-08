@@ -28,7 +28,12 @@
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type devices:Device}">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add" Click="AddDevice_OnClick"/>
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
@@ -46,11 +51,23 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type device:DeviceGroupViewModel}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rename" Click="RenameDeviceGroup_OnClick"/>
+                                <Separator/>
+                                <MenuItem Header="Remove" Click="RemoveDeviceGroup_OnClick"/>
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type devices:Device}">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove" Click="RemoveDevice_OnClick"/>
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>

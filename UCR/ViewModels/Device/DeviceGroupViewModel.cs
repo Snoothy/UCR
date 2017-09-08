@@ -2,17 +2,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using UCR.Annotations;
 using UCR.Models.Devices;
 
 namespace UCR.ViewModels.Device
 {
-    public class DeviceGroupViewModel
+    public class DeviceGroupViewModel : INotifyPropertyChanged
     {
-        public string Title { get; set; }
+        private string title;
+
+        public string Title
+        {
+            get { return this.title; }
+            set
+            {
+                if (value == this.title) return;
+                title = value;
+                OnPropertyChanged(nameof(Title));
+            }
+        }
+
         public Guid Guid { get; set; }
         public ObservableCollection<DeviceGroupViewModel> Groups { get; set; }
         public ObservableCollection<Models.Devices.Device> Devices { get; set; }
@@ -51,6 +66,14 @@ namespace UCR.ViewModels.Device
                 if (deviceGroupViewModel.Devices.Contains(device)) result = deviceGroupViewModel;
             }
             return result;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     

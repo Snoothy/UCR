@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using Providers;
 using UCR.Models;
 using UCR.Models.Devices;
@@ -34,6 +35,20 @@ namespace UCR.ViewModels.Device
         {
             var guid = ctx.AddDeviceGroup(title, _deviceType);
             OutputDeviceGroups.Add(new DeviceGroupViewModel(title, guid));
+        }
+
+        public void RemoveDeviceGroup(DeviceGroupViewModel deviceGroupViewModel)
+        {
+            var result = MessageBox.Show("Are you sure you want to remove '" + deviceGroupViewModel.Title + "'?", "Remove device group", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result != MessageBoxResult.Yes) return;
+            ctx.RemoveDeviceGroup(deviceGroupViewModel.Guid, _deviceType);
+            OutputDeviceGroups.Remove(deviceGroupViewModel);
+        }
+
+        public void RenameDeviceGroup(DeviceGroupViewModel deviceGroup, string title)
+        {
+            OutputDeviceGroups.First(d => d.Guid == deviceGroup.Guid).Title = title;
+            ctx.RenameDeviceGroup(deviceGroup.Guid, _deviceType, title);
         }
 
         public void AddDeviceToDeviceGroup(Models.Devices.Device device, Guid deviceGroupGuid)

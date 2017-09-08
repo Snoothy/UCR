@@ -21,6 +21,11 @@ namespace UCR.Models.Devices
             Devices = new List<Device>();
         }
 
+        public bool RemoveDevice(Guid guid)
+        {
+            return Devices.RemoveAll(d => d.Guid == guid) > 0;
+        }
+
         public static DeviceGroup FindDeviceGroup(List<DeviceGroup> deviceGroups, Guid Guid)
         {
             return deviceGroups?.FirstOrDefault(deviceGroup => deviceGroup.Guid == Guid);

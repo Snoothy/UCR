@@ -30,8 +30,8 @@ namespace UCR.Views.Controls
 
         private void AddDevice_OnClick(object sender, RoutedEventArgs e)
         {
-
-            var device = DeviceTreeView.SelectedItem as Models.Devices.Device;
+            var device = (sender as MenuItem)?.DataContext as Models.Devices.Device
+                         ?? DeviceTreeView.SelectedItem as Models.Devices.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -41,15 +41,25 @@ namespace UCR.Views.Controls
             var deviceGroup = DeviceGroupTreeView.SelectedItem as DeviceGroupViewModel;
             if (deviceGroup == null)
             {
-                MessageBox.Show("Please select a device group", "No device group selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                var outputDevice = DeviceGroupTreeView.SelectedItem as Models.Devices.Device;
+                if (outputDevice != null)
+                {
+                    deviceGroup = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(GetViewModel().OutputDeviceGroups, outputDevice);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a device group", "No device group selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
             }
             GetViewModel().AddDeviceToDeviceGroup(device, deviceGroup.Guid);
         }
 
         private void RemoveDevice_OnClick(object sender, RoutedEventArgs e)
         {
-            var device = DeviceGroupTreeView.SelectedItem as Models.Devices.Device;
+            // Select device from context menu first, then default to selected item
+            var device = (sender as MenuItem)?.DataContext as Models.Devices.Device
+                ?? DeviceGroupTreeView.SelectedItem as Models.Devices.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device to remove", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -65,20 +75,20 @@ namespace UCR.Views.Controls
             return viewModel;
         }
 
-        public static T FindAncestor<T>(DependencyObject current)
-            where T : DependencyObject
+        private void RemoveDeviceGroup_OnClick(object sender, RoutedEventArgs e)
         {
-            current = VisualTreeHelper.GetParent(current);
+            var deviceGroup = (sender as MenuItem)?.DataContext as DeviceGroupViewModel;
+            GetViewModel().RemoveDeviceGroup(deviceGroup);
+        }
 
-            while (current != null)
-            {
-                if (current is T)
-                {
-                    return (T)current;
-                }
-                current = VisualTreeHelper.GetParent(current);
-            };
-            return null;
+        private void RenameDeviceGroup_OnClick(object sender, RoutedEventArgs e)
+        {
+            var deviceGroup = (sender as MenuItem)?.DataContext as DeviceGroupViewModel;
+            if (deviceGroup == null) return;
+            var w = new TextDialog("Rename device group", deviceGroup.Title);
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            GetViewModel().RenameDeviceGroup(deviceGroup, w.TextResult);
         }
     }
 }
