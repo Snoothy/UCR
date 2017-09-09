@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using UCR.Annotations;
 using UCR.Models;
 using UCR.ViewModels;
 using UCR.Views.Device;
@@ -9,15 +12,19 @@ using UCR.Views.Profile;
 namespace UCR.Views
 {
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private UCRContext ctx;
+
+        public string ActiveProfileBreadCrumbs => ctx?.ActiveProfile != null ? ctx.ActiveProfile.ProfileBreadCrumbs() : "None";
 
         public MainWindow()
         {
             InitResources();
+            DataContext = this;
             InitializeComponent();
             ctx = new UCRContext();
+            ctx.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
         }
 
@@ -53,6 +60,23 @@ namespace UCR.Views
 
         #region Profile Actions
 
+        private void ActivateProfile(object sender, RoutedEventArgs e)
+        {
+            var a = sender as ProfileItem;
+            ProfileItem pi;
+            if (!GetSelectedItem(out pi)) return;
+            if (!ctx.ActivateProfile(pi.profile))
+            {
+                MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        {
+            if (ctx.ActiveProfile == null) return;
+            ctx.DeactivateProfile(ctx.ActiveProfile);
+        }
+
         private void AddProfile(object sender, RoutedEventArgs e)
         {
             var w = new TextDialog("Profile name");
@@ -76,6 +100,13 @@ namespace UCR.Views
 
         private void EditProfile(object sender, RoutedEventArgs e)
         {
+            if (sender is TreeViewItem)
+            {
+                if (!((TreeViewItem)sender).IsSelected)
+                {
+                    return;
+                }
+            }
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
             var win = new ProfileWindow(ctx, pi.profile);
@@ -122,11 +153,6 @@ namespace UCR.Views
 
         #endregion Profile Actions
 
-        private void ShowDevices(object sender, RoutedEventArgs e)
-        {
-            // TODO
-        }
-
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
             var win = new DeviceListWindow(ctx);
@@ -158,10 +184,22 @@ namespace UCR.Views
             ctx.IOController.Dispose();
         }
 
-        // TODO Dispose backend
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
             ctx.IOController = null;
+        }
+
+        private void ActiveProfileChanged()
+        {
+            OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

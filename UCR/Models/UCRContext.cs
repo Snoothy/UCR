@@ -23,6 +23,7 @@ namespace UCR.Models
         public bool IsNotSaved { get; set; }
         public Profile ActiveProfile { get; set; }
         public IOController IOController { get; set; }
+        private List<Action> ActiveProfileCallbacks = new List<Action>();
 
         public UCRContext(bool useMock = true)
         {
@@ -57,7 +58,7 @@ namespace UCR.Models
             return Profiles.Find(p => p.Title.Equals("Global"));
         }
 
-        public void ActivateProfile(Profile profile)
+        public bool ActivateProfile(Profile profile)
         {
             bool success = true;
             var lastActiveProfile = ActiveProfile;
@@ -65,22 +66,33 @@ namespace UCR.Models
             success &= profile.Activate(this);
             if (success)
             {
-                profile.SubscribeDeviceLists();
+                var subscribeSuccess = profile.SubscribeDeviceLists();
                 IOController.SetProfileState(profile.Guid, true);
-                DeactiveProfile(lastActiveProfile);
+                DeactivateProfile(lastActiveProfile);
+                foreach (var action in ActiveProfileCallbacks)
+                {
+                    action();
+                }
             }
             else
             {
                 // Activation failed, old profile is still active
                 ActiveProfile = lastActiveProfile;
             }
+            return success;
         }
 
-        public void DeactiveProfile(Profile profile)
+        public void DeactivateProfile(Profile profile)
         {
-            if (profile == null) return;
+            if (ActiveProfile == null || profile == null) return;
             if (ActiveProfile.Guid == profile.Guid) ActiveProfile = null;
-            // TODO unsubscribe all outputs and cleanup
+            
+            var success = profile.UnsubscribeDeviceLists();
+
+            foreach (var action in ActiveProfileCallbacks)
+            {
+                action();
+            }
         }
         
         #endregion
@@ -276,6 +288,11 @@ namespace UCR.Models
             {
                 Title = "Axis test"
             });
+        }
+
+        public void SetActiveProfileCallback(Action profileActivated)
+        {
+            ActiveProfileCallbacks.Add(profileActivated);
         }
     }
 }

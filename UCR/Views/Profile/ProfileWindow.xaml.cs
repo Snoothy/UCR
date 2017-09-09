@@ -24,7 +24,15 @@ namespace UCR.Views.Profile
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
-            Profile.ctx.ActivateProfile(Profile);
+            if (!Profile.ctx.ActivateProfile(Profile))
+            {
+                MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        {
+            Profile.ctx.DeactivateProfile(Profile);
         }
 
         private void AddPlugin_OnClick(object sender, RoutedEventArgs e)

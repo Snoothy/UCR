@@ -23,7 +23,7 @@ namespace UCR.Models
 
         /* Persistence */
         public string Title { get; set; }
-        public Profile Parent { get; set; }
+        public Profile ParentProfile { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
@@ -66,9 +66,9 @@ namespace UCR.Models
             SetDeviceListNames();
         }
 
-        public Profile(UCRContext ctx, Profile parent = null) : this(ctx)
+        public Profile(UCRContext ctx, Profile parentProfile = null) : this(ctx)
         {
-            Parent = parent;
+            ParentProfile = parentProfile;
         }
 
         #endregion
@@ -91,13 +91,13 @@ namespace UCR.Models
 
         public void Remove()
         {
-            if (Parent == null)
+            if (ParentProfile == null)
             {
                 ctx.Profiles.Remove(this);
             }
             else
             {
-                Parent.ChildProfiles.Remove(this);
+                ParentProfile.ChildProfiles.Remove(this);
             }
             ctx.IsNotSaved = true;
         }
@@ -159,31 +159,23 @@ namespace UCR.Models
         {
             bool success = true;
             InitializeDeviceGroups();
+
+            if (ParentProfile != null && InheritFromParent)
+            {
+                ParentProfile.Activate(ctx);
+            }
+
             foreach (var plugin in Plugins)
             {
                 success &= plugin.Activate(ctx);
             }
 
-            if (Parent != null && InheritFromParent)
-            {
-                Parent.Activate(ctx);
-            }
-
             return success;
         }
 
-        // TODO always start from a clean slate
-        private void InitializeDeviceGroups(bool reload = false)
+        private void InitializeDeviceGroups()
         {
-            if (!reload)
-            {
-                reload = Enum.GetValues(typeof(DeviceType)).Cast<object>().Aggregate(reload,
-                    (current, type) => current || !InputGroups.ContainsKey((DeviceType)type));
-                if (!reload) return;
-            }
             SetDeviceListNames();
-            // TODO Merge with devices from parent profiles
-            // TODO Unsubscribe on reload
 
             // Input
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
@@ -191,8 +183,7 @@ namespace UCR.Models
                 InputGroups[(DeviceType)type] = new DeviceGroup()
                 {
                     Guid = DeviceGroupGuids[DeviceBindingType.Input][(DeviceType)type],
-                    Devices = GetCopiedList((DeviceType)type,
-                        DeviceGroupGuids[DeviceBindingType.Input][(DeviceType)type])
+                    Devices = GetCopiedList(DeviceBindingType.Input,(DeviceType)type)
                 };
             }
 
@@ -202,22 +193,37 @@ namespace UCR.Models
                 OutputGroups[(DeviceType)type] = new DeviceGroup()
                 {
                     Guid = DeviceGroupGuids[DeviceBindingType.Output][(DeviceType)type],
-                    Devices = GetCopiedList((DeviceType)type,
-                        DeviceGroupGuids[DeviceBindingType.Output][(DeviceType)type])
+                    Devices = GetCopiedList(DeviceBindingType.Output, (DeviceType)type)
                 };
             }
         }
 
-        public void SubscribeDeviceLists()
+        public bool SubscribeDeviceLists()
         {
+            var success = true;
             foreach (var deviceGroup in InputGroups)
             {
                 foreach (var device in deviceGroup.Value.Devices)
                 {
-                    device.SubscribeDeviceBindings(ctx);
+                    success &= device.SubscribeDeviceBindings(ctx);
                 }
             }
-            var success = SubscribeOutputDevices();
+            success &= SubscribeOutputDevices();
+            return success;
+        }
+
+        public bool UnsubscribeDeviceLists()
+        {
+            var success = true;
+            foreach (var deviceGroup in InputGroups)
+            {
+                foreach (var device in deviceGroup.Value.Devices)
+                {
+                    success &= device.UnsubscribeDeviceBindings(ctx);
+                }
+            }
+            success &= UnsubscribeOutputDevices();
+            return success;
         }
 
         /// <summary>
@@ -232,6 +238,17 @@ namespace UCR.Models
             {
                 success &= OutputGroups[(DeviceType)type].Devices
                     .Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+            }
+            return success;
+        }
+
+        private bool UnsubscribeOutputDevices()
+        {
+            bool success = true;
+            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+            {
+                success &= OutputGroups[(DeviceType)type].Devices
+                    .Aggregate(true, (current, device) => current & device.UnsubscribeOutput(ctx));
             }
             return success;
         }
@@ -256,7 +273,24 @@ namespace UCR.Models
 
         public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
-            return ctx.GetDeviceGroup(deviceBinding.DeviceType, GetDeviceListGuid(deviceBinding))?.Devices ?? new List<Device>();
+            return GetDeviceList(deviceBinding.DeviceBindingType, deviceBinding.DeviceType);
+        }
+
+        public List<Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        {
+            SetDeviceListNames();
+            var result = ctx.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device>();
+            if (!InheritFromParent || ParentProfile == null) return result;
+
+            var parentDeviceList = ParentProfile.GetDeviceList(deviceBindingType, deviceType);
+            if (result.Count < parentDeviceList.Count)
+            {
+                for (var i = result.Count; i < parentDeviceList.Count; i++)
+                {
+                    result.Add(parentDeviceList[i]);
+                }
+            }
+            return result;
         }
 
         public Device GetLocalDevice(DeviceBinding deviceBinding)
@@ -294,6 +328,11 @@ namespace UCR.Models
         
         #region Helpers
 
+        public string ProfileBreadCrumbs()
+        {
+            return ParentProfile != null ? ParentProfile.ProfileBreadCrumbs() + " > " + Title : Title;
+        }
+
         /// <summary>
         /// Returns true if bindings are currently subscribed to the backend
         /// </summary>
@@ -308,26 +347,9 @@ namespace UCR.Models
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private static List<Device> CopyDeviceList(List<DeviceGroup> group, Guid groupGuid)
+        private List<Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
         {
-            return Device.CopyDeviceList(DeviceGroup.FindDeviceGroup(group, groupGuid)?.Devices);
-        }
-
-        private List<Device> GetCopiedList(DeviceType deviceType, Guid groupGuid)
-        {
-            switch (deviceType)
-            {
-                case DeviceType.Keyboard:
-                    return CopyDeviceList(ctx.KeyboardGroups, groupGuid);
-                case DeviceType.Mouse:
-                    return CopyDeviceList(ctx.MiceGroups, groupGuid);
-                case DeviceType.Joystick:
-                    return CopyDeviceList(ctx.JoystickGroups, groupGuid);
-                case DeviceType.Generic:
-                    return CopyDeviceList(ctx.GenericDeviceGroups, groupGuid);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
-            }
+            return Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
         }
 
         private void SetDeviceListNames()

@@ -29,8 +29,8 @@ namespace UCR.Models.Devices
     {
         // Persistance
         public string Title { get; set; }
-        public string DeviceHandle { get; set; }
         public string SubscriberProviderName { get; set; }
+        public string DeviceHandle { get; set; }
         public string SubscriberSubProviderName { get; set; }
 
         // Runtime
@@ -120,32 +120,64 @@ namespace UCR.Models.Devices
             Subscriptions = new Dictionary<string, List<DeviceBinding>>();
         }
 
-        public void SubscribeDeviceBindings(UCRContext ctx)
+        public bool SubscribeDeviceBindings(UCRContext ctx)
         {
+            var success = true;
             foreach (var deviceBindingList in Subscriptions)
             {
                 foreach (var deviceBinding in deviceBindingList.Value)
                 {
-                    SubscribeDeviceBindingInput(ctx, deviceBinding);
+                    success &= SubscribeDeviceBindingInput(ctx, deviceBinding);
                 }
             }
+            return success;
         }
 
-        public void SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        public bool UnsubscribeDeviceBindings(UCRContext ctx)
         {
-            if (!deviceBinding.IsBound) return; // TODO unsubscribe binding
-            var success = ctx.IOController.SubscribeInput(new InputSubscriptionRequest()
+            var success = true;
+            foreach (var deviceBindingList in Subscriptions)
+            {
+                foreach (var deviceBinding in deviceBindingList.Value)
+                {
+                    success &= UnsubscribeDeviceBindingInput(ctx, deviceBinding);
+                }
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// Subscribe a devicebining with the backend. Unsubscribe devicebinding if it is not bound
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="deviceBinding"></param>
+        /// <returns>If the subscription succeeded</returns>
+        public bool SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            return deviceBinding.IsBound 
+                ? ctx.IOController.SubscribeInput(GetInputSubscriptionRequest(deviceBinding))
+                : UnsubscribeDeviceBindingInput(ctx, deviceBinding);
+        }
+
+        public bool UnsubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        {
+            return ctx.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBinding));
+        }
+
+        private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBinding deviceBinding)
+        {
+            return new InputSubscriptionRequest()
             {
                 ProviderName = SubscriberProviderName,
                 SubProviderName = SubscriberSubProviderName,
                 DeviceHandle = DeviceHandle,
-                InputType = (InputType)deviceBinding.KeyType,
-                InputIndex = (uint)deviceBinding.KeyValue,
+                InputType = (InputType) deviceBinding.KeyType,
+                InputIndex = (uint) deviceBinding.KeyValue,
                 InputSubId = deviceBinding.KeySubValue,
                 Callback = deviceBinding.Callback,
                 SubscriberGuid = deviceBinding.Guid,
                 ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
-            });
+            };
         }
 
         public string GetBindingName(DeviceBinding deviceBinding)
@@ -180,13 +212,32 @@ namespace UCR.Models.Devices
             }
             if (IsAcquired) return true;
             IsAcquired = true;
-            return ctx.IOController.SubscribeOutput(new OutputSubscriptionRequest()
+            return ctx.IOController.SubscribeOutput(GetOutputSubscriptionRequest());
+        }
+
+        public bool UnsubscribeOutput(UCRContext ctx)
+        {
+            if (string.IsNullOrEmpty(SubscriberProviderName) || string.IsNullOrEmpty(DeviceHandle))
+            {
+                // TODO Log error
+                return false;
+            }
+            if (!IsAcquired) return true;
+            IsAcquired = false;
+
+            return false;
+            //return ctx.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
+        }
+
+        private OutputSubscriptionRequest GetOutputSubscriptionRequest()
+        {
+            return new OutputSubscriptionRequest()
             {
                 DeviceHandle = DeviceHandle,
                 ProviderName = SubscriberProviderName,
                 SubProviderName = SubscriberSubProviderName,
                 SubscriberGuid = Guid
-            });
+            };
         }
 
         public static List<Device> CopyDeviceList(List<Device> devicelist)

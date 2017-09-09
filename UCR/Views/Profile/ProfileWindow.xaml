@@ -13,7 +13,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
                 <MenuItem Header="Activate profile" Click="ActivateProfile" />
-                <MenuItem Header="Deactivate profile" Click="ActivateProfile" />
+                <MenuItem Header="Deactivate profile" Click="DeactivateProfile" />
                 <Separator/>
                 <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
                 <Separator/>

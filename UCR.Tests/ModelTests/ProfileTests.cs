@@ -31,7 +31,7 @@ namespace UCR.Tests.ModelTests
             _profile.AddNewChildProfile(_profileName);
             Assert.That(_profile.ChildProfiles.Count, Is.EqualTo(1));
             Assert.That(_profile.ChildProfiles[0].Title, Is.EqualTo(_profileName));
-            Assert.That(_profile.ChildProfiles[0].Parent, Is.EqualTo(_profile));
+            Assert.That(_profile.ChildProfiles[0].ParentProfile, Is.EqualTo(_profile));
             Assert.That(_profile.ChildProfiles[0].Guid, Is.Not.EqualTo(Guid.Empty));
             Assert.That(_profile.IsActive, Is.Not.True);
             Assert.That(_ctx.IsNotSaved, Is.True);
@@ -111,7 +111,31 @@ namespace UCR.Tests.ModelTests
         [Test]
         public void GetDeviceFromParent()
         {
-            // TODO test that devices are fetched from parent profiles, too
+            var deviceBinding = new DeviceBinding(null, null, DeviceBindingType.Input)
+            {
+                DeviceType = DeviceType.Joystick,
+                DeviceNumber = 0,
+                IsBound = true
+            };
+
+            var singleGuid = _ctx.AddDeviceGroup("Single device", DeviceType.Joystick);
+            var deviceList = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
+            _ctx.GetDeviceGroup(deviceBinding.DeviceType, singleGuid).Devices = deviceList;
+            var multipleGuid = _ctx.AddDeviceGroup("Test joysticks", DeviceType.Joystick);
+            _ctx.GetDeviceGroup(deviceBinding.DeviceType, multipleGuid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 4);
+
+            _profile.SetDeviceGroup(deviceBinding.DeviceBindingType, deviceBinding.DeviceType, multipleGuid);
+
+            _profile.AddNewChildProfile("Child profile");
+            var childProfile = _profile.ChildProfiles[0];
+            childProfile.SetDeviceGroup(deviceBinding.DeviceBindingType, deviceBinding.DeviceType, singleGuid);
+
+            Assert.That(childProfile.GetDevice(deviceBinding).Guid, Is.EqualTo(deviceList[0].Guid));
+
+            Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.Not.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
+            deviceBinding.DeviceNumber = 1;
+            Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
+            Assert.That(childProfile.GetDeviceList(deviceBinding).Count, Is.EqualTo(4));
         }
 
         [Test]

@@ -6,11 +6,16 @@
         xmlns:commands="clr-namespace:UCR.Utilities.Commands"
         xmlns:viewModels="clr-namespace:UCR.ViewModels"
         mc:Ignorable="d"
-        Title="Universal Control Remapper" Height="525" Width="300"
+        Title="Universal Control Remapper" Height="525" Width="350"
         Closing="MainWindow_OnClosing"
         Closed="MainWindow_OnClosed">
-    <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
-        <Menu DockPanel.Dock="Top">
+    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Command="Save" />
                 <MenuItem Header="_Preferences" />
@@ -18,6 +23,9 @@
                 <MenuItem Header="_Exit" Command="commands:MyCommands.ApplicationCloseCommand" />
             </MenuItem>
             <MenuItem Header="_Profile">
+                <MenuItem Header="Activate" Click="ActivateProfile" />
+                <MenuItem Header="Deactivate" Click="DeactivateProfile" />
+                <Separator />
                 <MenuItem Header="New" Click="AddProfile" />
                 <MenuItem Header="Add child" Click="AddChildProfile" />
                 <MenuItem Header="Copy" Click="CopyProfile"/>
@@ -37,7 +45,7 @@
             </MenuItem>
         </Menu>
 
-        <TreeView Name="ProfileTree" Margin="10,5,10,10">
+        <TreeView Grid.Row="1" Name="ProfileTree" Margin="10,5,10,0">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True"/>
@@ -49,6 +57,8 @@
                     <TextBlock Text="{Binding Title}" >
                         <TextBlock.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Activate" Click="ActivateProfile"/>
+                                <Separator />
                                 <MenuItem Header="Add child" Click="AddChildProfile" />
                                 <MenuItem Header="Copy" Click="CopyProfile"/>
                                 <Separator />
@@ -63,5 +73,10 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-    </DockPanel>
+
+        <StackPanel Grid.Row="2" DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="10,0">
+            <Label>Active profile:</Label>
+            <Label Content="{Binding ActiveProfileBreadCrumbs}"/>
+        </StackPanel>
+    </Grid>
 </Window>
