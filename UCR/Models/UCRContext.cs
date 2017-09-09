@@ -41,6 +41,9 @@ namespace UCR.Models
             GenericDeviceGroups = new List<DeviceGroup>();
         }
 
+
+        #region Profile
+        
         public bool AddProfile(string title)
         {
             Profiles.Add(Profile.CreateProfile(this, title));
@@ -48,16 +51,23 @@ namespace UCR.Models
             return true;
         }
 
+        private Profile GetGlobalProfile()
+        {
+            // TODO Find it properly
+            return Profiles.Find(p => p.Title.Equals("Global"));
+        }
+
         public void ActivateProfile(Profile profile)
         {
             bool success = true;
             var lastActiveProfile = ActiveProfile;
-            ActiveProfile = profile;
             success &= profile.Activate(this);
             if (success)
             {
-                ActiveProfile.SubscribeDeviceLists();
-                IOController.SetProfileState(ActiveProfile.Guid, true);
+                profile.SubscribeDeviceLists();
+                IOController.SetProfileState(profile.Guid, true);
+                DeactiveProfile(lastActiveProfile);
+                ActiveProfile = profile;
             }
             else
             {
@@ -66,17 +76,32 @@ namespace UCR.Models
             }
         }
 
+        public void DeactiveProfile(Profile profile)
+        {
+            ActiveProfile = null;
+            // TODO unsubscribe all outputs and cleanup
+        }
+        
+        #endregion
+
+        #region DeviceGroup
+
+        public DeviceGroup GetDeviceGroup(DeviceType deviceType, Guid deviceGroupGuid)
+        {
+            return GetDeviceGroupList(deviceType).FirstOrDefault(d => d.Guid == deviceGroupGuid);
+        }
+
         public Guid AddDeviceGroup(string Title, DeviceType deviceType)
         {
             var deviceGroup = new DeviceGroup(Title);
-            GetDeviceGroups(deviceType).Add(deviceGroup);
+            GetDeviceGroupList(deviceType).Add(deviceGroup);
             IsNotSaved = true;
             return deviceGroup.Guid;
         }
 
         public bool RemoveDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType)
         {
-            var deviceGroups = GetDeviceGroups(deviceType);
+            var deviceGroups = GetDeviceGroupList(deviceType);
             if (!deviceGroups.Remove(DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid))) return false;
             IsNotSaved = true;
             return true;
@@ -84,7 +109,7 @@ namespace UCR.Models
 
         public bool RenameDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType, string title)
         {
-            var deviceGroups = GetDeviceGroups(deviceType);
+            var deviceGroups = GetDeviceGroupList(deviceType);
             DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid).Title = title;
             IsNotSaved = true;
             return true;
@@ -92,17 +117,17 @@ namespace UCR.Models
 
         public void AddDeviceToDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
         {
-            GetDeviceGroups(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
+            GetDeviceGroupList(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
             IsNotSaved = true;
         }
 
         public void RemoveDeviceFromDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
         {
-            GetDeviceGroups(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.RemoveAll(d => d.Guid == device.Guid);
+            GetDeviceGroup(deviceType, deviceGroupGuid).RemoveDevice(device.Guid);
             IsNotSaved = true;
         }
 
-        private List<DeviceGroup> GetDeviceGroups(DeviceType deviceType)
+        private List<DeviceGroup> GetDeviceGroupList(DeviceType deviceType)
         {
             switch (deviceType)
             {
@@ -119,11 +144,7 @@ namespace UCR.Models
             }
         }
 
-        private Profile GetGlobalProfile()
-        {
-            // TODO Find it properly
-            return Profiles.Find(p => p.Title.Equals("Global"));
-        }
+        #endregion
 
         private void InitMock()
         {

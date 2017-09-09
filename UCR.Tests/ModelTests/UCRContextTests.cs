@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using UCR.Models;
 
-namespace UCR.Tests
+namespace UCR.Tests.ModelTests
 {
     [TestFixture]
     public class UCRContextTests

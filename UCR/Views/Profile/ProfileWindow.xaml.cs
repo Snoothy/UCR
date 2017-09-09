@@ -21,7 +21,6 @@ namespace UCR.Views.Profile
             DataContext = Profile;
         }
 
-
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
             Profile.ctx.ActivateProfile(Profile);
@@ -49,7 +48,6 @@ namespace UCR.Views.Profile
             if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
             // TODO Check if plugin with same name exists
             plugin.Rename(win.TextResult);
-            ctx.IsNotSaved = true;
 
             PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
@@ -59,9 +57,7 @@ namespace UCR.Views.Profile
         {
             Plugin plugin;
             if (!GetSelectedItem(out plugin)) return;
-            // TODO Check if plugin with same name exists
             Profile.RemovePlugin(plugin);
-            ctx.IsNotSaved = true;
             PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }

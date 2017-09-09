@@ -19,7 +19,6 @@ namespace UCR.Views
             InitializeComponent();
             ctx = new UCRContext();
             ReloadProfileTree();
-            ManageDeviceLists_OnClick(null, null);
         }
 
         private void InitResources()

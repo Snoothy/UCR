@@ -43,7 +43,7 @@ namespace UCR.Models.Plugins
         protected void WriteOutput(DeviceBinding output, long value)
         {
             if (output?.DeviceType == null) return;
-            var device = ParentProfile.GetDevice(output);
+            var device = ParentProfile.GetLocalDevice(output);
             device.WriteOutput(ParentProfile.ctx, output, value);
         }
 
@@ -57,7 +57,7 @@ namespace UCR.Models.Plugins
             var success = true;
             foreach (var input in GetInputs())
             {
-                var device = ctx.ActiveProfile.GetDevice(input);
+                var device = ctx.ActiveProfile.GetLocalDevice(input);
                 if (device != null)
                 {
                     success &= device.AddDeviceBinding(input);

@@ -208,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Input\" />
+    <Folder Include="ViewModels\Profile\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
