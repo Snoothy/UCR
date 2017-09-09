@@ -24,20 +24,28 @@ namespace UCR.Models
         public Profile ActiveProfile { get; set; }
         public IOController IOController { get; set; }
 
-        public UCRContext()
+        public UCRContext(bool useMock = true)
         {
             IsNotSaved = false;
             IOController = new IOController();
             Init();
+            if (useMock) InitMock();
         }
 
         private void Init()
         {
+            Profiles = new List<Profile>();
             KeyboardGroups = new List<DeviceGroup>();
             MiceGroups = new List<DeviceGroup>();
             JoystickGroups = new List<DeviceGroup>();
             GenericDeviceGroups = new List<DeviceGroup>();
-            InitMock();
+        }
+
+        public bool AddProfile(string title)
+        {
+            Profiles.Add(Profile.CreateProfile(this, title));
+            IsNotSaved = true;
+            return true;
         }
 
         public void ActivateProfile(Profile profile)

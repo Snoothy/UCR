@@ -42,11 +42,6 @@ namespace UCR.Models.Devices
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
 
-        public Device()
-        {
-            
-        }
-
         public Device(Guid guid = new Guid())
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
@@ -64,7 +59,7 @@ namespace UCR.Models.Devices
             Guid = device.Guid;
         }
 
-        public Device(IOWrapperDevice device) : this(new Guid())
+        public Device(IOWrapperDevice device) : this()
         {
             Title = device.DeviceName;
             DeviceHandle = device.DeviceHandle;

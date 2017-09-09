@@ -8,12 +8,10 @@ using UCR.Views.Profile;
 
 namespace UCR.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
-        UCRContext ctx;
+        private UCRContext ctx;
 
         public MainWindow()
         {
@@ -53,6 +51,18 @@ namespace UCR.Views
             ProfileTree.ItemsSource = profileTree;
         }
 
+
+        #region Profile Actions
+
+        private void AddProfile(object sender, RoutedEventArgs e)
+        {
+            var w = new TextDialog("Profile name");
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            ctx.AddProfile(w.TextResult);
+            ReloadProfileTree();
+        }
+
         private void AddChildProfile(object sender, RoutedEventArgs e)
         {
             ProfileItem pi;
@@ -61,16 +71,6 @@ namespace UCR.Views
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
             pi.profile.AddNewChildProfile(w.TextResult);
-            ReloadProfileTree();
-            ctx.IsNotSaved = true;
-        }
-
-        private void AddProfile(object sender, RoutedEventArgs e)
-        {
-            var w = new TextDialog("Profile name");
-            w.ShowDialog();
-            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            ctx.Profiles.Add(Models.Profile.CreateProfile(ctx, w.TextResult));
             ReloadProfileTree();
             ctx.IsNotSaved = true;
         }
@@ -103,27 +103,36 @@ namespace UCR.Views
 
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                pi.profile.Delete();
+                pi.profile.Remove();
                 ReloadProfileTree();
             }
         }
 
-        private void DeleteProfile(object sender, RoutedEventArgs e)
+        private void RemoveProfile(object sender, RoutedEventArgs e)
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title +"'?", "Delete profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Are you sure you want to remove '" + pi.profile.Title +"'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            pi.profile.Delete();
+            pi.profile.Remove();
             ReloadProfileTree();
         }
+
+        #endregion Profile Actions
 
         private void ShowDevices(object sender, RoutedEventArgs e)
         {
             // TODO
+        }
+
+        private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new DeviceListWindow(ctx);
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
         }
 
         // TODO Fix
@@ -154,13 +163,6 @@ namespace UCR.Views
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
             ctx.IOController = null;
-        }
-
-        private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
-        {
-            var win = new DeviceListWindow(ctx);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
         }
     }
 }

@@ -53,6 +53,9 @@ namespace UCR.Models
             InheritFromParent = true;
             Guid = Guid.NewGuid();
 
+            ChildProfiles = new List<Profile>();
+            Plugins = new List<Plugin>();
+
             InputGroups = new Dictionary<DeviceType, DeviceGroup>();
             OutputGroups = new Dictionary<DeviceType, DeviceGroup>();
 
@@ -178,7 +181,7 @@ namespace UCR.Models
             ChildProfiles.Add(CreateProfile(ctx, title, this));
         }
 
-        public void Delete()
+        public void Remove()
         {
             if (Parent == null)
             {

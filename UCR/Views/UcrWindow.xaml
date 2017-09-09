@@ -6,13 +6,14 @@
         xmlns:commands="clr-namespace:UCR.Utilities.Commands"
         xmlns:viewModels="clr-namespace:UCR.ViewModels"
         mc:Ignorable="d"
-        Title="UCR 2.0" Height="525" Width="300"
+        Title="Universal Control Remapper" Height="525" Width="300"
         Closing="MainWindow_OnClosing"
         Closed="MainWindow_OnClosed">
     <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Command="Save" />
+                <MenuItem Header="_Preferences" />
                 <Separator />
                 <MenuItem Header="_Exit" Command="commands:MyCommands.ApplicationCloseCommand" />
             </MenuItem>
@@ -24,10 +25,9 @@
                 <MenuItem Header="Edit" Click="EditProfile" />
                 <MenuItem Header="Rename" Click="RenameProfile" />
                 <Separator />
-                <MenuItem Header="Delete" Click="DeleteProfile" />
+                <MenuItem Header="Remove" Click="RemoveProfile" />
             </MenuItem>
             <MenuItem Header="_Devices">
-                <MenuItem Header="Show available input devices" Click="ShowDevices" />
                 <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
             </MenuItem>
             <MenuItem Header="_Help">
@@ -55,7 +55,7 @@
                                 <MenuItem Header="Edit" Click="EditProfile" />
                                 <MenuItem Header="Rename" Click="RenameProfile" />
                                 <Separator />
-                                <MenuItem Header="Delete" Click="DeleteProfile" />
+                                <MenuItem Header="Remove" Click="RemoveProfile" />
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>
