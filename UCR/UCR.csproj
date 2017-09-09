@@ -110,8 +110,12 @@
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Device\DeviceListWindowViewModel.cs" />
+    <Compile Include="Views\Profile\DeviceGroupComboBoxItem.cs" />
     <Compile Include="Views\Profile\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Profile\ProfileDeviceGroupWindow.xaml.cs">
+      <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
@@ -163,6 +167,10 @@
     <Page Include="Views\Profile\PluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Profile\ProfileDeviceGroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TextDialog.xaml">
       <SubType>Designer</SubType>

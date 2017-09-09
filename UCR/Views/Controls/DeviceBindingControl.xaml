@@ -6,14 +6,13 @@
              xmlns:local="clr-namespace:UCR.Views.Controls"
              xmlns:devices="clr-namespace:UCR.Models.Devices"
              xmlns:viewModels="clr-namespace:UCR.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="300">
+             mc:Ignorable="d">
     <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200" Margin="0,0,0,5">
         <StackPanel Margin="5">
             <Label x:Name="DeviceBindingLabel" />
             <StackPanel Orientation="Horizontal">
                 <ComboBox Margin="0,0,5,0" x:Name="DeviceTypeBox" Width="83" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceTypeBox_OnSelectionChanged"/>
-                <ComboBox Width="100" x:Name="DeviceNumberBox" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+                <ComboBox Width="100" x:Name="DeviceNumberBox" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected" DropDownOpened="DeviceNumberBox_OnDropDownOpened"/>
             </StackPanel>
             <Button Name="BindButton" Margin="0,5">
                 Click to enter bind mode

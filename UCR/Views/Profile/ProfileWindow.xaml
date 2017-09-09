@@ -13,6 +13,9 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
                 <MenuItem Header="Activate profile" Click="ActivateProfile" />
+                <MenuItem Header="Deactivate profile" Click="ActivateProfile" />
+                <Separator/>
+                <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
                 <Separator/>
                 <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
@@ -21,14 +24,6 @@
                 <Separator/>
                 <MenuItem Header="Rename plugin…" Click="RenamePlugin_OnClick" />
                 <MenuItem Header="Remove plugin" Click="RemovePlugin_OnClick" />
-            </MenuItem>
-            <MenuItem Header="_Devices">
-                <MenuItem Header="Show device lists…" />
-                <Separator/>
-                <MenuItem Header="Select Joystick list…" />
-                <MenuItem Header="Select Keyboard list…" />
-                <MenuItem Header="Select Mouse list…" />
-                <MenuItem Header="Select Generic list…" />
             </MenuItem>
         </Menu>
 

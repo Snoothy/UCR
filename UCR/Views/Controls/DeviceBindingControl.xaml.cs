@@ -194,5 +194,10 @@ namespace UCR.Views.Controls
             LoadContextMenu();
             LoadBindingName();
         }
+        
+        private void DeviceNumberBox_OnDropDownOpened(object sender, EventArgs e)
+        {
+            LoadDeviceInputs();
+        }
     }
 }

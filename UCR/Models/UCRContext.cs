@@ -61,13 +61,13 @@ namespace UCR.Models
         {
             bool success = true;
             var lastActiveProfile = ActiveProfile;
+            ActiveProfile = profile;
             success &= profile.Activate(this);
             if (success)
             {
                 profile.SubscribeDeviceLists();
                 IOController.SetProfileState(profile.Guid, true);
                 DeactiveProfile(lastActiveProfile);
-                ActiveProfile = profile;
             }
             else
             {
@@ -78,7 +78,8 @@ namespace UCR.Models
 
         public void DeactiveProfile(Profile profile)
         {
-            ActiveProfile = null;
+            if (profile == null) return;
+            if (ActiveProfile.Guid == profile.Guid) ActiveProfile = null;
             // TODO unsubscribe all outputs and cleanup
         }
         
@@ -127,7 +128,7 @@ namespace UCR.Models
             IsNotSaved = true;
         }
 
-        private List<DeviceGroup> GetDeviceGroupList(DeviceType deviceType)
+        public List<DeviceGroup> GetDeviceGroupList(DeviceType deviceType)
         {
             switch (deviceType)
             {

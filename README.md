@@ -26,7 +26,7 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 
 ### Supported input ###
 
-- XBox 360 controllers (XInput)
+- Xbox 360 controllers (XInput)
 - DirectInput controllers, includes gamepads, racing wheels, HOTAS, etc.
 - Keyboard (using [interception](https://github.com/oblitum/Interception))
 - Mouse (using [interception](https://github.com/oblitum/Interception))

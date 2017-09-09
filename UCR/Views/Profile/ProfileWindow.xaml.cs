@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using UCR.Models;
 using UCR.Models.Plugins;
 
@@ -60,6 +61,13 @@ namespace UCR.Views.Profile
             Profile.RemovePlugin(plugin);
             PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
+        }
+
+        private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new ProfileDeviceGroupWindow(ctx, Profile);
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
         }
 
         private bool GetSelectedItem(out Plugin selection)
