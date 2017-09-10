@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using UCR.Models.Devices;
 using UCR.Models.Mapping;
 
@@ -10,18 +11,18 @@ namespace UCR.Models.Plugins
     {
         // Persistence
         public string Title { get; set; }
-
-        internal Profile ParentProfile { get; set; }
         public List<DeviceBinding> Inputs { get; set; } // TODO Private
         public List<DeviceBinding> Outputs { get; set; } // TODO Private
 
         // Runtime
         public delegate void PluginBindingChanged(Plugin plugin);
+        internal Profile ParentProfile { get; set; }
+        [XmlIgnore]
         public PluginBindingChanged BindingCallback { get; set; }
 
         // Abstract
         public abstract string PluginName();
-
+        
         protected Plugin()
         {
             Inputs = new List<DeviceBinding>();
@@ -82,7 +83,7 @@ namespace UCR.Models.Plugins
 
         private DeviceBinding InitializeMapping(DeviceBindingType deviceBindingType, DeviceBinding.ValueChanged callbackFunc)
         {
-            DeviceBinding deviceBinding = new DeviceBinding(callbackFunc, this, deviceBindingType);
+            var deviceBinding = new DeviceBinding(callbackFunc, this, deviceBindingType);
             switch(deviceBindingType)
             {
                 case DeviceBindingType.Input:
@@ -106,6 +107,35 @@ namespace UCR.Models.Plugins
         {
             Title = title;
             ParentProfile.ctx.IsNotSaved = true;
+        }
+
+        internal void PostLoad(UCRContext ctx, Profile profile)
+        {
+            ParentProfile = profile;
+            BindingCallback = profile.OnDeviceBindingChange;
+
+            ZipDeviceBindingList(Inputs);
+            ZipDeviceBindingList(Outputs);
+        }
+
+        private void ZipDeviceBindingList(List<DeviceBinding> deviceBindings)
+        {
+            if (deviceBindings.Count == 0) return;
+            var split = deviceBindings.Count / 2;
+            for (var i = 0; i < split; i++)
+            {
+                deviceBindings[i].IsBound = deviceBindings[i + split].IsBound;
+                deviceBindings[i].DeviceType= deviceBindings[i + split].DeviceType;
+                deviceBindings[i].DeviceNumber = deviceBindings[i + split].DeviceNumber;
+                deviceBindings[i].KeyType = deviceBindings[i + split].KeyType;
+                deviceBindings[i].KeyValue = deviceBindings[i + split].KeyValue;
+                deviceBindings[i].KeySubValue = deviceBindings[i + split].KeySubValue;
+            }
+
+            for (var i = deviceBindings.Count - 1; i >= split ; i--)
+            {
+                deviceBindings.Remove(deviceBindings[i]);
+            }
         }
     }
 }

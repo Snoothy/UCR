@@ -9,6 +9,9 @@
         Title="Universal Control Remapper" Height="525" Width="350"
         Closing="MainWindow_OnClosing"
         Closed="MainWindow_OnClosed">
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
+    </Window.CommandBindings>
     <Grid Background="{x:Static SystemColors.ControlBrush}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />

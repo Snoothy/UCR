@@ -23,7 +23,7 @@ namespace UCR.Tests.ModelTests
         [Test]
         public void AddProfile()
         {
-            var ctx = new UCRContext(false);
+            var ctx = new UCRContext();
             Assert.That(ctx.Profiles.Count, Is.EqualTo(0));
             var profileName = "Test";
             ctx.AddProfile(profileName);

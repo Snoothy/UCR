@@ -40,11 +40,12 @@ namespace UCR.Views.Controls
 
         private DeviceType SelectedDeviceType = DeviceType.Joystick;
 
+        private bool HasLoaded = false;
+
         
         
         public DeviceBindingControl()
         {
-            LoadDeviceBinding();
             BindMenu = new ObservableCollection<ContextMenuItem>();
             InitializeComponent();
             Loaded += UserControl_Loaded;
@@ -55,6 +56,7 @@ namespace UCR.Views.Controls
             if (DeviceBinding == null) return; // TODO Error logging
             DeviceBindingLabel.Content = Label;
             ReloadGui();
+            HasLoaded = true;
         }
 
         private void ReloadGui()
@@ -134,16 +136,20 @@ namespace UCR.Views.Controls
             Ddl.ItemsSource = BindMenu;
         }
 
-        private void LoadDeviceBinding()
-        {
-            // TODO load device binding and update gui accordingly
-        }
-
         private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
             var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
             if (device == null) return;
+
+            if (device.Bindings == null || device.Bindings.Count == 0)
+            {
+                var ioController = DeviceBinding.Plugin.ParentProfile.ctx.IOController;
+                var list = DeviceBinding.DeviceBindingType == DeviceBindingType.Input 
+                    ? ioController.GetInputList() 
+                    : ioController.GetOutputList();
+                device.Bindings = list[device.SubscriberProviderName]?.Devices[device.DeviceHandle]?.Bindings ?? new List<BindingInfo>();
+            }
             BindMenu = BuildMenu(device.Bindings);
         }
 
@@ -181,6 +187,7 @@ namespace UCR.Views.Controls
 
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)
         {
+            if (!HasLoaded) return;
             if (DeviceNumberBox.SelectedItem == null) return;
             DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
             LoadContextMenu();
@@ -189,6 +196,7 @@ namespace UCR.Views.Controls
 
         private void DeviceTypeBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!HasLoaded) return;
             DeviceBinding.SetDeviceType((DeviceType)((ComboBoxItemViewModel) DeviceTypeBox.SelectedItem).Value);
             LoadDeviceInputs();
             LoadContextMenu();

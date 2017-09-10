@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 using IOWrapper;
 using Providers;
 using UCR.Models.Devices;
@@ -12,29 +15,37 @@ namespace UCR.Models
 {
     public class UCRContext
     {
+        private static string _contextName = "context.xml";
+
         // Persistence
         public List<Profile> Profiles { get; set; }
+
         public List<DeviceGroup> KeyboardGroups { get; set; }
         public List<DeviceGroup> MiceGroups { get; set; }
         public List<DeviceGroup> JoystickGroups { get; set; }
         public List<DeviceGroup> GenericDeviceGroups { get; set; }
 
         // Runtime
+        [XmlIgnore]
         public bool IsNotSaved { get; set; }
-        public Profile ActiveProfile { get; set; }
-        public IOController IOController { get; set; }
-        private List<Action> ActiveProfileCallbacks = new List<Action>();
 
-        public UCRContext(bool useMock = true)
+        [XmlIgnore]
+        public Profile ActiveProfile { get; set; }
+
+        [XmlIgnore]
+        public IOController IOController { get; set; }
+
+        [XmlIgnore] private List<Action> ActiveProfileCallbacks = new List<Action>();
+
+        public UCRContext()
         {
-            IsNotSaved = false;
-            IOController = new IOController();
             Init();
-            if (useMock) InitMock();
         }
 
         private void Init()
         {
+            IsNotSaved = false;
+            IOController = new IOController();
             Profiles = new List<Profile>();
             KeyboardGroups = new List<DeviceGroup>();
             MiceGroups = new List<DeviceGroup>();
@@ -44,7 +55,7 @@ namespace UCR.Models
 
 
         #region Profile
-        
+
         public bool AddProfile(string title)
         {
             Profiles.Add(Profile.CreateProfile(this, title));
@@ -86,7 +97,7 @@ namespace UCR.Models
         {
             if (ActiveProfile == null || profile == null) return;
             if (ActiveProfile.Guid == profile.Guid) ActiveProfile = null;
-            
+
             var success = profile.UnsubscribeDeviceLists();
 
             foreach (var action in ActiveProfileCallbacks)
@@ -94,7 +105,7 @@ namespace UCR.Models
                 action();
             }
         }
-        
+
         #endregion
 
         #region DeviceGroup
@@ -159,140 +170,64 @@ namespace UCR.Models
 
         #endregion
 
-        private void InitMock()
-        {
-            var inputGuid = Guid.NewGuid();
-            var outputGuid = Guid.NewGuid();
-
-            Profiles = new List<Profile>
-            {
-                new Profile(this)
-                {
-                    Title = "Global",
-                    JoystickInputList = inputGuid,
-                    JoystickOutputList = outputGuid
-                },
-                new Profile(this)
-                {
-                    Title = "Button Test",
-                    JoystickInputList = inputGuid,
-                    JoystickOutputList = outputGuid
-                },
-                new Profile(this)
-                {
-                    Title = "Axis Test",
-                    JoystickInputList = inputGuid,
-                    JoystickOutputList = outputGuid
-                },
-                new Profile(this)
-                {
-                    Title = "Blank",
-                    JoystickInputList = inputGuid,
-                    JoystickOutputList = outputGuid
-                }
-
-            };
-
-            JoystickGroups = new List<DeviceGroup>()
-            {
-                new DeviceGroup()
-                {
-                    Title = "Test input group",
-                    Guid = inputGuid
-                },
-                new DeviceGroup()
-                {
-                    Title = "vJoy output group",
-                    Guid = outputGuid
-                }
-            };
-
-            var list = IOController.GetInputList();
-
-            foreach (var providerList in list)
-            {
-                foreach (var device in providerList.Value.Devices)
-                {
-                    JoystickGroups[0].Devices.Add(new Device(new Guid())
-                    {
-                        Title = device.Value.DeviceName,
-                        DeviceHandle = device.Value.DeviceHandle,
-                        SubscriberProviderName = device.Value.ProviderName,
-                        SubscriberSubProviderName = device.Value.SubProviderName,
-                        Bindings = device.Value.Bindings
-                    });
-                }
-            }
-
-            list = IOController.GetOutputList();
-
-            foreach (var providerList in list)
-            {
-                foreach (var device in providerList.Value.Devices)
-                {
-                    JoystickGroups[1].Devices.Add(new Device(new Guid())
-                    {
-                        Title = device.Value.DeviceName,
-                        DeviceHandle = device.Value.DeviceHandle,
-                        SubscriberProviderName = device.Value.ProviderName,
-                        Bindings = device.Value.Bindings
-                    });
-                }
-            }
-
-            Profile global = GetGlobalProfile();
-
-            for (int i = 0; i < 10; i++)
-            {
-                Plugin plugin;
-                if (i % 2 == 0)
-                {
-                    plugin = new ButtonToButton()
-                    {
-                        Title = "ButtonToButton test " + i
-                    };
-                }
-                else
-                {
-                    plugin = new ButtonToAxis()
-                    {
-                        Title = "ButtonToAxis test" + i
-                    };
-                }
-
-                plugin.Inputs[0].DeviceType = (DeviceType)(i%4);
-                plugin.Inputs[0].KeyType = (int)InputType.BUTTON;
-                plugin.Inputs[0].KeyValue = i;
-                plugin.Inputs[0].IsBound = true;
-
-                if (i == 1)
-                {
-                    plugin.Inputs[0].KeyType = (int)InputType.AXIS;
-                }
-
-                plugin.Outputs[0].DeviceType = DeviceType.Joystick;
-                plugin.Outputs[0].KeyType = (int)InputType.BUTTON;
-                plugin.Outputs[0].KeyValue = i;
-                plugin.Outputs[0].IsBound = true;
-
-                global.AddPlugin(plugin);
-            }
-
-
-            Profiles[1].AddPlugin(new ButtonToButton()
-            {
-                Title = "Button test"
-            });
-
-            Profiles[2].AddPlugin(new ButtonToAxis()
-            {
-                Title = "Axis test"
-            });
-        }
-
         public void SetActiveProfileCallback(Action profileActivated)
         {
             ActiveProfileCallbacks.Add(profileActivated);
         }
+
+        #region Persistence
+
+        public void ContextChanged()
+        {
+            IsNotSaved = true;
+        }
+
+        public bool SaveContext()
+        {
+            var serializer = GetXmlSerializer();
+            using (var streamWriter = new StreamWriter(_contextName))
+            {
+                serializer.Serialize(streamWriter, this);
+            }
+            IsNotSaved = false;
+            return true;
+        }
+
+        public static UCRContext Load()
+        {
+            UCRContext ctx;
+            var serializer = GetXmlSerializer();
+            try
+            {
+                using (var fileStream = new FileStream(_contextName, FileMode.Open))
+                {
+                    ctx = (UCRContext) serializer.Deserialize(fileStream);
+                    ctx.PostLoad();
+                }
+            }
+            catch (IOException e)
+            {
+                Console.Write(e.ToString());
+                // TODO log exception
+                ctx = new UCRContext();
+            }
+            return ctx;
+        }
+
+        private void PostLoad()
+        {
+            foreach (var profile in Profiles)
+            {
+                profile.PostLoad(this);
+            }
+        }
+
+        private static XmlSerializer GetXmlSerializer()
+        {
+            return new XmlSerializer(typeof(UCRContext),
+                Toolbox.GetEnumerableOfType<Plugin>().Select(p => p.GetType()).ToArray());
+        }
+
+        #endregion
     }
 }

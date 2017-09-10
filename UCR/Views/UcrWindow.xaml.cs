@@ -3,8 +3,10 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using UCR.Annotations;
 using UCR.Models;
+using UCR.Utilities.Commands;
 using UCR.ViewModels;
 using UCR.Views.Device;
 using UCR.Views.Profile;
@@ -23,7 +25,8 @@ namespace UCR.Views
             InitResources();
             DataContext = this;
             InitializeComponent();
-            ctx = new UCRContext();
+            ctx = UCRContext.Load();
+
             ctx.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
         }
@@ -174,6 +177,7 @@ namespace UCR.Views
                         return;
                     case MessageBoxResult.Yes:
                         // TODO save everything
+                        ctx.SaveContext();
                         break;
                     case MessageBoxResult.No:
                         break;
@@ -200,6 +204,16 @@ namespace UCR.Views
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            ctx.SaveContext();
+        }
+
+        private void Save_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ctx.IsNotSaved;
         }
     }
 }

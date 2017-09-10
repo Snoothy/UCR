@@ -7,6 +7,7 @@ using System.Security.Cryptography.Pkcs;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using Providers;
 using UCR.Models.Mapping;
 using BindingInfo = Providers.BindingInfo;
@@ -34,13 +35,23 @@ namespace UCR.Models.Devices
         public string SubscriberSubProviderName { get; set; }
 
         // Runtime
+        [XmlIgnore]
         public Guid Guid { get; }
-        public bool IsAcquired { get; set; }
+        [XmlIgnore]
         public List<BindingInfo> Bindings { get; set; }
-        public string Api { get; }
+
+        private bool IsAcquired { get; set; }
+        private string Api { get; }
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
+
+        public Device()
+        {
+            Guid = Guid.NewGuid();
+            IsAcquired = false;
+            ClearSubscribers();
+        }
 
         public Device(Guid guid = new Guid())
         {

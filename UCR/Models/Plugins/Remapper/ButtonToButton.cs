@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Xml.Serialization;
 using UCR.Models.Mapping;
 
 namespace UCR.Models.Plugins.Remapper
 {
     public class ButtonToButton : Plugin
     {
+        [XmlIgnore]
         public DeviceBinding Input { get; set; }
+        [XmlIgnore]
         public DeviceBinding Output { get; set; }
 
         public override string PluginName()

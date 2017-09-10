@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using UCR.Models.Devices;
 using UCR.Models.Plugins;
 
@@ -17,6 +18,7 @@ namespace UCR.Models.Mapping
     public class DeviceBinding
     {
         // Persistence
+        public bool IsBound { get; set; }
         // Keyboard, mouse, joystick
         public DeviceType DeviceType { get; set; }
         // Index in its device list
@@ -27,13 +29,22 @@ namespace UCR.Models.Mapping
         public int KeySubValue { get; set; }
 
         // Runtime
+        [XmlIgnore]
         public Guid Guid { get; }
+        [XmlIgnore]
         public Plugin Plugin { get; set; }
-        public DeviceBindingType DeviceBindingType { get; }
-        public bool IsBound { get; set; }
+        [XmlIgnore]
+        public DeviceBindingType DeviceBindingType { get; set; }
+        
 
         public delegate void ValueChanged(long value);
+        [XmlIgnore]
         public ValueChanged Callback { get; set; }
+
+        private DeviceBinding()
+        {
+            Guid = Guid.NewGuid();
+        }
 
         public DeviceBinding(ValueChanged callback, Plugin plugin, DeviceBindingType deviceBindingType)
         {
@@ -61,6 +72,7 @@ namespace UCR.Models.Mapping
         {
             DeviceNumber = number;
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
+            Plugin.ParentProfile.ctx.ContextChanged();
         }
 
         public void SetKeyTypeValue(int type, int value, int subValue)
@@ -70,11 +82,7 @@ namespace UCR.Models.Mapping
             KeySubValue = subValue;
             IsBound = true;
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
-        }
-
-        public string BoundName()
-        {
-            return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
+            Plugin.ParentProfile.ctx.ContextChanged();
         }
 
         public void SetDeviceType(DeviceType deviceType)
@@ -88,6 +96,12 @@ namespace UCR.Models.Mapping
             KeyType = 0;
             KeyValue = 0;
             KeySubValue = 0;
+            Plugin.ParentProfile.ctx.ContextChanged();
+        }
+        
+        public string BoundName()
+        {
+            return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
         }
     }
 }

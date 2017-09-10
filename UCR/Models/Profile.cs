@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
+using System.Xml.Serialization;
 using UCR.Models.Devices;
 using UCR.Models.Plugins;
 using UCR.Models.Mapping;
-using UCR.Utilities;
-using UCR.ViewModels;
 
 namespace UCR.Models
 {
@@ -23,7 +14,6 @@ namespace UCR.Models
 
         /* Persistence */
         public string Title { get; set; }
-        public Profile ParentProfile { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Plugin> Plugins { get; set; }
@@ -41,25 +31,40 @@ namespace UCR.Models
         public Guid GenericOutputList { get; set; }
 
         /* Runtime */
+        [XmlIgnore]
         public UCRContext ctx;
+        [XmlIgnore]
+        public Profile ParentProfile { get; set; }
+        [XmlIgnore]
         private Dictionary<DeviceType, DeviceGroup> InputGroups { get; set; }
+        [XmlIgnore]
         private Dictionary<DeviceType, DeviceGroup> OutputGroups { get; set; }
+        [XmlIgnore]
         private Dictionary<DeviceBindingType, Dictionary<DeviceType, Guid>> DeviceGroupGuids { get; set; }
-
+        [XmlIgnore]
         public bool InheritFromParent { get; set; }
 
         #region Constructors
 
+        private Profile()
+        {
+            Init();
+        }
+
         public Profile(UCRContext ctx)
         {
             this.ctx = ctx;
-            Plugins = new List<Plugin>();
+            Init();
+        }
+
+        private void Init()
+        {
+            Plugins = Plugins ?? new List<Plugin>();
+            ChildProfiles = ChildProfiles ?? new List<Profile>();
+            Plugins = Plugins ?? new List<Plugin>();
+
             InheritFromParent = true;
-            Guid = Guid.NewGuid();
-
-            ChildProfiles = new List<Profile>();
-            Plugins = new List<Plugin>();
-
+            Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
             InputGroups = new Dictionary<DeviceType, DeviceGroup>();
             OutputGroups = new Dictionary<DeviceType, DeviceGroup>();
 
@@ -390,13 +395,30 @@ namespace UCR.Models
             return profile;
         }
 
-        private void OnDeviceBindingChange(Plugin plugin)
+        internal void OnDeviceBindingChange(Plugin plugin)
         {
             if (!IsActive()) return;
             foreach (var deviceBinding in plugin.GetInputs())
             {
-                // TODO Resubscribe bindings
-                GetLocalDevice(deviceBinding).SubscribeDeviceBindingInput(ctx, deviceBinding);
+                var device = GetLocalDevice(deviceBinding);
+                if (device == null) return; 
+                device.SubscribeDeviceBindingInput(ctx, deviceBinding);
+            }
+        }
+
+        internal void PostLoad(UCRContext ctx, Profile parentProfile = null)
+        {
+            this.ctx = ctx;
+            ParentProfile = parentProfile;
+
+            foreach (var profile in ChildProfiles)
+            {
+                profile.PostLoad(ctx, this);
+            }
+
+            foreach (var plugin in Plugins)
+            {
+                plugin.PostLoad(ctx, this);
             }
         }
     }

@@ -14,6 +14,11 @@ namespace UCR.Models.Devices
         public Guid Guid { get; set; }
         public List<Device> Devices { get; set; }
 
+        private DeviceGroup()
+        {
+            
+        }
+
         public DeviceGroup(string title = null)
         {
             Title = title;

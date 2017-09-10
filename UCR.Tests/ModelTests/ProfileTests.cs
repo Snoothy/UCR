@@ -18,7 +18,7 @@ namespace UCR.Tests.ModelTests
         [SetUp]
         public void Setup()
         {
-            _ctx = new UCRContext(false);
+            _ctx = new UCRContext();
             _ctx.AddProfile("Base profile");
             _profile = _ctx.Profiles[0];
             _profileName = "Test";

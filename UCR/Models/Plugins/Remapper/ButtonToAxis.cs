@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Xml.Serialization;
 using UCR.Models.Mapping;
 
 namespace UCR.Models.Plugins.Remapper
 {
     public class ButtonToAxis : Plugin
     {
+        [XmlIgnore]
         public DeviceBinding InputHigh { get; set; }
+        [XmlIgnore]
         public DeviceBinding InputLow { get; set; }
+        [XmlIgnore]
         public DeviceBinding Output { get; set; }
 
         private long _direction = 0;
