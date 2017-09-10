@@ -148,8 +148,8 @@ namespace UCR.Tests.ModelTests
                     {
                         Assert.That(newCtx.JoystickGroups[j].Devices[k].Title, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].Title));
                         Assert.That(newCtx.JoystickGroups[j].Devices[k].DeviceHandle, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].SubscriberProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].SubscriberProviderName));
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].SubscriberSubProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].SubscriberSubProviderName));
+                        Assert.That(newCtx.JoystickGroups[j].Devices[k].ProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].ProviderName));
+                        Assert.That(newCtx.JoystickGroups[j].Devices[k].SubProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].SubProviderName));
                     }
                 }
 

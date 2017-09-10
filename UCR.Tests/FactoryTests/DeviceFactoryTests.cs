@@ -16,9 +16,9 @@ namespace UCR.Tests.FactoryTests
             var device = DeviceFactory.CreateDevice(title, providerName, deviceNumber);
             Assert.That(device.Guid, Is.Not.EqualTo(Guid.Empty));
             Assert.That(device.Title, Is.EqualTo(title));
-            Assert.That(device.SubscriberProviderName, Is.EqualTo(providerName));
-            Assert.That(device.SubscriberSubProviderName, Is.Not.Null);
-            Assert.That(device.SubscriberSubProviderName, Is.Not.EqualTo(device.SubscriberProviderName));
+            Assert.That(device.ProviderName, Is.EqualTo(providerName));
+            Assert.That(device.SubProviderName, Is.Not.Null);
+            Assert.That(device.SubProviderName, Is.Not.EqualTo(device.ProviderName));
             Assert.That(device.DeviceHandle, Is.EqualTo(deviceNumber));
         }
 
@@ -30,7 +30,7 @@ namespace UCR.Tests.FactoryTests
             var deviceList = DeviceFactory.CreateDeviceList(title, providerName, 4);
             Assert.That(deviceList.Count, Is.EqualTo(4));
             Assert.That(deviceList[0].Title, Is.Not.EqualTo(deviceList[1].Title));
-            Assert.That(deviceList[0].SubscriberProviderName, Is.EqualTo(deviceList[1].SubscriberProviderName));
+            Assert.That(deviceList[0].ProviderName, Is.EqualTo(deviceList[1].ProviderName));
             Assert.That(deviceList[0].DeviceHandle, Is.EqualTo(0.ToString()));
             Assert.That(deviceList[3].DeviceHandle, Is.EqualTo(3.ToString()));
         }

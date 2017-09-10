@@ -148,7 +148,7 @@ namespace UCR.Views.Controls
                 var list = DeviceBinding.DeviceBindingType == DeviceBindingType.Input 
                     ? ioController.GetInputList() 
                     : ioController.GetOutputList();
-                device.Bindings = list[device.SubscriberProviderName]?.Devices[device.DeviceHandle]?.Bindings ?? new List<BindingInfo>();
+                device.Bindings = list[device.ProviderName]?.Devices[device.DeviceHandle]?.Bindings ?? new List<BindingInfo>();
             }
             BindMenu = BuildMenu(device.Bindings);
         }

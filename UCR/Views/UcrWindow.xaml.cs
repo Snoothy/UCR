@@ -77,7 +77,11 @@ namespace UCR.Views
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (ctx.ActiveProfile == null) return;
-            ctx.DeactivateProfile(ctx.ActiveProfile);
+            
+            if (!ctx.DeactivateProfile(ctx.ActiveProfile))
+            {
+                MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private void AddProfile(object sender, RoutedEventArgs e)

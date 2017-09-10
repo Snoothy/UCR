@@ -11,9 +11,9 @@ namespace UCR.Tests.Factory
             return new Device()
             {
                 Title = title,
-                SubscriberProviderName = providerName,
+                ProviderName = providerName,
                 DeviceHandle = deviceNumber,
-                SubscriberSubProviderName = providerName + "Sub"
+                SubProviderName = providerName + "Sub"
             };
         }
 

@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.Pkcs;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 using Providers;
 using UCR.Models.Mapping;
@@ -30,9 +24,9 @@ namespace UCR.Models.Devices
     {
         // Persistance
         public string Title { get; set; }
-        public string SubscriberProviderName { get; set; }
+        public string ProviderName { get; set; }
         public string DeviceHandle { get; set; }
-        public string SubscriberSubProviderName { get; set; }
+        public string SubProviderName { get; set; }
 
         // Runtime
         [XmlIgnore]
@@ -64,8 +58,8 @@ namespace UCR.Models.Devices
         {
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;
-            SubscriberProviderName = device.SubscriberProviderName;
-            SubscriberSubProviderName = device.SubscriberSubProviderName;
+            ProviderName = device.ProviderName;
+            SubProviderName = device.SubProviderName;
             Bindings = device.Bindings;
             Guid = device.Guid;
         }
@@ -74,18 +68,18 @@ namespace UCR.Models.Devices
         {
             Title = device.DeviceName;
             DeviceHandle = device.DeviceHandle;
-            SubscriberProviderName = device.ProviderName;
-            SubscriberSubProviderName = device.SubProviderName;
+            ProviderName = device.ProviderName;
+            SubProviderName = device.SubProviderName;
             Bindings = device.Bindings;
             Api = device.API;
         }
 
         public void WriteOutput(UCRContext ctx, DeviceBinding deviceBinding, long value)
         {
-            if (DeviceHandle == null || SubscriberProviderName == null) return;
+            if (DeviceHandle == null || ProviderName == null) return;
             ctx.IOController.SetOutputstate(new OutputSubscriptionRequest()
             {
-                ProviderName = SubscriberProviderName,
+                ProviderName = ProviderName,
                 DeviceHandle = DeviceHandle,
                 SubscriberGuid = Guid
             }, (InputType)deviceBinding.KeyType, (uint)deviceBinding.KeyValue, (int)value);
@@ -179,12 +173,12 @@ namespace UCR.Models.Devices
         {
             return new InputSubscriptionRequest()
             {
-                ProviderName = SubscriberProviderName,
-                SubProviderName = SubscriberSubProviderName,
+                ProviderName = ProviderName,
+                SubProviderName = SubProviderName,
                 DeviceHandle = DeviceHandle,
                 InputType = (InputType) deviceBinding.KeyType,
                 InputIndex = (uint) deviceBinding.KeyValue,
-                InputSubId = deviceBinding.KeySubValue,
+                InputSubIndex = deviceBinding.KeySubValue,
                 Callback = deviceBinding.Callback,
                 SubscriberGuid = deviceBinding.Guid,
                 ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
@@ -216,7 +210,7 @@ namespace UCR.Models.Devices
 
         public bool SubscribeOutput(UCRContext ctx)
         {
-            if (string.IsNullOrEmpty(SubscriberProviderName) || string.IsNullOrEmpty(DeviceHandle))
+            if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
                 // TODO Log error
                 return false;
@@ -228,16 +222,14 @@ namespace UCR.Models.Devices
 
         public bool UnsubscribeOutput(UCRContext ctx)
         {
-            if (string.IsNullOrEmpty(SubscriberProviderName) || string.IsNullOrEmpty(DeviceHandle))
+            if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
                 // TODO Log error
                 return false;
             }
             if (!IsAcquired) return true;
-            IsAcquired = false;
-
-            return false;
-            //return ctx.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
+            IsAcquired = false;            
+            return ctx.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
         }
 
         private OutputSubscriptionRequest GetOutputSubscriptionRequest()
@@ -245,8 +237,8 @@ namespace UCR.Models.Devices
             return new OutputSubscriptionRequest()
             {
                 DeviceHandle = DeviceHandle,
-                ProviderName = SubscriberProviderName,
-                SubProviderName = SubscriberSubProviderName,
+                ProviderName = ProviderName,
+                SubProviderName = SubProviderName,
                 SubscriberGuid = Guid
             };
         }

@@ -93,9 +93,9 @@ namespace UCR.Models
             return success;
         }
 
-        public void DeactivateProfile(Profile profile)
+        public bool DeactivateProfile(Profile profile)
         {
-            if (ActiveProfile == null || profile == null) return;
+            if (ActiveProfile == null || profile == null) return true;
             if (ActiveProfile.Guid == profile.Guid) ActiveProfile = null;
 
             var success = profile.UnsubscribeDeviceLists();
@@ -104,6 +104,7 @@ namespace UCR.Models
             {
                 action();
             }
+            return success;
         }
 
         #endregion
@@ -177,6 +178,7 @@ namespace UCR.Models
 
         #region Persistence
 
+        // TODO refactor to this instead of setting bool explicitly
         public void ContextChanged()
         {
             IsNotSaved = true;
