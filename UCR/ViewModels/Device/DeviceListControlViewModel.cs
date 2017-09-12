@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Providers;
-using UCR.Models;
-using UCR.Models.Devices;
+using UCR.Core;
+using UCR.Core.Device;
 
 namespace UCR.ViewModels.Device
 {
@@ -51,13 +51,13 @@ namespace UCR.ViewModels.Device
             ctx.RenameDeviceGroup(deviceGroup.Guid, _deviceType, title);
         }
 
-        public void AddDeviceToDeviceGroup(Models.Devices.Device device, Guid deviceGroupGuid)
+        public void AddDeviceToDeviceGroup(Core.Device.Device device, Guid deviceGroupGuid)
         {
             ctx.AddDeviceToDeviceGroup(device, _deviceType, deviceGroupGuid);
             OutputDeviceGroups.First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
         }
 
-        public void RemoveDeviceFromDeviceGroup(Models.Devices.Device device)
+        public void RemoveDeviceFromDeviceGroup(Core.Device.Device device)
         {
             var deviceGroupViewModel = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(OutputDeviceGroups, device);
             ctx.RemoveDeviceFromDeviceGroup(device, _deviceType, deviceGroupViewModel.Guid);
@@ -84,7 +84,7 @@ namespace UCR.ViewModels.Device
                 };
                 foreach (var ioWrapperDevice in providerReport.Value.Devices)
                 {
-                    deviceGroupViewModel.Devices.Add(new Models.Devices.Device(ioWrapperDevice.Value));
+                    deviceGroupViewModel.Devices.Add(new Core.Device.Device(ioWrapperDevice.Value));
                 }
                 result.Groups.Add(deviceGroupViewModel);
             }

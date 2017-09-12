@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
-using UCR.Models.Mapping;
+using UCR.Core.Device;
 
-namespace UCR.Models.Plugins.Remapper
+namespace UCR.Core.Plugins
 {
-    public class ButtonToButton : Plugin
+    public class ButtonToButton : Plugin.Plugin
     {
         [XmlIgnore]
         public DeviceBinding Input { get; set; }

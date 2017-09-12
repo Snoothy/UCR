@@ -54,7 +54,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IOWrapper.dll</HintPath>
     </Reference>
-    <Reference Include="IProvider">
+    <Reference Include="IProvider, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -79,17 +80,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Devices\Device.cs" />
-    <Compile Include="Models\Devices\DeviceGroup.cs" />
-    <Compile Include="Models\Mapping\DeviceBinding.cs" />
-    <Compile Include="Models\Plugins\PluginGroup.cs" />
-    <Compile Include="Models\Plugins\Remapper\ButtonToAxis.cs" />
-    <Compile Include="Models\Plugins\Remapper\ButtonToButton.cs" />
-    <Compile Include="Models\UCRConstants.cs" />
-    <Compile Include="Models\UCRContext.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
-    <Compile Include="Utilities\Toolbox.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
     <Compile Include="ViewModels\Device\DeviceGroupViewModel.cs" />
@@ -186,8 +178,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Plugins\Plugin.cs" />
-    <Compile Include="Models\Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -215,8 +205,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Input\" />
-    <Folder Include="ViewModels\Profile\" />
+    <ProjectReference Include="..\UCR.Core\UCR.Core.csproj">
+      <Project>{676d3228-c3f0-4be7-8951-b83f7a16cea7}</Project>
+      <Name>UCR.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

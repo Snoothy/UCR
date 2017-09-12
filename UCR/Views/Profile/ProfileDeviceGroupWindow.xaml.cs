@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using UCR.Models;
-using UCR.Models.Devices;
-using UCR.Models.Mapping;
+using UCR.Core;
+using UCR.Core.Device;
 using UCR.ViewModels;
 
 namespace UCR.Views.Profile
@@ -15,7 +14,7 @@ namespace UCR.Views.Profile
     public partial class ProfileDeviceGroupWindow : Window
     {
         private UCRContext ctx;
-        private Models.Profile profile;
+        private Core.Profile.Profile profile;
         private bool HasLoaded = false;
 
         public List<ComboBoxItemViewModel> InputJoystickGroups { get; set; }
@@ -27,7 +26,7 @@ namespace UCR.Views.Profile
         public List<ComboBoxItemViewModel> OutputMiceGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGenericGroups { get; set; }
 
-        public ProfileDeviceGroupWindow(UCRContext ctx, Models.Profile profile)
+        public ProfileDeviceGroupWindow(UCRContext ctx, Core.Profile.Profile profile)
         {
             this.ctx = ctx;
             this.profile = profile;

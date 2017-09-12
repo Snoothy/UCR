@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using UCR.Models.Devices;
-using UCR.Models.Plugins;
-using UCR.Models.Mapping;
+using UCR.Core.Device;
 
-namespace UCR.Models
+namespace UCR.Core.Profile
 {
     public class Profile
     {
@@ -16,7 +14,7 @@ namespace UCR.Models
         public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
-        public List<Plugin> Plugins { get; set; }
+        public List<Plugin.Plugin> Plugins { get; set; }
 
         // Inputs
         public Guid KeyboardInputList { get; set; }
@@ -59,9 +57,9 @@ namespace UCR.Models
 
         private void Init()
         {
-            Plugins = Plugins ?? new List<Plugin>();
+            Plugins = Plugins ?? new List<Plugin.Plugin>();
             ChildProfiles = ChildProfiles ?? new List<Profile>();
-            Plugins = Plugins ?? new List<Plugin>();
+            Plugins = Plugins ?? new List<Plugin.Plugin>();
 
             InheritFromParent = true;
             Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
@@ -268,7 +266,7 @@ namespace UCR.Models
             return DeviceGroupGuids[deviceBinding.DeviceBindingType][deviceBinding.DeviceType];
         }
 
-        public Device GetDevice(DeviceBinding deviceBinding)
+        public Device.Device GetDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count
@@ -276,15 +274,15 @@ namespace UCR.Models
                 : null;
         }
 
-        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return GetDeviceList(deviceBinding.DeviceBindingType, deviceBinding.DeviceType);
         }
 
-        public List<Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        public List<Device.Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
         {
             SetDeviceListNames();
-            var result = ctx.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device>();
+            var result = ctx.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device.Device>();
             if (!InheritFromParent || ParentProfile == null) return result;
 
             var parentDeviceList = ParentProfile.GetDeviceList(deviceBindingType, deviceType);
@@ -298,13 +296,13 @@ namespace UCR.Models
             return result;
         }
 
-        public Device GetLocalDevice(DeviceBinding deviceBinding)
+        public Device.Device GetLocalDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetLocalDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count ? deviceList[deviceBinding.DeviceNumber] : null;
         }
 
-        private List<Device> GetLocalDeviceList(DeviceBinding deviceBinding)
+        private List<Device.Device> GetLocalDeviceList(DeviceBinding deviceBinding)
         {
             var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
             var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
@@ -315,7 +313,7 @@ namespace UCR.Models
         
         #region Plugin
 
-        public void AddPlugin(Plugin plugin, string title = "Untitled")
+        public void AddPlugin(Plugin.Plugin plugin, string title = "Untitled")
         {
             if (plugin.Title == null) plugin.Title = title;
             plugin.BindingCallback = OnDeviceBindingChange;
@@ -323,7 +321,7 @@ namespace UCR.Models
             Plugins.Add(plugin);
         }
 
-        public void RemovePlugin(Plugin plugin)
+        public void RemovePlugin(Plugin.Plugin plugin)
         {
             Plugins.Remove(plugin);
             ctx.IsNotSaved = true;
@@ -352,9 +350,9 @@ namespace UCR.Models
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private List<Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        private List<Device.Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
         {
-            return Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
+            return Device.Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
         }
 
         private void SetDeviceListNames()
@@ -395,7 +393,7 @@ namespace UCR.Models
             return profile;
         }
 
-        internal void OnDeviceBindingChange(Plugin plugin)
+        internal void OnDeviceBindingChange(Plugin.Plugin plugin)
         {
             if (!IsActive()) return;
             foreach (var deviceBinding in plugin.GetInputs())

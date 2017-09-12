@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using UCR.Models.Mapping;
 using UCR.ViewModels.Device;
 using MessageBox = System.Windows.MessageBox;
 using TreeView = System.Windows.Forms.TreeView;
@@ -30,8 +29,8 @@ namespace UCR.Views.Controls
 
         private void AddDevice_OnClick(object sender, RoutedEventArgs e)
         {
-            var device = (sender as MenuItem)?.DataContext as Models.Devices.Device
-                         ?? DeviceTreeView.SelectedItem as Models.Devices.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Device.Device
+                         ?? DeviceTreeView.SelectedItem as Core.Device.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -41,7 +40,7 @@ namespace UCR.Views.Controls
             var deviceGroup = DeviceGroupTreeView.SelectedItem as DeviceGroupViewModel;
             if (deviceGroup == null)
             {
-                var outputDevice = DeviceGroupTreeView.SelectedItem as Models.Devices.Device;
+                var outputDevice = DeviceGroupTreeView.SelectedItem as Core.Device.Device;
                 if (outputDevice != null)
                 {
                     deviceGroup = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(GetViewModel().OutputDeviceGroups, outputDevice);
@@ -58,8 +57,8 @@ namespace UCR.Views.Controls
         private void RemoveDevice_OnClick(object sender, RoutedEventArgs e)
         {
             // Select device from context menu first, then default to selected item
-            var device = (sender as MenuItem)?.DataContext as Models.Devices.Device
-                ?? DeviceGroupTreeView.SelectedItem as Models.Devices.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Device.Device
+                ?? DeviceGroupTreeView.SelectedItem as Core.Device.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device to remove", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);

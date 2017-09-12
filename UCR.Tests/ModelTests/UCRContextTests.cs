@@ -1,6 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
-using UCR.Models;
+using UCR.Core;
 
 namespace UCR.Tests.ModelTests
 {

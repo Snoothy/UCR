@@ -1,6 +1,6 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using UCR.Models.Devices;
+using UCR.Core.Device;
 
 namespace UCR.Tests.Factory
 {

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using Providers;
-using UCR.Models.Mapping;
 using BindingInfo = Providers.BindingInfo;
 
-namespace UCR.Models.Devices
+namespace UCR.Core.Device
 {
     public enum DeviceType
     {

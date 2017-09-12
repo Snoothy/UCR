@@ -1,18 +1,18 @@
 ﻿<device:DeviceListControlViewModel xmlns:device="clr-namespace:UCR.ViewModels.Device"
-                xmlns:devices="clr-namespace:UCR.Models.Devices">
+                                   xmlns:device1="clr-namespace:UCR.Core.Device;assembly=UCR.Core">
     <device:DeviceListControlViewModel.InputDeviceGroups>
         <device:DeviceGroupViewModel>
             <device:DeviceGroupViewModel.Title>SharpDX</device:DeviceGroupViewModel.Title>
             <device:DeviceGroupViewModel.Devices>
-                <devices:Device>
-                    <devices:Device.Title>USB Gamepad</devices:Device.Title>
-                </devices:Device>
-                <devices:Device>
-                    <devices:Device.Title>vJoy 1</devices:Device.Title>
-                </devices:Device>
-                <devices:Device>
-                    <devices:Device.Title>vJoy 2</devices:Device.Title>
-                </devices:Device>
+                <device1:Device>
+                    <device1:Device.Title>USB Gamepad</device1:Device.Title>
+                </device1:Device>
+                <device1:Device>
+                    <device1:Device.Title>vJoy 1</device1:Device.Title>
+                </device1:Device>
+                <device1:Device>
+                    <device1:Device.Title>vJoy 2</device1:Device.Title>
+                </device1:Device>
             </device:DeviceGroupViewModel.Devices>
         </device:DeviceGroupViewModel>
     </device:DeviceListControlViewModel.InputDeviceGroups>

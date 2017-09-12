@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using UCR.Annotations;
-using UCR.Models.Devices;
+using UCR.Core.Device;
 
 namespace UCR.ViewModels.Device
 {
@@ -30,13 +30,13 @@ namespace UCR.ViewModels.Device
 
         public Guid Guid { get; set; }
         public ObservableCollection<DeviceGroupViewModel> Groups { get; set; }
-        public ObservableCollection<Models.Devices.Device> Devices { get; set; }
+        public ObservableCollection<Core.Device.Device> Devices { get; set; }
 
         public DeviceGroupViewModel(string title = null, Guid guid = new Guid())
         {
             Title = title;
             Groups = new ObservableCollection<DeviceGroupViewModel>();
-            Devices = new ObservableCollection<Models.Devices.Device>();
+            Devices = new ObservableCollection<Core.Device.Device>();
             Guid = guid.Equals(Guid.Empty) ? Guid.NewGuid() : guid;
         }
 
@@ -58,7 +58,7 @@ namespace UCR.ViewModels.Device
             }
         }
 
-        public static DeviceGroupViewModel FindDeviceGroupViewModelWithDevice(Collection<DeviceGroupViewModel> deviceGroupViewModels, Models.Devices.Device device)
+        public static DeviceGroupViewModel FindDeviceGroupViewModelWithDevice(Collection<DeviceGroupViewModel> deviceGroupViewModels, Core.Device.Device device)
         {
             DeviceGroupViewModel result = null;
             foreach (var deviceGroupViewModel in deviceGroupViewModels)

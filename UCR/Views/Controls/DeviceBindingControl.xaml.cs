@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Providers;
-using UCR.Models;
-using UCR.Models.Devices;
-using UCR.Models.Mapping;
-using UCR.Models.Plugins;
+using UCR.Core;
+using UCR.Core.Device;
 using UCR.Utilities.Commands;
 using UCR.ViewModels;
 
@@ -38,12 +26,9 @@ namespace UCR.Views.Controls
         // ContextMenu
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
 
-        private DeviceType SelectedDeviceType = DeviceType.Joystick;
-
         private bool HasLoaded = false;
+        
 
-        
-        
         public DeviceBindingControl()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();

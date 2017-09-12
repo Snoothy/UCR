@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UCR.Views.Controls"
-             xmlns:devices="clr-namespace:UCR.Models.Devices"
              xmlns:viewModels="clr-namespace:UCR.ViewModels"
              mc:Ignorable="d">
     <Border BorderBrush="Black" BorderThickness="1" MaxWidth="200" Margin="0,0,0,5">

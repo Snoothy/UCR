@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
-using UCR.Models.Devices;
-using UCR.Models.Plugins;
 
-namespace UCR.Models.Mapping
+namespace UCR.Core.Device
 {
     public enum DeviceBindingType
     {
@@ -32,7 +26,7 @@ namespace UCR.Models.Mapping
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
-        public Plugin Plugin { get; set; }
+        public Plugin.Plugin Plugin { get; set; }
         [XmlIgnore]
         public DeviceBindingType DeviceBindingType { get; set; }
         
@@ -46,7 +40,7 @@ namespace UCR.Models.Mapping
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(ValueChanged callback, Plugin plugin, DeviceBindingType deviceBindingType)
+        public DeviceBinding(ValueChanged callback, Plugin.Plugin plugin, DeviceBindingType deviceBindingType)
         {
             Callback = callback;
             Plugin = plugin;

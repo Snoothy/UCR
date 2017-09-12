@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UCR.Views.Controls"
              xmlns:device="clr-namespace:UCR.ViewModels.Device"
-             xmlns:devices="clr-namespace:UCR.Models.Devices"
+             xmlns:devices="clr-namespace:UCR.Core.Device;assembly=UCR.Core"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignData Source=/SampleData/DeviceListControlSampleData.xaml}"
              d:DesignHeight="600" d:DesignWidth="400">

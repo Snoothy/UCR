@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using UCR.Models;
-using UCR.Models.Plugins;
+using UCR.Core;
+using UCR.Core.Plugin;
 
 namespace UCR.Views.Profile
 {
@@ -11,9 +11,9 @@ namespace UCR.Views.Profile
     public partial class ProfileWindow : Window
     {
         private UCRContext ctx { get; set; }
-        private Models.Profile Profile { get; set; }
+        private Core.Profile.Profile Profile { get; set; }
 
-        public ProfileWindow(UCRContext ctx, Models.Profile profile)
+        public ProfileWindow(UCRContext ctx, Core.Profile.Profile profile)
         {
             this.ctx = ctx;
             Profile = profile;

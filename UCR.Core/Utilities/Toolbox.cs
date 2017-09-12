@@ -4,13 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
-namespace UCR.Utilities
+namespace UCR.Core.Utilities
 {
     class Toolbox
     {
@@ -37,14 +32,6 @@ namespace UCR.Utilities
             }
             //objects.Sort();
             return objects;
-        }
-
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
-        {
-            while (source != null && !(source is TreeViewItem))
-                source = VisualTreeHelper.GetParent(source);
-
-            return source as TreeViewItem;
         }
     }
 }

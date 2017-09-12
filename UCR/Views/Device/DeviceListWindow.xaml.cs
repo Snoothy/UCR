@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using UCR.Models;
+using UCR.Core;
 using UCR.ViewModels.Device;
 
 namespace UCR.Views.Device

@@ -1,6 +1,5 @@
-﻿using UCR.Models;
-using UCR.Models.Devices;
-using UCR.Views.Device;
+﻿using UCR.Core;
+using UCR.Core.Device;
 
 namespace UCR.ViewModels.Device
 {

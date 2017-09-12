@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using UCR.Models;
-using UCR.Models.Devices;
-using UCR.Models.Mapping;
-using UCR.Models.Plugins.Remapper;
+using UCR.Core;
+using UCR.Core.Device;
+using UCR.Core.Plugins;
 using UCR.Tests.Factory;
 
 namespace UCR.Tests.ModelTests

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using UCR.Models.Plugins;
-using UCR.Utilities;
+using UCR.Core.Plugin;
+using UCR.Core.Utilities;
 using UCR.ViewModels;
 
 namespace UCR.Views.Profile

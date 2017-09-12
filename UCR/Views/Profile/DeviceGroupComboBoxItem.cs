@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UCR.Models.Devices;
-using UCR.Models.Mapping;
+using UCR.Core.Device;
 
 namespace UCR.Views.Profile
 {
