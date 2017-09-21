@@ -1,10 +1,14 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Xml.Serialization;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
+using UCR.Core.Models.Plugin;
+using UCR.Core.Utilities;
 
-namespace UCR.Core.Plugins
+namespace UCR.Plugins.ButtonToAxis
 {
-    public class ButtonToAxis : Plugin.Plugin
+    [Export(typeof(Plugin))]
+    public class ButtonToAxis : Plugin
     {
         [XmlIgnore]
         public DeviceBinding InputHigh { get; set; }
@@ -42,7 +46,7 @@ namespace UCR.Core.Plugins
         private void WriteOutput()
         {
             _direction = Math.Sign(_direction);
-            WriteOutput(Output, _direction*UCRConstants.AxisMaxValue);
+            WriteOutput(Output, _direction*Constants.AxisMaxValue);
         }
     }
 }

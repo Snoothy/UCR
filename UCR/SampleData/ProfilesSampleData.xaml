@@ -1,9 +1,0 @@
-﻿<profile:Profile xmlns:profile="clr-namespace:UCR.Core.Profile;assembly=UCR.Core"
-                 xmlns:plugins="clr-namespace:UCR.Core.Plugins;assembly=UCR.Core">
-    <profile:Profile.Title>Test parentProfile</profile:Profile.Title>
-    <profile:Profile.Plugins>
-        <plugins:ButtonToButton Title="Remap button Joy1 DataSample"/>
-        <plugins:ButtonToButton Title="Remap button Joy2 DataSample"/>
-        <plugins:ButtonToAxis Title="Remap button Joy2 Axis DataSample"/>
-    </profile:Profile.Plugins>
-</profile:Profile>

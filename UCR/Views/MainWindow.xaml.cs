@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using UCR.Annotations;
 using UCR.Core;
+using UCR.Utilities;
 using UCR.ViewModels;
 using UCR.Views.Device;
 using UCR.Views.Profile;
@@ -15,29 +16,19 @@ namespace UCR.Views
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private UCRContext ctx;
+        private Context context;
 
-        public string ActiveProfileBreadCrumbs => ctx?.ActiveProfile != null ? ctx.ActiveProfile.ProfileBreadCrumbs() : "None";
+        public string ActiveProfileBreadCrumbs => context?.ActiveProfile != null ? context.ActiveProfile.ProfileBreadCrumbs() : "None";
 
         public MainWindow()
         {
-            InitResources();
             DataContext = this;
+            new ResourceLoader().Load();
             InitializeComponent();
-            ctx = UCRContext.Load();
+            context = Context.Load();
 
-            ctx.SetActiveProfileCallback(ActiveProfileChanged);
+            context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
-        }
-
-        private void InitResources()
-        {
-            // TODO Load all resourecs dynamicly
-            var foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToAxis.xaml");
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
-            foo = new Uri("pack://application:,,,/UCR;component/Views/Plugins/ButtonToButton.xaml");
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = foo });
-            
         }
 
         private bool GetSelectedItem(out ProfileItem profileItem)
@@ -55,7 +46,7 @@ namespace UCR.Views
 
         private void ReloadProfileTree()
         {
-            var profileTree = ProfileItem.GetProfileTree(ctx.Profiles);
+            var profileTree = ProfileItem.GetProfileTree(context.Profiles);
             ProfileTree.ItemsSource = profileTree;
         }
 
@@ -67,7 +58,7 @@ namespace UCR.Views
             var a = sender as ProfileItem;
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            if (!ctx.ActivateProfile(pi.profile))
+            if (!context.ProfilesController.ActivateProfile(pi.profile))
             {
                 MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -75,9 +66,9 @@ namespace UCR.Views
 
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
-            if (ctx.ActiveProfile == null) return;
+            if (context.ActiveProfile == null) return;
             
-            if (!ctx.DeactivateProfile(ctx.ActiveProfile))
+            if (!context.ProfilesController.DeactivateProfile(context.ActiveProfile))
             {
                 MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -88,7 +79,7 @@ namespace UCR.Views
             var w = new TextDialog("Profile name");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            ctx.AddProfile(w.TextResult);
+            context.ProfilesController.AddProfile(w.TextResult);
             ReloadProfileTree();
         }
 
@@ -101,7 +92,6 @@ namespace UCR.Views
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
             pi.profile.AddNewChildProfile(w.TextResult);
             ReloadProfileTree();
-            ctx.IsNotSaved = true;
         }
 
         private void EditProfile(object sender, RoutedEventArgs e)
@@ -115,7 +105,7 @@ namespace UCR.Views
             }
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var win = new ProfileWindow(ctx, pi.profile);
+            var win = new ProfileWindow(context, pi.profile);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
@@ -161,7 +151,7 @@ namespace UCR.Views
 
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new DeviceListWindow(ctx);
+            var win = new DeviceListWindow(context);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
@@ -169,7 +159,7 @@ namespace UCR.Views
         // TODO Fix
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            if (ctx.IsNotSaved)
+            if (context.IsNotSaved)
             {
                 var result = MessageBox.Show("Do you want to save before closing?", "Unsaved data", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                 switch (result)
@@ -179,8 +169,7 @@ namespace UCR.Views
                         e.Cancel = true;
                         return;
                     case MessageBoxResult.Yes:
-                        // TODO save everything
-                        ctx.SaveContext();
+                        context.SaveContext();
                         break;
                     case MessageBoxResult.No:
                         break;
@@ -188,12 +177,12 @@ namespace UCR.Views
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            ctx.IOController.Dispose();
+            context.IOController.Dispose();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            ctx.IOController = null;
+            context.IOController = null;
         }
 
         private void ActiveProfileChanged()
@@ -211,12 +200,12 @@ namespace UCR.Views
 
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ctx.SaveContext();
+            context.SaveContext();
         }
 
         private void Save_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = ctx.IsNotSaved;
+            e.CanExecute = context.IsNotSaved;
         }
     }
 }

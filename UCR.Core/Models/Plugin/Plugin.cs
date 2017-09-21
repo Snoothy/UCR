@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
 
-namespace UCR.Core.Plugin
+namespace UCR.Core.Models.Plugin
 {
     public abstract class Plugin
     {
@@ -28,14 +28,14 @@ namespace UCR.Core.Plugin
             Outputs = new List<DeviceBinding>();
         }
 
-        public bool Activate(UCRContext ctx)
+        public bool Activate(Context context)
         {
             var success = true;
-            success &= SubscribeInputs(ctx);
+            success &= SubscribeInputs(context);
             return success;
         }
 
-        public Device.Device GetDevice(DeviceBinding deviceBinding)
+        public Models.Device.Device GetDevice(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDevice(deviceBinding);
         }
@@ -44,7 +44,7 @@ namespace UCR.Core.Plugin
         {
             if (output?.DeviceType == null) return;
             var device = ParentProfile.GetLocalDevice(output);
-            device.WriteOutput(ParentProfile.ctx, output, value);
+            device.WriteOutput(ParentProfile.context, output, value);
         }
 
         public virtual List<DeviceBinding> GetInputs()
@@ -52,12 +52,12 @@ namespace UCR.Core.Plugin
             return Inputs.Select(input => new DeviceBinding(input)).ToList();
         }
 
-        private bool SubscribeInputs(UCRContext ctx)
+        private bool SubscribeInputs(Context context)
         {
             var success = true;
             foreach (var input in GetInputs())
             {
-                var device = ctx.ActiveProfile.GetLocalDevice(input);
+                var device = context.ActiveProfile.GetLocalDevice(input);
                 if (device != null)
                 {
                     success &= device.AddDeviceBinding(input);
@@ -97,7 +97,7 @@ namespace UCR.Core.Plugin
             return deviceBinding;
         }
 
-        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Models.Device.Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDeviceList(deviceBinding);
         }
@@ -105,10 +105,10 @@ namespace UCR.Core.Plugin
         public void Rename(string title)
         {
             Title = title;
-            ParentProfile.ctx.IsNotSaved = true;
+            ParentProfile.context.ContextChanged();
         }
 
-        internal void PostLoad(UCRContext ctx, Profile.Profile profile)
+        internal void PostLoad(Context context, Profile.Profile profile)
         {
             ParentProfile = profile;
             BindingCallback = profile.OnDeviceBindingChange;

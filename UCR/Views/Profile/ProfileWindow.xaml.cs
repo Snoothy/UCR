@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using UCR.Core;
-using UCR.Core.Plugin;
+using UCR.Core.Models.Plugin;
 
 namespace UCR.Views.Profile
 {
@@ -10,12 +10,12 @@ namespace UCR.Views.Profile
     /// </summary>
     public partial class ProfileWindow : Window
     {
-        private UCRContext ctx { get; set; }
+        private Context Context { get; set; }
         private Core.Profile.Profile Profile { get; set; }
 
-        public ProfileWindow(UCRContext ctx, Core.Profile.Profile profile)
+        public ProfileWindow(Context context, Core.Profile.Profile profile)
         {
-            this.ctx = ctx;
+            Context = context;
             Profile = profile;
             InitializeComponent();
             Title = "Edit " + profile.Title;
@@ -24,7 +24,7 @@ namespace UCR.Views.Profile
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
-            if (!Profile.ctx.ActivateProfile(Profile))
+            if (!Profile.Activate())
             {
                 MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -32,17 +32,16 @@ namespace UCR.Views.Profile
 
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
-            Profile.ctx.DeactivateProfile(Profile);
+            Profile.Deactivate();
         }
 
         private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new PluginDialog("Add plugin", "Untitled");
+            var win = new PluginDialog(Context, "Add plugin", "Untitled");
             win.ShowDialog();
             if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
             // TODO Check if plugin with same name exists
             Profile.AddPlugin(win.Plugin, win.TextResult);
-            ctx.IsNotSaved = true;
             PluginsListBox.Items.Refresh();
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
@@ -73,7 +72,7 @@ namespace UCR.Views.Profile
 
         private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new ProfileDeviceGroupWindow(ctx, Profile);
+            var win = new ProfileDeviceGroupWindow(Context, Profile);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }

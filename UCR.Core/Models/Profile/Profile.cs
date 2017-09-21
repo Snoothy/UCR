@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
 
 namespace UCR.Core.Profile
 {
@@ -14,7 +14,7 @@ namespace UCR.Core.Profile
         public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
-        public List<Plugin.Plugin> Plugins { get; set; }
+        public List<Models.Plugin.Plugin> Plugins { get; set; }
 
         // Inputs
         public Guid KeyboardInputList { get; set; }
@@ -30,7 +30,7 @@ namespace UCR.Core.Profile
 
         /* Runtime */
         [XmlIgnore]
-        public UCRContext ctx;
+        public Context context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
         [XmlIgnore]
@@ -49,17 +49,17 @@ namespace UCR.Core.Profile
             Init();
         }
 
-        public Profile(UCRContext ctx)
+        public Profile(Context context)
         {
-            this.ctx = ctx;
+            this.context = context;
             Init();
         }
 
         private void Init()
         {
-            Plugins = Plugins ?? new List<Plugin.Plugin>();
+            Plugins = Plugins ?? new List<Models.Plugin.Plugin>();
             ChildProfiles = ChildProfiles ?? new List<Profile>();
-            Plugins = Plugins ?? new List<Plugin.Plugin>();
+            Plugins = Plugins ?? new List<Models.Plugin.Plugin>();
 
             InheritFromParent = true;
             Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
@@ -69,7 +69,7 @@ namespace UCR.Core.Profile
             SetDeviceListNames();
         }
 
-        public Profile(UCRContext ctx, Profile parentProfile = null) : this(ctx)
+        public Profile(Context context, Profile parentProfile = null) : this(context)
         {
             ParentProfile = parentProfile;
         }
@@ -82,7 +82,7 @@ namespace UCR.Core.Profile
         {
             if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
-            ChildProfiles.Add(CreateProfile(ctx, title, this));
+            ChildProfiles.Add(CreateProfile(context, title, this));
         }
 
         public bool Rename(string title)
@@ -96,13 +96,13 @@ namespace UCR.Core.Profile
         {
             if (ParentProfile == null)
             {
-                ctx.Profiles.Remove(this);
+                context.Profiles.Remove(this);
             }
             else
             {
                 ParentProfile.ChildProfiles.Remove(this);
             }
-            ctx.IsNotSaved = true;
+            context.ContextChanged();
         }
 
         public void SetDeviceGroup(DeviceBindingType bindingType, DeviceType deviceType, Guid deviceGroupGuid)
@@ -151,26 +151,36 @@ namespace UCR.Core.Profile
                     throw new ArgumentOutOfRangeException(nameof(bindingType), bindingType, null);
             }
             SetDeviceListNames();
-            ctx.IsNotSaved = true;
+            context.ContextChanged();
+        }
+
+        public bool Activate()
+        {
+            return context.ProfilesController.ActivateProfile(this);
+        }
+
+        public bool Deactivate()
+        {
+            return context.ProfilesController.DeactivateProfile(this);
         }
 
         #endregion
 
         #region Subscription
-        
-        public bool Activate(UCRContext ctx)
+
+        public bool Activate(Context context)
         {
             bool success = true;
             InitializeDeviceGroups();
 
             if (ParentProfile != null && InheritFromParent)
             {
-                ParentProfile.Activate(ctx);
+                ParentProfile.Activate(context);
             }
 
             foreach (var plugin in Plugins)
             {
-                success &= plugin.Activate(ctx);
+                success &= plugin.Activate(context);
             }
 
             return success;
@@ -208,7 +218,7 @@ namespace UCR.Core.Profile
             {
                 foreach (var device in deviceGroup.Value.Devices)
                 {
-                    success &= device.SubscribeDeviceBindings(ctx);
+                    success &= device.SubscribeDeviceBindings(context);
                 }
             }
             success &= SubscribeOutputDevices();
@@ -222,7 +232,7 @@ namespace UCR.Core.Profile
             {
                 foreach (var device in deviceGroup.Value.Devices)
                 {
-                    success &= device.UnsubscribeDeviceBindings(ctx);
+                    success &= device.UnsubscribeDeviceBindings(context);
                 }
             }
             success &= UnsubscribeOutputDevices();
@@ -240,7 +250,7 @@ namespace UCR.Core.Profile
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
                 success &= OutputGroups[(DeviceType)type].Devices
-                    .Aggregate(true, (current, device) => current & device.SubscribeOutput(ctx));
+                    .Aggregate(true, (current, device) => current & device.SubscribeOutput(context));
             }
             return success;
         }
@@ -251,7 +261,7 @@ namespace UCR.Core.Profile
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
                 success &= OutputGroups[(DeviceType)type].Devices
-                    .Aggregate(true, (current, device) => current & device.UnsubscribeOutput(ctx));
+                    .Aggregate(true, (current, device) => current & device.UnsubscribeOutput(context));
             }
             return success;
         }
@@ -266,7 +276,7 @@ namespace UCR.Core.Profile
             return DeviceGroupGuids[deviceBinding.DeviceBindingType][deviceBinding.DeviceType];
         }
 
-        public Device.Device GetDevice(DeviceBinding deviceBinding)
+        public Device GetDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count
@@ -274,15 +284,15 @@ namespace UCR.Core.Profile
                 : null;
         }
 
-        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return GetDeviceList(deviceBinding.DeviceBindingType, deviceBinding.DeviceType);
         }
 
-        public List<Device.Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        public List<Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
         {
             SetDeviceListNames();
-            var result = ctx.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device.Device>();
+            var result = context.DeviceGroupsController.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device>();
             if (!InheritFromParent || ParentProfile == null) return result;
 
             var parentDeviceList = ParentProfile.GetDeviceList(deviceBindingType, deviceType);
@@ -296,13 +306,13 @@ namespace UCR.Core.Profile
             return result;
         }
 
-        public Device.Device GetLocalDevice(DeviceBinding deviceBinding)
+        public Device GetLocalDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetLocalDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count ? deviceList[deviceBinding.DeviceNumber] : null;
         }
 
-        private List<Device.Device> GetLocalDeviceList(DeviceBinding deviceBinding)
+        private List<Device> GetLocalDeviceList(DeviceBinding deviceBinding)
         {
             var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
             var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
@@ -313,18 +323,19 @@ namespace UCR.Core.Profile
         
         #region Plugin
 
-        public void AddPlugin(Plugin.Plugin plugin, string title = "Untitled")
+        public void AddPlugin(Models.Plugin.Plugin plugin, string title = "Untitled")
         {
             if (plugin.Title == null) plugin.Title = title;
             plugin.BindingCallback = OnDeviceBindingChange;
             plugin.ParentProfile = this;
             Plugins.Add(plugin);
+            context.ContextChanged();
         }
 
-        public void RemovePlugin(Plugin.Plugin plugin)
+        public void RemovePlugin(Models.Plugin.Plugin plugin)
         {
             Plugins.Remove(plugin);
-            ctx.IsNotSaved = true;
+            context.ContextChanged();
         }
 
         #endregion
@@ -342,7 +353,7 @@ namespace UCR.Core.Profile
         /// <returns></returns>
         public bool IsActive()
         {
-            return ctx.ActiveProfile != null && ctx.ActiveProfile.Guid == Guid;
+            return context.ActiveProfile != null && context.ActiveProfile.Guid == Guid;
         }
 
         private static bool IsGlobalProfileTitle(string title)
@@ -350,9 +361,9 @@ namespace UCR.Core.Profile
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private List<Device.Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        private List<Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
         {
-            return Device.Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
+            return Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
         }
 
         private void SetDeviceListNames()
@@ -382,10 +393,10 @@ namespace UCR.Core.Profile
 
         #endregion
 
-        public static Profile CreateProfile(UCRContext ctx, string title, Profile parent = null)
+        public static Profile CreateProfile(Context context, string title, Profile parent = null)
         {
             if (IsGlobalProfileTitle(title)) title += " not allowed";
-            var profile = new Profile(ctx, parent)
+            var profile = new Profile(context, parent)
             {
                 Title = title
             };
@@ -393,30 +404,30 @@ namespace UCR.Core.Profile
             return profile;
         }
 
-        internal void OnDeviceBindingChange(Plugin.Plugin plugin)
+        internal void OnDeviceBindingChange(Models.Plugin.Plugin plugin)
         {
             if (!IsActive()) return;
             foreach (var deviceBinding in plugin.GetInputs())
             {
                 var device = GetLocalDevice(deviceBinding);
                 if (device == null) return; 
-                device.SubscribeDeviceBindingInput(ctx, deviceBinding);
+                device.SubscribeDeviceBindingInput(context, deviceBinding);
             }
         }
 
-        internal void PostLoad(UCRContext ctx, Profile parentProfile = null)
+        internal void PostLoad(Context context, Profile parentProfile = null)
         {
-            this.ctx = ctx;
+            this.context = context;
             ParentProfile = parentProfile;
 
             foreach (var profile in ChildProfiles)
             {
-                profile.PostLoad(ctx, this);
+                profile.PostLoad(context, this);
             }
 
             foreach (var plugin in Plugins)
             {
-                plugin.PostLoad(ctx, this);
+                plugin.PostLoad(context, this);
             }
         }
     }

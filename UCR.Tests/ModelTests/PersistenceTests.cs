@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using UCR.Core;
-using UCR.Core.Device;
-using UCR.Core.Plugins;
+using UCR.Core.Models.Device;
+using UCR.Plugins.ButtonToButton;
 using UCR.Tests.Factory;
 
 namespace UCR.Tests.ModelTests
@@ -14,56 +14,59 @@ namespace UCR.Tests.ModelTests
         [Test]
         public void BlankContext()
         {
-            var ctx = new UCRContext();
-            ctx.SaveContext();
+            var context = new Context();
+            context.SaveContext();
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
-                var newCtx = UCRContext.Load();
-                Assert.That(newCtx.IsNotSaved, Is.False);
-                Assert.That(newCtx.ActiveProfile, Is.Null);
-                Assert.That(newCtx.Profiles, Is.Not.Null.And.Empty);
-                Assert.That(newCtx.JoystickGroups, Is.Not.Null.And.Empty);
-                Assert.That(newCtx.KeyboardGroups, Is.Not.Null.And.Empty);
-                Assert.That(newCtx.MiceGroups, Is.Not.Null.And.Empty);
-                Assert.That(newCtx.GenericDeviceGroups, Is.Not.Null.And.Empty);
-                newCtx.SaveContext();
+                var newcontext = Context.Load();
+                Assert.That(newcontext.IsNotSaved, Is.False);
+                Assert.That(newcontext.ActiveProfile, Is.Null);
+                Assert.That(newcontext.Profiles, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.JoystickGroups, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.KeyboardGroups, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.MiceGroups, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.GenericDeviceGroups, Is.Not.Null.And.Empty);
+                newcontext.SaveContext();
             }
         }
 
         [Test]
         public void ProfileContext()
         {
-            var ctx = new UCRContext();
-            ctx.AddProfile("Root profile");
-            ctx.Profiles[0].AddNewChildProfile("Child profile");
-            ctx.SaveContext();
+            var context = new Context();
+            context.ProfilesController.AddProfile("Root profile");
+            context.Profiles[0].AddNewChildProfile("Child profile");
+            context.SaveContext();
+
+            Assert.That(context.Profiles.Count, Is.EqualTo(1));
+            Assert.That(context.Profiles[0].ChildProfiles.Count, Is.EqualTo(1));
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
-                var newCtx = UCRContext.Load();
-                Assert.That(newCtx.Profiles.Count, Is.EqualTo(1));
-                Assert.That(newCtx.Profiles[0].ChildProfiles.Count, Is.EqualTo(1));
-                Assert.That(newCtx.Profiles[0], Is.EqualTo(newCtx.Profiles[0].ChildProfiles[0].ParentProfile));
+                var newcontext = Context.Load();
+                Assert.That(newcontext.Profiles.Count, Is.EqualTo(1));
+                Assert.That(newcontext.Profiles[0].ChildProfiles.Count, Is.EqualTo(1));
+                Assert.That(newcontext.Profiles[0], Is.EqualTo(newcontext.Profiles[0].ChildProfiles[0].ParentProfile));
 
-                Assert.That(newCtx.Profiles[0].Title, Is.EqualTo(ctx.Profiles[0].Title));
-                Assert.That(newCtx.Profiles[0].Guid, Is.EqualTo(ctx.Profiles[0].Guid));
-                Assert.That(newCtx.Profiles[0].Plugins.Count, Is.EqualTo(ctx.Profiles[0].Plugins.Count));
+                Assert.That(newcontext.Profiles[0].Title, Is.EqualTo(context.Profiles[0].Title));
+                Assert.That(newcontext.Profiles[0].Guid, Is.EqualTo(context.Profiles[0].Guid));
+                Assert.That(newcontext.Profiles[0].Plugins.Count, Is.EqualTo(context.Profiles[0].Plugins.Count));
 
-                Assert.That(newCtx.Profiles[0].ChildProfiles[0].Title, Is.EqualTo(ctx.Profiles[0].ChildProfiles[0].Title));
-                Assert.That(newCtx.Profiles[0].ChildProfiles[0].Guid, Is.EqualTo(ctx.Profiles[0].ChildProfiles[0].Guid));
-                Assert.That(newCtx.Profiles[0].ChildProfiles[0].Plugins.Count, Is.EqualTo(ctx.Profiles[0].ChildProfiles[0].Plugins.Count));
-                newCtx.SaveContext();
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Title, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Title));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Guid, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Plugins.Count, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Plugins.Count));
+                newcontext.SaveContext();
             }
         }
 
         [Test]
         public void PluginContext()
         {
-            var ctx = new UCRContext();
-            ctx.AddProfile("Root profile");
+            var context = new Context();
+            context.ProfilesController.AddProfile("Root profile");
 
-            var profile = ctx.Profiles[0];
+            var profile = context.Profiles[0];
             profile.AddPlugin(new ButtonToButton(), "Button to button 1");
             profile.AddPlugin(new ButtonToButton(), "Button to button 2");
 
@@ -74,12 +77,12 @@ namespace UCR.Tests.ModelTests
             }
 
             var plugins = profile.Plugins;
-            ctx.SaveContext();
+            context.SaveContext();
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
-                var newCtx = UCRContext.Load();
-                var newProfile = newCtx.Profiles[0];
+                var newcontext = Context.Load();
+                var newProfile = newcontext.Profiles[0];
                 Assert.That(newProfile.Plugins.Count, Is.EqualTo(profile.Plugins.Count));
 
                 for (var j = 0; j < plugins.Count; j++)
@@ -98,7 +101,7 @@ namespace UCR.Tests.ModelTests
                 Assert.That(((ButtonToButton)newProfile.Plugins[0]).Input.Guid, Is.EqualTo(newProfile.Plugins[0].Inputs[0].Guid));
                 Assert.That(((ButtonToButton)newProfile.Plugins[0]).Output.Guid, Is.EqualTo(newProfile.Plugins[0].Outputs[0].Guid));
 
-                newCtx.SaveContext();
+                newcontext.SaveContext();
             }
         }
 
@@ -113,46 +116,46 @@ namespace UCR.Tests.ModelTests
         [Test]
         public void DeviceListContext()
         {
-            var ctx = new UCRContext();
-            var joystickGuid = ctx.AddDeviceGroup("Joystick 1", DeviceType.Joystick);
-            ctx.AddDeviceGroup("Joystick 2", DeviceType.Joystick);
-            ctx.AddDeviceGroup("Joystick 3", DeviceType.Joystick);
-            ctx.AddDeviceGroup("Joystick 4", DeviceType.Joystick);
-            var keyboardGuid = ctx.AddDeviceGroup("Keyboard", DeviceType.Keyboard);
-            ctx.AddDeviceGroup("Mice", DeviceType.Mouse);
-            ctx.AddDeviceGroup("Generic", DeviceType.Generic);
+            var context = new Context();
+            var joystickGuid = context.DeviceGroupsController.AddDeviceGroup("Joystick 1", DeviceType.Joystick);
+            context.DeviceGroupsController.AddDeviceGroup("Joystick 2", DeviceType.Joystick);
+            context.DeviceGroupsController.AddDeviceGroup("Joystick 3", DeviceType.Joystick);
+            context.DeviceGroupsController.AddDeviceGroup("Joystick 4", DeviceType.Joystick);
+            var keyboardGuid = context.DeviceGroupsController.AddDeviceGroup("Keyboard", DeviceType.Keyboard);
+            context.DeviceGroupsController.AddDeviceGroup("Mice", DeviceType.Mouse);
+            context.DeviceGroupsController.AddDeviceGroup("Generic", DeviceType.Generic);
 
-            var joystickDeviceGroup = ctx.GetDeviceGroup(DeviceType.Joystick, joystickGuid);
+            var joystickDeviceGroup = context.DeviceGroupsController.GetDeviceGroup(DeviceType.Joystick, joystickGuid);
             joystickDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Gamepad", "Gamepad provider", 4);
-            var keyboardDeviceGroup = ctx.GetDeviceGroup(DeviceType.Keyboard, keyboardGuid);
+            var keyboardDeviceGroup = context.DeviceGroupsController.GetDeviceGroup(DeviceType.Keyboard, keyboardGuid);
             keyboardDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Keyboard", "interception", 1);
 
-            ctx.SaveContext();
+            context.SaveContext();
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
-                var newCtx = UCRContext.Load();
+                var newcontext = Context.Load();
                 
-                Assert.That(newCtx.JoystickGroups.Count, Is.EqualTo(ctx.JoystickGroups.Count));
-                Assert.That(newCtx.KeyboardGroups.Count, Is.EqualTo(ctx.KeyboardGroups.Count));
-                Assert.That(newCtx.MiceGroups.Count, Is.EqualTo(ctx.MiceGroups.Count));
-                Assert.That(newCtx.GenericDeviceGroups.Count, Is.EqualTo(ctx.GenericDeviceGroups.Count));
+                Assert.That(newcontext.JoystickGroups.Count, Is.EqualTo(context.JoystickGroups.Count));
+                Assert.That(newcontext.KeyboardGroups.Count, Is.EqualTo(context.KeyboardGroups.Count));
+                Assert.That(newcontext.MiceGroups.Count, Is.EqualTo(context.MiceGroups.Count));
+                Assert.That(newcontext.GenericDeviceGroups.Count, Is.EqualTo(context.GenericDeviceGroups.Count));
 
-                for (var j = 0; j < ctx.JoystickGroups.Count; j++)
+                for (var j = 0; j < context.JoystickGroups.Count; j++)
                 {
-                    Assert.That(newCtx.JoystickGroups[j].Guid, Is.EqualTo(ctx.JoystickGroups[j].Guid));
-                    Assert.That(newCtx.JoystickGroups[j].Title, Is.EqualTo(ctx.JoystickGroups[j].Title));
+                    Assert.That(newcontext.JoystickGroups[j].Guid, Is.EqualTo(context.JoystickGroups[j].Guid));
+                    Assert.That(newcontext.JoystickGroups[j].Title, Is.EqualTo(context.JoystickGroups[j].Title));
 
-                    for (var k = 0; k < ctx.JoystickGroups[j].Devices.Count; k++)
+                    for (var k = 0; k < context.JoystickGroups[j].Devices.Count; k++)
                     {
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].Title, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].Title));
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].DeviceHandle, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].ProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].ProviderName));
-                        Assert.That(newCtx.JoystickGroups[j].Devices[k].SubProviderName, Is.EqualTo(ctx.JoystickGroups[j].Devices[k].SubProviderName));
+                        Assert.That(newcontext.JoystickGroups[j].Devices[k].Title, Is.EqualTo(context.JoystickGroups[j].Devices[k].Title));
+                        Assert.That(newcontext.JoystickGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.JoystickGroups[j].Devices[k].DeviceHandle));
+                        Assert.That(newcontext.JoystickGroups[j].Devices[k].ProviderName, Is.EqualTo(context.JoystickGroups[j].Devices[k].ProviderName));
+                        Assert.That(newcontext.JoystickGroups[j].Devices[k].SubProviderName, Is.EqualTo(context.JoystickGroups[j].Devices[k].SubProviderName));
                     }
                 }
 
-                newCtx.SaveContext();
+                newcontext.SaveContext();
             }
         }
     }

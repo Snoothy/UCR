@@ -1,6 +1,6 @@
-﻿namespace UCR.Core
+﻿namespace UCR.Core.Utilities
 {
-    class UCRConstants
+    public class Constants
     {
         public const int MaxDevices = 16;
         public const int AxisMaxValue = short.MaxValue;

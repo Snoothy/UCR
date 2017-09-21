@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:UCR.Views.Controls">
+                    x:Class="UCR.Plugins.ButtonToButton.Resources"
+                    xmlns:controls="clr-namespace:UCR.Views.Controls;assembly=UCR">
     <DataTemplate x:Key="ButtonToButton">
         <DockPanel>
             <controls:DeviceBindingControl Label="Button Input" DockPanel.Dock="Left" DeviceBinding="{Binding Input}"/>

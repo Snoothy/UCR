@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
 
-namespace UCR.Core.Plugin
+namespace UCR.Core.Models.Plugin
 {
-    public abstract class PluginGroup : Plugin
+    public abstract class PluginGroup : Models.Plugin.Plugin
     {
-        public List<Plugin> Plugins { get; set; }
+        public List<Models.Plugin.Plugin> Plugins { get; set; }
 
         public PluginGroup()
         {
-            Plugins = new List<Plugin>();
+            Plugins = new List<Models.Plugin.Plugin>();
         }
 
         public override List<DeviceBinding> GetInputs()

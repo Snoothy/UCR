@@ -11,9 +11,9 @@ namespace UCR.Views.Device
     {
         private DeviceListWindowViewModel viewModel;
 
-        public DeviceListWindow(UCRContext ctx)
+        public DeviceListWindow(Context context)
         {
-            viewModel = new DeviceListWindowViewModel(ctx);
+            viewModel = new DeviceListWindowViewModel(context);
             DataContext = viewModel;
             InitializeComponent();
         }

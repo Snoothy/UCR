@@ -1,7 +1,7 @@
 ﻿<Application x:Class="UCR.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Views/UCRWindow.xaml"
+             StartupUri="Views/MainWindow.xaml"
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
          

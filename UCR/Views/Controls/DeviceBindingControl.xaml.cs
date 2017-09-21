@@ -5,7 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Providers;
 using UCR.Core;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
+using UCR.Core.Utilities;
 using UCR.Utilities.Commands;
 using UCR.ViewModels;
 
@@ -82,7 +83,7 @@ namespace UCR.Views.Controls
         {
             var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
-            for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, UCRConstants.MaxDevices); i++)
+            for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, Constants.MaxDevices); i++)
             {
                 if (devicelist != null && i < devicelist.Count)
                 {
@@ -129,7 +130,7 @@ namespace UCR.Views.Controls
 
             if (device.Bindings == null || device.Bindings.Count == 0)
             {
-                var ioController = DeviceBinding.Plugin.ParentProfile.ctx.IOController;
+                var ioController = DeviceBinding.Plugin.ParentProfile.context.IOController;
                 var list = DeviceBinding.DeviceBindingType == DeviceBindingType.Input 
                     ? ioController.GetInputList() 
                     : ioController.GetOutputList();

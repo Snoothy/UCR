@@ -59,6 +59,7 @@
       <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
@@ -82,6 +83,7 @@
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
+    <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
     <Compile Include="ViewModels\Device\DeviceGroupViewModel.cs" />
@@ -112,8 +114,8 @@
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UCRWindow.xaml.cs">
-      <DependentUpon>UCRWindow.xaml</DependentUpon>
+    <Compile Include="Views\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -124,12 +126,6 @@
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
-    <Page Include="SampleData\ButtonToButtonSampleData.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <DesignData Include="SampleData\ProfilesSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
@@ -148,14 +144,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Plugins\ButtonToAxis.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Plugins\ButtonToButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Profile\PluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -168,7 +156,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\UCRWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -37,6 +37,7 @@
       <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,17 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Device\Device.cs" />
-    <Compile Include="Device\DeviceGroup.cs" />
-    <Compile Include="Device\DeviceBinding.cs" />
-    <Compile Include="Plugins\ButtonToAxis.cs" />
-    <Compile Include="Plugins\ButtonToButton.cs" />
-    <Compile Include="Plugin\Plugin.cs" />
-    <Compile Include="Plugin\PluginGroup.cs" />
-    <Compile Include="Profile\Profile.cs" />
+    <Compile Include="Controllers\DeviceGroupsController.cs" />
+    <Compile Include="Controllers\ProfilesController.cs" />
+    <Compile Include="Models\Device\Device.cs" />
+    <Compile Include="Models\Device\DeviceGroup.cs" />
+    <Compile Include="Models\Device\DeviceBinding.cs" />
+    <Compile Include="Models\Plugin\Plugin.cs" />
+    <Compile Include="Models\Plugin\PluginGroup.cs" />
+    <Compile Include="Models\Plugin\PluginLoader.cs" />
+    <Compile Include="Models\Profile\Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UCRConstants.cs" />
-    <Compile Include="UCRContext.cs" />
+    <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Context.cs" />
     <Compile Include="Utilities\Toolbox.cs" />
   </ItemGroup>
   <ItemGroup />

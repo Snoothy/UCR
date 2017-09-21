@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UCR.Core.Device
+namespace UCR.Core.Models.Device
 {
     public class DeviceGroup
     {
         // Guid used for persistance
         public string Title { get; set; }
         public Guid Guid { get; set; }
-        public List<Device> Devices { get; set; }
+        public List<Models.Device.Device> Devices { get; set; }
 
         private DeviceGroup()
         {
@@ -20,7 +20,7 @@ namespace UCR.Core.Device
         {
             Title = title;
             Guid = Guid.NewGuid();
-            Devices = new List<Device>();
+            Devices = new List<Models.Device.Device>();
         }
 
         public bool RemoveDevice(Guid guid)

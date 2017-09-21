@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace UCR.Core.Device
+namespace UCR.Core.Models.Device
 {
     public enum DeviceBindingType
     {
@@ -66,7 +66,7 @@ namespace UCR.Core.Device
         {
             DeviceNumber = number;
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
-            Plugin.ParentProfile.ctx.ContextChanged();
+            Plugin.ParentProfile.context.ContextChanged();
         }
 
         public void SetKeyTypeValue(int type, int value, int subValue)
@@ -76,7 +76,7 @@ namespace UCR.Core.Device
             KeySubValue = subValue;
             IsBound = true;
             if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
-            Plugin.ParentProfile.ctx.ContextChanged();
+            Plugin.ParentProfile.context.ContextChanged();
         }
 
         public void SetDeviceType(DeviceType deviceType)
@@ -90,7 +90,7 @@ namespace UCR.Core.Device
             KeyType = 0;
             KeyValue = 0;
             KeySubValue = 0;
-            Plugin.ParentProfile.ctx.ContextChanged();
+            Plugin.ParentProfile.context.ContextChanged();
         }
         
         public string BoundName()

@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using Providers;
 using BindingInfo = Providers.BindingInfo;
 
-namespace UCR.Core.Device
+namespace UCR.Core.Models.Device
 {
     public enum DeviceType
     {
@@ -73,10 +73,10 @@ namespace UCR.Core.Device
             Api = device.API;
         }
 
-        public void WriteOutput(UCRContext ctx, DeviceBinding deviceBinding, long value)
+        public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
         {
             if (DeviceHandle == null || ProviderName == null) return;
-            ctx.IOController.SetOutputstate(new OutputSubscriptionRequest()
+            context.IOController.SetOutputstate(new OutputSubscriptionRequest()
             {
                 ProviderName = ProviderName,
                 DeviceHandle = DeviceHandle,
@@ -124,27 +124,27 @@ namespace UCR.Core.Device
             Subscriptions = new Dictionary<string, List<DeviceBinding>>();
         }
 
-        public bool SubscribeDeviceBindings(UCRContext ctx)
+        public bool SubscribeDeviceBindings(Context context)
         {
             var success = true;
             foreach (var deviceBindingList in Subscriptions)
             {
                 foreach (var deviceBinding in deviceBindingList.Value)
                 {
-                    success &= SubscribeDeviceBindingInput(ctx, deviceBinding);
+                    success &= SubscribeDeviceBindingInput(context, deviceBinding);
                 }
             }
             return success;
         }
 
-        public bool UnsubscribeDeviceBindings(UCRContext ctx)
+        public bool UnsubscribeDeviceBindings(Context context)
         {
             var success = true;
             foreach (var deviceBindingList in Subscriptions)
             {
                 foreach (var deviceBinding in deviceBindingList.Value)
                 {
-                    success &= UnsubscribeDeviceBindingInput(ctx, deviceBinding);
+                    success &= UnsubscribeDeviceBindingInput(context, deviceBinding);
                 }
             }
             return success;
@@ -153,19 +153,19 @@ namespace UCR.Core.Device
         /// <summary>
         /// Subscribe a devicebining with the backend. Unsubscribe devicebinding if it is not bound
         /// </summary>
-        /// <param name="ctx"></param>
+        /// <param name="context"></param>
         /// <param name="deviceBinding"></param>
         /// <returns>If the subscription succeeded</returns>
-        public bool SubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        public bool SubscribeDeviceBindingInput(Context context, DeviceBinding deviceBinding)
         {
             return deviceBinding.IsBound 
-                ? ctx.IOController.SubscribeInput(GetInputSubscriptionRequest(deviceBinding))
-                : UnsubscribeDeviceBindingInput(ctx, deviceBinding);
+                ? context.IOController.SubscribeInput(GetInputSubscriptionRequest(deviceBinding))
+                : UnsubscribeDeviceBindingInput(context, deviceBinding);
         }
 
-        public bool UnsubscribeDeviceBindingInput(UCRContext ctx, DeviceBinding deviceBinding)
+        public bool UnsubscribeDeviceBindingInput(Context context, DeviceBinding deviceBinding)
         {
-            return ctx.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBinding));
+            return context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBinding));
         }
 
         private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBinding deviceBinding)
@@ -207,7 +207,7 @@ namespace UCR.Core.Device
             return null;
         }
 
-        public bool SubscribeOutput(UCRContext ctx)
+        public bool SubscribeOutput(Context context)
         {
             if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
@@ -216,10 +216,10 @@ namespace UCR.Core.Device
             }
             if (IsAcquired) return true;
             IsAcquired = true;
-            return ctx.IOController.SubscribeOutput(GetOutputSubscriptionRequest());
+            return context.IOController.SubscribeOutput(GetOutputSubscriptionRequest());
         }
 
-        public bool UnsubscribeOutput(UCRContext ctx)
+        public bool UnsubscribeOutput(Context context)
         {
             if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
@@ -228,7 +228,7 @@ namespace UCR.Core.Device
             }
             if (!IsAcquired) return true;
             IsAcquired = false;            
-            return ctx.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
+            return context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
         }
 
         private OutputSubscriptionRequest GetOutputSubscriptionRequest()

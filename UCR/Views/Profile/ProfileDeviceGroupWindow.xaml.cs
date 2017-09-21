@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using UCR.Core;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
 using UCR.ViewModels;
 
 namespace UCR.Views.Profile
@@ -13,7 +13,7 @@ namespace UCR.Views.Profile
     /// </summary>
     public partial class ProfileDeviceGroupWindow : Window
     {
-        private UCRContext ctx;
+        private Context context;
         private Core.Profile.Profile profile;
         private bool HasLoaded = false;
 
@@ -26,9 +26,9 @@ namespace UCR.Views.Profile
         public List<ComboBoxItemViewModel> OutputMiceGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGenericGroups { get; set; }
 
-        public ProfileDeviceGroupWindow(UCRContext ctx, Core.Profile.Profile profile)
+        public ProfileDeviceGroupWindow(Context context, Core.Profile.Profile profile)
         {
-            this.ctx = ctx;
+            this.context = context;
             this.profile = profile;
             DataContext = this;
             InitializeComponent();
@@ -58,7 +58,7 @@ namespace UCR.Views.Profile
                 DeviceType = deviceType,
                 DeviceBindingType = deviceBindingType
             }));
-            foreach (var deviceGroup in ctx.GetDeviceGroupList(deviceType))
+            foreach (var deviceGroup in context.DeviceGroupsController.GetDeviceGroupList(deviceType))
             {
                 var model = new ComboBoxItemViewModel(deviceGroup.Title, new DeviceGroupComboBoxItem()
                 {

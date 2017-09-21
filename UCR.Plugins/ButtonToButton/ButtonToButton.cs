@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Xml.Serialization;
-using UCR.Core.Device;
+using UCR.Core.Models.Device;
+using UCR.Core.Models.Plugin;
 
-namespace UCR.Core.Plugins
+namespace UCR.Plugins.ButtonToButton
 {
-    public class ButtonToButton : Plugin.Plugin
+    [Export(typeof(Plugin))]
+    public class ButtonToButton : Plugin
     {
         [XmlIgnore]
         public DeviceBinding Input { get; set; }

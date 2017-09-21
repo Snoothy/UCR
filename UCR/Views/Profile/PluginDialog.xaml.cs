@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using UCR.Core.Plugin;
+using UCR.Core;
+using UCR.Core.Models.Plugin;
 using UCR.Core.Utilities;
 using UCR.ViewModels;
 
@@ -12,18 +14,21 @@ namespace UCR.Views.Profile
         public string TextResult { get; set; }
         public Plugin Plugin { get; set; }
 
-        public PluginDialog(string question, string answer="")
+        private List<Plugin> Plugins;
+
+        public PluginDialog(Context context, string question, string answer="")
         {
             InitializeComponent();
             Title = question;
             TxtAnswer.Text = answer;
+            Plugins = context.GetPlugins();
             InitComboBox();
         }
 
         private void InitComboBox()
         {
             var plugins = new ObservableCollection<ComboBoxItemViewModel>();
-            foreach (var plugin in Toolbox.GetEnumerableOfType<Plugin>())
+            foreach (var plugin in Plugins)
             {
                 plugins.Add(new ComboBoxItemViewModel(plugin.PluginName(), plugin));
             }

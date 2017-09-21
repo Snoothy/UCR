@@ -29,8 +29,8 @@ namespace UCR.Views.Controls
 
         private void AddDevice_OnClick(object sender, RoutedEventArgs e)
         {
-            var device = (sender as MenuItem)?.DataContext as Core.Device.Device
-                         ?? DeviceTreeView.SelectedItem as Core.Device.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Models.Device.Device
+                         ?? DeviceTreeView.SelectedItem as Core.Models.Device.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -40,7 +40,7 @@ namespace UCR.Views.Controls
             var deviceGroup = DeviceGroupTreeView.SelectedItem as DeviceGroupViewModel;
             if (deviceGroup == null)
             {
-                var outputDevice = DeviceGroupTreeView.SelectedItem as Core.Device.Device;
+                var outputDevice = DeviceGroupTreeView.SelectedItem as Core.Models.Device.Device;
                 if (outputDevice != null)
                 {
                     deviceGroup = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(GetViewModel().OutputDeviceGroups, outputDevice);
@@ -57,8 +57,8 @@ namespace UCR.Views.Controls
         private void RemoveDevice_OnClick(object sender, RoutedEventArgs e)
         {
             // Select device from context menu first, then default to selected item
-            var device = (sender as MenuItem)?.DataContext as Core.Device.Device
-                ?? DeviceGroupTreeView.SelectedItem as Core.Device.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Models.Device.Device
+                ?? DeviceGroupTreeView.SelectedItem as Core.Models.Device.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device to remove", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
