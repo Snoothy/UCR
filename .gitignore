@@ -58,6 +58,12 @@ dlldata.c
 *.svclog
 *.scc
 
+# Cake
+tools/**
+!tools/packages.config
+[Aa]rtifacts/
+[Dd]ependencies/
+
 # Chutzpah Test files
 _Chutzpah*
 
