@@ -58,7 +58,7 @@ namespace UCR.Views
             var a = sender as ProfileItem;
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            if (!context.ProfilesController.ActivateProfile(pi.profile))
+            if (!context.ProfilesManager.ActivateProfile(pi.profile))
             {
                 MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -68,7 +68,7 @@ namespace UCR.Views
         {
             if (context.ActiveProfile == null) return;
             
-            if (!context.ProfilesController.DeactivateProfile(context.ActiveProfile))
+            if (!context.ProfilesManager.DeactivateProfile(context.ActiveProfile))
             {
                 MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -79,7 +79,7 @@ namespace UCR.Views
             var w = new TextDialog("Profile name");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            context.ProfilesController.AddProfile(w.TextResult);
+            context.ProfilesManager.AddProfile(w.TextResult);
             ReloadProfileTree();
         }
 
@@ -156,7 +156,6 @@ namespace UCR.Views
             Dispatcher.BeginInvoke(showAction);
         }
 
-        // TODO Fix
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (context.IsNotSaved)
@@ -177,12 +176,7 @@ namespace UCR.Views
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            context.IOController.Dispose();
-        }
-
-        private void MainWindow_OnClosed(object sender, EventArgs e)
-        {
-            context.IOController = null;
+            context.Dispose();
         }
 
         private void ActiveProfileChanged()

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace UCR.Core.Controllers
+namespace UCR.Core.Managers
 {
-    public class ProfilesController
+    public class ProfilesManager
     {
         private readonly Context _context;
         private readonly List<Profile.Profile> _profiles;
 
-        public ProfilesController(Context context, List<Profile.Profile> profiles)
+        public ProfilesManager(Context context, List<Profile.Profile> profiles)
         {
             _context = context;
             _profiles = profiles;

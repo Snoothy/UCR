@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UCR.Core;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Plugins.ButtonToButton;
 using UCR.Tests.Factory;
@@ -37,7 +38,7 @@ namespace UCR.Tests.ModelTests
         public void ProfileContext()
         {
             var context = new Context();
-            context.ProfilesController.AddProfile("Root profile");
+            context.ProfilesManager.AddProfile("Root profile");
             context.Profiles[0].AddNewChildProfile("Child profile");
             context.SaveContext();
 
@@ -68,7 +69,7 @@ namespace UCR.Tests.ModelTests
             var context = new Context();
             var pluginTypes = new List<Type>();
             pluginTypes.Add(typeof(ButtonToButton));
-            context.ProfilesController.AddProfile("Root profile");
+            context.ProfilesManager.AddProfile("Root profile");
 
             var profile = context.Profiles[0];
             profile.AddPlugin(new ButtonToButton(), "Button to button 1");
@@ -121,17 +122,17 @@ namespace UCR.Tests.ModelTests
         public void DeviceListContext()
         {
             var context = new Context();
-            var joystickGuid = context.DeviceGroupsController.AddDeviceGroup("Joystick 1", DeviceType.Joystick);
-            context.DeviceGroupsController.AddDeviceGroup("Joystick 2", DeviceType.Joystick);
-            context.DeviceGroupsController.AddDeviceGroup("Joystick 3", DeviceType.Joystick);
-            context.DeviceGroupsController.AddDeviceGroup("Joystick 4", DeviceType.Joystick);
-            var keyboardGuid = context.DeviceGroupsController.AddDeviceGroup("Keyboard", DeviceType.Keyboard);
-            context.DeviceGroupsController.AddDeviceGroup("Mice", DeviceType.Mouse);
-            context.DeviceGroupsController.AddDeviceGroup("Generic", DeviceType.Generic);
+            var joystickGuid = context.DeviceGroupsManager.AddDeviceGroup("Joystick 1", DeviceType.Joystick);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 2", DeviceType.Joystick);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 3", DeviceType.Joystick);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 4", DeviceType.Joystick);
+            var keyboardGuid = context.DeviceGroupsManager.AddDeviceGroup("Keyboard", DeviceType.Keyboard);
+            context.DeviceGroupsManager.AddDeviceGroup("Mice", DeviceType.Mouse);
+            context.DeviceGroupsManager.AddDeviceGroup("Generic", DeviceType.Generic);
 
-            var joystickDeviceGroup = context.DeviceGroupsController.GetDeviceGroup(DeviceType.Joystick, joystickGuid);
+            var joystickDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceType.Joystick, joystickGuid);
             joystickDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Gamepad", "Gamepad provider", 4);
-            var keyboardDeviceGroup = context.DeviceGroupsController.GetDeviceGroup(DeviceType.Keyboard, keyboardGuid);
+            var keyboardDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceType.Keyboard, keyboardGuid);
             keyboardDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Keyboard", "interception", 1);
 
             context.SaveContext();
@@ -155,7 +156,6 @@ namespace UCR.Tests.ModelTests
                         Assert.That(newcontext.JoystickGroups[j].Devices[k].Title, Is.EqualTo(context.JoystickGroups[j].Devices[k].Title));
                         Assert.That(newcontext.JoystickGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.JoystickGroups[j].Devices[k].DeviceHandle));
                         Assert.That(newcontext.JoystickGroups[j].Devices[k].ProviderName, Is.EqualTo(context.JoystickGroups[j].Devices[k].ProviderName));
-                        Assert.That(newcontext.JoystickGroups[j].Devices[k].SubProviderName, Is.EqualTo(context.JoystickGroups[j].Devices[k].SubProviderName));
                     }
                 }
 

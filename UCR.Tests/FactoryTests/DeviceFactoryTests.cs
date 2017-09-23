@@ -17,8 +17,6 @@ namespace UCR.Tests.FactoryTests
             Assert.That(device.Guid, Is.Not.EqualTo(Guid.Empty));
             Assert.That(device.Title, Is.EqualTo(title));
             Assert.That(device.ProviderName, Is.EqualTo(providerName));
-            Assert.That(device.SubProviderName, Is.Not.Null);
-            Assert.That(device.SubProviderName, Is.Not.EqualTo(device.ProviderName));
             Assert.That(device.DeviceHandle, Is.EqualTo(deviceNumber));
         }
 

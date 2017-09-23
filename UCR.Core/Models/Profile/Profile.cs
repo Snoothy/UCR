@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 
 namespace UCR.Core.Profile
@@ -38,7 +39,7 @@ namespace UCR.Core.Profile
         [XmlIgnore]
         private Dictionary<DeviceType, DeviceGroup> OutputGroups { get; set; }
         [XmlIgnore]
-        private Dictionary<DeviceBindingType, Dictionary<DeviceType, Guid>> DeviceGroupGuids { get; set; }
+        private Dictionary<DeviceIoType, Dictionary<DeviceType, Guid>> DeviceGroupGuids { get; set; }
         [XmlIgnore]
         public bool InheritFromParent { get; set; }
 
@@ -105,11 +106,11 @@ namespace UCR.Core.Profile
             context.ContextChanged();
         }
 
-        public void SetDeviceGroup(DeviceBindingType bindingType, DeviceType deviceType, Guid deviceGroupGuid)
+        public void SetDeviceGroup(DeviceIoType ioType, DeviceType deviceType, Guid deviceGroupGuid)
         {
-            switch (bindingType)
+            switch (ioType)
             {
-                case DeviceBindingType.Input:
+                case DeviceIoType.Input:
                     switch (deviceType)
                     {
                         case DeviceType.Joystick:
@@ -128,7 +129,7 @@ namespace UCR.Core.Profile
                             throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
                     }
                     break;
-                case DeviceBindingType.Output:
+                case DeviceIoType.Output:
                     switch (deviceType)
                     {
                         case DeviceType.Joystick:
@@ -148,7 +149,7 @@ namespace UCR.Core.Profile
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(bindingType), bindingType, null);
+                    throw new ArgumentOutOfRangeException(nameof(ioType), ioType, null);
             }
             SetDeviceListNames();
             context.ContextChanged();
@@ -156,12 +157,12 @@ namespace UCR.Core.Profile
 
         public bool Activate()
         {
-            return context.ProfilesController.ActivateProfile(this);
+            return context.ProfilesManager.ActivateProfile(this);
         }
 
         public bool Deactivate()
         {
-            return context.ProfilesController.DeactivateProfile(this);
+            return context.ProfilesManager.DeactivateProfile(this);
         }
 
         #endregion
@@ -195,8 +196,8 @@ namespace UCR.Core.Profile
             {
                 InputGroups[(DeviceType)type] = new DeviceGroup()
                 {
-                    Guid = DeviceGroupGuids[DeviceBindingType.Input][(DeviceType)type],
-                    Devices = GetCopiedList(DeviceBindingType.Input,(DeviceType)type)
+                    Guid = DeviceGroupGuids[DeviceIoType.Input][(DeviceType)type],
+                    Devices = GetCopiedList(DeviceIoType.Input,(DeviceType)type)
                 };
             }
 
@@ -205,8 +206,8 @@ namespace UCR.Core.Profile
             {
                 OutputGroups[(DeviceType)type] = new DeviceGroup()
                 {
-                    Guid = DeviceGroupGuids[DeviceBindingType.Output][(DeviceType)type],
-                    Devices = GetCopiedList(DeviceBindingType.Output, (DeviceType)type)
+                    Guid = DeviceGroupGuids[DeviceIoType.Output][(DeviceType)type],
+                    Devices = GetCopiedList(DeviceIoType.Output, (DeviceType)type)
                 };
             }
         }
@@ -273,7 +274,7 @@ namespace UCR.Core.Profile
         public Guid GetDeviceListGuid(DeviceBinding deviceBinding)
         {
             SetDeviceListNames();
-            return DeviceGroupGuids[deviceBinding.DeviceBindingType][deviceBinding.DeviceType];
+            return DeviceGroupGuids[deviceBinding.DeviceIoType][deviceBinding.DeviceType];
         }
 
         public Device GetDevice(DeviceBinding deviceBinding)
@@ -286,16 +287,16 @@ namespace UCR.Core.Profile
 
         public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
-            return GetDeviceList(deviceBinding.DeviceBindingType, deviceBinding.DeviceType);
+            return GetDeviceList(deviceBinding.DeviceIoType, deviceBinding.DeviceType);
         }
 
-        public List<Device> GetDeviceList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        public List<Device> GetDeviceList(DeviceIoType deviceIoType, DeviceType deviceType)
         {
             SetDeviceListNames();
-            var result = context.DeviceGroupsController.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceBindingType][deviceType])?.Devices ?? new List<Device>();
+            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceIoType][deviceType])?.Devices ?? new List<Device>();
             if (!InheritFromParent || ParentProfile == null) return result;
 
-            var parentDeviceList = ParentProfile.GetDeviceList(deviceBindingType, deviceType);
+            var parentDeviceList = ParentProfile.GetDeviceList(deviceIoType, deviceType);
             if (result.Count < parentDeviceList.Count)
             {
                 for (var i = result.Count; i < parentDeviceList.Count; i++)
@@ -314,7 +315,7 @@ namespace UCR.Core.Profile
 
         private List<Device> GetLocalDeviceList(DeviceBinding deviceBinding)
         {
-            var deviceGroups = deviceBinding.DeviceBindingType == DeviceBindingType.Input ? InputGroups : OutputGroups;
+            var deviceGroups = deviceBinding.DeviceIoType == DeviceIoType.Input ? InputGroups : OutputGroups;
             var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
             return deviceList;
         }
@@ -361,17 +362,19 @@ namespace UCR.Core.Profile
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private List<Device> GetCopiedList(DeviceBindingType deviceBindingType, DeviceType deviceType)
+        private List<Device> GetCopiedList(DeviceIoType deviceIoType, DeviceType deviceType)
         {
-            return Device.CopyDeviceList(GetDeviceList(deviceBindingType, deviceType));
+            var deviceList = Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
+            deviceList.ForEach(d => d.SetParentProfile(this));
+            return deviceList;
         }
 
         private void SetDeviceListNames()
         {
-            DeviceGroupGuids = new Dictionary<DeviceBindingType, Dictionary<DeviceType, Guid>>()
+            DeviceGroupGuids = new Dictionary<DeviceIoType, Dictionary<DeviceType, Guid>>()
             {
                 {
-                    DeviceBindingType.Input, new Dictionary<DeviceType, Guid>()
+                    DeviceIoType.Input, new Dictionary<DeviceType, Guid>()
                     {
                         {DeviceType.Generic, GenericInputList},
                         {DeviceType.Joystick, JoystickInputList},
@@ -380,7 +383,7 @@ namespace UCR.Core.Profile
                     }
                 },
                 {
-                    DeviceBindingType.Output, new Dictionary<DeviceType, Guid>()
+                    DeviceIoType.Output, new Dictionary<DeviceType, Guid>()
                     {
                         {DeviceType.Generic, GenericOutputList},
                         {DeviceType.Joystick, JoystickOutputList},

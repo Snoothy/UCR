@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Plugin

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using Providers;
-using UCR.Core;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Utilities;
 using UCR.Utilities.Commands;
@@ -127,34 +126,25 @@ namespace UCR.Views.Controls
             BindMenu = new ObservableCollection<ContextMenuItem>();
             var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
             if (device == null) return;
-
-            if (device.Bindings == null || device.Bindings.Count == 0)
-            {
-                var ioController = DeviceBinding.Plugin.ParentProfile.context.IOController;
-                var list = DeviceBinding.DeviceBindingType == DeviceBindingType.Input 
-                    ? ioController.GetInputList() 
-                    : ioController.GetOutputList();
-                device.Bindings = list[device.ProviderName]?.Devices[device.DeviceHandle]?.Bindings ?? new List<BindingInfo>();
-            }
-            BindMenu = BuildMenu(device.Bindings);
+            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Plugin.ParentProfile.context, DeviceBinding.DeviceIoType));
         }
 
-        private ObservableCollection<ContextMenuItem> BuildMenu(List<BindingInfo> bindingInfos)
+        private ObservableCollection<ContextMenuItem> BuildMenu(List<DeviceBindingNode> deviceBindingNodes)
         {
             var menuList = new ObservableCollection<ContextMenuItem>();
-            if (bindingInfos == null) return menuList;
-            foreach (var bindingInfo in bindingInfos)
+            if (deviceBindingNodes == null) return menuList;
+            foreach (var deviceBindingNode in deviceBindingNodes)
             {
                 RelayCommand cmd = null;
-                if (bindingInfo.IsBinding)
+                if (deviceBindingNode.IsBinding)
                 {
                     cmd = new RelayCommand(c =>
                     {
-                        DeviceBinding.SetKeyTypeValue((int)bindingInfo.InputType, bindingInfo.InputIndex, bindingInfo.InputSubIndex);
+                        DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
                         LoadBindingName();
                     });
                 }
-                menuList.Add(new ContextMenuItem(bindingInfo.Title, BuildMenu(bindingInfo.SubBindings), cmd));
+                menuList.Add(new ContextMenuItem(deviceBindingNode.Title, BuildMenu(deviceBindingNode.ChildrenNodes), cmd));
             }
             return menuList;
         }

@@ -47,11 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\DeviceGroupsController.cs" />
-    <Compile Include="Controllers\ProfilesController.cs" />
+    <Compile Include="Models\Binding\DeviceBindingNode.cs" />
+    <Compile Include="Managers\DeviceGroupsManager.cs" />
+    <Compile Include="Managers\DevicesManager.cs" />
+    <Compile Include="Managers\ProfilesManager.cs" />
     <Compile Include="Models\Device\Device.cs" />
     <Compile Include="Models\Device\DeviceGroup.cs" />
-    <Compile Include="Models\Device\DeviceBinding.cs" />
+    <Compile Include="Models\Binding\DeviceBinding.cs" />
     <Compile Include="Models\Plugin\Plugin.cs" />
     <Compile Include="Models\Plugin\PluginGroup.cs" />
     <Compile Include="Models\Plugin\PluginLoader.cs" />

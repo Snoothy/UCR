@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
 

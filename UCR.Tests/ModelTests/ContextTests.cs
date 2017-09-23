@@ -26,7 +26,7 @@ namespace UCR.Tests.ModelTests
             var context = new Context();
             Assert.That(context.Profiles.Count, Is.EqualTo(0));
             var profileName = "Test";
-            context.ProfilesController.AddProfile(profileName);
+            context.ProfilesManager.AddProfile(profileName);
             Assert.That(context.Profiles.Count, Is.EqualTo(1));
             Assert.That(context.Profiles[0].Title, Is.EqualTo(profileName));
             Assert.That(context.Profiles[0].Guid, Is.Not.EqualTo(Guid.Empty));

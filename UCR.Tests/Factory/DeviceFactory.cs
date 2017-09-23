@@ -12,8 +12,7 @@ namespace UCR.Tests.Factory
             {
                 Title = title,
                 ProviderName = providerName,
-                DeviceHandle = deviceNumber,
-                SubProviderName = providerName + "Sub"
+                DeviceHandle = deviceNumber
             };
         }
 

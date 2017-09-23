@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UCR.Core.Models.Device;
 
-namespace UCR.Core.Controllers
+namespace UCR.Core.Managers
 {
-    public class DeviceGroupsController
+    public class DeviceGroupsManager
     {
         private readonly Context Context;
         private readonly List<DeviceGroup> JoystickGroups;
@@ -13,7 +13,7 @@ namespace UCR.Core.Controllers
         private readonly List<DeviceGroup> MiceGroups;
         private readonly List<DeviceGroup> GenericDeviceGroups;
 
-        public DeviceGroupsController(Context context, List<DeviceGroup> joystickGroups, List<DeviceGroup> keyboardGroups, List<DeviceGroup> miceGroups, List<DeviceGroup> genericDeviceGroups)
+        public DeviceGroupsManager(Context context, List<DeviceGroup> joystickGroups, List<DeviceGroup> keyboardGroups, List<DeviceGroup> miceGroups, List<DeviceGroup> genericDeviceGroups)
         {
             Context = context;
             JoystickGroups = joystickGroups;

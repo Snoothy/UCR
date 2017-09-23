@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 
 namespace UCR.Views.Profile
@@ -10,7 +11,7 @@ namespace UCR.Views.Profile
     class DeviceGroupComboBoxItem
     {
         public DeviceGroup DeviceGroup { get; set; }
-        public DeviceBindingType DeviceBindingType { get; set; }
+        public DeviceIoType DeviceIoType { get; set; }
         public DeviceType DeviceType { get; set; }
     }
 }

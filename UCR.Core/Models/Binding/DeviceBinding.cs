@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Xml.Serialization;
+using Providers;
+using UCR.Core.Models.Device;
 
-namespace UCR.Core.Models.Device
+namespace UCR.Core.Models.Binding
 {
-    public enum DeviceBindingType
+    public enum DeviceBindingCategory
     {
-        Input,
-        Output
+        Event,
+        Momentary,
+        Range,
+        Delta
     }
 
     public class DeviceBinding
@@ -26,10 +30,12 @@ namespace UCR.Core.Models.Device
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
-        public Plugin.Plugin Plugin { get; set; }
+        public Models.Plugin.Plugin Plugin { get; set; }
         [XmlIgnore]
-        public DeviceBindingType DeviceBindingType { get; set; }
-        
+        public DeviceIoType DeviceIoType { get; set; }
+        [XmlIgnore]
+        public DeviceBindingCategory DeviceBindingCategory { get; set; }
+
 
         public delegate void ValueChanged(long value);
         [XmlIgnore]
@@ -40,11 +46,11 @@ namespace UCR.Core.Models.Device
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(ValueChanged callback, Plugin.Plugin plugin, DeviceBindingType deviceBindingType)
+        public DeviceBinding(ValueChanged callback, Plugin.Plugin plugin, DeviceIoType deviceIoType)
         {
             Callback = callback;
             Plugin = plugin;
-            DeviceBindingType = deviceBindingType;
+            DeviceIoType = deviceIoType;
             Guid = Guid.NewGuid();
             IsBound = false;
             DeviceType = DeviceType.Joystick;
@@ -65,7 +71,7 @@ namespace UCR.Core.Models.Device
         public void SetDeviceNumber(int number)
         {
             DeviceNumber = number;
-            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
+            if (DeviceIoType == DeviceIoType.Input) Plugin.BindingCallback(Plugin);
             Plugin.ParentProfile.context.ContextChanged();
         }
 
@@ -75,7 +81,7 @@ namespace UCR.Core.Models.Device
             KeyValue = value;
             KeySubValue = subValue;
             IsBound = true;
-            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
+            if (DeviceIoType == Device.DeviceIoType.Input) Plugin.BindingCallback(Plugin);
             Plugin.ParentProfile.context.ContextChanged();
         }
 
@@ -83,7 +89,7 @@ namespace UCR.Core.Models.Device
         {
             // Unsubscribe old input
             IsBound = false;
-            if (DeviceBindingType == DeviceBindingType.Input) Plugin.BindingCallback(Plugin);
+            if (DeviceIoType == DeviceIoType.Input) Plugin.BindingCallback(Plugin);
 
             // Set new input
             DeviceType = deviceType;
@@ -96,6 +102,24 @@ namespace UCR.Core.Models.Device
         public string BoundName()
         {
             return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
+        }
+
+        public static DeviceBindingCategory MapCategory(BindingCategory bindingInfoCategory)
+        {
+            switch (bindingInfoCategory)
+            {
+                case BindingCategory.Event:
+                    return DeviceBindingCategory.Event;
+                case BindingCategory.Momentary:
+                    return DeviceBindingCategory.Momentary;
+                case BindingCategory.Signed:
+                case BindingCategory.Unsigned:
+                    return DeviceBindingCategory.Range;
+                case BindingCategory.Delta:
+                    return DeviceBindingCategory.Delta;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bindingInfoCategory), bindingInfoCategory, null);
+            }
         }
     }
 }

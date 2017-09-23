@@ -4,17 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using IOWrapper;
-using UCR.Core.Controllers;
+using UCR.Core.Managers;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
-using UCR.Core.Utilities;
 
 namespace UCR.Core
 {
-    public class Context
+    public class Context : IDisposable
     {
-        private static string _contextName = "context.xml";
-        private static string _pluginPath = "Plugins";
+        private const string ContextName = "context.xml";
+        private const string PluginPath = "Plugins";
 
         // Persistence
         public List<Profile.Profile> Profiles { get; set; }
@@ -25,18 +24,18 @@ namespace UCR.Core
 
         // Runtime
         [XmlIgnore]
-        public bool IsNotSaved { get; private set; }
-        [XmlIgnore]
         public Profile.Profile ActiveProfile { get; set; }
         [XmlIgnore]
-        public IOController IOController { get; set; }
+        public ProfilesManager ProfilesManager { get; set; }
         [XmlIgnore]
-        public ProfilesController ProfilesController { get; set; }
+        public DevicesManager DevicesManager { get; set; }
         [XmlIgnore]
-        public DeviceGroupsController DeviceGroupsController { get; set; }
-        
-        internal List<Action> ActiveProfileCallbacks = new List<Action>();
-        private PluginLoader PluginLoader;
+        public DeviceGroupsManager DeviceGroupsManager { get; set; }
+
+        internal bool IsNotSaved { get; private set; }
+        internal IOController IOController { get; set; }
+        internal readonly List<Action> ActiveProfileCallbacks = new List<Action>();
+        private PluginLoader _pluginLoader;
 
         public Context()
         {
@@ -53,9 +52,10 @@ namespace UCR.Core
             GenericDeviceGroups = new List<DeviceGroup>();
 
             IOController = new IOController();
-            ProfilesController = new ProfilesController(this, Profiles);
-            DeviceGroupsController = new DeviceGroupsController(this, JoystickGroups, KeyboardGroups, MiceGroups, GenericDeviceGroups);
-            PluginLoader = new PluginLoader(_pluginPath);
+            ProfilesManager = new ProfilesManager(this, Profiles);
+            DevicesManager = new DevicesManager(this);
+            DeviceGroupsManager = new DeviceGroupsManager(this, JoystickGroups, KeyboardGroups, MiceGroups, GenericDeviceGroups);
+            _pluginLoader = new PluginLoader(PluginPath);
         }
 
         public void SetActiveProfileCallback(Action profileActivated)
@@ -65,7 +65,7 @@ namespace UCR.Core
 
         public List<Plugin> GetPlugins()
         {
-            return PluginLoader.Plugins;
+            return _pluginLoader.Plugins;
         }
 
         public void ContextChanged()
@@ -78,7 +78,7 @@ namespace UCR.Core
         public bool SaveContext(List<Type> pluginTypes = null)
         {
             var serializer = GetXmlSerializer(pluginTypes);
-            using (var streamWriter = new StreamWriter(_contextName))
+            using (var streamWriter = new StreamWriter(ContextName))
             {
                 serializer.Serialize(streamWriter, this);
             }
@@ -92,7 +92,7 @@ namespace UCR.Core
             var serializer = GetXmlSerializer(pluginTypes);
             try
             {
-                using (var fileStream = new FileStream(_contextName, FileMode.Open))
+                using (var fileStream = new FileStream(ContextName, FileMode.Open))
                 {
                     context = (Context) serializer.Deserialize(fileStream);
                     context.PostLoad();
@@ -117,12 +117,17 @@ namespace UCR.Core
 
         private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes)
         {
-            var plugins = new PluginLoader(_pluginPath);
+            var plugins = new PluginLoader(PluginPath);
             var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
             if (additionalPluginTypes != null) pluginTypes.AddRange(additionalPluginTypes);
             return new XmlSerializer(typeof(Context), pluginTypes.ToArray());
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            IOController?.Dispose();
+        }
     }
 }

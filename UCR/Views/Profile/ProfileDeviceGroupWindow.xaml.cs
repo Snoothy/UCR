@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using UCR.Core;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.ViewModels;
 
@@ -33,14 +34,14 @@ namespace UCR.Views.Profile
             DataContext = this;
             InitializeComponent();
 
-            PopulateComboBox(InputJoystickGroups,  DeviceType.Joystick, DeviceBindingType.Input,  profile.JoystickInputList,  InputJoystickComboBox);
-            PopulateComboBox(InputKeyboardGroups,  DeviceType.Keyboard, DeviceBindingType.Input,  profile.KeyboardInputList,  InputKeyboardComboBox);
-            PopulateComboBox(InputMiceGroups,      DeviceType.Mouse,    DeviceBindingType.Input,  profile.MiceInputList,      InputMiceComboBox);
-            PopulateComboBox(InputGenericGroups,   DeviceType.Generic,  DeviceBindingType.Input,  profile.GenericInputList,   InputGenericComboBox);
-            PopulateComboBox(OutputJoystickGroups, DeviceType.Joystick, DeviceBindingType.Output, profile.JoystickOutputList, OutputJoystickComboBox);
-            PopulateComboBox(OutputKeyboardGroups, DeviceType.Keyboard, DeviceBindingType.Output, profile.KeyboardOutputList, OutputKeyboardComboBox);
-            PopulateComboBox(OutputMiceGroups,     DeviceType.Mouse,    DeviceBindingType.Output, profile.MiceOutputList,     OutputMiceComboBox);
-            PopulateComboBox(OutputGenericGroups,  DeviceType.Generic,  DeviceBindingType.Output, profile.GenericOutputList,  OutputGenericComboBox);
+            PopulateComboBox(InputJoystickGroups,  DeviceType.Joystick, DeviceIoType.Input,  profile.JoystickInputList,  InputJoystickComboBox);
+            PopulateComboBox(InputKeyboardGroups,  DeviceType.Keyboard, DeviceIoType.Input,  profile.KeyboardInputList,  InputKeyboardComboBox);
+            PopulateComboBox(InputMiceGroups,      DeviceType.Mouse,    DeviceIoType.Input,  profile.MiceInputList,      InputMiceComboBox);
+            PopulateComboBox(InputGenericGroups,   DeviceType.Generic,  DeviceIoType.Input,  profile.GenericInputList,   InputGenericComboBox);
+            PopulateComboBox(OutputJoystickGroups, DeviceType.Joystick, DeviceIoType.Output, profile.JoystickOutputList, OutputJoystickComboBox);
+            PopulateComboBox(OutputKeyboardGroups, DeviceType.Keyboard, DeviceIoType.Output, profile.KeyboardOutputList, OutputKeyboardComboBox);
+            PopulateComboBox(OutputMiceGroups,     DeviceType.Mouse,    DeviceIoType.Output, profile.MiceOutputList,     OutputMiceComboBox);
+            PopulateComboBox(OutputGenericGroups,  DeviceType.Generic,  DeviceIoType.Output, profile.GenericOutputList,  OutputGenericComboBox);
             Loaded += Window_Loaded;
         }
 
@@ -49,22 +50,22 @@ namespace UCR.Views.Profile
             HasLoaded = true;
         }
 
-        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceType deviceType, DeviceBindingType deviceBindingType, Guid currentGroup, ComboBox comboBox)
+        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceType deviceType, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
         {
             groups = new List<ComboBoxItemViewModel>();
             ComboBoxItemViewModel selectedItem = null;
             groups.Add(new ComboBoxItemViewModel("", new DeviceGroupComboBoxItem()
             {
                 DeviceType = deviceType,
-                DeviceBindingType = deviceBindingType
+                DeviceIoType = deviceIoType
             }));
-            foreach (var deviceGroup in context.DeviceGroupsController.GetDeviceGroupList(deviceType))
+            foreach (var deviceGroup in context.DeviceGroupsManager.GetDeviceGroupList(deviceType))
             {
                 var model = new ComboBoxItemViewModel(deviceGroup.Title, new DeviceGroupComboBoxItem()
                 {
                     DeviceGroup = deviceGroup,
                     DeviceType = deviceType,
-                    DeviceBindingType = deviceBindingType
+                    DeviceIoType = deviceIoType
                 });
                 groups.Add(model);
                 if (deviceGroup.Guid == currentGroup) selectedItem = model;
@@ -80,7 +81,7 @@ namespace UCR.Views.Profile
             var selectedItem = comboBox?.SelectedItem as ComboBoxItemViewModel;
             if (selectedItem == null) return;
             var value = selectedItem.Value as DeviceGroupComboBoxItem;
-            profile.SetDeviceGroup(value.DeviceBindingType, value.DeviceType, value.DeviceGroup?.Guid ?? Guid.Empty);
+            profile.SetDeviceGroup(value.DeviceIoType, value.DeviceType, value.DeviceGroup?.Guid ?? Guid.Empty);
         }
     }
 }

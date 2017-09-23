@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Providers;
 using UCR.Core;
 using UCR.Core.Models.Device;
 
@@ -33,7 +32,7 @@ namespace UCR.ViewModels.Device
 
         public void AddDeviceGroup(string title)
         {
-            var guid = context.DeviceGroupsController.AddDeviceGroup(title, _deviceType);
+            var guid = context.DeviceGroupsManager.AddDeviceGroup(title, _deviceType);
             OutputDeviceGroups.Add(new DeviceGroupViewModel(title, guid));
         }
 
@@ -41,50 +40,50 @@ namespace UCR.ViewModels.Device
         {
             var result = MessageBox.Show("Are you sure you want to remove '" + deviceGroupViewModel.Title + "'?", "Remove device group", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            context.DeviceGroupsController.RemoveDeviceGroup(deviceGroupViewModel.Guid, _deviceType);
+            context.DeviceGroupsManager.RemoveDeviceGroup(deviceGroupViewModel.Guid, _deviceType);
             OutputDeviceGroups.Remove(deviceGroupViewModel);
         }
 
         public void RenameDeviceGroup(DeviceGroupViewModel deviceGroup, string title)
         {
             OutputDeviceGroups.First(d => d.Guid == deviceGroup.Guid).Title = title;
-            context.DeviceGroupsController.RenameDeviceGroup(deviceGroup.Guid, _deviceType, title);
+            context.DeviceGroupsManager.RenameDeviceGroup(deviceGroup.Guid, _deviceType, title);
         }
 
         public void AddDeviceToDeviceGroup(Core.Models.Device.Device device, Guid deviceGroupGuid)
         {
-            context.DeviceGroupsController.AddDeviceToDeviceGroup(device, _deviceType, deviceGroupGuid);
+            context.DeviceGroupsManager.AddDeviceToDeviceGroup(device, _deviceType, deviceGroupGuid);
             OutputDeviceGroups.First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
         }
 
         public void RemoveDeviceFromDeviceGroup(Core.Models.Device.Device device)
         {
             var deviceGroupViewModel = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(OutputDeviceGroups, device);
-            context.DeviceGroupsController.RemoveDeviceFromDeviceGroup(device, _deviceType, deviceGroupViewModel.Guid);
+            context.DeviceGroupsManager.RemoveDeviceFromDeviceGroup(device, _deviceType, deviceGroupViewModel.Guid);
             deviceGroupViewModel.Devices.Remove(device);
         }
 
         private void GenerateDeviceList()
         {
-            InputDeviceGroups.Add(PopulateDeviceList(context.IOController.GetInputList(), "Input devices"));
-            InputDeviceGroups.Add(PopulateDeviceList(context.IOController.GetOutputList(), "Output devices"));
+            InputDeviceGroups.Add(PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Input), "Input devices"));
+            InputDeviceGroups.Add(PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Output), "Output devices"));
         }
 
-        private DeviceGroupViewModel PopulateDeviceList(SortedDictionary<string, ProviderReport> list, string title)
+        private DeviceGroupViewModel PopulateDeviceList(List<DeviceGroup> deviceGroups, string title)
         {
             var result = new DeviceGroupViewModel()
             {
                 Title = title
             };
-            foreach (var providerReport in list)
+            foreach (var deviceGroup in deviceGroups)
             {
                 var deviceGroupViewModel = new DeviceGroupViewModel()
                 {
-                    Title = providerReport.Key
+                    Title = deviceGroup.Title
                 };
-                foreach (var ioWrapperDevice in providerReport.Value.Devices)
+                foreach (var device in deviceGroup.Devices)
                 {
-                    deviceGroupViewModel.Devices.Add(new Core.Models.Device.Device(ioWrapperDevice.Value));
+                    deviceGroupViewModel.Devices.Add(device);
                 }
                 result.Groups.Add(deviceGroupViewModel);
             }

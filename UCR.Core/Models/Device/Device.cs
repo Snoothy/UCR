@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 using Providers;
-using BindingInfo = Providers.BindingInfo;
+using UCR.Core.Models.Binding;
 
 namespace UCR.Core.Models.Device
 {
@@ -19,19 +19,26 @@ namespace UCR.Core.Models.Device
         Generic
     }
 
+    public enum DeviceIoType
+    {
+        Input,
+        Output
+    }
+
     public class Device
     {
         // Persistance
         public string Title { get; set; }
         public string ProviderName { get; set; }
         public string DeviceHandle { get; set; }
-        public string SubProviderName { get; set; }
 
         // Runtime
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
-        public List<BindingInfo> Bindings { get; set; }
+        private Profile.Profile ParentProfile { get; set; }
+        [XmlIgnore]
+        private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
 
         private bool IsAcquired { get; set; }
         private string Api { get; }
@@ -58,19 +65,61 @@ namespace UCR.Core.Models.Device
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;
             ProviderName = device.ProviderName;
-            SubProviderName = device.SubProviderName;
-            Bindings = device.Bindings;
+            DeviceBindingMenu = device.DeviceBindingMenu;
             Guid = device.Guid;
         }
 
-        public Device(IOWrapperDevice device) : this()
+        public Device(IOWrapperDevice device, DeviceIoType type) : this()
         {
             Title = device.DeviceName;
             DeviceHandle = device.DeviceHandle;
             ProviderName = device.ProviderName;
-            SubProviderName = device.SubProviderName;
-            Bindings = device.Bindings;
+            DeviceBindingMenu = GetDeviceBindingMenu(device.Nodes, type);
             Api = device.API;
+        }
+
+        private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceNode> deviceNodes, DeviceIoType type)
+        {
+            var result = new List<DeviceBindingNode>();
+            if (deviceNodes == null) return result;
+
+            foreach (var deviceNode in deviceNodes)
+            {
+                var groupNode = new DeviceBindingNode()
+                {
+                    Title = deviceNode.Title,
+                    IsBinding = false,
+                    ChildrenNodes = GetDeviceBindingMenu(deviceNode.Nodes, type),
+                    
+                };
+                
+                foreach (var bindingInfo in deviceNode.Bindings)
+                {
+                    var bindingNode = new DeviceBindingNode()
+                    {
+                        Title = bindingInfo.Title,
+                        IsBinding = true,
+                        DeviceBinding = new DeviceBinding(null,null,type)
+                        {
+                            IsBound = false,
+                            KeyType = (int)bindingInfo.Type,
+                            KeyValue = bindingInfo.Index,
+                            KeySubValue = bindingInfo.SubIndex,
+                            DeviceBindingCategory = DeviceBinding.MapCategory(bindingInfo.Category)
+                            // TODO Extract to class instead of using DeviceBinding?
+                        }
+
+                    };
+                    if (groupNode.ChildrenNodes == null)
+                    {
+                        groupNode.ChildrenNodes = new List<DeviceBindingNode>();
+                    }
+
+                    groupNode.ChildrenNodes.Add(bindingNode);
+                }
+                result.Add(groupNode);
+            }
+            return result.Count != 0 ? result : null;
         }
 
         public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
@@ -81,7 +130,7 @@ namespace UCR.Core.Models.Device
                 ProviderName = ProviderName,
                 DeviceHandle = DeviceHandle,
                 SubscriberGuid = Guid
-            }, (InputType)deviceBinding.KeyType, (uint)deviceBinding.KeyValue, (int)value);
+            }, (BindingType)deviceBinding.KeyType, (uint)deviceBinding.KeyValue, (int)value);
         }
 
         public bool AddDeviceBinding(DeviceBinding deviceBinding)
@@ -97,25 +146,23 @@ namespace UCR.Core.Models.Device
                 Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
                 return true;
             }
+            
+            // Override bindings if Profile parent does not match. Root is loaded first and active profile last
+            if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
+            {
+                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
+            }
             else
             {
-                // Override bindings if Profile parent does not match. Root is loaded first and active profile last
-                if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
+                var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
+                if (existingBinding != null)
                 {
-                    Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
+                    // Remove existing binding if it exists
+                    Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
                 }
-                else
-                {
-                    var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
-                    if (existingBinding != null)
-                    {
-                        // Remove existing binding if it exists
-                        Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
-                    }
-                    Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
-                }
+                Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
             }
-             
+
             return true;
         }
 
@@ -173,35 +220,34 @@ namespace UCR.Core.Models.Device
             return new InputSubscriptionRequest()
             {
                 ProviderName = ProviderName,
-                SubProviderName = SubProviderName,
                 DeviceHandle = DeviceHandle,
-                InputType = (InputType) deviceBinding.KeyType,
-                InputIndex = (uint) deviceBinding.KeyValue,
-                InputSubIndex = deviceBinding.KeySubValue,
+                Type = (BindingType) deviceBinding.KeyType,
+                Index = (uint) deviceBinding.KeyValue,
                 Callback = deviceBinding.Callback,
                 SubscriberGuid = deviceBinding.Guid,
-                ProfileGuid = deviceBinding.Plugin.ParentProfile.Guid
+                ProfileGuid = ParentProfile.Guid
             };
         }
 
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
-            return GetBindingName(deviceBinding, Bindings) ?? "Unknown input";
+            return GetBindingName(deviceBinding, DeviceBindingMenu) ?? "Unknown input";
         }
 
-        private static string GetBindingName(DeviceBinding deviceBinding, List<BindingInfo> bindingInfos)
+        private static string GetBindingName(DeviceBinding deviceBinding, List<DeviceBindingNode> deviceBindingNodes)
         {
-            foreach (var bindingInfo in bindingInfos)
+            if (deviceBindingNodes == null) return null;
+            foreach (var deviceBindingNode in deviceBindingNodes)
             {
-                if (bindingInfo.IsBinding && (int)bindingInfo.InputType == deviceBinding.KeyType && bindingInfo.InputIndex == deviceBinding.KeyValue)
+                if (deviceBindingNode.IsBinding && deviceBindingNode.DeviceBinding.KeyType == deviceBinding.KeyType && deviceBindingNode.DeviceBinding.KeyValue == deviceBinding.KeyValue)
                 {
-                    return bindingInfo.Title;
+                    return deviceBindingNode.Title;
                 }
-                var name = GetBindingName(deviceBinding, bindingInfo.SubBindings);
+                var name = GetBindingName(deviceBinding, deviceBindingNode.ChildrenNodes);
                 if (name != null)
                 {
-                    return bindingInfo.Title + ", " + name;
+                    return deviceBindingNode.Title + ", " + name;
                 }
             }
             return null;
@@ -237,8 +283,8 @@ namespace UCR.Core.Models.Device
             {
                 DeviceHandle = DeviceHandle,
                 ProviderName = ProviderName,
-                SubProviderName = SubProviderName,
-                SubscriberGuid = Guid
+                SubscriberGuid = Guid,
+                ProfileGuid = ParentProfile.Guid
             };
         }
 
@@ -249,6 +295,38 @@ namespace UCR.Core.Models.Device
 
             newDevicelist.AddRange(devicelist);
             return newDevicelist;
+        }
+
+        public void SetParentProfile(Profile.Profile profile)
+        {
+            ParentProfile = profile;
+        }
+
+        public List<DeviceBindingNode> GetDeviceBindingMenu(Context context, DeviceIoType type)
+        {
+            if (DeviceBindingMenu == null || DeviceBindingMenu.Count == 0)
+            {
+                var ioController = context.IOController;
+                var list = type == DeviceIoType.Input
+                    ? ioController.GetInputList()
+                    : ioController.GetOutputList();
+                try
+                {
+                    DeviceBindingMenu = GetDeviceBindingMenu(list[ProviderName]?.Devices[DeviceHandle]?.Nodes, type);
+                }
+                catch (KeyNotFoundException)
+                {
+                    return new List<DeviceBindingNode>
+                    {
+                        new DeviceBindingNode()
+                        {
+                            Title = "Device not connected",
+                            IsBinding = false
+                        }
+                    };
+                }
+            }
+            return DeviceBindingMenu;
         }
     }
 }

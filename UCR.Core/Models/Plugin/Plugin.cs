@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Plugin
@@ -72,27 +73,27 @@ namespace UCR.Core.Models.Plugin
 
         protected DeviceBinding InitializeInputMapping(DeviceBinding.ValueChanged callbackFunc)
         {
-            return InitializeMapping(DeviceBindingType.Input, callbackFunc);
+            return InitializeMapping(DeviceIoType.Input, callbackFunc);
         }
 
         protected DeviceBinding InitializeOutputMapping()
         {
-            return InitializeMapping(DeviceBindingType.Output, null);
+            return InitializeMapping(DeviceIoType.Output, null);
         }
 
-        private DeviceBinding InitializeMapping(DeviceBindingType deviceBindingType, DeviceBinding.ValueChanged callbackFunc)
+        private DeviceBinding InitializeMapping(DeviceIoType deviceIoType, DeviceBinding.ValueChanged callbackFunc)
         {
-            var deviceBinding = new DeviceBinding(callbackFunc, this, deviceBindingType);
-            switch(deviceBindingType)
+            var deviceBinding = new DeviceBinding(callbackFunc, this, deviceIoType);
+            switch(deviceIoType)
             {
-                case DeviceBindingType.Input:
+                case DeviceIoType.Input:
                     Inputs.Add(deviceBinding);
                     break;
-                case DeviceBindingType.Output:
+                case DeviceIoType.Output:
                     Outputs.Add(deviceBinding);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(deviceBindingType), deviceBindingType, null);
+                    throw new ArgumentOutOfRangeException(nameof(deviceIoType), deviceIoType, null);
             }
             return deviceBinding;
         }
