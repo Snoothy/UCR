@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
+using UCR.Core.Models.Plugin;
 
 namespace UCR.Core.Profile
 {
@@ -324,8 +325,14 @@ namespace UCR.Core.Profile
         
         #region Plugin
 
-        public void AddPlugin(Models.Plugin.Plugin plugin, string title = "Untitled")
+        public void AddNewPlugin(Plugin plugin, string title = "Untitled")
         {
+            AddPlugin((Plugin)Activator.CreateInstance(plugin.GetType()), title);
+        }
+
+        public void AddPlugin(Plugin plugin, string title = "Untitled")
+        {
+            
             if (plugin.Title == null) plugin.Title = title;
             plugin.BindingCallback = OnDeviceBindingChange;
             plugin.ParentProfile = this;

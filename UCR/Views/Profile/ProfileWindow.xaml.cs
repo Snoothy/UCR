@@ -41,7 +41,7 @@ namespace UCR.Views.Profile
             win.ShowDialog();
             if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
             // TODO Check if plugin with same name exists
-            Profile.AddPlugin(win.Plugin, win.TextResult);
+            Profile.AddNewPlugin(win.Plugin, win.TextResult);
             PluginsListBox.Items.Refresh();
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
