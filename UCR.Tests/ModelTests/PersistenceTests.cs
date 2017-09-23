@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 using UCR.Core;
 using UCR.Core.Models.Device;
 using UCR.Plugins.ButtonToButton;
@@ -64,6 +66,8 @@ namespace UCR.Tests.ModelTests
         public void PluginContext()
         {
             var context = new Context();
+            var pluginTypes = new List<Type>();
+            pluginTypes.Add(typeof(ButtonToButton));
             context.ProfilesController.AddProfile("Root profile");
 
             var profile = context.Profiles[0];
@@ -77,11 +81,11 @@ namespace UCR.Tests.ModelTests
             }
 
             var plugins = profile.Plugins;
-            context.SaveContext();
+            context.SaveContext(pluginTypes);
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
-                var newcontext = Context.Load();
+                var newcontext = Context.Load(pluginTypes);
                 var newProfile = newcontext.Profiles[0];
                 Assert.That(newProfile.Plugins.Count, Is.EqualTo(profile.Plugins.Count));
 
@@ -101,7 +105,7 @@ namespace UCR.Tests.ModelTests
                 Assert.That(((ButtonToButton)newProfile.Plugins[0]).Input.Guid, Is.EqualTo(newProfile.Plugins[0].Inputs[0].Guid));
                 Assert.That(((ButtonToButton)newProfile.Plugins[0]).Output.Guid, Is.EqualTo(newProfile.Plugins[0].Outputs[0].Guid));
 
-                newcontext.SaveContext();
+                newcontext.SaveContext(pluginTypes);
             }
         }
 

@@ -14,6 +14,7 @@ namespace UCR.Core
     public class Context
     {
         private static string _contextName = "context.xml";
+        private static string _pluginPath = "Plugins";
 
         // Persistence
         public List<Profile.Profile> Profiles { get; set; }
@@ -33,8 +34,9 @@ namespace UCR.Core
         public ProfilesController ProfilesController { get; set; }
         [XmlIgnore]
         public DeviceGroupsController DeviceGroupsController { get; set; }
-        [XmlIgnore]
+        
         internal List<Action> ActiveProfileCallbacks = new List<Action>();
+        private PluginLoader PluginLoader;
 
         public Context()
         {
@@ -53,6 +55,7 @@ namespace UCR.Core
             IOController = new IOController();
             ProfilesController = new ProfilesController(this, Profiles);
             DeviceGroupsController = new DeviceGroupsController(this, JoystickGroups, KeyboardGroups, MiceGroups, GenericDeviceGroups);
+            PluginLoader = new PluginLoader(_pluginPath);
         }
 
         public void SetActiveProfileCallback(Action profileActivated)
@@ -62,7 +65,7 @@ namespace UCR.Core
 
         public List<Plugin> GetPlugins()
         {
-            return new PluginLoader("Plugins").Plugins;
+            return PluginLoader.Plugins;
         }
 
         public void ContextChanged()
@@ -72,9 +75,9 @@ namespace UCR.Core
 
         #region Persistence
         
-        public bool SaveContext()
+        public bool SaveContext(List<Type> pluginTypes = null)
         {
-            var serializer = GetXmlSerializer();
+            var serializer = GetXmlSerializer(pluginTypes);
             using (var streamWriter = new StreamWriter(_contextName))
             {
                 serializer.Serialize(streamWriter, this);
@@ -83,10 +86,10 @@ namespace UCR.Core
             return true;
         }
 
-        public static Context Load()
+        public static Context Load(List<Type> pluginTypes = null)
         {
             Context context;
-            var serializer = GetXmlSerializer();
+            var serializer = GetXmlSerializer(pluginTypes);
             try
             {
                 using (var fileStream = new FileStream(_contextName, FileMode.Open))
@@ -112,11 +115,12 @@ namespace UCR.Core
             }
         }
 
-        private static XmlSerializer GetXmlSerializer()
+        private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes)
         {
-            var plugins = new PluginLoader("Plugins");
-            return new XmlSerializer(typeof(Context),
-                plugins.Plugins.Select(p => p.GetType()).ToArray());
+            var plugins = new PluginLoader(_pluginPath);
+            var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
+            if (additionalPluginTypes != null) pluginTypes.AddRange(additionalPluginTypes);
+            return new XmlSerializer(typeof(Context), pluginTypes.ToArray());
         }
 
         #endregion

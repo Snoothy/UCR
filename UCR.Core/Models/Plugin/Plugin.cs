@@ -10,8 +10,8 @@ namespace UCR.Core.Models.Plugin
     {
         // Persistence
         public string Title { get; set; }
-        public List<DeviceBinding> Inputs { get; set; } // TODO Private
-        public List<DeviceBinding> Outputs { get; set; } // TODO Private
+        public List<DeviceBinding> Inputs { get; }
+        public List<DeviceBinding> Outputs { get; }
 
         // Runtime
         public delegate void PluginBindingChanged(Plugin plugin);
@@ -35,7 +35,7 @@ namespace UCR.Core.Models.Plugin
             return success;
         }
 
-        public Models.Device.Device GetDevice(DeviceBinding deviceBinding)
+        public Device.Device GetDevice(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDevice(deviceBinding);
         }
@@ -97,7 +97,7 @@ namespace UCR.Core.Models.Plugin
             return deviceBinding;
         }
 
-        public List<Models.Device.Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDeviceList(deviceBinding);
         }
@@ -117,7 +117,7 @@ namespace UCR.Core.Models.Plugin
             ZipDeviceBindingList(Outputs);
         }
 
-        private void ZipDeviceBindingList(List<DeviceBinding> deviceBindings)
+        private static void ZipDeviceBindingList(IList<DeviceBinding> deviceBindings)
         {
             if (deviceBindings.Count == 0) return;
             var split = deviceBindings.Count / 2;
