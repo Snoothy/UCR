@@ -30,11 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IOWrapper">
-      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IOWrapper.dll</HintPath>
+    <Reference Include="IOWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\IOWrapper\IOWrapper\IOController\bin\Debug\IOWrapper.dll</HintPath>
     </Reference>
-    <Reference Include="IProvider">
-      <HintPath>..\..\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
+    <Reference Include="IProvider, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\IOWrapper\IOWrapper\IOController\bin\Debug\IProvider.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

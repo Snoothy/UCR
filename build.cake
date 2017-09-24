@@ -9,6 +9,7 @@ var configuration = Argument("configuration", "Release");
 
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
+var iowrapperVersion = "0.1.1";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";
@@ -59,7 +60,8 @@ Task("CloneIOWrapper")
 			GitClone("https://github.com/evilC/IOWrapper.git", iowrapperDir);
 		}
 		
-		// TODO checkout correct tag
+		var filePaths = new FilePath[] { };
+		GitCheckout(iowrapperDir, "tags/" + iowrapperVersion, filePaths);
 	});	
 
 Task("BuildIOWrapper")
@@ -86,6 +88,7 @@ Task("Build")
 	.IsDependentOn("Clean")
 	.IsDependentOn("Version")
 	.IsDependentOn("Restore")
+	.IsDependentOn("BuildIOWrapper")
 	.Does(() => {
 		MSBuild(solutionPath, new MSBuildSettings 
 		{

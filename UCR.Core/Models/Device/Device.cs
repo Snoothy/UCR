@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Xml.Serialization;
 using Providers;
 using UCR.Core.Models.Binding;
@@ -41,7 +42,6 @@ namespace UCR.Core.Models.Device
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
 
         private bool IsAcquired { get; set; }
-        private string Api { get; }
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
@@ -69,16 +69,15 @@ namespace UCR.Core.Models.Device
             Guid = device.Guid;
         }
 
-        public Device(IOWrapperDevice device, DeviceIoType type) : this()
+        public Device(DeviceReport device, ProviderReport providerReport, DeviceIoType type) : this()
         {
             Title = device.DeviceName;
-            DeviceHandle = device.DeviceHandle;
-            ProviderName = device.ProviderName;
+            ProviderName = providerReport.ProviderDescriptor.ProviderName;
+            DeviceHandle = device.DeviceDescriptor.DeviceHandle;
             DeviceBindingMenu = GetDeviceBindingMenu(device.Nodes, type);
-            Api = device.API;
         }
 
-        private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceNode> deviceNodes, DeviceIoType type)
+        private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
         {
             var result = new List<DeviceBindingNode>();
             if (deviceNodes == null) return result;
@@ -102,9 +101,9 @@ namespace UCR.Core.Models.Device
                         DeviceBinding = new DeviceBinding(null,null,type)
                         {
                             IsBound = false,
-                            KeyType = (int)bindingInfo.Type,
-                            KeyValue = bindingInfo.Index,
-                            KeySubValue = bindingInfo.SubIndex,
+                            KeyType = (int)bindingInfo.BindingDescriptor.Type,
+                            KeyValue = bindingInfo.BindingDescriptor.Index,
+                            KeySubValue = bindingInfo.BindingDescriptor.SubIndex,
                             DeviceBindingCategory = DeviceBinding.MapCategory(bindingInfo.Category)
                             // TODO Extract to class instead of using DeviceBinding?
                         }
@@ -125,12 +124,7 @@ namespace UCR.Core.Models.Device
         public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
         {
             if (DeviceHandle == null || ProviderName == null) return;
-            context.IOController.SetOutputstate(new OutputSubscriptionRequest()
-            {
-                ProviderName = ProviderName,
-                DeviceHandle = DeviceHandle,
-                SubscriberGuid = Guid
-            }, (BindingType)deviceBinding.KeyType, (uint)deviceBinding.KeyValue, (int)value);
+            context.IOController.SetOutputstate(GetOutputSubscriptionRequest(), GetBindingDescriptor(deviceBinding), (int)value);
         }
 
         public bool AddDeviceBinding(DeviceBinding deviceBinding)
@@ -215,20 +209,6 @@ namespace UCR.Core.Models.Device
             return context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBinding));
         }
 
-        private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBinding deviceBinding)
-        {
-            return new InputSubscriptionRequest()
-            {
-                ProviderName = ProviderName,
-                DeviceHandle = DeviceHandle,
-                Type = (BindingType) deviceBinding.KeyType,
-                Index = (uint) deviceBinding.KeyValue,
-                Callback = deviceBinding.Callback,
-                SubscriberGuid = deviceBinding.Guid,
-                ProfileGuid = ParentProfile.Guid
-            };
-        }
-
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
@@ -277,14 +257,60 @@ namespace UCR.Core.Models.Device
             return context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
         }
 
+        private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBinding deviceBinding)
+        {
+            return new InputSubscriptionRequest()
+            {
+                ProviderDescriptor = GetProviderDescriptor(),
+                DeviceDescriptor = GetDeviceDescriptor(),
+                SubscriptionDescriptor = GetSubscriptionDescriptor(),
+                BindingDescriptor = GetBindingDescriptor(deviceBinding),
+                Callback = deviceBinding.Callback
+            };
+        }
+
         private OutputSubscriptionRequest GetOutputSubscriptionRequest()
         {
             return new OutputSubscriptionRequest()
             {
-                DeviceHandle = DeviceHandle,
-                ProviderName = ProviderName,
+                ProviderDescriptor = GetProviderDescriptor(),
+                DeviceDescriptor = GetDeviceDescriptor(),
+                SubscriptionDescriptor = GetSubscriptionDescriptor()
+            };
+        }
+
+        private ProviderDescriptor GetProviderDescriptor()
+        {
+            return new ProviderDescriptor()
+            {
+                ProviderName = ProviderName
+            };
+        }
+
+        private DeviceDescriptor GetDeviceDescriptor()
+        {
+            return new DeviceDescriptor()
+            {
+                DeviceHandle = DeviceHandle
+            };
+        }
+
+        private SubscriptionDescriptor GetSubscriptionDescriptor()
+        {
+            return new SubscriptionDescriptor()
+            {
                 SubscriberGuid = Guid,
                 ProfileGuid = ParentProfile.Guid
+            };
+        }
+
+        private BindingDescriptor GetBindingDescriptor(DeviceBinding deviceBinding)
+        {
+            return new BindingDescriptor()
+            {
+                Type = (BindingType)deviceBinding.KeyType,
+                Index = deviceBinding.KeyValue,
+                SubIndex = deviceBinding.KeySubValue
             };
         }
 

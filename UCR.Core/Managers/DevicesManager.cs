@@ -29,7 +29,7 @@ namespace UCR.Core.Managers
                 var deviceGroup = new DeviceGroup(providerReport.Key);
                 foreach (var ioWrapperDevice in providerReport.Value.Devices)
                 {
-                    deviceGroup.Devices.Add(new Device(ioWrapperDevice.Value, type));
+                    deviceGroup.Devices.Add(new Device(ioWrapperDevice.Value, providerReport.Value, type));
                 }
                 deviceGroupList.Add(deviceGroup);
             }
