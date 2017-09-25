@@ -3,13 +3,14 @@
 #tool "nuget:?package=gitlink"
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
 #addin nuget:?package=Cake.Git
+#addin "Cake.FileHelpers"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
-var iowrapperVersion = "0.1.1";
+var iowrapperVersion = "v0.1.2";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";
@@ -43,6 +44,9 @@ Task("Version")
 		});
 		versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });
 
+		// Set IOWrapper version in README
+		ReplaceRegexInFiles("./README.md", @"IOWrapper-v([0-9]+\.[0-9]+\.[0-9]+).*-blue.svg", "IOWrapper-" + iowrapperVersion + "-blue.svg");
+		
 		// Update project.json
 		//VersionProject(projectJson, versionInfo);
 		//VersionProject(projectCoreJson, versionInfo);
@@ -154,6 +158,6 @@ private void GenerateReleaseNotes()
 }
 
 Task("Default")
-	.IsDependentOn("Package");
+	.IsDependentOn("Test");
 
 RunTarget(target);
