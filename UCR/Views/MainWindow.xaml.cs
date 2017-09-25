@@ -123,18 +123,13 @@ namespace UCR.Views
 
         private void CopyProfile(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement
-            MessageBox.Show("Not yet implemented", "We're sorry...", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            return;
-
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete '" + pi.profile.Title + "'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                pi.profile.Remove();
-                ReloadProfileTree();
-            }
+            var w = new TextDialog("Profile name", pi.profile.Title + " Copy");
+            w.ShowDialog();
+            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            context.ProfilesManager.CopyProfile(pi.profile, w.TextResult);
+            ReloadProfileTree();
         }
 
         private void RemoveProfile(object sender, RoutedEventArgs e)

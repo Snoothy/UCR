@@ -4,9 +4,8 @@ using System.Linq;
 using System.Xml.Serialization;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
 
-namespace UCR.Core.Profile
+namespace UCR.Core.Models.Profile
 {
     public class Profile
     {
@@ -85,6 +84,17 @@ namespace UCR.Core.Profile
             if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
             ChildProfiles.Add(CreateProfile(context, title, this));
+            context.ContextChanged();
+        }
+
+        public void AddChildProfile(Profile profile, string title)
+        {
+            if (IsGlobalProfileTitle(title)) title += " not allowed";
+            if (ChildProfiles == null) ChildProfiles = new List<Profile>();
+            profile.context = context;
+            profile.ParentProfile = this;
+            ChildProfiles.Add(profile);
+            context.ContextChanged();
         }
 
         public bool Rename(string title)
@@ -259,7 +269,7 @@ namespace UCR.Core.Profile
 
         private bool UnsubscribeOutputDevices()
         {
-            bool success = true;
+            var success = true;
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
                 success &= OutputGroups[(DeviceType)type].Devices
@@ -278,7 +288,7 @@ namespace UCR.Core.Profile
             return DeviceGroupGuids[deviceBinding.DeviceIoType][deviceBinding.DeviceType];
         }
 
-        public Device GetDevice(DeviceBinding deviceBinding)
+        public Device.Device GetDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count
@@ -286,15 +296,15 @@ namespace UCR.Core.Profile
                 : null;
         }
 
-        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return GetDeviceList(deviceBinding.DeviceIoType, deviceBinding.DeviceType);
         }
 
-        public List<Device> GetDeviceList(DeviceIoType deviceIoType, DeviceType deviceType)
+        public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType, DeviceType deviceType)
         {
             SetDeviceListNames();
-            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceIoType][deviceType])?.Devices ?? new List<Device>();
+            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceIoType][deviceType])?.Devices ?? new List<Device.Device>();
             if (!InheritFromParent || ParentProfile == null) return result;
 
             var parentDeviceList = ParentProfile.GetDeviceList(deviceIoType, deviceType);
@@ -308,13 +318,13 @@ namespace UCR.Core.Profile
             return result;
         }
 
-        public Device GetLocalDevice(DeviceBinding deviceBinding)
+        public Device.Device GetLocalDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetLocalDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count ? deviceList[deviceBinding.DeviceNumber] : null;
         }
 
-        private List<Device> GetLocalDeviceList(DeviceBinding deviceBinding)
+        private List<Device.Device> GetLocalDeviceList(DeviceBinding deviceBinding)
         {
             var deviceGroups = deviceBinding.DeviceIoType == DeviceIoType.Input ? InputGroups : OutputGroups;
             var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
@@ -325,12 +335,12 @@ namespace UCR.Core.Profile
         
         #region Plugin
 
-        public void AddNewPlugin(Plugin plugin, string title = "Untitled")
+        public void AddNewPlugin(Plugin.Plugin plugin, string title = "Untitled")
         {
-            AddPlugin((Plugin)Activator.CreateInstance(plugin.GetType()), title);
+            AddPlugin((Plugin.Plugin)Activator.CreateInstance(plugin.GetType()), title);
         }
 
-        public void AddPlugin(Plugin plugin, string title = "Untitled")
+        public void AddPlugin(Plugin.Plugin plugin, string title = "Untitled")
         {
             
             if (plugin.Title == null) plugin.Title = title;
@@ -369,9 +379,9 @@ namespace UCR.Core.Profile
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private List<Device> GetCopiedList(DeviceIoType deviceIoType, DeviceType deviceType)
+        private List<Device.Device> GetCopiedList(DeviceIoType deviceIoType, DeviceType deviceType)
         {
-            var deviceList = Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
+            var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
             deviceList.ForEach(d => d.SetParentProfile(this));
             return deviceList;
         }

@@ -11,9 +11,9 @@ namespace UCR.Views.Profile
     public partial class ProfileWindow : Window
     {
         private Context Context { get; set; }
-        private Core.Profile.Profile Profile { get; set; }
+        private Core.Models.Profile.Profile Profile { get; set; }
 
-        public ProfileWindow(Context context, Core.Profile.Profile profile)
+        public ProfileWindow(Context context, Core.Models.Profile.Profile profile)
         {
             Context = context;
             Profile = profile;

@@ -15,7 +15,7 @@ namespace UCR.Views.Profile
     public partial class ProfileDeviceGroupWindow : Window
     {
         private Context context;
-        private Core.Profile.Profile profile;
+        private Core.Models.Profile.Profile profile;
         private bool HasLoaded = false;
 
         public List<ComboBoxItemViewModel> InputJoystickGroups { get; set; }
@@ -27,7 +27,7 @@ namespace UCR.Views.Profile
         public List<ComboBoxItemViewModel> OutputMiceGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGenericGroups { get; set; }
 
-        public ProfileDeviceGroupWindow(Context context, Core.Profile.Profile profile)
+        public ProfileDeviceGroupWindow(Context context, Core.Models.Profile.Profile profile)
         {
             this.context = context;
             this.profile = profile;

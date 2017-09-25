@@ -95,8 +95,10 @@ namespace UCR.Tests.ModelTests
                     Assert.That(newProfile.Plugins[j].Title, Is.EqualTo(plugins[j].Title));
                     Assert.That(newProfile.Plugins[j].Inputs.Count, Is.EqualTo(plugins[j].Inputs.Count));
                     Assert.That(newProfile.Plugins[j].Outputs.Count, Is.EqualTo(plugins[j].Outputs.Count));
+                    Assert.That(newProfile.Plugins[j].Outputs[0].DeviceIoType, Is.EqualTo(DeviceIoType.Output));
                     Assert.That(newProfile.Plugins[j].Inputs[0].Guid, Is.Not.EqualTo(plugins[j].Inputs[0].Guid));
                     Assert.That(newProfile.Plugins[j].Inputs[0].IsBound, Is.EqualTo(plugins[j].Inputs[0].IsBound));
+                    Assert.That(newProfile.Plugins[j].Inputs[0].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
                     Assert.That(newProfile.Plugins[j].Inputs[0].DeviceNumber, Is.EqualTo(plugins[j].Inputs[0].DeviceNumber));
                     Assert.That(newProfile.Plugins[j].Inputs[0].KeyType, Is.EqualTo(plugins[j].Inputs[0].KeyType));
                     Assert.That(newProfile.Plugins[j].Inputs[0].KeyValue, Is.EqualTo(plugins[j].Inputs[0].KeyValue));

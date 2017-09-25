@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UCR.Core;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
-using UCR.Core.Profile;
+using UCR.Core.Models.Profile;
 using UCR.Plugins.ButtonToButton;
 using UCR.Tests.Factory;
 

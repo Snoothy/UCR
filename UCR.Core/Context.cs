@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using IOWrapper;
 using UCR.Core.Managers;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
+using UCR.Core.Models.Profile;
 
 namespace UCR.Core
 {
@@ -16,7 +18,7 @@ namespace UCR.Core
         private const string PluginPath = "Plugins";
 
         // Persistence
-        public List<Profile.Profile> Profiles { get; set; }
+        public List<Profile> Profiles { get; set; }
         public List<DeviceGroup> KeyboardGroups { get; set; }
         public List<DeviceGroup> MiceGroups { get; set; }
         public List<DeviceGroup> JoystickGroups { get; set; }
@@ -24,7 +26,7 @@ namespace UCR.Core
 
         // Runtime
         [XmlIgnore]
-        public Profile.Profile ActiveProfile { get; set; }
+        public Profile ActiveProfile { get; set; }
         [XmlIgnore]
         public ProfilesManager ProfilesManager { get; set; }
         [XmlIgnore]
@@ -45,7 +47,7 @@ namespace UCR.Core
         private void Init()
         {
             IsNotSaved = false;
-            Profiles = new List<Profile.Profile>();
+            Profiles = new List<Profile>();
             KeyboardGroups = new List<DeviceGroup>();
             MiceGroups = new List<DeviceGroup>();
             JoystickGroups = new List<DeviceGroup>();
@@ -117,10 +119,15 @@ namespace UCR.Core
 
         private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes)
         {
+            return GetXmlSerializer(additionalPluginTypes, typeof(Context));
+        }
+
+        private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes, Type type)
+        {
             var plugins = new PluginLoader(PluginPath);
             var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
             if (additionalPluginTypes != null) pluginTypes.AddRange(additionalPluginTypes);
-            return new XmlSerializer(typeof(Context), pluginTypes.ToArray());
+            return new XmlSerializer(type, pluginTypes.ToArray());
         }
 
         #endregion
@@ -128,6 +135,30 @@ namespace UCR.Core
         public void Dispose()
         {
             IOController?.Dispose();
+        }
+
+        public static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+
+        public static T DeepXmlClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = GetXmlSerializer(null, typeof(T));
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
         }
     }
 }

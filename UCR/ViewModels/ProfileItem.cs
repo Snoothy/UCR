@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UCR.Core.Profile;
+using UCR.Core.Models.Profile;
 
 namespace UCR.ViewModels
 {

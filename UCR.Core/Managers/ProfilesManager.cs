@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using UCR.Core.Models.Profile;
 
 namespace UCR.Core.Managers
 {
     public class ProfilesManager
     {
         private readonly Context _context;
-        private readonly List<Profile.Profile> _profiles;
+        private readonly List<Profile> _profiles;
 
-        public ProfilesManager(Context context, List<Profile.Profile> profiles)
+        public ProfilesManager(Context context, List<Profile> profiles)
         {
             _context = context;
             _profiles = profiles;
@@ -15,12 +18,12 @@ namespace UCR.Core.Managers
 
         public bool AddProfile(string title)
         {
-            _profiles.Add(Profile.Profile.CreateProfile(_context, title));
+            _profiles.Add(Profile.CreateProfile(_context, title));
             _context.ContextChanged();
             return true;
         }
 
-        public bool ActivateProfile(Profile.Profile profile)
+        public bool ActivateProfile(Profile profile)
         {
             var success = true;
             if (_context.ActiveProfile?.Guid == profile.Guid) return success;
@@ -45,7 +48,27 @@ namespace UCR.Core.Managers
             return success;
         }
 
-        public bool DeactivateProfile(Profile.Profile profile)
+        public bool CopyProfile(Profile profile, string title = "Untitled")
+        {
+            var newProfile = Context.DeepXmlClone<Profile>(profile);
+            newProfile.Title = title;
+            newProfile.Guid = Guid.NewGuid();
+            newProfile.PostLoad(_context, profile.ParentProfile);
+
+            if (profile.ParentProfile != null)
+            {
+                profile.ParentProfile.AddChildProfile(newProfile, title);
+            }
+            else
+            {
+                _profiles.Add(newProfile);
+            }
+            _context.ContextChanged();
+
+            return true;
+        }
+
+        public bool DeactivateProfile(Profile profile)
         {
             if (_context.ActiveProfile == null || profile == null) return true;
             if (_context.ActiveProfile.Guid == profile.Guid) _context.ActiveProfile = null;

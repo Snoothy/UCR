@@ -263,7 +263,7 @@ namespace UCR.Core.Models.Device
             {
                 ProviderDescriptor = GetProviderDescriptor(),
                 DeviceDescriptor = GetDeviceDescriptor(),
-                SubscriptionDescriptor = GetSubscriptionDescriptor(),
+                SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBinding.Guid),
                 BindingDescriptor = GetBindingDescriptor(deviceBinding),
                 Callback = deviceBinding.Callback
             };
@@ -275,7 +275,7 @@ namespace UCR.Core.Models.Device
             {
                 ProviderDescriptor = GetProviderDescriptor(),
                 DeviceDescriptor = GetDeviceDescriptor(),
-                SubscriptionDescriptor = GetSubscriptionDescriptor()
+                SubscriptionDescriptor = GetSubscriptionDescriptor(Guid)
             };
         }
 
@@ -295,11 +295,11 @@ namespace UCR.Core.Models.Device
             };
         }
 
-        private SubscriptionDescriptor GetSubscriptionDescriptor()
+        private SubscriptionDescriptor GetSubscriptionDescriptor(Guid subscriberGuid)
         {
             return new SubscriptionDescriptor()
             {
-                SubscriberGuid = Guid,
+                SubscriberGuid = subscriberGuid,
                 ProfileGuid = ParentProfile.Guid
             };
         }
