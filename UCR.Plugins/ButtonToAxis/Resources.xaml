@@ -3,12 +3,16 @@
                     xmlns:controls="clr-namespace:UCR.Views.Controls;assembly=UCR"
                     x:Class="UCR.Plugins.ButtonToAxis.Resources">
     <DataTemplate x:Key="ButtonToAxis">
-        <DockPanel>
-            <StackPanel>
-                <controls:DeviceBindingControl Label="Button Input low" DockPanel.Dock="Left" DeviceBinding="{Binding InputLow}"/>
-                <controls:DeviceBindingControl Label="Button Input high" DockPanel.Dock="Left" DeviceBinding="{Binding InputHigh}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <controls:DeviceBindingControl Label="Button Input low" DeviceBinding="{Binding InputLow}"/>
+                <controls:DeviceBindingControl Label="Button Input high" DeviceBinding="{Binding InputHigh}"/>
             </StackPanel>
-            <controls:DeviceBindingControl Label="Axis Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
-        </DockPanel>
+            <controls:DeviceBindingControl Grid.Column="1" Label="Button Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>

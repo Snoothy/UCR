@@ -3,9 +3,35 @@
                     xmlns:controls="clr-namespace:UCR.Views.Controls;assembly=UCR"
                     x:Class="UCR.Plugins.AxisToAxis.Resources">
     <DataTemplate x:Key="AxisToAxis">
-        <DockPanel>
-            <controls:DeviceBindingControl Label="Axis Input" DockPanel.Dock="Left" DeviceBinding="{Binding InputAxis}"/>
-            <controls:DeviceBindingControl Label="Axis Output" DockPanel.Dock="Right" HorizontalContentAlignment="Right" DeviceBinding="{Binding OutputAxis}"/>
-        </DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <GroupBox Header="Invert" Width="Auto">
+                    <CheckBox Margin="10,5,0,0" IsChecked="{Binding Invert, Mode=TwoWay}"></CheckBox>
+                </GroupBox>
+                <GroupBox Header="Dead zone" Width="Auto">
+                    <TextBox Width="30" Height="20" Text="{Binding DeadZone}"/>
+                </GroupBox>
+                <GroupBox Header="Sensitivity" Width="Auto">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Width="30" Height="20" Text="{Binding Sensitivity}"/>
+                        <Label Margin="5,0,0,0">Linear:</Label>
+                        <CheckBox Margin="0,5,0,0" IsChecked="{Binding Linear, Mode=TwoWay}" />
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <controls:DeviceBindingControl Grid.Column="0" Label="Axis Input" DeviceBinding="{Binding InputAxis}"/>
+                <controls:DeviceBindingControl Grid.Column="1" Label="Axis Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding OutputAxis}"/>
+            </Grid>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>
