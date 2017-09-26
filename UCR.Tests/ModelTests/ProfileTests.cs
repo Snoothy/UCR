@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using UCR.Core;
+using UCR.Core.Managers;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Profile;
@@ -137,6 +138,34 @@ namespace UCR.Tests.ModelTests
             deviceBinding.DeviceNumber = 1;
             Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
             Assert.That(childProfile.GetDeviceList(deviceBinding).Count, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void CopyProfile()
+        {
+            var profileManager = new ProfilesManager(_context, _context.Profiles);
+            var profile = _context.Profiles[0];
+            profileManager.CopyProfile(profile, "Copy");
+            var newProfile = _context.Profiles[1];
+            Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
+            Assert.That(newProfile.Title, Is.EqualTo("Copy"));
+            Assert.That(newProfile.ParentProfile, Is.Null);
+            Assert.That(newProfile.context, Is.Not.Null);
+        }
+
+        [Test]
+        public void CopyChildProfile()
+        {
+            var profileManager = new ProfilesManager(_context, _context.Profiles);
+            var parentProfile = _context.Profiles[0];
+            parentProfile.AddNewChildProfile("Child");
+            var profile = parentProfile.ChildProfiles[0];
+            profileManager.CopyProfile(profile, "Copy");
+            var newProfile = parentProfile.ChildProfiles[1];
+            Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
+            Assert.That(newProfile.Title, Is.EqualTo("Copy"));
+            Assert.That(newProfile.ParentProfile.Guid, Is.EqualTo(parentProfile.Guid));
+            Assert.That(newProfile.context, Is.Not.Null);
         }
 
         [Test]
