@@ -60,7 +60,7 @@ namespace UCR.Plugins.AxisToAxis
             if (Invert) value *= -1;
             if (_deadZoneValue != 0) value = ApplyDeadZone(value);
             if (_sensitivityValue != 100) value = ApplySensitivity(value);
-            WriteOutput(OutputAxis, value);
+            WriteOutput(OutputAxis, Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue));
         }
 
         private long ApplySensitivity(long value)
