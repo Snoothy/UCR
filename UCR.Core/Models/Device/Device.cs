@@ -338,9 +338,9 @@ namespace UCR.Core.Models.Device
                     : ioController.GetOutputList();
                 try
                 {
-                    DeviceBindingMenu = GetDeviceBindingMenu(list[ProviderName]?.Devices[DeviceHandle]?.Nodes, type);
+                    DeviceBindingMenu = GetDeviceBindingMenu(list[ProviderName]?.Devices.Find(d => d.DeviceDescriptor.DeviceHandle == DeviceHandle)?.Nodes, type);
                 }
-                catch (KeyNotFoundException)
+                catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
                 {
                     return new List<DeviceBindingNode>
                     {

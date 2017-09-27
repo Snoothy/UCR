@@ -10,7 +10,7 @@ var configuration = Argument("configuration", "Release");
 
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
-var iowrapperVersion = "v0.1.2";
+var iowrapperVersion = "v0.2.0";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";
@@ -130,7 +130,7 @@ Task("Package")
 	.Does(() => {
 		//GitLink("./", new GitLinkSettings { ArgumentCustomization = args => args.Append("-include Specify,Specify.Autofac") });
         
-        GenerateReleaseNotes();
+        //GenerateReleaseNotes();
 
 		//if (AppVeyor.IsRunningOnAppVeyor)
 		//{
@@ -158,6 +158,6 @@ private void GenerateReleaseNotes()
 }
 
 Task("Default")
-	.IsDependentOn("Test");
+	.IsDependentOn("Package");
 
 RunTarget(target);
