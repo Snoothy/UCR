@@ -10,7 +10,7 @@ var configuration = Argument("configuration", "Release");
 
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
-var iowrapperVersion = "v0.2.1";
+var iowrapperVersion = "v0.2.2";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";
