@@ -9,10 +9,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <controls:DeviceBindingControl Label="Button Input low" DeviceBinding="{Binding InputLow}"/>
-                <controls:DeviceBindingControl Label="Button Input high" DeviceBinding="{Binding InputHigh}"/>
+                <controls:DeviceBindingControl Label="Button Input low" DeviceBinding="{Binding InputLow}" Category="Momentary"/>
+                <controls:DeviceBindingControl Label="Button Input high" DeviceBinding="{Binding InputHigh}" Category="Momentary"/>
             </StackPanel>
-            <controls:DeviceBindingControl Grid.Column="1" Label="Button Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
+            <controls:DeviceBindingControl Grid.Column="1" Label="Button Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}" Category="Range"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

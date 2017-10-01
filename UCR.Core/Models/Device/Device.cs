@@ -32,6 +32,7 @@ namespace UCR.Core.Models.Device
         public string Title { get; set; }
         public string ProviderName { get; set; }
         public string DeviceHandle { get; set; }
+        public int DeviceNumber { get; set; }
 
         // Runtime
         [XmlIgnore]
@@ -65,6 +66,7 @@ namespace UCR.Core.Models.Device
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;
             ProviderName = device.ProviderName;
+            DeviceNumber = device.DeviceNumber;
             DeviceBindingMenu = device.DeviceBindingMenu;
             Guid = device.Guid;
         }
@@ -74,6 +76,7 @@ namespace UCR.Core.Models.Device
             Title = device.DeviceName;
             ProviderName = providerReport.ProviderDescriptor.ProviderName;
             DeviceHandle = device.DeviceDescriptor.DeviceHandle;
+            DeviceNumber = device.DeviceDescriptor.DeviceInstance;
             DeviceBindingMenu = GetDeviceBindingMenu(device.Nodes, type);
         }
 
@@ -89,7 +92,6 @@ namespace UCR.Core.Models.Device
                     Title = deviceNode.Title,
                     IsBinding = false,
                     ChildrenNodes = GetDeviceBindingMenu(deviceNode.Nodes, type),
-                    
                 };
                 
                 foreach (var bindingInfo in deviceNode.Bindings)
@@ -291,7 +293,8 @@ namespace UCR.Core.Models.Device
         {
             return new DeviceDescriptor()
             {
-                DeviceHandle = DeviceHandle
+                DeviceHandle = DeviceHandle,
+                DeviceInstance = DeviceNumber
             };
         }
 

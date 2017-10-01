@@ -27,7 +27,8 @@ namespace UCR.Views.Controls
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
 
         private bool HasLoaded = false;
-        
+        public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
+
 
         public DeviceBindingControl()
         {
@@ -135,16 +136,23 @@ namespace UCR.Views.Controls
             if (deviceBindingNodes == null) return menuList;
             foreach (var deviceBindingNode in deviceBindingNodes)
             {
+                
                 RelayCommand cmd = null;
                 if (deviceBindingNode.IsBinding)
                 {
+                    if (Category != null && deviceBindingNode.DeviceBinding.DeviceBindingCategory != Category) continue;
                     cmd = new RelayCommand(c =>
                     {
                         DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
                         LoadBindingName();
                     });
                 }
-                menuList.Add(new ContextMenuItem(deviceBindingNode.Title, BuildMenu(deviceBindingNode.ChildrenNodes), cmd));
+                var menu = new ContextMenuItem(deviceBindingNode.Title, BuildMenu(deviceBindingNode.ChildrenNodes), cmd);
+                if (deviceBindingNode.IsBinding || !deviceBindingNode.IsBinding && menu.Children.Count > 0)
+                {
+                    menuList.Add(menu);
+                }
+                
             }
             return menuList;
         }
@@ -159,6 +167,12 @@ namespace UCR.Views.Controls
         {
             get { return (string)GetValue(LabelProperty); }
             set { SetValue(LabelProperty, value); }
+        }
+
+        public DeviceBindingCategory? Category
+        {
+            get { return (DeviceBindingCategory?) GetValue(CategoryProperty); }
+            set { SetValue(CategoryProperty, value); }
         }
 
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)

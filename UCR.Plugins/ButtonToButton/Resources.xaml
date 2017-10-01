@@ -8,8 +8,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <controls:DeviceBindingControl Grid.Column="0" Label="Button Input" DeviceBinding="{Binding Input}"/>
-            <controls:DeviceBindingControl Grid.Column="1" Label="Button Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}"/>
+            <controls:DeviceBindingControl Grid.Column="0" Label="Button Input" DeviceBinding="{Binding Input}" Category="Momentary"/>
+            <controls:DeviceBindingControl Grid.Column="1" Label="Button Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding Output}" Category="Momentary"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

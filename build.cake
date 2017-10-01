@@ -6,11 +6,11 @@
 #addin "Cake.FileHelpers"
 
 var target = Argument("target", "Default");
-var configuration = Argument("configuration", "Release");
+var configuration = Argument("configuration", "Debug");
 
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
-var iowrapperVersion = "v0.2.2";
+var iowrapperVersion = "v0.2.4";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";

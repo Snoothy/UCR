@@ -1,5 +1,5 @@
 # Universal Control Remapper
-[![GitHub release](https://img.shields.io/github/release/snoothy/ucr.svg)]() [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.2.2-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)]() [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)]()
+[![GitHub release](https://img.shields.io/github/release/snoothy/ucr.svg)]() [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.2.4-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)]() [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)]()
 
 Universal Control Remapper is a complete rewrite of the original [UCR](https://github.com/evilC/UCR), created in collaboration with [evilC](https://github.com/evilC/), to overcome the limitations of AHK.
 

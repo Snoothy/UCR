@@ -29,8 +29,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <controls:DeviceBindingControl Grid.Column="0" Label="Axis Input" DeviceBinding="{Binding InputAxis}"/>
-                <controls:DeviceBindingControl Grid.Column="1" Label="Axis Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding OutputAxis}"/>
+                <controls:DeviceBindingControl Grid.Column="0" Label="Axis Input" DeviceBinding="{Binding InputAxis}" Category="Range"/>
+                <controls:DeviceBindingControl Grid.Column="1" Label="Axis Output" HorizontalContentAlignment="Right" DeviceBinding="{Binding OutputAxis}" Category="Range"/>
             </Grid>
         </Grid>
     </DataTemplate>
