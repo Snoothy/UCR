@@ -32,8 +32,14 @@ namespace UCR.Core.Models.Plugin
         public bool Activate(Context context)
         {
             var success = true;
+            OnActivate();
             success &= SubscribeInputs(context);
             return success;
+        }
+
+        public virtual void OnActivate()
+        {
+            
         }
 
         public Device.Device GetDevice(DeviceBinding deviceBinding)
@@ -109,13 +115,25 @@ namespace UCR.Core.Models.Plugin
             ParentProfile.context.ContextChanged();
         }
 
-        internal void PostLoad(Context context, Profile.Profile profile)
+        public void PostLoad(Context context, Profile.Profile parentProfile)
         {
-            ParentProfile = profile;
-            BindingCallback = profile.OnDeviceBindingChange;
+            ParentProfile = parentProfile;
+            BindingCallback = parentProfile.OnDeviceBindingChange;
 
             ZipDeviceBindingList(Inputs);
             ZipDeviceBindingList(Outputs);
+        }
+
+        public Plugin Duplicate()
+        {
+            var newPlugin = Context.DeepXmlClone(this);
+            newPlugin.PostLoad(ParentProfile.context, ParentProfile);
+            return newPlugin;
+        }
+
+        protected void ContextChanged()
+        {
+            ParentProfile?.context?.ContextChanged();
         }
 
         private static void ZipDeviceBindingList(IList<DeviceBinding> deviceBindings)

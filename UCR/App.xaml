@@ -4,6 +4,6 @@
              StartupUri="Views/MainWindow.xaml"
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
-         
+        <ResourceDictionary  Source="Views/Controls/PluginGroupView.xaml"/>
     </Application.Resources>
 </Application>

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Plugin
 {
@@ -24,6 +24,25 @@ namespace UCR.Core.Models.Plugin
             }
 
             return newBindings;
+        }
+
+        public void AddPlugin(Plugin plugin, string title)
+        {
+            var newPlugin = (Plugin) Activator.CreateInstance(plugin.GetType());
+            newPlugin.ParentProfile = ParentProfile;
+            newPlugin.BindingCallback = ParentProfile.OnDeviceBindingChange;
+            newPlugin.Title = title;
+            Plugins.Add(newPlugin);
+            ParentProfile.context.ContextChanged();
+        }
+
+        internal new void PostLoad(Context context, Profile.Profile parentProfile)
+        {
+            (this as Plugin).PostLoad(context, parentProfile);
+            foreach (var plugin in Plugins)
+            {
+                plugin.PostLoad(context, parentProfile);
+            }
         }
     }
 }

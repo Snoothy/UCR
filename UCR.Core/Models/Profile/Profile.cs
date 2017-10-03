@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
+using UCR.Core.Models.Plugin;
 
 namespace UCR.Core.Models.Profile
 {
@@ -45,7 +46,7 @@ namespace UCR.Core.Models.Profile
 
         #region Constructors
 
-        private Profile()
+        public Profile()
         {
             Init();
         }
@@ -424,7 +425,7 @@ namespace UCR.Core.Models.Profile
             return profile;
         }
 
-        internal void OnDeviceBindingChange(Models.Plugin.Plugin plugin)
+        internal void OnDeviceBindingChange(Plugin.Plugin plugin)
         {
             if (!IsActive()) return;
             foreach (var deviceBinding in plugin.GetInputs())
@@ -447,7 +448,15 @@ namespace UCR.Core.Models.Profile
 
             foreach (var plugin in Plugins)
             {
-                plugin.PostLoad(context, this);
+                var group = plugin as PluginGroup;
+                if (group != null)
+                {
+                    group.PostLoad(context, this);
+                }
+                else
+                {
+                    plugin.PostLoad(context, this);
+                }
             }
         }
     }

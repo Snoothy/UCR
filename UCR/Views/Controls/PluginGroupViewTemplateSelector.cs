@@ -4,12 +4,12 @@ using UCR.Core.Models.Plugin;
 
 namespace UCR.Views.Controls
 {
-    class PluginViewTemplateSelector : DataTemplateSelector
+    class PluginGroupViewTemplateSelector : DataTemplateSelector
     {
         public DataTemplate PluginTemplate { get; set; }
         public Window Window { get; set; }
 
-        public PluginViewTemplateSelector()
+        public PluginGroupViewTemplateSelector()
         {
             Window = Application.Current.MainWindow;
         }
@@ -18,7 +18,6 @@ namespace UCR.Views.Controls
         public override DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             if (item == null) return PluginTemplate;
-            if (item is PluginGroup) return (DataTemplate)Window.FindResource("PluginGroup");
             PluginTemplate = (DataTemplate)Window.FindResource(item.GetType().Name);
             return PluginTemplate;
         }
