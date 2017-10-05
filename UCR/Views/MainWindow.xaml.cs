@@ -20,13 +20,12 @@ namespace UCR.Views
 
         public string ActiveProfileBreadCrumbs => context?.ActiveProfile != null ? context.ActiveProfile.ProfileBreadCrumbs() : "None";
 
-        public MainWindow()
+        public MainWindow(Context context)
         {
             DataContext = this;
-            new ResourceLoader().Load();
+            this.context = context;
             InitializeComponent();
-            context = Context.Load();
-
+            
             context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
         }

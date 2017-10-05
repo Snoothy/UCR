@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
+using UCR.Core;
+using UCR.Utilities;
+using UCR.Views;
 
 namespace UCR
 {
@@ -13,7 +11,16 @@ namespace UCR
     /// </summary>
     public partial class App : Application
     {
+        private Context context;
 
-
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            new ResourceLoader().Load();
+            context = Context.Load();
+            context.ParseCommandLineArguments(e.Args);
+            var mw = new MainWindow(context);
+            mw.Show();
+        }
     }
 }

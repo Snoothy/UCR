@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UCR.Core.Models.Profile;
 
@@ -81,6 +82,35 @@ namespace UCR.Core.Managers
                 action();
             }
             return success;
+        }
+
+        /// <summary>
+        /// Breadth-first search for nested profiles
+        /// Find first search result and looks for the next result in the children
+        /// </summary>
+        /// <param name="search">List of profiles to search for nested under each other</param>
+        /// <returns>The most specific profile found in the chain, otherwise null</returns>
+        public Profile FindProfile(List<string> search)
+        {
+            Profile foundProfile = null;
+            if (search?.Count == 0) return null;
+            var queue = new List<Profile>();
+            queue.AddRange(_profiles);
+            while (queue.Count > 0)
+            {
+                var profile = queue[0];
+                queue.RemoveAt(0);
+                if (profile.Title.ToLower().Equals(search.First()))
+                {
+                    if (search.Count == 1) return profile;
+                    foundProfile = profile;
+                    search.RemoveAt(0);
+                    queue.Clear();
+                }
+                if (profile.ChildProfiles != null) queue.AddRange(profile.ChildProfiles);
+
+            }
+            return foundProfile;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using IOWrapper;
+using Mono.Options;
 using UCR.Core.Managers;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
@@ -38,10 +39,12 @@ namespace UCR.Core
         internal IOController IOController { get; set; }
         internal readonly List<Action> ActiveProfileCallbacks = new List<Action>();
         private PluginLoader _pluginLoader;
+        private OptionSet options;
 
         public Context()
         {
             Init();
+            SetCommandLineOptions();
         }
 
         private void Init()
@@ -58,6 +61,25 @@ namespace UCR.Core
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, JoystickGroups, KeyboardGroups, MiceGroups, GenericDeviceGroups);
             _pluginLoader = new PluginLoader(PluginPath);
+        }
+
+        private void SetCommandLineOptions()
+        {
+            options = new OptionSet {
+                { "p|profile=", "The profile to search for", LoadProfile }
+            };
+        }
+
+        private void LoadProfile(string profileString)
+        {
+            var search = profileString.Split(',').ToList();
+            var profile = ProfilesManager.FindProfile(search);
+            if (profile != null) ProfilesManager.ActivateProfile(profile);
+        }
+
+        public void ParseCommandLineArguments(IEnumerable<string> args)
+        {
+            options.Parse(args);
         }
 
         public void SetActiveProfileCallback(Action profileActivated)
