@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using UCR.Annotations;
 using UCR.Core;
 using UCR.Utilities;
@@ -28,6 +30,20 @@ namespace UCR.Views
             
             context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
+        }
+
+        /// <summary>
+        /// AddHook Handle WndProc messages in WPF
+        /// This cannot be done in a Window's constructor as a handle window handle won't at that point, so there won't be a HwndSource.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            EnableMessageHandling();
+            var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+            hwndSource?.AddHook(WndProc);
         }
 
         private bool GetSelectedItem(out ProfileItem profileItem)
@@ -194,6 +210,35 @@ namespace UCR.Views
         private void Save_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = context.IsNotSaved;
+        }
+
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
+            
+            var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
+            var argsString = Marshal.PtrToStringAnsi(data.lpData);
+            if (!string.IsNullOrEmpty(argsString)) context.ParseCommandLineArguments(argsString.Split(';'));
+            return IntPtr.Zero;
+        }
+
+        private void EnableMessageHandling()
+        {
+            var changeFilter = new NativeMethods.CHANGEFILTERSTRUCT();
+            changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
+            changeFilter.info = 0;
+            if
+            (
+                NativeMethods.ChangeWindowMessageFilterEx(
+                    new WindowInteropHelper(this).EnsureHandle(),
+                    NativeMethods.WM_COPYDATA,
+                    NativeMethods.ChangeWindowMessageFilterExAction.Allow,
+                    ref changeFilter)
+            ) return;
+
+            var error = Marshal.GetLastWin32Error();
+            MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
     }
 }
