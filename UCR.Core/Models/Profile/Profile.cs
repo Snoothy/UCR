@@ -384,6 +384,7 @@ namespace UCR.Core.Models.Profile
         {
             var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
             deviceList.ForEach(d => d.SetParentProfile(this));
+            deviceList.ForEach(d => d.Guid = Guid.NewGuid());
             return deviceList;
         }
 

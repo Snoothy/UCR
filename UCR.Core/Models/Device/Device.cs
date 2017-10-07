@@ -36,7 +36,7 @@ namespace UCR.Core.Models.Device
 
         // Runtime
         [XmlIgnore]
-        public Guid Guid { get; }
+        public Guid Guid { get; set; }
         [XmlIgnore]
         private Profile.Profile ParentProfile { get; set; }
         [XmlIgnore]
