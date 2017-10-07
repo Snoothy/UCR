@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="AxisToAxis\AxisToAxis.cs" />
     <Compile Include="AxisToAxis\Resources.cs" />
+    <Compile Include="AxisToButton\AxisToButton.cs" />
+    <Compile Include="AxisToButton\Resources.cs" />
     <Compile Include="ButtonToAxis\ButtonToAxis.cs" />
     <Compile Include="ButtonToAxis\Resources.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
@@ -67,6 +69,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AxisToButton\Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ButtonToButton\Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

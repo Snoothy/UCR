@@ -26,6 +26,7 @@ namespace UCR.Plugins.AxisToAxis
             set
             {
                 SetIntValue(ref _deadZoneValue, value);
+                ContextChanged();
                 _deadZone = value;
             }
         }
@@ -38,6 +39,7 @@ namespace UCR.Plugins.AxisToAxis
             set
             {
                 SetIntValue(ref _sensitivityValue, value);
+                ContextChanged();
                 _sensitivity = value;
             }
         }

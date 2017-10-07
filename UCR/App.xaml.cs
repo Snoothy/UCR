@@ -17,12 +17,13 @@ namespace UCR
     {
         private Context context;
         private HidGuardianClient _hidGuardianClient;
+        private SingleGlobalInstance mutex;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             
-            var mutex = new SingleGlobalInstance(); 
+            mutex = new SingleGlobalInstance(); 
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 new ResourceLoader().Load();
@@ -91,6 +92,7 @@ namespace UCR
 
         public void Dispose()
         {
+            mutex.Dispose();
             context?.Dispose();
             _hidGuardianClient?.Dispose();
         }

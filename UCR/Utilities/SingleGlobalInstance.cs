@@ -9,7 +9,7 @@ namespace UCR.Utilities
     {
         public bool HasHandle { get; }
         Mutex _mutex;
-        private const string MutexGuid = "b06f29b5-33ab-499d-9f46-0159c05a18ce";
+        private const string MutexGuid = "edfb1606-ecfd-4bc4-9a41-56d3ba492d62";
 
         private void InitMutex()
         {
