@@ -347,6 +347,7 @@ namespace UCR.Core.Models.Profile
             if (plugin.Title == null) plugin.Title = title;
             plugin.BindingCallback = OnDeviceBindingChange;
             plugin.ParentProfile = this;
+            plugin.ContainingList = Plugins;
             Plugins.Add(plugin);
             context.ContextChanged();
         }

@@ -17,6 +17,7 @@ namespace UCR.Core.Models.Plugin
         // Runtime
         public delegate void PluginBindingChanged(Plugin plugin);
         internal Profile.Profile ParentProfile { get; set; }
+        internal List<Plugin> ContainingList { get; set; }
         [XmlIgnore]
         public PluginBindingChanged BindingCallback { get; set; }
 
@@ -35,6 +36,12 @@ namespace UCR.Core.Models.Plugin
             OnActivate();
             success &= SubscribeInputs(context);
             return success;
+        }
+
+        public bool Remove()
+        {
+            ContainingList.Remove(this);
+            return true;
         }
 
         public virtual void OnActivate()
@@ -118,6 +125,7 @@ namespace UCR.Core.Models.Plugin
         public void PostLoad(Context context, Profile.Profile parentProfile)
         {
             ParentProfile = parentProfile;
+            ContainingList = parentProfile.Plugins;
             BindingCallback = parentProfile.OnDeviceBindingChange;
 
             ZipDeviceBindingList(Inputs);

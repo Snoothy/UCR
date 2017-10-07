@@ -50,6 +50,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -77,6 +81,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\DummyGroup.cs" />
+    <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Utilities\SingleGlobalInstance.cs" />

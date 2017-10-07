@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,7 +6,6 @@ using System.Windows;
 using UCR.Core;
 using UCR.Utilities;
 using UCR.Views;
-using System.Threading;
 using Application = System.Windows.Application;
 
 namespace UCR
@@ -15,9 +13,10 @@ namespace UCR
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, IDisposable
     {
         private Context context;
+        private HidGuardianClient _hidGuardianClient;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -27,6 +26,8 @@ namespace UCR
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 new ResourceLoader().Load();
+                _hidGuardianClient = new HidGuardianClient();
+                _hidGuardianClient.WhitelistProcess();
                 context = Context.Load();
                 context.ParseCommandLineArguments(e.Args);
                 var mw = new MainWindow(context);
@@ -86,6 +87,17 @@ namespace UCR
                 if (ptrCopyData != IntPtr.Zero)
                     Marshal.FreeCoTaskMem(ptrCopyData);
             }
+        }
+
+        public void Dispose()
+        {
+            context?.Dispose();
+            _hidGuardianClient?.Dispose();
+        }
+
+        private void App_OnExit(object sender, ExitEventArgs e)
+        {
+            Dispose();
         }
     }
 }

@@ -16,10 +16,10 @@
             <GroupBox Grid.Row="1" Header="Plugins" Margin="0,10,0,0">
                 <StackPanel>
             
-                    <Grid Grid.Row="0" Margin="10">
+                    <Grid Margin="10">
                         <Button x:Name="AddPluginButton" Click="AddPluginButton_OnClick">Add plugin</Button>
                     </Grid>
-                    <ListBox Grid.Row="1" x:Name="PluginsListBox" Margin="10,5,10,10" ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True'
+                    <ListBox x:Name="PluginsListBox" Margin="10,5,10,10" ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True'
                                     MinHeight="100"
                                     VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                                     VirtualizingPanel.ScrollUnit='Pixel'

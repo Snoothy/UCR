@@ -32,6 +32,7 @@ namespace UCR.Core.Models.Plugin
             newPlugin.ParentProfile = ParentProfile;
             newPlugin.BindingCallback = ParentProfile.OnDeviceBindingChange;
             newPlugin.Title = title;
+            newPlugin.ContainingList = Plugins;
             Plugins.Add(newPlugin);
             ParentProfile.context.ContextChanged();
         }
@@ -42,6 +43,7 @@ namespace UCR.Core.Models.Plugin
             foreach (var plugin in Plugins)
             {
                 plugin.PostLoad(context, parentProfile);
+                plugin.ContainingList = Plugins;
             }
         }
     }
