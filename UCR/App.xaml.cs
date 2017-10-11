@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using UCR.Core;
+using UCR.Core.Utilities;
 using UCR.Utilities;
 using UCR.Views;
 using Application = System.Windows.Application;
@@ -22,10 +23,12 @@ namespace UCR
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
+            AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
+
             mutex = new SingleGlobalInstance(); 
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
+                Logger.Info("Launching UCR");
                 new ResourceLoader().Load();
                 _hidGuardianClient = new HidGuardianClient();
                 _hidGuardianClient.WhitelistProcess();
@@ -48,6 +51,7 @@ namespace UCR
 
         private void SendArgs(string args)
         {
+            Logger.Info($"UCR is already running, sending args: {{{args}}}");
             // Find the window with the name of the main form
             var processes = GetProcesses();
             processes = processes.Where(p => p.Id != Process.GetCurrentProcess().Id).ToArray();
@@ -78,9 +82,9 @@ namespace UCR
                 }
                     
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO log exception
+                Logger.Error("Unable to send args to existing process", e);
             }
             finally
             {
@@ -100,6 +104,12 @@ namespace UCR
         private void App_OnExit(object sender, ExitEventArgs e)
         {
             Dispose();
+        }
+
+        private static void AppDomain_CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = (Exception) e.ExceptionObject;
+            Logger.Fatal(exception.Message, exception);
         }
     }
 }

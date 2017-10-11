@@ -34,7 +34,8 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 
 ### Supported output ###
 
-- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/nefarius/ViGEm), NYI)
+- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/nefarius/ViGEm))
+- Dualshock 4 controller (using [ViGEm](https://github.com/nefarius/ViGEm))
 - DirectInput controller (using [vJoy](https://github.com/shauleiz/vJoy))
 - Keyboard (using [interception](https://github.com/oblitum/Interception))
 - Mouse (using [interception](https://github.com/oblitum/Interception))

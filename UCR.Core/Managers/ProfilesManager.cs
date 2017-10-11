@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NLog;
 using UCR.Core.Models.Profile;
 
 namespace UCR.Core.Managers
 {
     public class ProfilesManager
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
         private readonly List<Profile> _profiles;
 
@@ -26,16 +28,18 @@ namespace UCR.Core.Managers
 
         public bool ActivateProfile(Profile profile)
         {
+            Logger.Debug($"Activating profile: {{{profile.ProfileBreadCrumbs()}}}");
             var success = true;
-            if (_context.ActiveProfile?.Guid == profile.Guid) return success;
+            if (_context.ActiveProfile?.Guid == profile.Guid) return true;
             var lastActiveProfile = _context.ActiveProfile;
             _context.ActiveProfile = profile;
-            success &= profile.Activate(_context);
+            success &= profile.Activate(profile);
             if (success)
             {
+                Logger.Debug($"Successfully activated profile");
                 var subscribeSuccess = profile.SubscribeDeviceLists();
                 _context.IOController.SetProfileState(profile.Guid, true);
-                DeactivateProfile(lastActiveProfile);
+                if (lastActiveProfile != null) DeactivateProfile(lastActiveProfile);
                 foreach (var action in _context.ActiveProfileCallbacks)
                 {
                     action();
@@ -43,7 +47,7 @@ namespace UCR.Core.Managers
             }
             else
             {
-                // Activation failed, old profile is still active
+                Logger.Debug($"Failed to activate profile");
                 _context.ActiveProfile = lastActiveProfile;
             }
             return success;
@@ -71,6 +75,7 @@ namespace UCR.Core.Managers
 
         public bool DeactivateProfile(Profile profile)
         {
+            Logger.Debug($"Deactivating profile: {{{profile.ProfileBreadCrumbs()}}}");
             if (_context.ActiveProfile == null || profile == null) return true;
             if (_context.ActiveProfile.Guid == profile.Guid) _context.ActiveProfile = null;
 
@@ -81,6 +86,7 @@ namespace UCR.Core.Managers
             {
                 action();
             }
+            if (!success) Logger.Error($"Failed to deactivate profile: {{{profile.ProfileBreadCrumbs()}}}");
             return success;
         }
 
@@ -92,6 +98,7 @@ namespace UCR.Core.Managers
         /// <returns>The most specific profile found in the chain, otherwise null</returns>
         public Profile FindProfile(List<string> search)
         {
+            Logger.Debug($"Searching for profile: {{{string.Join(",", search)}}}");
             Profile foundProfile = null;
             if (search?.Count == 0) return null;
             var queue = new List<Profile>();
@@ -100,16 +107,22 @@ namespace UCR.Core.Managers
             {
                 var profile = queue[0];
                 queue.RemoveAt(0);
-                if (profile.Title.ToLower().Equals(search.First()))
+                if (profile.Title.ToLower().Equals(search.First().ToLower()))
                 {
-                    if (search.Count == 1) return profile;
+                    if (search.Count == 1)
+                    {
+                        Logger.Debug($"Found profile: {{{profile.ProfileBreadCrumbs()}}}");
+                        return profile;
+                    }
                     foundProfile = profile;
                     search.RemoveAt(0);
+                    Logger.Trace($"Found intermediate profile: {{{profile.ProfileBreadCrumbs()}}}. Remaining search: {{{string.Join(",", search)}}}");
                     queue.Clear();
                 }
                 if (profile.ChildProfiles != null) queue.AddRange(profile.ChildProfiles);
 
             }
+            if (foundProfile == null) Logger.Debug($"No profile found for {{{string.Join(",", search)}}}");
             return foundProfile;
         }
     }

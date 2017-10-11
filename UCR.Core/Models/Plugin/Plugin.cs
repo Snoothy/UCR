@@ -30,11 +30,11 @@ namespace UCR.Core.Models.Plugin
             Outputs = new List<DeviceBinding>();
         }
 
-        public bool Activate(Context context)
+        public bool Activate(Profile.Profile profile)
         {
             var success = true;
             OnActivate();
-            success &= SubscribeInputs(context);
+            success &= SubscribeInputs(profile);
             return success;
         }
 
@@ -57,8 +57,8 @@ namespace UCR.Core.Models.Plugin
         protected void WriteOutput(DeviceBinding output, long value)
         {
             if (output?.DeviceType == null) return;
-            var device = ParentProfile.GetLocalDevice(output);
-            device.WriteOutput(ParentProfile.context, output, value);
+            var device = ParentProfile?.context?.ActiveProfile?.GetLocalDevice(output);
+            device?.WriteOutput(ParentProfile.context, output, value);
         }
 
         public virtual List<DeviceBinding> GetInputs()
@@ -66,12 +66,13 @@ namespace UCR.Core.Models.Plugin
             return Inputs.Select(input => new DeviceBinding(input)).ToList();
         }
 
-        private bool SubscribeInputs(Context context)
+        private bool SubscribeInputs(Profile.Profile profile)
         {
             var success = true;
-            foreach (var input in GetInputs())
+            var inputs = GetInputs();
+            foreach (var input in inputs)
             {
-                var device = context.ActiveProfile.GetLocalDevice(input);
+                var device = profile.GetLocalDevice(input);
                 if (device != null)
                 {
                     success &= device.AddDeviceBinding(input);

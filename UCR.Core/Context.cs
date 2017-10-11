@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using IOWrapper;
 using Mono.Options;
+using NLog;
 using UCR.Core.Managers;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
@@ -15,6 +16,7 @@ namespace UCR.Core
 {
     public class Context : IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string ContextName = "context.xml";
         private const string PluginPath = "Plugins";
 
@@ -66,12 +68,13 @@ namespace UCR.Core
         private void SetCommandLineOptions()
         {
             options = new OptionSet {
-                { "p|profile=", "The profile to search for", LoadProfile }
+                { "p|profile=", "The profile to search for", FindAndLoadProfile }
             };
         }
 
-        private void LoadProfile(string profileString)
+        private void FindAndLoadProfile(string profileString)
         {
+            Logger.Debug($"Searching for profile to load: {{{profileString}}}");
             var search = profileString.Split(',').ToList();
             var profile = ProfilesManager.FindProfile(search);
             if (profile != null) ProfilesManager.ActivateProfile(profile);
@@ -94,6 +97,7 @@ namespace UCR.Core
 
         public void ContextChanged()
         {
+            Logger.Trace("Context changed");
             IsNotSaved = true;
         }
 

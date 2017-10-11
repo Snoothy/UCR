@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using NLog;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
@@ -10,6 +11,7 @@ namespace UCR.Core.Models.Profile
 {
     public class Profile
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static string GlobalProfileTitle = "Global";
 
         /* Persistence */
@@ -181,20 +183,24 @@ namespace UCR.Core.Models.Profile
 
         #region Subscription
 
-        public bool Activate(Context context)
+        public bool Activate(Profile profile)
         {
-            bool success = true;
-            InitializeDeviceGroups();
+            var success = true;
+            
+            if (profile.Guid == Guid) InitializeDeviceGroups();
 
             if (ParentProfile != null && InheritFromParent)
             {
-                ParentProfile.Activate(context);
+                Logger.Debug($"Activating parent profile: {{{ParentProfile.Title}}}");
+                success &= ParentProfile.Activate(profile);
             }
 
             foreach (var plugin in Plugins)
             {
-                success &= plugin.Activate(context);
+                success &= plugin.Activate(profile);
             }
+
+            if (!success) Logger.Error($"Failed to activate \"{{{Title}}}\" when during activation of \"{{{profile.Title}}}\"");
 
             return success;
         }
@@ -226,6 +232,7 @@ namespace UCR.Core.Models.Profile
 
         public bool SubscribeDeviceLists()
         {
+            Logger.Debug("Subscribing device lists");
             var success = true;
             foreach (var deviceGroup in InputGroups)
             {
@@ -235,11 +242,13 @@ namespace UCR.Core.Models.Profile
                 }
             }
             success &= SubscribeOutputDevices();
+            if (!success) Logger.Error($"Failed to subscribe device lists for: {{{ProfileBreadCrumbs()}}}");
             return success;
         }
 
         public bool UnsubscribeDeviceLists()
         {
+            Logger.Debug("Unsubscribing device lists");
             var success = true;
             foreach (var deviceGroup in InputGroups)
             {
@@ -249,6 +258,7 @@ namespace UCR.Core.Models.Profile
                 }
             }
             success &= UnsubscribeOutputDevices();
+            if (!success) Logger.Error($"Failed to unsubscribe device lists for: {{{ProfileBreadCrumbs()}}}");
             return success;
         }
 
@@ -262,8 +272,12 @@ namespace UCR.Core.Models.Profile
             bool success = true;
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                success &= OutputGroups[(DeviceType)type].Devices
-                    .Aggregate(true, (current, device) => current & device.SubscribeOutput(context));
+                foreach (var device in OutputGroups[(DeviceType)type].Devices)
+                {
+                    var deviceSuccess = device.SubscribeOutput(context);
+                    if (!deviceSuccess) Logger.Error($"Failed to subscribe output device: {{{device.LogName()}}}");
+                    success &= deviceSuccess;
+                }
             }
             return success;
         }
@@ -273,8 +287,12 @@ namespace UCR.Core.Models.Profile
             var success = true;
             foreach (var type in Enum.GetValues(typeof(DeviceType)))
             {
-                success &= OutputGroups[(DeviceType)type].Devices
-                    .Aggregate(true, (current, device) => current & device.UnsubscribeOutput(context));
+                foreach (var device in OutputGroups[(DeviceType)type].Devices)
+                {
+                    var deviceSuccess = device.UnsubscribeOutput(context);
+                    if (!deviceSuccess) Logger.Error($"Failed to unsubscribe output device: {{{device.LogName()}}}");
+                    success &= deviceSuccess;
+                }
             }
             return success;
         }
@@ -386,6 +404,7 @@ namespace UCR.Core.Models.Profile
             var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
             deviceList.ForEach(d => d.SetParentProfile(this));
             deviceList.ForEach(d => d.Guid = Guid.NewGuid());
+            deviceList.ForEach(d => d.IsAcquired = false);
             return deviceList;
         }
 

@@ -32,7 +32,7 @@ namespace UCR.Plugins.AxisToButton
             }
         }
 
-        private long direction = 0;
+        private long _direction = 0;
 
         public override string PluginName()
         {
@@ -44,14 +44,14 @@ namespace UCR.Plugins.AxisToButton
             Input = InitializeInputMapping(InputChanged);
             OutputLow = InitializeOutputMapping();
             OutputHigh = InitializeOutputMapping();
-            DeadZone = "0";
+            DeadZone = "30";
         }
 
         private void InputChanged(long value)
         {
             if (Invert) value *= -1;
             value = Math.Sign(ApplyDeadZone(value));
-            if (value == direction) return;
+            if (value == _direction && value != 0) return;
             switch (value)
             {
                 case 0:
@@ -60,12 +60,14 @@ namespace UCR.Plugins.AxisToButton
                     break;
                 case -1:
                     WriteOutput(OutputLow, 1);
+                    WriteOutput(OutputHigh, 0);
                     break;
                 case 1:
+                    WriteOutput(OutputLow, 0);
                     WriteOutput(OutputHigh, 1);
                     break;
             }
-            direction = value;
+            _direction = value;
         }
 
         private long ApplyDeadZone(long value)

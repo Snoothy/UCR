@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Xml.Serialization;
+using NLog;
 using Providers;
 using UCR.Core.Models.Binding;
 
@@ -28,6 +29,8 @@ namespace UCR.Core.Models.Device
 
     public class Device
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // Persistance
         public string Title { get; set; }
         public string ProviderName { get; set; }
@@ -41,8 +44,8 @@ namespace UCR.Core.Models.Device
         private Profile.Profile ParentProfile { get; set; }
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
-
-        private bool IsAcquired { get; set; }
+        [XmlIgnore]
+        public bool IsAcquired { get; set; }
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
@@ -174,7 +177,9 @@ namespace UCR.Core.Models.Device
             {
                 foreach (var deviceBinding in deviceBindingList.Value)
                 {
-                    success &= SubscribeDeviceBindingInput(context, deviceBinding);
+                    var bindingSuccess = SubscribeDeviceBindingInput(context, deviceBinding);
+                    if (!bindingSuccess) Logger.Error($"Failed to subscribe device binding in plugin: {{{deviceBinding?.Plugin?.Title}}}");
+                    success &= bindingSuccess;
                 }
             }
             return success;
@@ -187,7 +192,9 @@ namespace UCR.Core.Models.Device
             {
                 foreach (var deviceBinding in deviceBindingList.Value)
                 {
-                    success &= UnsubscribeDeviceBindingInput(context, deviceBinding);
+                    var bindingSuccess = UnsubscribeDeviceBindingInput(context, deviceBinding);
+                    if (!bindingSuccess) Logger.Error($"Failed to unsubscribe device binding in plugin: {{{deviceBinding?.Plugin?.Title}}}");
+                    success &= bindingSuccess;
                 }
             }
             return success;
@@ -237,25 +244,35 @@ namespace UCR.Core.Models.Device
 
         public bool SubscribeOutput(Context context)
         {
+            Logger.Debug($"Subscribing output device: {{{LogName()}}}");
             if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
-                // TODO Log error
+                Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{LogName()}}}");
                 return false;
             }
-            if (IsAcquired) return true;
+            if (IsAcquired)
+            {
+                Logger.Debug("Device already acquired");
+                return true;
+            }
             IsAcquired = true;
             return context.IOController.SubscribeOutput(GetOutputSubscriptionRequest());
         }
 
         public bool UnsubscribeOutput(Context context)
         {
+            Logger.Debug($"Unsubscribing output device: {{{LogName()}}}");
             if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
             {
-                // TODO Log error
+                Logger.Error($"Failed to unsubscribe output device. Providername or devicehandle missing from: {{{LogName()}}}");
                 return false;
             }
-            if (!IsAcquired) return true;
-            IsAcquired = false;            
+            if (!IsAcquired)
+            {
+                Logger.Debug("Device already unacquired");
+                return true;
+            }
+            IsAcquired = false;
             return context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
         }
 
@@ -356,6 +373,11 @@ namespace UCR.Core.Models.Device
                 }
             }
             return DeviceBindingMenu;
+        }
+
+        public string LogName()
+        {
+            return $"Device:{{{Title}}} Provider:{{{ProviderName}}} Handle:{{{DeviceHandle}}} Num:{{{DeviceNumber}}}";
         }
     }
 }

@@ -5,13 +5,13 @@ using UCR.Core.Models.Binding;
 
 namespace UCR.Core.Models.Plugin
 {
-    public abstract class PluginGroup : Models.Plugin.Plugin
+    public abstract class PluginGroup : Plugin
     {
-        public List<Models.Plugin.Plugin> Plugins { get; set; }
+        public List<Plugin> Plugins { get; set; }
 
         public PluginGroup()
         {
-            Plugins = new List<Models.Plugin.Plugin>();
+            Plugins = new List<Plugin>();
         }
 
         public override List<DeviceBinding> GetInputs()
