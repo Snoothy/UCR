@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
+using System.Resources;
 using System.Xml.Serialization;
 using NLog;
 using Providers;
@@ -60,6 +61,14 @@ namespace UCR.Core.Models.Device
         public Device(Guid guid = new Guid())
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
+            IsAcquired = false;
+            ClearSubscribers();
+        }
+
+        public void Reset(Profile.Profile profile)
+        {
+            Guid = Guid.NewGuid();
+            ParentProfile = profile;
             IsAcquired = false;
             ClearSubscribers();
         }
@@ -338,8 +347,11 @@ namespace UCR.Core.Models.Device
         {
             var newDevicelist = new List<Device>();
             if (devicelist == null) return newDevicelist;
+            foreach (var device in devicelist)
+            {
+                newDevicelist.Add(new Device(device));
 
-            newDevicelist.AddRange(devicelist);
+            }
             return newDevicelist;
         }
 

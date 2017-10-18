@@ -72,6 +72,7 @@ namespace UCR.Core.Models.Plugin
             var inputs = GetInputs();
             foreach (var input in inputs)
             {
+                if (!input.IsBound) continue;
                 var device = profile.GetLocalDevice(input);
                 if (device != null)
                 {
