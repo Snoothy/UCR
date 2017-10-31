@@ -104,6 +104,7 @@ namespace UCR.Core.Models.Profile
         {
             if (IsGlobalProfileTitle(title)) return false;
             Title = title;
+            context.ContextChanged();
             return true;
         }
 
