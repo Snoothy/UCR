@@ -30,7 +30,7 @@ namespace UCR.Core.Models.Device
 
     public class Device
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         // Persistance
         public string Title { get; set; }
