@@ -31,7 +31,7 @@ namespace UCR.Core.Models.Profile
         public Guid MiceOutputList { get; set; }
         public Guid JoystickOutputList { get; set; }
         public Guid GenericOutputList { get; set; }
-
+        
         /* Runtime */
         [XmlIgnore]
         public Context context;

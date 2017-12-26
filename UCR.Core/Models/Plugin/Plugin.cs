@@ -41,6 +41,7 @@ namespace UCR.Core.Models.Plugin
         public bool Remove()
         {
             ContainingList.Remove(this);
+            ParentProfile.context.ContextChanged();
             return true;
         }
 
