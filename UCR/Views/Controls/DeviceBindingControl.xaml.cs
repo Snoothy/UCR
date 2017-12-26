@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Utilities;
@@ -196,6 +197,14 @@ namespace UCR.Views.Controls
         private void DeviceNumberBox_OnDropDownOpened(object sender, EventArgs e)
         {
             LoadDeviceInputs();
+        }
+
+        private void BindButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var contextMenu = button.ContextMenu;
+            contextMenu.PlacementTarget = button;
+            contextMenu.IsOpen = true;
         }
     }
 }
