@@ -18,15 +18,15 @@
                 <StackPanel x:Name="RemovePluginButton" HorizontalAlignment="Right" Orientation="Horizontal" >
                     <Button Click="RemovePlugin_OnClick">
                         <Canvas Height="25"  Width="25">
-                            <Path Stroke="Red" StrokeThickness="2">
+                            <Path Stroke="Black" StrokeThickness="1">
                                 <Path.Data>
                                     <PathGeometry>
                                         <PathGeometry.Figures>
-                                            <PathFigure StartPoint="0,0">
-                                                <LineSegment Point="25,25"/>
+                                            <PathFigure StartPoint="5,5">
+                                                <LineSegment Point="20,20"/>
                                             </PathFigure>
-                                            <PathFigure StartPoint="0,25">
-                                                <LineSegment Point="25,0"/>
+                                            <PathFigure StartPoint="5,20">
+                                                <LineSegment Point="20,5"/>
                                             </PathFigure>
                                         </PathGeometry.Figures>
                                     </PathGeometry>
