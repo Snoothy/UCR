@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 // Make internal visible for tests
 [assembly: InternalsVisibleTo("UCR")]
 [assembly: InternalsVisibleTo("UCR.Tests")]
-[assembly: AssemblyInformationalVersion("0.1.0+62.Branch.master.Sha.13bd27b825b069e767fc577de54e8969f25502f3")]
+[assembly: AssemblyInformationalVersion("0.1.0+65.Branch.master.Sha.68c846ac2a532f9e5acefdb3069dd3ad430c4bac")]
