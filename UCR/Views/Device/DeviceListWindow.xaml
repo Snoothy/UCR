@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="Device lists" Height="600" Width="600">
     <Grid>
+        <!--
         <TabControl>
             <TabItem Header="Joystick lists">
                 <controls:DeviceListControl DataContext="{Binding JoystickDeviceList}" />
@@ -20,8 +21,11 @@
                 <controls:DeviceListControl DataContext="{Binding MiceDeviceList}" />
             </TabItem>
             <TabItem Header="Generic lists">
+                -->
                 <controls:DeviceListControl DataContext="{Binding GenericDeviceList}" />
+                <!--
             </TabItem>
         </TabControl>
+        -->
     </Grid>
 </Window>
