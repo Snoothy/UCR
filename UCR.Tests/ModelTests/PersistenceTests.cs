@@ -26,10 +26,8 @@ namespace UCR.Tests.ModelTests
                 Assert.That(newcontext.IsNotSaved, Is.False);
                 Assert.That(newcontext.ActiveProfile, Is.Null);
                 Assert.That(newcontext.Profiles, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.JoystickGroups, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.KeyboardGroups, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.MiceGroups, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.GenericDeviceGroups, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.InputGroups, Is.Not.Null.And.Empty);
+                Assert.That(newcontext.OutputGroups, Is.Not.Null.And.Empty);
                 newcontext.SaveContext();
             }
         }
@@ -124,17 +122,15 @@ namespace UCR.Tests.ModelTests
         public void DeviceListContext()
         {
             var context = new Context();
-            var joystickGuid = context.DeviceGroupsManager.AddDeviceGroup("Joystick 1", DeviceType.Joystick);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 2", DeviceType.Joystick);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 3", DeviceType.Joystick);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 4", DeviceType.Joystick);
-            var keyboardGuid = context.DeviceGroupsManager.AddDeviceGroup("Keyboard", DeviceType.Keyboard);
-            context.DeviceGroupsManager.AddDeviceGroup("Mice", DeviceType.Mouse);
-            context.DeviceGroupsManager.AddDeviceGroup("Generic", DeviceType.Generic);
+            var joystickGuid = context.DeviceGroupsManager.AddDeviceGroup("Joystick 1", DeviceIoType.Input);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 2", DeviceIoType.Input);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 3", DeviceIoType.Input);
+            context.DeviceGroupsManager.AddDeviceGroup("Joystick 4", DeviceIoType.Input);
+            var keyboardGuid = context.DeviceGroupsManager.AddDeviceGroup("Keyboard", DeviceIoType.Output);
 
-            var joystickDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceType.Joystick, joystickGuid);
+            var joystickDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, joystickGuid);
             joystickDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Gamepad", "Gamepad provider", 4);
-            var keyboardDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceType.Keyboard, keyboardGuid);
+            var keyboardDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Output, keyboardGuid);
             keyboardDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Keyboard", "interception", 1);
 
             context.SaveContext();
@@ -143,21 +139,19 @@ namespace UCR.Tests.ModelTests
             {
                 var newcontext = Context.Load();
                 
-                Assert.That(newcontext.JoystickGroups.Count, Is.EqualTo(context.JoystickGroups.Count));
-                Assert.That(newcontext.KeyboardGroups.Count, Is.EqualTo(context.KeyboardGroups.Count));
-                Assert.That(newcontext.MiceGroups.Count, Is.EqualTo(context.MiceGroups.Count));
-                Assert.That(newcontext.GenericDeviceGroups.Count, Is.EqualTo(context.GenericDeviceGroups.Count));
+                Assert.That(newcontext.InputGroups.Count, Is.EqualTo(context.InputGroups.Count));
+                Assert.That(newcontext.OutputGroups.Count, Is.EqualTo(context.OutputGroups.Count));
 
-                for (var j = 0; j < context.JoystickGroups.Count; j++)
+                for (var j = 0; j < context.InputGroups.Count; j++)
                 {
-                    Assert.That(newcontext.JoystickGroups[j].Guid, Is.EqualTo(context.JoystickGroups[j].Guid));
-                    Assert.That(newcontext.JoystickGroups[j].Title, Is.EqualTo(context.JoystickGroups[j].Title));
+                    Assert.That(newcontext.InputGroups[j].Guid, Is.EqualTo(context.InputGroups[j].Guid));
+                    Assert.That(newcontext.InputGroups[j].Title, Is.EqualTo(context.InputGroups[j].Title));
 
-                    for (var k = 0; k < context.JoystickGroups[j].Devices.Count; k++)
+                    for (var k = 0; k < context.InputGroups[j].Devices.Count; k++)
                     {
-                        Assert.That(newcontext.JoystickGroups[j].Devices[k].Title, Is.EqualTo(context.JoystickGroups[j].Devices[k].Title));
-                        Assert.That(newcontext.JoystickGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.JoystickGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newcontext.JoystickGroups[j].Devices[k].ProviderName, Is.EqualTo(context.JoystickGroups[j].Devices[k].ProviderName));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].Title, Is.EqualTo(context.InputGroups[j].Devices[k].Title));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName, Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
                     }
                 }
 

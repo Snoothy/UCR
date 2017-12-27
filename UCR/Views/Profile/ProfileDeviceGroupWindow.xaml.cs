@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using UCR.Core;
-using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.ViewModels;
 
@@ -18,14 +17,8 @@ namespace UCR.Views.Profile
         private Core.Models.Profile.Profile profile;
         private bool HasLoaded = false;
 
-        public List<ComboBoxItemViewModel> InputJoystickGroups { get; set; }
-        public List<ComboBoxItemViewModel> InputKeyboardGroups { get; set; }
-        public List<ComboBoxItemViewModel> InputMiceGroups { get; set; }
-        public List<ComboBoxItemViewModel> InputGenericGroups { get; set; }
-        public List<ComboBoxItemViewModel> OutputJoystickGroups { get; set; }
-        public List<ComboBoxItemViewModel> OutputKeyboardGroups { get; set; }
-        public List<ComboBoxItemViewModel> OutputMiceGroups { get; set; }
-        public List<ComboBoxItemViewModel> OutputGenericGroups { get; set; }
+        public List<ComboBoxItemViewModel> InputGroups { get; set; }
+        public List<ComboBoxItemViewModel> OutputGroups { get; set; }
 
         public ProfileDeviceGroupWindow(Context context, Core.Models.Profile.Profile profile)
         {
@@ -34,14 +27,8 @@ namespace UCR.Views.Profile
             DataContext = this;
             InitializeComponent();
 
-            PopulateComboBox(InputJoystickGroups,  DeviceType.Joystick, DeviceIoType.Input,  profile.JoystickInputList,  InputJoystickComboBox);
-            PopulateComboBox(InputKeyboardGroups,  DeviceType.Keyboard, DeviceIoType.Input,  profile.KeyboardInputList,  InputKeyboardComboBox);
-            PopulateComboBox(InputMiceGroups,      DeviceType.Mouse,    DeviceIoType.Input,  profile.MiceInputList,      InputMiceComboBox);
-            PopulateComboBox(InputGenericGroups,   DeviceType.Generic,  DeviceIoType.Input,  profile.GenericInputList,   InputGenericComboBox);
-            PopulateComboBox(OutputJoystickGroups, DeviceType.Joystick, DeviceIoType.Output, profile.JoystickOutputList, OutputJoystickComboBox);
-            PopulateComboBox(OutputKeyboardGroups, DeviceType.Keyboard, DeviceIoType.Output, profile.KeyboardOutputList, OutputKeyboardComboBox);
-            PopulateComboBox(OutputMiceGroups,     DeviceType.Mouse,    DeviceIoType.Output, profile.MiceOutputList,     OutputMiceComboBox);
-            PopulateComboBox(OutputGenericGroups,  DeviceType.Generic,  DeviceIoType.Output, profile.GenericOutputList,  OutputGenericComboBox);
+            PopulateComboBox(InputGroups, DeviceIoType.Input,  profile.InputDeviceGroupGuid,  InputComboBox);
+            PopulateComboBox(OutputGroups, DeviceIoType.Output, profile.OutputDeviceGroupGuid, OutputComboBox);
             Loaded += Window_Loaded;
         }
 
@@ -50,21 +37,19 @@ namespace UCR.Views.Profile
             HasLoaded = true;
         }
 
-        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceType deviceType, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
+        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
         {
             groups = new List<ComboBoxItemViewModel>();
             ComboBoxItemViewModel selectedItem = null;
             groups.Add(new ComboBoxItemViewModel("", new DeviceGroupComboBoxItem()
             {
-                DeviceType = deviceType,
                 DeviceIoType = deviceIoType
             }));
-            foreach (var deviceGroup in context.DeviceGroupsManager.GetDeviceGroupList(deviceType))
+            foreach (var deviceGroup in context.DeviceGroupsManager.GetDeviceGroupList(deviceIoType))
             {
                 var model = new ComboBoxItemViewModel(deviceGroup.Title, new DeviceGroupComboBoxItem()
                 {
                     DeviceGroup = deviceGroup,
-                    DeviceType = deviceType,
                     DeviceIoType = deviceIoType
                 });
                 groups.Add(model);
@@ -81,7 +66,7 @@ namespace UCR.Views.Profile
             var selectedItem = comboBox?.SelectedItem as ComboBoxItemViewModel;
             if (selectedItem == null) return;
             var value = selectedItem.Value as DeviceGroupComboBoxItem;
-            profile.SetDeviceGroup(value.DeviceIoType, value.DeviceType, value.DeviceGroup?.Guid ?? Guid.Empty);
+            profile.SetDeviceGroup(value.DeviceIoType, value.DeviceGroup?.Guid ?? Guid.Empty);
         }
     }
 }

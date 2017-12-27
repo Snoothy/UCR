@@ -11,15 +11,15 @@ namespace UCR.ViewModels.Device
     public class DeviceListControlViewModel
     {
         public Context context { get; }
-        private readonly DeviceType _deviceType;
+        private readonly DeviceIoType _deviceIoType;
 
         public ObservableCollection<DeviceGroupViewModel> InputDeviceGroups { get; set; }
         public ObservableCollection<DeviceGroupViewModel> OutputDeviceGroups { get; set; }
 
-        public DeviceListControlViewModel(Context context, DeviceType deviceType) : this()
+        public DeviceListControlViewModel(Context context, DeviceIoType deviceIoType) : this()
         {
             this.context = context;
-            _deviceType = deviceType;
+            _deviceIoType = deviceIoType;
             GenerateDeviceList();
             GenerateDeviceGroupList();
         }
@@ -32,7 +32,7 @@ namespace UCR.ViewModels.Device
 
         public void AddDeviceGroup(string title)
         {
-            var guid = context.DeviceGroupsManager.AddDeviceGroup(title, _deviceType);
+            var guid = context.DeviceGroupsManager.AddDeviceGroup(title, _deviceIoType);
             OutputDeviceGroups.Add(new DeviceGroupViewModel(title, guid));
         }
 
@@ -40,33 +40,49 @@ namespace UCR.ViewModels.Device
         {
             var result = MessageBox.Show("Are you sure you want to remove '" + deviceGroupViewModel.Title + "'?", "Remove device group", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            context.DeviceGroupsManager.RemoveDeviceGroup(deviceGroupViewModel.Guid, _deviceType);
+            context.DeviceGroupsManager.RemoveDeviceGroup(deviceGroupViewModel.Guid, _deviceIoType);
             OutputDeviceGroups.Remove(deviceGroupViewModel);
         }
 
         public void RenameDeviceGroup(DeviceGroupViewModel deviceGroup, string title)
         {
             OutputDeviceGroups.First(d => d.Guid == deviceGroup.Guid).Title = title;
-            context.DeviceGroupsManager.RenameDeviceGroup(deviceGroup.Guid, _deviceType, title);
+            context.DeviceGroupsManager.RenameDeviceGroup(deviceGroup.Guid, _deviceIoType, title);
         }
 
         public void AddDeviceToDeviceGroup(Core.Models.Device.Device device, Guid deviceGroupGuid)
         {
-            context.DeviceGroupsManager.AddDeviceToDeviceGroup(device, _deviceType, deviceGroupGuid);
+            context.DeviceGroupsManager.AddDeviceToDeviceGroup(device, _deviceIoType, deviceGroupGuid);
             OutputDeviceGroups.First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
         }
 
         public void RemoveDeviceFromDeviceGroup(Core.Models.Device.Device device)
         {
             var deviceGroupViewModel = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(OutputDeviceGroups, device);
-            context.DeviceGroupsManager.RemoveDeviceFromDeviceGroup(device, _deviceType, deviceGroupViewModel.Guid);
+            context.DeviceGroupsManager.RemoveDeviceFromDeviceGroup(device, _deviceIoType, deviceGroupViewModel.Guid);
             deviceGroupViewModel.Devices.Remove(device);
         }
 
         private void GenerateDeviceList()
         {
-            InputDeviceGroups.Add(PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Input), "Input devices"));
-            InputDeviceGroups.Add(PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Output), "Output devices"));
+            // TODO Generate list based on deviceIOtype
+            switch (_deviceIoType)
+            {
+                case DeviceIoType.Input:
+                    foreach (var deviceGroup in PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Input), "Input devices").Groups)
+                    {
+                        InputDeviceGroups.Add(deviceGroup);
+                    }
+                    break;
+                case DeviceIoType.Output:
+                    foreach (var deviceGroup in PopulateDeviceList(context.DevicesManager.GetAvailableDeviceList(DeviceIoType.Output), "Output devices").Groups)
+                    {
+                        InputDeviceGroups.Add(deviceGroup);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private DeviceGroupViewModel PopulateDeviceList(List<DeviceGroup> deviceGroups, string title)
@@ -93,19 +109,13 @@ namespace UCR.ViewModels.Device
         private void GenerateDeviceGroupList()
         {
             List<DeviceGroup> deviceList;
-            switch (_deviceType)
+            switch (_deviceIoType)
             {
-                case DeviceType.Joystick:
-                    deviceList = context.JoystickGroups;
+                case DeviceIoType.Input:
+                    deviceList = context.InputGroups;
                     break;
-                case DeviceType.Keyboard:
-                    deviceList = context.KeyboardGroups;
-                    break;
-                case DeviceType.Mouse:
-                    deviceList = context.MiceGroups;
-                    break;
-                case DeviceType.Generic:
-                    deviceList = context.GenericDeviceGroups;
+                case DeviceIoType.Output:
+                    deviceList = context.OutputGroups;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

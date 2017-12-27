@@ -12,6 +12,5 @@ namespace UCR.Views.Profile
     {
         public DeviceGroup DeviceGroup { get; set; }
         public DeviceIoType DeviceIoType { get; set; }
-        public DeviceType DeviceType { get; set; }
     }
 }

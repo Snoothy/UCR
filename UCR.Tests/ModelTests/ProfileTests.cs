@@ -79,15 +79,14 @@ namespace UCR.Tests.ModelTests
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceType = DeviceType.Joystick,
                 DeviceNumber = 0,
                 IsBound = true
             };
             Assert.That(_profile.GetDevice(deviceBinding), Is.Null);
-            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceType.Joystick);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceType, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
+            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
+            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
             Assert.That(guid, Is.Not.EqualTo(Guid.Empty));
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, deviceBinding.DeviceType, guid);
+            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, guid);
             Assert.That(_context.IsNotSaved, Is.True);
             Assert.That(_profile.GetDevice(deviceBinding), Is.Not.Null);
             Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(_profile.GetDeviceList(deviceBinding)[0].Guid));
@@ -98,15 +97,14 @@ namespace UCR.Tests.ModelTests
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceType = DeviceType.Joystick,
                 DeviceNumber = 0,
                 IsBound = true
             };
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Empty);
-            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceType.Joystick);
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, deviceBinding.DeviceType, guid);
+            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
+            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, guid);
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Null.And.Empty);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceType, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
+            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Empty);
         }
 
@@ -115,22 +113,21 @@ namespace UCR.Tests.ModelTests
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceType = DeviceType.Joystick,
                 DeviceNumber = 0,
                 IsBound = true
             };
 
-            var singleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Single device", DeviceType.Joystick);
+            var singleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Single device", DeviceIoType.Input);
             var deviceList = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceType, singleGuid).Devices = deviceList;
-            var multipleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceType.Joystick);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceType, multipleGuid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 4);
+            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceIoType, singleGuid).Devices = deviceList;
+            var multipleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
+            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceIoType, multipleGuid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 4);
 
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, deviceBinding.DeviceType, multipleGuid);
+            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, multipleGuid);
 
             _profile.AddNewChildProfile("Child profile");
             var childProfile = _profile.ChildProfiles[0];
-            childProfile.SetDeviceGroup(deviceBinding.DeviceIoType, deviceBinding.DeviceType, singleGuid);
+            childProfile.SetDeviceGroup(deviceBinding.DeviceIoType, singleGuid);
 
             Assert.That(childProfile.GetDevice(deviceBinding).Guid, Is.EqualTo(deviceList[0].Guid));
 

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
 using UCR.Core.Utilities;
 using UCR.Utilities.Commands;
 using UCR.ViewModels;
@@ -22,7 +20,6 @@ namespace UCR.Views.Controls
 
         // DDL
         private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
-        private ObservableCollection<ComboBoxItemViewModel> DeviceTypes { get; set; }
 
         // ContextMenu
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
@@ -48,7 +45,6 @@ namespace UCR.Views.Controls
 
         private void ReloadGui()
         {
-            LoadDeviceTypeList();
             LoadDeviceInputs();
             LoadContextMenu();
             LoadBindingName();
@@ -64,20 +60,6 @@ namespace UCR.Views.Controls
             {
                 BindButton.Content = "Click to enter bind mode";
             }
-        }
-
-        private void LoadDeviceTypeList()
-        {
-            DeviceTypes = new ObservableCollection<ComboBoxItemViewModel>();
-            ComboBoxItemViewModel selectedItem = null;
-            foreach (DeviceType deviceType in Enum.GetValues(typeof(DeviceType)))
-            {
-                var item = new ComboBoxItemViewModel(deviceType.ToString(), deviceType);
-                if (deviceType == DeviceBinding.DeviceType) selectedItem = item;
-                DeviceTypes.Add(item);
-            }
-            DeviceTypeBox.ItemsSource = DeviceTypes;
-            DeviceTypeBox.SelectedItem = selectedItem;
         }
 
         private void LoadDeviceInputs()
@@ -181,15 +163,6 @@ namespace UCR.Views.Controls
             if (!HasLoaded) return;
             if (DeviceNumberBox.SelectedItem == null) return;
             DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
-            LoadContextMenu();
-            LoadBindingName();
-        }
-
-        private void DeviceTypeBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!HasLoaded) return;
-            DeviceBinding.SetDeviceType((DeviceType)((ComboBoxItemViewModel) DeviceTypeBox.SelectedItem).Value);
-            LoadDeviceInputs();
             LoadContextMenu();
             LoadBindingName();
         }

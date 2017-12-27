@@ -17,8 +17,6 @@ namespace UCR.Core.Models.Binding
     {
         // Persistence
         public bool IsBound { get; set; }
-        // Keyboard, mouse, joystick
-        public DeviceType DeviceType { get; set; }
         // Index in its device list
         public int DeviceNumber { get; set; }
         // Subscription key
@@ -53,12 +51,10 @@ namespace UCR.Core.Models.Binding
             DeviceIoType = deviceIoType;
             Guid = Guid.NewGuid();
             IsBound = false;
-            DeviceType = DeviceType.Joystick;
         }
 
         public DeviceBinding(DeviceBinding deviceBinding)
         {
-            DeviceType = deviceBinding.DeviceType;
             DeviceNumber = deviceBinding.DeviceNumber;
             KeyType = deviceBinding.KeyType;
             KeyValue = deviceBinding.KeyValue;
@@ -82,20 +78,6 @@ namespace UCR.Core.Models.Binding
             KeySubValue = subValue;
             IsBound = true;
             if (DeviceIoType == Device.DeviceIoType.Input) Plugin.BindingCallback(Plugin);
-            Plugin.ParentProfile.context.ContextChanged();
-        }
-
-        public void SetDeviceType(DeviceType deviceType)
-        {
-            // Unsubscribe old input
-            IsBound = false;
-            if (DeviceIoType == DeviceIoType.Input) Plugin.BindingCallback(Plugin);
-
-            // Set new input
-            DeviceType = deviceType;
-            KeyType = 0;
-            KeyValue = 0;
-            KeySubValue = 0;
             Plugin.ParentProfile.context.ContextChanged();
         }
         

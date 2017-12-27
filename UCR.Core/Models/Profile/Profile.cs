@@ -20,17 +20,10 @@ namespace UCR.Core.Models.Profile
         public List<Profile> ChildProfiles { get; set; }
         public List<Models.Plugin.Plugin> Plugins { get; set; }
 
-        // Inputs
-        public Guid KeyboardInputList { get; set; }
-        public Guid MiceInputList { get; set; }
-        public Guid JoystickInputList { get; set; }
-        public Guid GenericInputList { get; set; }
+        // IO
+        public Guid InputDeviceGroupGuid { get; set; }
+        public Guid OutputDeviceGroupGuid { get; set; }
 
-        // Outputs
-        public Guid KeyboardOutputList { get; set; }
-        public Guid MiceOutputList { get; set; }
-        public Guid JoystickOutputList { get; set; }
-        public Guid GenericOutputList { get; set; }
         
         /* Runtime */
         [XmlIgnore]
@@ -38,11 +31,9 @@ namespace UCR.Core.Models.Profile
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
         [XmlIgnore]
-        private Dictionary<DeviceType, DeviceGroup> InputGroups { get; set; }
+        private DeviceGroup InputDeviceGroup { get; set; }
         [XmlIgnore]
-        private Dictionary<DeviceType, DeviceGroup> OutputGroups { get; set; }
-        [XmlIgnore]
-        private Dictionary<DeviceIoType, Dictionary<DeviceType, Guid>> DeviceGroupGuids { get; set; }
+        private DeviceGroup OutputDeviceGroup { get; set; }
         [XmlIgnore]
         public bool InheritFromParent { get; set; }
 
@@ -67,10 +58,10 @@ namespace UCR.Core.Models.Profile
 
             InheritFromParent = true;
             Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
-            InputGroups = new Dictionary<DeviceType, DeviceGroup>();
-            OutputGroups = new Dictionary<DeviceType, DeviceGroup>();
+            InputDeviceGroup = new DeviceGroup();
+            OutputDeviceGroup = new DeviceGroup();
 
-            SetDeviceListNames();
+            //SetDeviceListNames(); TODO
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -121,52 +112,20 @@ namespace UCR.Core.Models.Profile
             context.ContextChanged();
         }
 
-        public void SetDeviceGroup(DeviceIoType ioType, DeviceType deviceType, Guid deviceGroupGuid)
+        public void SetDeviceGroup(DeviceIoType ioType, Guid deviceGroupGuid)
         {
             switch (ioType)
             {
                 case DeviceIoType.Input:
-                    switch (deviceType)
-                    {
-                        case DeviceType.Joystick:
-                            JoystickInputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Keyboard:
-                            KeyboardInputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Mouse:
-                            MiceInputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Generic:
-                            GenericInputList = deviceGroupGuid;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
-                    }
+                    InputDeviceGroupGuid = deviceGroupGuid;
                     break;
                 case DeviceIoType.Output:
-                    switch (deviceType)
-                    {
-                        case DeviceType.Joystick:
-                            JoystickOutputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Keyboard:
-                            KeyboardOutputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Mouse:
-                            MiceOutputList = deviceGroupGuid;
-                            break;
-                        case DeviceType.Generic:
-                            GenericOutputList = deviceGroupGuid;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
-                    }
+                    OutputDeviceGroupGuid = deviceGroupGuid;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ioType), ioType, null);
             }
-            SetDeviceListNames();
+            // SetDeviceListNames(); TODO
             context.ContextChanged();
         }
 
@@ -208,39 +167,26 @@ namespace UCR.Core.Models.Profile
 
         private void InitializeDeviceGroups()
         {
-            SetDeviceListNames();
-
-            // Input
-            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+            //SetDeviceListNames(); TODO
+            InputDeviceGroup = new DeviceGroup()
             {
-                InputGroups[(DeviceType)type] = new DeviceGroup()
-                {
-                    Guid = DeviceGroupGuids[DeviceIoType.Input][(DeviceType)type],
-                    Devices = GetCopiedList(DeviceIoType.Input,(DeviceType)type)
-                };
-            }
-
-            // Output
-            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+                Guid = InputDeviceGroupGuid,
+                Devices = GetCopiedList(DeviceIoType.Input)
+            };
+            OutputDeviceGroup = new DeviceGroup()
             {
-                OutputGroups[(DeviceType)type] = new DeviceGroup()
-                {
-                    Guid = DeviceGroupGuids[DeviceIoType.Output][(DeviceType)type],
-                    Devices = GetCopiedList(DeviceIoType.Output, (DeviceType)type)
-                };
-            }
+                Guid = OutputDeviceGroupGuid,
+                Devices = GetCopiedList(DeviceIoType.Output)
+            };
         }
 
         public bool SubscribeDeviceLists()
         {
             Logger.Debug("Subscribing device lists");
             var success = true;
-            foreach (var deviceGroup in InputGroups)
+            foreach (var device in InputDeviceGroup.Devices)
             {
-                foreach (var device in deviceGroup.Value.Devices)
-                {
-                    success &= device.SubscribeDeviceBindings(context);
-                }
+                success &= device.SubscribeDeviceBindings(context);
             }
             success &= SubscribeOutputDevices();
             if (!success) Logger.Error($"Failed to subscribe device lists for: {{{ProfileBreadCrumbs()}}}");
@@ -251,12 +197,9 @@ namespace UCR.Core.Models.Profile
         {
             Logger.Debug("Unsubscribing device lists");
             var success = true;
-            foreach (var deviceGroup in InputGroups)
+            foreach (var device in InputDeviceGroup.Devices)
             {
-                foreach (var device in deviceGroup.Value.Devices)
-                {
-                    success &= device.UnsubscribeDeviceBindings(context);
-                }
+                success &= device.UnsubscribeDeviceBindings(context);
             }
             success &= UnsubscribeOutputDevices();
             if (!success) Logger.Error($"Failed to unsubscribe device lists for: {{{ProfileBreadCrumbs()}}}");
@@ -271,14 +214,11 @@ namespace UCR.Core.Models.Profile
         private bool SubscribeOutputDevices()
         {
             bool success = true;
-            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+            foreach (var device in OutputDeviceGroup.Devices)
             {
-                foreach (var device in OutputGroups[(DeviceType)type].Devices)
-                {
-                    var deviceSuccess = device.SubscribeOutput(context);
-                    if (!deviceSuccess) Logger.Error($"Failed to subscribe output device: {{{device.LogName()}}}");
-                    success &= deviceSuccess;
-                }
+                var deviceSuccess = device.SubscribeOutput(context);
+                if (!deviceSuccess) Logger.Error($"Failed to subscribe output device: {{{device.LogName()}}}");
+                success &= deviceSuccess;
             }
             return success;
         }
@@ -286,14 +226,11 @@ namespace UCR.Core.Models.Profile
         private bool UnsubscribeOutputDevices()
         {
             var success = true;
-            foreach (var type in Enum.GetValues(typeof(DeviceType)))
+            foreach (var device in OutputDeviceGroup.Devices)
             {
-                foreach (var device in OutputGroups[(DeviceType)type].Devices)
-                {
-                    var deviceSuccess = device.UnsubscribeOutput(context);
-                    if (!deviceSuccess) Logger.Error($"Failed to unsubscribe output device: {{{device.LogName()}}}");
-                    success &= deviceSuccess;
-                }
+                var deviceSuccess = device.UnsubscribeOutput(context);
+                if (!deviceSuccess) Logger.Error($"Failed to unsubscribe output device: {{{device.LogName()}}}");
+                success &= deviceSuccess;
             }
             return success;
         }
@@ -304,8 +241,7 @@ namespace UCR.Core.Models.Profile
 
         public Guid GetDeviceListGuid(DeviceBinding deviceBinding)
         {
-            SetDeviceListNames();
-            return DeviceGroupGuids[deviceBinding.DeviceIoType][deviceBinding.DeviceType];
+            return GetDeviceGroupGuid(deviceBinding.DeviceIoType);
         }
 
         public Device.Device GetDevice(DeviceBinding deviceBinding)
@@ -318,16 +254,15 @@ namespace UCR.Core.Models.Profile
 
         public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
         {
-            return GetDeviceList(deviceBinding.DeviceIoType, deviceBinding.DeviceType);
+            return GetDeviceList(deviceBinding.DeviceIoType);
         }
 
-        public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType, DeviceType deviceType)
+        public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            SetDeviceListNames();
-            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceType, DeviceGroupGuids[deviceIoType][deviceType])?.Devices ?? new List<Device.Device>();
+            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, GetDeviceGroupGuid(deviceIoType))?.Devices ?? new List<Device.Device>();
             if (!InheritFromParent || ParentProfile == null) return result;
 
-            var parentDeviceList = ParentProfile.GetDeviceList(deviceIoType, deviceType);
+            var parentDeviceList = ParentProfile.GetDeviceList(deviceIoType);
             if (result.Count < parentDeviceList.Count)
             {
                 for (var i = result.Count; i < parentDeviceList.Count; i++)
@@ -346,9 +281,8 @@ namespace UCR.Core.Models.Profile
 
         private List<Device.Device> GetLocalDeviceList(DeviceBinding deviceBinding)
         {
-            var deviceGroups = deviceBinding.DeviceIoType == DeviceIoType.Input ? InputGroups : OutputGroups;
-            var deviceList = deviceGroups[deviceBinding.DeviceType].Devices;
-            return deviceList;
+            var deviceList = deviceBinding.DeviceIoType == DeviceIoType.Input ? InputDeviceGroup : OutputDeviceGroup;
+            return deviceList.Devices;
         }
 
         #endregion
@@ -400,36 +334,29 @@ namespace UCR.Core.Models.Profile
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        private List<Device.Device> GetCopiedList(DeviceIoType deviceIoType, DeviceType deviceType)
+        private List<Device.Device> GetCopiedList(DeviceIoType deviceIoType)
         {
-            var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType, deviceType));
+            var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType));
             deviceList.ForEach(d => d.Reset(this));
             return deviceList;
         }
 
-        private void SetDeviceListNames()
+        private Guid GetDeviceGroupGuid(DeviceIoType deviceIoType)
         {
-            DeviceGroupGuids = new Dictionary<DeviceIoType, Dictionary<DeviceType, Guid>>()
+            switch (deviceIoType)
             {
-                {
-                    DeviceIoType.Input, new Dictionary<DeviceType, Guid>()
-                    {
-                        {DeviceType.Generic, GenericInputList},
-                        {DeviceType.Joystick, JoystickInputList},
-                        {DeviceType.Keyboard, KeyboardInputList},
-                        {DeviceType.Mouse, MiceInputList}
-                    }
-                },
-                {
-                    DeviceIoType.Output, new Dictionary<DeviceType, Guid>()
-                    {
-                        {DeviceType.Generic, GenericOutputList},
-                        {DeviceType.Joystick, JoystickOutputList},
-                        {DeviceType.Keyboard, KeyboardOutputList},
-                        {DeviceType.Mouse, MiceOutputList}
-                    }
-                }
-            };
+                case DeviceIoType.Input:
+                    return InputDeviceGroupGuid;
+                case DeviceIoType.Output:
+                    return OutputDeviceGroupGuid;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(deviceIoType), deviceIoType, null);
+            }
+        }
+
+        private IEnumerable<Device.Device> GetAllLocalDevices()
+        {
+            return InputDeviceGroup.Devices.Concat(OutputDeviceGroup.Devices);
         }
 
         #endregion

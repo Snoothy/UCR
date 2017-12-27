@@ -22,10 +22,8 @@ namespace UCR.Core
 
         // Persistence
         public List<Profile> Profiles { get; set; }
-        public List<DeviceGroup> KeyboardGroups { get; set; }
-        public List<DeviceGroup> MiceGroups { get; set; }
-        public List<DeviceGroup> JoystickGroups { get; set; }
-        public List<DeviceGroup> GenericDeviceGroups { get; set; }
+        public List<DeviceGroup> InputGroups { get; set; }
+        public List<DeviceGroup> OutputGroups { get; set; }
 
         // Runtime
         [XmlIgnore]
@@ -53,15 +51,13 @@ namespace UCR.Core
         {
             IsNotSaved = false;
             Profiles = new List<Profile>();
-            KeyboardGroups = new List<DeviceGroup>();
-            MiceGroups = new List<DeviceGroup>();
-            JoystickGroups = new List<DeviceGroup>();
-            GenericDeviceGroups = new List<DeviceGroup>();
+            InputGroups = new List<DeviceGroup>();
+            OutputGroups = new List<DeviceGroup>();
 
             IOController = new IOController();
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
-            DeviceGroupsManager = new DeviceGroupsManager(this, JoystickGroups, KeyboardGroups, MiceGroups, GenericDeviceGroups);
+            DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             _pluginLoader = new PluginLoader(PluginPath);
         }
 

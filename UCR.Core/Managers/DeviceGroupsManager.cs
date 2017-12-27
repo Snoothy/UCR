@@ -8,75 +8,67 @@ namespace UCR.Core.Managers
     public class DeviceGroupsManager
     {
         private readonly Context Context;
-        private readonly List<DeviceGroup> JoystickGroups;
-        private readonly List<DeviceGroup> KeyboardGroups;
-        private readonly List<DeviceGroup> MiceGroups;
-        private readonly List<DeviceGroup> GenericDeviceGroups;
+        private readonly List<DeviceGroup> InputGroups;
+        private readonly List<DeviceGroup> OutputGroups;
 
-        public DeviceGroupsManager(Context context, List<DeviceGroup> joystickGroups, List<DeviceGroup> keyboardGroups, List<DeviceGroup> miceGroups, List<DeviceGroup> genericDeviceGroups)
+        public DeviceGroupsManager(Context context, List<DeviceGroup> inputGroups, List<DeviceGroup> outputGroups)
         {
             Context = context;
-            JoystickGroups = joystickGroups;
-            KeyboardGroups = keyboardGroups;
-            MiceGroups = miceGroups;
-            GenericDeviceGroups = genericDeviceGroups;
+            InputGroups = inputGroups;
+            OutputGroups = outputGroups;
         }
 
-        public DeviceGroup GetDeviceGroup(DeviceType deviceType, Guid deviceGroupGuid)
+        public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType, Guid deviceGroupGuid)
         {
-            return GetDeviceGroupList(deviceType).FirstOrDefault(d => d.Guid == deviceGroupGuid);
+            return GetDeviceGroupList(deviceIoType).FirstOrDefault(d => d.Guid == deviceGroupGuid);
         }
 
-        public Guid AddDeviceGroup(string Title, DeviceType deviceType)
+        public Guid AddDeviceGroup(string Title, DeviceIoType deviceIoType)
         {
             var deviceGroup = new DeviceGroup(Title);
-            GetDeviceGroupList(deviceType).Add(deviceGroup);
+            GetDeviceGroupList(deviceIoType).Add(deviceGroup);
             Context.ContextChanged();
             return deviceGroup.Guid;
         }
 
-        public bool RemoveDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType)
+        public bool RemoveDeviceGroup(Guid deviceGroupGuid, DeviceIoType deviceIoType)
         {
-            var deviceGroups = GetDeviceGroupList(deviceType);
+            var deviceGroups = GetDeviceGroupList(deviceIoType);
             if (!deviceGroups.Remove(DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid))) return false;
             Context.ContextChanged();
             return true;
         }
 
-        public bool RenameDeviceGroup(Guid deviceGroupGuid, DeviceType deviceType, string title)
+        public bool RenameDeviceGroup(Guid deviceGroupGuid, DeviceIoType deviceIoType, string title)
         {
-            var deviceGroups = GetDeviceGroupList(deviceType);
+            var deviceGroups = GetDeviceGroupList(deviceIoType);
             DeviceGroup.FindDeviceGroup(deviceGroups, deviceGroupGuid).Title = title;
             Context.ContextChanged();
             return true;
         }
 
-        public void AddDeviceToDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
+        public void AddDeviceToDeviceGroup(Device device, DeviceIoType deviceIoType, Guid deviceGroupGuid)
         {
-            GetDeviceGroupList(deviceType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
+            GetDeviceGroupList(deviceIoType).First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
             Context.ContextChanged();
         }
 
-        public void RemoveDeviceFromDeviceGroup(Device device, DeviceType deviceType, Guid deviceGroupGuid)
+        public void RemoveDeviceFromDeviceGroup(Device device, DeviceIoType deviceIoType, Guid deviceGroupGuid)
         {
-            GetDeviceGroup(deviceType, deviceGroupGuid).RemoveDevice(device.Guid);
+            GetDeviceGroup(deviceIoType, deviceGroupGuid).RemoveDevice(device.Guid);
             Context.ContextChanged();
         }
 
-        public List<DeviceGroup> GetDeviceGroupList(DeviceType deviceType)
+        public List<DeviceGroup> GetDeviceGroupList(DeviceIoType deviceIoType)
         {
-            switch (deviceType)
+            switch (deviceIoType)
             {
-                case DeviceType.Joystick:
-                    return JoystickGroups;
-                case DeviceType.Keyboard:
-                    return KeyboardGroups;
-                case DeviceType.Mouse:
-                    return MiceGroups;
-                case DeviceType.Generic:
-                    return GenericDeviceGroups;
+                case DeviceIoType.Input:
+                    return InputGroups;
+                case DeviceIoType.Output:
+                    return OutputGroups;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
+                    throw new ArgumentOutOfRangeException(nameof(deviceIoType), deviceIoType, null);
             }
         }
     }

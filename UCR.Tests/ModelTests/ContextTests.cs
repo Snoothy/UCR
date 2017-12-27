@@ -13,10 +13,8 @@ namespace UCR.Tests.ModelTests
             var context = new Context();
             Assert.That(context, Is.Not.Null);
             Assert.That(context.Profiles, Is.Not.Null);
-            Assert.That(context.JoystickGroups, Is.Not.Null);
-            Assert.That(context.KeyboardGroups, Is.Not.Null);
-            Assert.That(context.MiceGroups, Is.Not.Null);
-            Assert.That(context.GenericDeviceGroups, Is.Not.Null);
+            Assert.That(context.InputGroups, Is.Not.Null);
+            Assert.That(context.OutputGroups, Is.Not.Null);
             Assert.That(context.IsNotSaved, Is.False);
         }
 

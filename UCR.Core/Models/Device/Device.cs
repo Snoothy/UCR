@@ -10,18 +10,6 @@ using UCR.Core.Models.Binding;
 
 namespace UCR.Core.Models.Device
 {
-    public enum DeviceType
-    {
-        [Description("Joystick")]
-        Joystick,
-        [Description("Keyboard")]
-        Keyboard,
-        [Description("Mouse")]
-        Mouse,
-        [Description("Generic device")]
-        Generic
-    }
-
     public enum DeviceIoType
     {
         Input,

@@ -57,7 +57,7 @@ namespace UCR.Core.Models.Plugin
 
         protected void WriteOutput(DeviceBinding output, long value)
         {
-            if (output?.DeviceType == null) return;
+            // TODO check null pointer?
             var device = ParentProfile?.context?.ActiveProfile?.GetLocalDevice(output);
             device?.WriteOutput(ParentProfile.context, output, value);
         }
@@ -154,7 +154,6 @@ namespace UCR.Core.Models.Plugin
             for (var i = 0; i < split; i++)
             {
                 deviceBindings[i].IsBound = deviceBindings[i + split].IsBound;
-                deviceBindings[i].DeviceType= deviceBindings[i + split].DeviceType;
                 deviceBindings[i].DeviceNumber = deviceBindings[i + split].DeviceNumber;
                 deviceBindings[i].KeyType = deviceBindings[i + split].KeyType;
                 deviceBindings[i].KeyValue = deviceBindings[i + split].KeyValue;

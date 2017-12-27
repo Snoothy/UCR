@@ -9,23 +9,13 @@
         mc:Ignorable="d"
         Title="Device lists" Height="600" Width="600">
     <Grid>
-        <!--
         <TabControl>
-            <TabItem Header="Joystick lists">
-                <controls:DeviceListControl DataContext="{Binding JoystickDeviceList}" />
+            <TabItem Header="Input lists">
+                <controls:DeviceListControl DataContext="{Binding InputDeviceList}" />
             </TabItem>
-            <TabItem Header="Keyboard lists">
-                <controls:DeviceListControl DataContext="{Binding KeyboardDeviceList}" />
-            </TabItem>
-            <TabItem Header="Mice lists">
-                <controls:DeviceListControl DataContext="{Binding MiceDeviceList}" />
-            </TabItem>
-            <TabItem Header="Generic lists">
-                -->
-                <controls:DeviceListControl DataContext="{Binding GenericDeviceList}" />
-                <!--
+            <TabItem Header="Output lists">
+                <controls:DeviceListControl DataContext="{Binding OutputDeviceList}" />
             </TabItem>
         </TabControl>
-        -->
     </Grid>
 </Window>

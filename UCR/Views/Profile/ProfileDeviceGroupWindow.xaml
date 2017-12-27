@@ -5,13 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UCR.Views.Profile"
         mc:Ignorable="d"
-        Title="Manage device groups" Height="210" Width="500">
+        Title="Manage device groups" Height="150" Width="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="35"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -21,18 +18,8 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="1">Input</Label>
         <Label Grid.Row="0" Grid.Column="2">Output</Label>
-        <Label Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" HorizontalAlignment="Right">Joystick</Label>
-        <Label Grid.Row="2" Grid.Column="0" Margin="0,5,0,0" HorizontalAlignment="Right">Keyboard</Label>
-        <Label Grid.Row="3" Grid.Column="0" Margin="0,5,0,0" HorizontalAlignment="Right">Mice</Label>
-        <Label Grid.Row="4" Grid.Column="0" Margin="0,5,0,0" HorizontalAlignment="Right">Generic</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="InputJoystickComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="InputKeyboardComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="3" Grid.Column="1" x:Name="InputMiceComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="4" Grid.Column="1" x:Name="InputGenericComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="1" Grid.Column="2" x:Name="OutputJoystickComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="2" Grid.Column="2" x:Name="OutputKeyboardComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="OutputMiceComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        <ComboBox Grid.Row="4" Grid.Column="2" x:Name="OutputGenericComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-
+        <Label Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" HorizontalAlignment="Right">Group</Label>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="InputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
+        <ComboBox Grid.Row="1" Grid.Column="2" x:Name="OutputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
     </Grid>
 </Window>
