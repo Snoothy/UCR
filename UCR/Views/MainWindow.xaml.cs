@@ -240,5 +240,12 @@ namespace UCR.Views
             var error = Marshal.GetLastWin32Error();
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
+
+        private void About_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new AboutWindow();
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
+        }
     }
 }
