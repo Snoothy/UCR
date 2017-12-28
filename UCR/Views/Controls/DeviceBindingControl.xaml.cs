@@ -58,7 +58,7 @@ namespace UCR.Views.Controls
             }
             else
             {
-                BindButton.Content = "Click to enter bind mode";
+                BindButton.Content = "Click to Bind";
             }
         }
 
