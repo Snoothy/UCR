@@ -7,13 +7,13 @@
         xmlns:controls="clr-namespace:UCR.Views.Controls"
         xmlns:device="clr-namespace:UCR.ViewModels.Device"
         mc:Ignorable="d"
-        Title="Device lists" Height="600" Width="600">
+        Title="Device groups" Height="600" Width="600">
     <Grid>
         <TabControl>
-            <TabItem Header="Input lists">
+            <TabItem Header="Input groups">
                 <controls:DeviceListControl DataContext="{Binding InputDeviceList}" />
             </TabItem>
-            <TabItem Header="Output lists">
+            <TabItem Header="Output groups">
                 <controls:DeviceListControl DataContext="{Binding OutputDeviceList}" />
             </TabItem>
         </TabControl>

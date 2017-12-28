@@ -247,5 +247,12 @@ namespace UCR.Views
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
+
+        private void Help_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new HelpWindow();
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
+        }
     }
 }

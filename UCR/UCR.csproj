@@ -110,6 +110,9 @@
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Device\DeviceListWindowViewModel.cs" />
+    <Compile Include="Views\HelpWindow.xaml.cs">
+      <DependentUpon>HelpWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile\DeviceGroupComboBoxItem.cs" />
     <Compile Include="Views\Profile\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
@@ -155,6 +158,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Device\DeviceListWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

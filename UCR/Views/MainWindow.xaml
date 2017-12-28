@@ -40,7 +40,7 @@
                 <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="Help" />
+                <MenuItem Header="Help" Click="Help_OnClick"/>
                 <Separator />
                 <MenuItem Header="About" Click="About_OnClick"/>
             </MenuItem>

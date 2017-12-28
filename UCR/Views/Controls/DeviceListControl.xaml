@@ -44,8 +44,8 @@
             <Button Click="RemoveDevice_OnClick">Remove</Button>
         </StackPanel>
         <DockPanel Margin="5,0,5,0" Grid.Column="2" Grid.Row="0">
-            <Label>Your device lists</Label>
-            <Button HorizontalAlignment="Right" Padding="5,0" Click="AddDeviceGroup_OnClick">Add list</Button>
+            <Label>Your device groups</Label>
+            <Button HorizontalAlignment="Right" Padding="5,0" Click="AddDeviceGroup_OnClick">Add group</Button>
         </DockPanel>
         <TreeView x:Name="DeviceGroupTreeView" Margin="5" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding OutputDeviceGroups}">
             <TreeView.Style>
@@ -56,7 +56,7 @@
                                 <Setter.Value>
                                     <ControlTemplate>
                                         <Grid>
-                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Click "Add list" to start</TextBlock>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Click "Add group" to start</TextBlock>
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>
