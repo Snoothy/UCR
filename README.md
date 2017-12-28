@@ -9,6 +9,7 @@ Universal Control Remapper is a Windows application which allows the end-user to
 
 - [Downloads](#downloads)
 - [Documentation](#documentation)
+- [Features](#features)
 - [Device support](#device-support)
 - [License](#license)
 
@@ -19,6 +20,15 @@ The latest release of the Universal Control Remapper can be [downloaded from Git
 ## Documentation ##
 
 Documentation for Universal Control Remapper are hosted on GitHub at [https://github.com/snoothy/ucr/wiki](https://github.com/snoothy/ucr/wiki).
+
+## Features ##
+- Remap any number of inputs to any number of outputs on emulated output devices, with full analog support
+- Profiles and nesting allows for easy configuration 
+- Endless remapping potential through plugin extension support
+- Remapping and device order persists through reboots and unplugging of devices
+- Profiles can be switched by external programs through Command line parameters (CLI)
+- [HidGuardian](https://github.com/nefarius/ViGEm/tree/master/Sys/HidGuardian) support through HidCerberus for true HID remapping 
+- Remap your own, or unsupported, input/output devices through extension support for device providers
 
 ## Device support ##
 
