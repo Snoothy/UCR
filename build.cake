@@ -76,7 +76,7 @@ Task("BuildIOWrapper")
 		MSBuild(iowrapperSolutionPath, new MSBuildSettings 
 		{
 			Verbosity = Verbosity.Minimal,
-			ToolVersion = MSBuildToolVersion.VS2015,
+			ToolVersion = MSBuildToolVersion.VS2017,
 			Configuration = configuration,
 			PlatformTarget = PlatformTarget.MSIL
 		});
@@ -97,7 +97,7 @@ Task("Build")
 		MSBuild(solutionPath, new MSBuildSettings 
 		{
 			Verbosity = Verbosity.Minimal,
-			ToolVersion = MSBuildToolVersion.VS2015,
+			ToolVersion = MSBuildToolVersion.VS2017,
 			Configuration = configuration,
 			PlatformTarget = PlatformTarget.MSIL
 		});
