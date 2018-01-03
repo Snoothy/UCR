@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <TextBlock Margin="0,0,0,5">Universal Control Remapper is created by HidWizards: <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/evilC">evilC</Hyperlink> and <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/Snoothy">Snoothy</Hyperlink></TextBlock>
-            <TextBlock Margin="0,0,0,5" Name="VersionTextBlock"><Bold>Version: v0.1.0</Bold></TextBlock>
+            <TextBlock Margin="0,0,0,5" Name="VersionTextBlock"/>
 
             <TextBlock Margin="0,0,0,5">Latest version and source code is available on <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/Snoothy/UCR">Github</Hyperlink></TextBlock>
 

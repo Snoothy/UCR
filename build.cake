@@ -8,9 +8,10 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 
+var ucrVersion = "v0.1.1";
+var iowrapperVersion = "v0.2.17";
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
-var iowrapperVersion = "v0.2.16";
 var iowrapperDir = dependencyDir + "IOWrapper";
 var iowrapperSolutionPath = iowrapperDir + "/IOWrapper/IOWrapper.sln";
 var solutionPath = "./UCR.sln";
@@ -43,9 +44,13 @@ Task("Version")
 			OutputType = GitVersionOutput.BuildServer
 		});
 		versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });
-
+		
 		// Set IOWrapper version in README
-		ReplaceRegexInFiles("./README.md", @"IOWrapper-v([0-9]+\.[0-9]+\.[0-9]+).*-blue.svg", "IOWrapper-" + iowrapperVersion + "-blue.svg");
+		ReplaceRegexInFiles("./README.md", @"IOWrapper-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", "IOWrapper-" + iowrapperVersion + "-blue.svg");
+
+		// Set UCR release badge in README
+		ReplaceRegexInFiles("./README.md", @"release-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", "release-" + ucrVersion + "-blue.svg");
+		ReplaceRegexInFiles("./README.md", @"releases/tag/v([0-9]+\.[0-9]+\.[0-9]+)", "releases/tag/" + ucrVersion);
 		
 		// Update project.json
 		//VersionProject(projectJson, versionInfo);
@@ -76,7 +81,7 @@ Task("BuildIOWrapper")
 		MSBuild(iowrapperSolutionPath, new MSBuildSettings 
 		{
 			Verbosity = Verbosity.Minimal,
-			ToolVersion = MSBuildToolVersion.VS2017,
+			ToolVersion = MSBuildToolVersion.VS2015,
 			Configuration = configuration,
 			PlatformTarget = PlatformTarget.MSIL
 		});
@@ -97,7 +102,7 @@ Task("Build")
 		MSBuild(solutionPath, new MSBuildSettings 
 		{
 			Verbosity = Verbosity.Minimal,
-			ToolVersion = MSBuildToolVersion.VS2017,
+			ToolVersion = MSBuildToolVersion.VS2015,
 			Configuration = configuration,
 			PlatformTarget = PlatformTarget.MSIL
 		});
