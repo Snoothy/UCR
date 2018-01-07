@@ -22,6 +22,7 @@ namespace UCR.Views.Profile
             Title = question;
             TxtAnswer.Text = answer;
             Plugins = context.GetPlugins();
+            Plugins.Sort();
             InitComboBox();
         }
 
@@ -32,7 +33,7 @@ namespace UCR.Views.Profile
             {
                 plugins.Add(new ComboBoxItemViewModel(plugin.PluginName(), plugin));
             }
-            PluginsComboBox.ItemsSource = plugins;
+            PluginsListBox.ItemsSource = plugins;
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -45,9 +46,17 @@ namespace UCR.Views.Profile
         {
             if (!string.IsNullOrEmpty(TxtAnswer.Text))
             {
-                DialogResult = true;
-                TextResult = TxtAnswer.Text;
-                Plugin = ((ComboBoxItemViewModel) PluginsComboBox.SelectedItem).Value;
+                Plugin = ((ComboBoxItemViewModel) PluginsListBox.SelectedItem)?.Value;
+                if (Plugin == null)
+                {
+                    MessageBox.Show("Please select a plugin from the list", "No plugin selected",
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                else
+                {
+                    DialogResult = true;
+                    TextResult = TxtAnswer.Text;
+                }
             }
             else
             {

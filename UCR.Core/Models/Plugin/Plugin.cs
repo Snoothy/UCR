@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
 using UCR.Core.Models.Binding;
@@ -7,7 +8,7 @@ using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Plugin
 {
-    public abstract class Plugin
+    public abstract class Plugin : IComparable<Plugin>
     {
         // Persistence
         public string Title { get; set; }
@@ -164,6 +165,11 @@ namespace UCR.Core.Models.Plugin
             {
                 deviceBindings.Remove(deviceBindings[i]);
             }
+        }
+
+        public int CompareTo(Plugin other)
+        {
+            return string.Compare(PluginName(), other.PluginName(), StringComparison.Ordinal);
         }
     }
 }
