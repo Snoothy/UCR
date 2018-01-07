@@ -226,7 +226,7 @@ namespace UCR.Core.Models.Device
             if (deviceBindingNodes == null) return null;
             foreach (var deviceBindingNode in deviceBindingNodes)
             {
-                if (deviceBindingNode.IsBinding && deviceBindingNode.DeviceBinding.KeyType == deviceBinding.KeyType && deviceBindingNode.DeviceBinding.KeyValue == deviceBinding.KeyValue)
+                if (deviceBindingMatchesNode(deviceBinding, deviceBindingNode))
                 {
                     return deviceBindingNode.Title;
                 }
@@ -237,6 +237,14 @@ namespace UCR.Core.Models.Device
                 }
             }
             return null;
+        }
+
+        private static bool deviceBindingMatchesNode(DeviceBinding deviceBinding, DeviceBindingNode deviceBindingNode)
+        {
+            return deviceBindingNode.IsBinding && 
+                   deviceBindingNode.DeviceBinding.KeyType == deviceBinding.KeyType &&
+                   deviceBindingNode.DeviceBinding.KeySubValue == deviceBinding.KeySubValue &&
+                   deviceBindingNode.DeviceBinding.KeyValue == deviceBinding.KeyValue;
         }
 
         public bool SubscribeOutput(Context context)

@@ -28,6 +28,7 @@ Documentation for Universal Control Remapper are hosted on GitHub at [https://gi
 - Profiles can be switched by external programs through Command line parameters (CLI)
 - [HidGuardian](https://github.com/nefarius/ViGEm/tree/master/Sys/HidGuardian) support through HidCerberus for true HID remapping 
 - Remap your own, or unsupported, input/output devices through extension support for device providers
+- Uses no injection making it compatible with games using anti-tampering technologies, such as Denuvo
 
 ## Device support ##
 
