@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using UCR.Core;
+using UCR.Core.Models.Device;
 using UCR.Core.Models.Plugin;
+using UCR.ViewModels;
 
 namespace UCR.Views.Profile
 {
@@ -12,6 +16,10 @@ namespace UCR.Views.Profile
     {
         private Context Context { get; set; }
         private Core.Models.Profile.Profile Profile { get; set; }
+        private bool HasLoaded = false;
+
+        public List<ComboBoxItemViewModel> InputGroups { get; set; }
+        public List<ComboBoxItemViewModel> OutputGroups { get; set; }
 
         public ProfileWindow(Context context, Core.Models.Profile.Profile profile)
         {
@@ -20,6 +28,10 @@ namespace UCR.Views.Profile
             InitializeComponent();
             Title = "Edit " + profile.Title;
             DataContext = Profile;
+
+            PopulateComboBox(InputGroups, DeviceIoType.Input, profile.InputDeviceGroupGuid, InputComboBox);
+            PopulateComboBox(OutputGroups, DeviceIoType.Output, profile.OutputDeviceGroupGuid, OutputComboBox);
+            Loaded += Window_Loaded;
         }
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
@@ -70,13 +82,6 @@ namespace UCR.Views.Profile
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
 
-        private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
-        {
-            var win = new ProfileDeviceGroupWindow(Context, Profile);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
-        }
-
         private bool GetSelectedItem(out Plugin selection)
         {
             var item = PluginsListBox.SelectedItem as Plugin;
@@ -93,6 +98,44 @@ namespace UCR.Views.Profile
         private void Close_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            HasLoaded = true;
+        }
+
+        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
+        {
+            groups = new List<ComboBoxItemViewModel>();
+            ComboBoxItemViewModel selectedItem = null;
+            groups.Add(new ComboBoxItemViewModel("", new DeviceGroupComboBoxItem()
+            {
+                DeviceIoType = deviceIoType
+            }));
+            foreach (var deviceGroup in Context.DeviceGroupsManager.GetDeviceGroupList(deviceIoType))
+            {
+                var model = new ComboBoxItemViewModel(deviceGroup.Title, new DeviceGroupComboBoxItem()
+                {
+                    DeviceGroup = deviceGroup,
+                    DeviceIoType = deviceIoType
+                });
+                groups.Add(model);
+                if (deviceGroup.Guid == currentGroup) selectedItem = model;
+            }
+            comboBox.ItemsSource = groups;
+            if (selectedItem != null) comboBox.SelectedItem = selectedItem;
+        }
+
+        private void DeviceGroup_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!HasLoaded) return;
+            var comboBox = sender as ComboBox;
+            var selectedItem = comboBox?.SelectedItem as ComboBoxItemViewModel;
+            if (selectedItem == null) return;
+            var value = selectedItem.Value as DeviceGroupComboBoxItem;
+            Profile.SetDeviceGroup(value.DeviceIoType, value.DeviceGroup?.Guid ?? Guid.Empty);
+            PluginsListBox.Items.Refresh();
         }
     }
 }

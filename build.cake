@@ -8,7 +8,7 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 
-var ucrVersion = "v0.1.1";
+var ucrVersion = "0.2.0";
 var iowrapperVersion = "v0.2.17";
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
@@ -49,8 +49,8 @@ Task("Version")
 		ReplaceRegexInFiles("./README.md", @"IOWrapper-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", "IOWrapper-" + iowrapperVersion + "-blue.svg");
 
 		// Set UCR release badge in README
-		ReplaceRegexInFiles("./README.md", @"release-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", "release-" + ucrVersion + "-blue.svg");
-		ReplaceRegexInFiles("./README.md", @"releases/tag/v([0-9]+\.[0-9]+\.[0-9]+)", "releases/tag/" + ucrVersion);
+		ReplaceRegexInFiles("./README.md", @"release-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", "release-v" + ucrVersion + "-blue.svg");
+		ReplaceRegexInFiles("./README.md", @"releases/tag/v([0-9]+\.[0-9]+\.[0-9]+)", "releases/tag/v" + ucrVersion);
 		
 		// Update project.json
 		//VersionProject(projectJson, versionInfo);
@@ -78,13 +78,17 @@ Task("BuildIOWrapper")
 	.Does(() => {
 		NuGetRestore(iowrapperSolutionPath);
 		
-		MSBuild(iowrapperSolutionPath, new MSBuildSettings 
+		var msbuildSettings = new MSBuildSettings 
 		{
 			Verbosity = Verbosity.Minimal,
 			ToolVersion = MSBuildToolVersion.VS2015,
 			Configuration = configuration,
 			PlatformTarget = PlatformTarget.MSIL
-		});
+		};
+		
+		msbuildSettings.WithProperty("VersionNumber", ucrVersion + ".0");
+		
+		MSBuild(iowrapperSolutionPath, msbuildSettings);
 	});	
 
 Task("BuiltProviders")

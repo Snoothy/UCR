@@ -7,13 +7,20 @@
         mc:Ignorable="d"
         x:Name="ProfileWindowName"
         Title="{Binding Title}" Height="800" Width="700">
-    <DockPanel Background="{x:Static SystemColors.ControlBrush}" >
-        <Menu DockPanel.Dock="Top">
+    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
                 <MenuItem Header="Activate profile" Click="ActivateProfile" />
                 <MenuItem Header="Deactivate profile" Click="DeactivateProfile" />
-                <Separator/>
-                <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
                 <Separator/>
                 <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
@@ -24,8 +31,13 @@
                 <MenuItem Header="Remove plugin" Click="RemovePlugin_OnClick" />
             </MenuItem>
         </Menu>
-
-        <ListBox x:Name="PluginsListBox" Margin="10,5,10,10" ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True'
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Input device group" Margin="5">
+            <ComboBox x:Name="InputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Output device group" Margin="5">
+            <ComboBox x:Name="OutputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
+        </GroupBox>
+        <ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="PluginsListBox" Margin="10,5,10,10" ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
                  VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                  VirtualizingPanel.ScrollUnit='Pixel'
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -42,7 +54,7 @@
                                 <Setter.Value>
                                     <ControlTemplate>
                                         <Grid>
-                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Plugins > Add plugin ..." to add your first plugin</TextBlock>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Plugins > Add plugin..." to add your first plugin</TextBlock>
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -57,5 +69,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </DockPanel>
+    </Grid>
 </Window>

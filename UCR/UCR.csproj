@@ -117,9 +117,6 @@
     <Compile Include="Views\Profile\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Profile\ProfileDeviceGroupWindow.xaml.cs">
-      <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -168,10 +165,6 @@
     <Page Include="Views\Profile\PluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Profile\ProfileDeviceGroupWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TextDialog.xaml">
       <SubType>Designer</SubType>
@@ -240,10 +233,25 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="BeforeBuild">
+    <Message Text="Updating AssemblyInfo to Version $(VersionNumber)">
+    </Message>
+    <Message Text="Writing to AssemblyInfo files in $(SolutionRoot)">
+    </Message>
+    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" AssemblyVersion="$(VersionNumber)" AssemblyFileVersion="$(VersionNumber)">
+    </AssemblyInfo>
+  </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
       <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" Exclude="$(OutputPath)context.xml" />
     </ItemGroup>
     <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
+  <Import Project="..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets" Condition="Exists('..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets'))" />
   </Target>
 </Project>
