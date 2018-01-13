@@ -21,6 +21,10 @@ The latest release of the Universal Control Remapper can be [downloaded from Git
 
 Documentation for Universal Control Remapper are hosted on GitHub at [https://github.com/snoothy/ucr/wiki](https://github.com/snoothy/ucr/wiki).
 
+## Support / Discussion / Feedback
+
+Please **do not** use the UCR thread on the AutoHotkey forums. Either raise an issue on the [issue tracker](issues) or join us in the [HidWizards chat channel on Discord](https://discord.gg/MmnhQYQ)
+
 ## Features ##
 - Remap any number of inputs to any number of outputs on emulated output devices, with full analog support
 - Profiles and nesting allows for easy configuration 
