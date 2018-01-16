@@ -108,7 +108,7 @@ namespace UCR.Tests.ModelTests
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Empty);
         }
 
-        [Test]
+        [Test, Ignore("Irrelevant")]
         public void GetDeviceFromParent()
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)

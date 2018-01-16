@@ -36,7 +36,7 @@ namespace UCR.Views.Profile
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
-            if (!Profile.Activate())
+            if (!Profile.ActivateProfile())
             {
                 MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }

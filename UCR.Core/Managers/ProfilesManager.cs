@@ -25,33 +25,6 @@ namespace UCR.Core.Managers
             return true;
         }
 
-        public bool ActivateProfile(Profile profile)
-        {
-            Logger.Debug($"Activating profile: {{{profile.ProfileBreadCrumbs()}}}");
-            var success = true;
-            if (_context.ActiveProfile?.Guid == profile.Guid) return true;
-            var lastActiveProfile = _context.ActiveProfile;
-            _context.ActiveProfile = profile;
-            success &= profile.Activate(profile);
-            if (success)
-            {
-                Logger.Debug($"Successfully activated profile");
-                var subscribeSuccess = profile.SubscribeDeviceLists();
-                _context.IOController.SetProfileState(profile.Guid, true);
-                if (lastActiveProfile != null) DeactivateProfile(lastActiveProfile);
-                foreach (var action in _context.ActiveProfileCallbacks)
-                {
-                    action();
-                }
-            }
-            else
-            {
-                Logger.Debug($"Failed to activate profile");
-                _context.ActiveProfile = lastActiveProfile;
-            }
-            return success;
-        }
-
         public bool CopyProfile(Profile profile, string title = "Untitled")
         {
             var newProfile = Context.DeepXmlClone<Profile>(profile);
@@ -70,23 +43,6 @@ namespace UCR.Core.Managers
             _context.ContextChanged();
 
             return true;
-        }
-
-        public bool DeactivateProfile(Profile profile)
-        {
-            Logger.Debug($"Deactivating profile: {{{profile.ProfileBreadCrumbs()}}}");
-            if (_context.ActiveProfile == null || profile == null) return true;
-            if (_context.ActiveProfile.Guid == profile.Guid) _context.ActiveProfile = null;
-
-            var success = profile.UnsubscribeDeviceLists();
-            _context.IOController.SetProfileState(profile.Guid, false);
-
-            foreach (var action in _context.ActiveProfileCallbacks)
-            {
-                action();
-            }
-            if (!success) Logger.Error($"Failed to deactivate profile: {{{profile.ProfileBreadCrumbs()}}}");
-            return success;
         }
 
         /// <summary>

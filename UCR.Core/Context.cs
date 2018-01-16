@@ -34,6 +34,8 @@ namespace UCR.Core
         public DevicesManager DevicesManager { get; set; }
         [XmlIgnore]
         public DeviceGroupsManager DeviceGroupsManager { get; set; }
+        [XmlIgnore]
+        public SubscriptionsManager SubscriptionsManager { get; set; }
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
@@ -58,6 +60,7 @@ namespace UCR.Core
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
+            SubscriptionsManager = new SubscriptionsManager(this);
             _pluginLoader = new PluginLoader(PluginPath);
         }
 
@@ -73,7 +76,7 @@ namespace UCR.Core
             Logger.Debug($"Searching for profile to load: {{{profileString}}}");
             var search = profileString.Split(',').ToList();
             var profile = ProfilesManager.FindProfile(search);
-            if (profile != null) ProfilesManager.ActivateProfile(profile);
+            if (profile != null) SubscriptionsManager.ActivateProfile(profile);
         }
 
         public void ParseCommandLineArguments(IEnumerable<string> args)
@@ -156,6 +159,7 @@ namespace UCR.Core
 
         public void Dispose()
         {
+            SubscriptionsManager.Dispose();
             IOController?.Dispose();
         }
 

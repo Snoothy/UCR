@@ -30,7 +30,7 @@ namespace UCR.Core.Models.Device
         [XmlIgnore]
         public Guid Guid { get; set; }
         [XmlIgnore]
-        private Profile.Profile ParentProfile { get; set; }
+        public Profile.Profile ParentProfile { get; private set; }
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
         [XmlIgnore]
@@ -38,6 +38,8 @@ namespace UCR.Core.Models.Device
 
         // Subscriptions
         private Dictionary<string, List<DeviceBinding>> Subscriptions;
+
+        #region Constructors
 
         public Device()
         {
@@ -49,14 +51,6 @@ namespace UCR.Core.Models.Device
         public Device(Guid guid = new Guid())
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
-            IsAcquired = false;
-            ClearSubscribers();
-        }
-
-        public void Reset(Profile.Profile profile)
-        {
-            Guid = Guid.NewGuid();
-            ParentProfile = profile;
             IsAcquired = false;
             ClearSubscribers();
         }
@@ -78,6 +72,55 @@ namespace UCR.Core.Models.Device
             DeviceHandle = device.DeviceDescriptor.DeviceHandle;
             DeviceNumber = device.DeviceDescriptor.DeviceInstance;
             DeviceBindingMenu = GetDeviceBindingMenu(device.Nodes, type);
+        }
+
+        #endregion
+
+        public void Reset(Profile.Profile profile)
+        {
+            Guid = Guid.NewGuid();
+            ParentProfile = profile;
+            IsAcquired = false;
+            ClearSubscribers();
+        }
+
+        public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
+        {
+            if (DeviceHandle == null || ProviderName == null) return;
+            context.IOController.SetOutputstate(GetOutputSubscriptionRequest(), GetBindingDescriptor(deviceBinding), (int)value);
+        }
+
+        public bool AddDeviceBinding(DeviceBinding deviceBinding)
+        {
+            List<DeviceBinding> currentSub = null;
+            if (Subscriptions.ContainsKey(deviceBinding.Plugin.Title))
+            {
+                currentSub = Subscriptions[deviceBinding.Plugin.Title];
+            }
+
+            if (currentSub == null || currentSub.Count == 0)
+            {
+                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> { deviceBinding };
+                return true;
+            }
+
+            // Override bindings if Profile parent does not match. Root is loaded first and active profile last
+            if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
+            {
+                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> { deviceBinding };
+            }
+            else
+            {
+                var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
+                if (existingBinding != null)
+                {
+                    // Remove existing binding if it exists
+                    Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
+                }
+                Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
+            }
+
+            return true;
         }
 
         private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
@@ -123,44 +166,7 @@ namespace UCR.Core.Models.Device
             return result.Count != 0 ? result : null;
         }
 
-        public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
-        {
-            if (DeviceHandle == null || ProviderName == null) return;
-            context.IOController.SetOutputstate(GetOutputSubscriptionRequest(), GetBindingDescriptor(deviceBinding), (int)value);
-        }
 
-        public bool AddDeviceBinding(DeviceBinding deviceBinding)
-        {
-            List<DeviceBinding> currentSub = null;
-            if (Subscriptions.ContainsKey(deviceBinding.Plugin.Title))
-            {
-                currentSub = Subscriptions[deviceBinding.Plugin.Title];
-            }
-
-            if (currentSub == null || currentSub.Count == 0)
-            {
-                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
-                return true;
-            }
-            
-            // Override bindings if Profile parent does not match. Root is loaded first and active profile last
-            if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
-            {
-                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> {deviceBinding};
-            }
-            else
-            {
-                var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
-                if (existingBinding != null)
-                {
-                    // Remove existing binding if it exists
-                    Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
-                }
-                Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
-            }
-
-            return true;
-        }
 
         private void ClearSubscribers()
         {
@@ -349,11 +355,6 @@ namespace UCR.Core.Models.Device
 
             }
             return newDevicelist;
-        }
-
-        public void SetParentProfile(Profile.Profile profile)
-        {
-            ParentProfile = profile;
         }
 
         public List<DeviceBindingNode> GetDeviceBindingMenu(Context context, DeviceIoType type)

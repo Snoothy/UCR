@@ -61,7 +61,6 @@ namespace UCR.Core.Models.Profile
             InputDeviceGroup = new DeviceGroup();
             OutputDeviceGroup = new DeviceGroup();
 
-            //SetDeviceListNames(); TODO
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -72,6 +71,17 @@ namespace UCR.Core.Models.Profile
         #endregion
 
         #region Actions
+
+        public static Profile CreateProfile(Context context, string title, Profile parent = null)
+        {
+            if (IsGlobalProfileTitle(title)) title += " not allowed";
+            var profile = new Profile(context, parent)
+            {
+                Title = title
+            };
+
+            return profile;
+        }
 
         public void AddNewChildProfile(string title)
         {
@@ -125,49 +135,31 @@ namespace UCR.Core.Models.Profile
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ioType), ioType, null);
             }
-            // SetDeviceListNames(); TODO
             context.ContextChanged();
         }
 
-        public bool Activate()
+        public bool ActivateProfile()
         {
-            return context.ProfilesManager.ActivateProfile(this);
+            return context.SubscriptionsManager.ActivateProfile(this);
         }
 
         public bool Deactivate()
         {
-            return context.ProfilesManager.DeactivateProfile(this);
+            return context.SubscriptionsManager.DeactivateProfile();
         }
 
         #endregion
 
         #region Subscription
 
-        public bool Activate(Profile profile)
+        public bool Activate()
         {
-            var success = true;
-            
-            if (profile.Guid == Guid) InitializeDeviceGroups();
-
-            if (ParentProfile != null && InheritFromParent)
-            {
-                Logger.Debug($"Activating parent profile: {{{ParentProfile.Title}}}");
-                success &= ParentProfile.Activate(profile);
-            }
-
-            foreach (var plugin in Plugins)
-            {
-                success &= plugin.Activate(profile);
-            }
-
-            if (!success) Logger.Error($"Failed to activate \"{{{Title}}}\" when during activation of \"{{{profile.Title}}}\"");
-
-            return success;
+            InitializeDeviceGroups();
+            return true;
         }
 
         private void InitializeDeviceGroups()
         {
-            //SetDeviceListNames(); TODO
             InputDeviceGroup = new DeviceGroup()
             {
                 Guid = InputDeviceGroupGuid,
@@ -180,69 +172,9 @@ namespace UCR.Core.Models.Profile
             };
         }
 
-        public bool SubscribeDeviceLists()
-        {
-            Logger.Debug("Subscribing device lists");
-            var success = true;
-            foreach (var device in InputDeviceGroup.Devices)
-            {
-                success &= device.SubscribeDeviceBindings(context);
-            }
-            success &= SubscribeOutputDevices();
-            if (!success) Logger.Error($"Failed to subscribe device lists for: {{{ProfileBreadCrumbs()}}}");
-            return success;
-        }
-
-        public bool UnsubscribeDeviceLists()
-        {
-            Logger.Debug("Unsubscribing device lists");
-            var success = true;
-            foreach (var device in InputDeviceGroup.Devices)
-            {
-                success &= device.UnsubscribeDeviceBindings(context);
-            }
-            success &= UnsubscribeOutputDevices();
-            if (!success) Logger.Error($"Failed to unsubscribe device lists for: {{{ProfileBreadCrumbs()}}}");
-            return success;
-        }
-
-        /// <summary>
-        /// Subscribes individual output devices so the active profile can write to them
-        /// Used when activating the profile
-        /// </summary>
-        /// <returns>Returns true if all devices successfully subscribed</returns>
-        private bool SubscribeOutputDevices()
-        {
-            bool success = true;
-            foreach (var device in OutputDeviceGroup.Devices)
-            {
-                var deviceSuccess = device.SubscribeOutput(context);
-                if (!deviceSuccess) Logger.Error($"Failed to subscribe output device: {{{device.LogName()}}}");
-                success &= deviceSuccess;
-            }
-            return success;
-        }
-
-        private bool UnsubscribeOutputDevices()
-        {
-            var success = true;
-            foreach (var device in OutputDeviceGroup.Devices)
-            {
-                var deviceSuccess = device.UnsubscribeOutput(context);
-                if (!deviceSuccess) Logger.Error($"Failed to unsubscribe output device: {{{device.LogName()}}}");
-                success &= deviceSuccess;
-            }
-            return success;
-        }
-
         #endregion
 
         #region Device
-
-        public Guid GetDeviceListGuid(DeviceBinding deviceBinding)
-        {
-            return GetDeviceGroupGuid(deviceBinding.DeviceIoType);
-        }
 
         public Device.Device GetDevice(DeviceBinding deviceBinding)
         {
@@ -259,18 +191,7 @@ namespace UCR.Core.Models.Profile
 
         public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            var result = context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, GetDeviceGroupGuid(deviceIoType))?.Devices ?? new List<Device.Device>();
-            if (!InheritFromParent || ParentProfile == null) return result;
-
-            var parentDeviceList = ParentProfile.GetDeviceList(deviceIoType);
-            if (result.Count < parentDeviceList.Count)
-            {
-                for (var i = result.Count; i < parentDeviceList.Count; i++)
-                {
-                    result.Add(parentDeviceList[i]);
-                }
-            }
-            return result;
+            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, GetDeviceGroupGuid(deviceIoType))?.Devices ?? new List<Device.Device>();
         }
 
         public Device.Device GetLocalDevice(DeviceBinding deviceBinding)
@@ -326,9 +247,11 @@ namespace UCR.Core.Models.Profile
         /// <returns></returns>
         public bool IsActive()
         {
+            // TODO Refactor to SubscriptionManager
             return context.ActiveProfile != null && context.ActiveProfile.Guid == Guid;
         }
 
+        // TODO Deprecated
         private static bool IsGlobalProfileTitle(string title)
         {
             return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
@@ -354,26 +277,21 @@ namespace UCR.Core.Models.Profile
             }
         }
 
-        private IEnumerable<Device.Device> GetAllLocalDevices()
+        public List<Profile> GetAncestry()
         {
-            return InputDeviceGroup.Devices.Concat(OutputDeviceGroup.Devices);
+            var result = new List<Profile>();
+            if (ParentProfile != null) result.AddRange(ParentProfile.GetAncestry());
+            result.Add(this);
+            return result;
         }
 
         #endregion
 
-        public static Profile CreateProfile(Context context, string title, Profile parent = null)
-        {
-            if (IsGlobalProfileTitle(title)) title += " not allowed";
-            var profile = new Profile(context, parent)
-            {
-                Title = title
-            };
-
-            return profile;
-        }
-
         internal void OnDeviceBindingChange(Plugin.Plugin plugin)
         {
+            return;
+
+            // TODO Unsupported with SubscriptionManager
             if (!IsActive()) return;
             foreach (var deviceBinding in plugin.GetInputs())
             {

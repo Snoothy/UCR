@@ -73,7 +73,7 @@ namespace UCR.Views
             var a = sender as ProfileItem;
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            if (!context.ProfilesManager.ActivateProfile(pi.profile))
+            if (!context.SubscriptionsManager.ActivateProfile(pi.profile))
             {
                 MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -83,7 +83,7 @@ namespace UCR.Views
         {
             if (context.ActiveProfile == null) return;
             
-            if (!context.ProfilesManager.DeactivateProfile(context.ActiveProfile))
+            if (!context.SubscriptionsManager.DeactivateProfile())
             {
                 MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }

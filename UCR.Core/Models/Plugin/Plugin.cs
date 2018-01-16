@@ -30,15 +30,7 @@ namespace UCR.Core.Models.Plugin
             Inputs = new List<DeviceBinding>();
             Outputs = new List<DeviceBinding>();
         }
-
-        public bool Activate(Profile.Profile profile)
-        {
-            var success = true;
-            OnActivate();
-            success &= SubscribeInputs(profile);
-            return success;
-        }
-
+        
         public bool Remove()
         {
             ContainingList.Remove(this);
@@ -51,6 +43,11 @@ namespace UCR.Core.Models.Plugin
             
         }
 
+        public virtual void OnDeactivate()
+        {
+
+        }
+
         public Device.Device GetDevice(DeviceBinding deviceBinding)
         {
             return ParentProfile.GetDevice(deviceBinding);
@@ -59,33 +56,13 @@ namespace UCR.Core.Models.Plugin
         protected void WriteOutput(DeviceBinding output, long value)
         {
             // TODO check null pointer?
-            var device = ParentProfile?.context?.ActiveProfile?.GetLocalDevice(output);
+            var device = ParentProfile?.GetDevice(output);
             device?.WriteOutput(ParentProfile.context, output, value);
         }
 
         public virtual List<DeviceBinding> GetInputs()
         {
             return Inputs.Select(input => new DeviceBinding(input)).ToList();
-        }
-
-        private bool SubscribeInputs(Profile.Profile profile)
-        {
-            var success = true;
-            var inputs = GetInputs();
-            foreach (var input in inputs)
-            {
-                if (!input.IsBound) continue;
-                var device = profile.GetLocalDevice(input);
-                if (device != null)
-                {
-                    success &= device.AddDeviceBinding(input);
-                }
-                else
-                {
-                    success = false;
-                }
-            }
-            return success;
         }
 
         protected DeviceBinding InitializeInputMapping(DeviceBinding.ValueChanged callbackFunc)
