@@ -109,7 +109,8 @@ namespace UCR.Views.Profile
         {
             groups = new List<ComboBoxItemViewModel>();
             ComboBoxItemViewModel selectedItem = null;
-            groups.Add(new ComboBoxItemViewModel("", new DeviceGroupComboBoxItem()
+
+            groups.Add(new ComboBoxItemViewModel(GetInheritedDeviceGroupName(deviceIoType), new DeviceGroupComboBoxItem()
             {
                 DeviceIoType = deviceIoType
             }));
@@ -124,7 +125,14 @@ namespace UCR.Views.Profile
                 if (deviceGroup.Guid == currentGroup) selectedItem = model;
             }
             comboBox.ItemsSource = groups;
-            if (selectedItem != null) comboBox.SelectedItem = selectedItem;
+            if (selectedItem != null)
+            {
+                comboBox.SelectedItem = selectedItem;
+            }
+            else
+            {
+                comboBox.SelectedItem = groups[0];
+            }
         }
 
         private void DeviceGroup_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -136,6 +144,15 @@ namespace UCR.Views.Profile
             var value = selectedItem.Value as DeviceGroupComboBoxItem;
             Profile.SetDeviceGroup(value.DeviceIoType, value.DeviceGroup?.Guid ?? Guid.Empty);
             PluginsListBox.Items.Refresh();
+        }
+
+        private string GetInheritedDeviceGroupName(DeviceIoType deviceIoType)
+        {
+            var parentDeviceGroupName = "None";
+            var parentDeviceGroup = Profile.ParentProfile?.GetDeviceGroup(deviceIoType);
+            if (parentDeviceGroup != null) parentDeviceGroupName = parentDeviceGroup.Title;
+            if (Profile.ParentProfile != null) parentDeviceGroupName += " (Inherited)";
+            return parentDeviceGroupName;
         }
     }
 }

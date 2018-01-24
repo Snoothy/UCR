@@ -149,19 +149,23 @@ namespace UCR.Core.Models.Profile
             return GetDeviceList(deviceBinding.DeviceIoType);
         }
 
-        public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
+        private List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
+        {
+            return GetDeviceGroup(deviceIoType)?.Devices ?? new List<Device.Device>();
+        }
+
+        public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType)
         {
             var deviceGroupGuid = GetDeviceGroupGuid(deviceIoType);
-            if (ParentProfile != null && deviceGroupGuid.Equals(Guid.Empty))
+            if (deviceGroupGuid.Equals(Guid.Empty))
             {
-                return ParentProfile.GetDeviceList(deviceIoType);
+                return ParentProfile?.GetDeviceGroup(deviceIoType);
             }
-
-            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid)?.Devices ?? new List<Device.Device>();
+            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid);
         }
 
         #endregion
-        
+
         #region Plugin
 
         public void AddNewPlugin(Plugin.Plugin plugin, string title = "Untitled")

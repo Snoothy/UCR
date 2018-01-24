@@ -9,12 +9,12 @@ namespace UCR.Core.Models.Device
         // Guid used for persistance
         public string Title { get; set; }
         public Guid Guid { get; set; }
-        public List<Models.Device.Device> Devices { get; set; }
+        public List<Device> Devices { get; set; }
 
         private DeviceGroup()
         {
             Guid = Guid.NewGuid();
-            Devices = new List<Models.Device.Device>();
+            Devices = new List<Device>();
         }
 
         public DeviceGroup(string title = null) : this()
