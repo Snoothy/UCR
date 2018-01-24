@@ -8,8 +8,8 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 
-var ucrVersion = "0.1.1";
-var iowrapperVersion = "v0.2.17";
+var ucrVersion = "0.2.0";
+var iowrapperVersion = "v0.3.1";
 var outputDir = "./artifacts/";
 var dependencyDir = "./dependencies/";
 var iowrapperDir = dependencyDir + "IOWrapper";
