@@ -13,14 +13,13 @@ namespace UCR.Core.Models.Device
 
         private DeviceGroup()
         {
-            
-        }
-
-        public DeviceGroup(string title = null)
-        {
-            Title = title;
             Guid = Guid.NewGuid();
             Devices = new List<Models.Device.Device>();
+        }
+
+        public DeviceGroup(string title = null) : this()
+        {
+            Title = title;
         }
 
         public bool RemoveDevice(Guid guid)

@@ -34,7 +34,7 @@ namespace UCR.Core.Managers
 
             if (profile.ParentProfile != null)
             {
-                profile.ParentProfile.AddChildProfile(newProfile, title);
+                profile.ParentProfile.AddChildProfile(newProfile);
             }
             else
             {

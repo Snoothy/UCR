@@ -30,7 +30,6 @@ namespace UCR.Core.Models.Plugin
         {
             var newPlugin = (Plugin) Activator.CreateInstance(plugin.GetType());
             newPlugin.ParentProfile = ParentProfile;
-            newPlugin.BindingCallback = ParentProfile.OnDeviceBindingChange;
             newPlugin.Title = title;
             newPlugin.ContainingList = Plugins;
             Plugins.Add(newPlugin);

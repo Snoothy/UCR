@@ -16,11 +16,8 @@ namespace UCR.Core.Models.Plugin
         public List<DeviceBinding> Outputs { get; }
 
         // Runtime
-        public delegate void PluginBindingChanged(Plugin plugin);
         internal Profile.Profile ParentProfile { get; set; }
         internal List<Plugin> ContainingList { get; set; }
-        [XmlIgnore]
-        public PluginBindingChanged BindingCallback { get; set; }
 
         // Abstract
         public abstract string PluginName();
@@ -55,13 +52,13 @@ namespace UCR.Core.Models.Plugin
 
         protected void WriteOutput(DeviceBinding output, long value)
         {
-            // TODO check null pointer?
-            var device = ParentProfile?.GetDevice(output);
-            device?.WriteOutput(ParentProfile.context, output, value);
+            output.WriteOutput(value);
         }
 
         public virtual List<DeviceBinding> GetInputs()
         {
+            return Inputs;
+            // TODO Delete?
             return Inputs.Select(input => new DeviceBinding(input)).ToList();
         }
 
@@ -107,7 +104,6 @@ namespace UCR.Core.Models.Plugin
         {
             ParentProfile = parentProfile;
             ContainingList = parentProfile.Plugins;
-            BindingCallback = parentProfile.OnDeviceBindingChange;
 
             ZipDeviceBindingList(Inputs);
             ZipDeviceBindingList(Outputs);

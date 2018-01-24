@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using NLog;
 using UCR.Core.Models.Binding;
@@ -12,7 +11,6 @@ namespace UCR.Core.Models.Profile
     public class Profile
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static string GlobalProfileTitle = "Global";
 
         /* Persistence */
         public string Title { get; set; }
@@ -30,12 +28,6 @@ namespace UCR.Core.Models.Profile
         public Context context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
-        [XmlIgnore]
-        private DeviceGroup InputDeviceGroup { get; set; }
-        [XmlIgnore]
-        private DeviceGroup OutputDeviceGroup { get; set; }
-        [XmlIgnore]
-        public bool InheritFromParent { get; set; }
 
         #region Constructors
 
@@ -56,11 +48,7 @@ namespace UCR.Core.Models.Profile
             ChildProfiles = ChildProfiles ?? new List<Profile>();
             Plugins = Plugins ?? new List<Models.Plugin.Plugin>();
 
-            InheritFromParent = true;
             Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
-            InputDeviceGroup = new DeviceGroup();
-            OutputDeviceGroup = new DeviceGroup();
-
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -74,7 +62,6 @@ namespace UCR.Core.Models.Profile
 
         public static Profile CreateProfile(Context context, string title, Profile parent = null)
         {
-            if (IsGlobalProfileTitle(title)) title += " not allowed";
             var profile = new Profile(context, parent)
             {
                 Title = title
@@ -85,15 +72,13 @@ namespace UCR.Core.Models.Profile
 
         public void AddNewChildProfile(string title)
         {
-            if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
             ChildProfiles.Add(CreateProfile(context, title, this));
             context.ContextChanged();
         }
 
-        public void AddChildProfile(Profile profile, string title)
+        public void AddChildProfile(Profile profile)
         {
-            if (IsGlobalProfileTitle(title)) title += " not allowed";
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
             profile.context = context;
             profile.ParentProfile = this;
@@ -103,7 +88,6 @@ namespace UCR.Core.Models.Profile
 
         public bool Rename(string title)
         {
-            if (IsGlobalProfileTitle(title)) return false;
             Title = title;
             context.ContextChanged();
             return true;
@@ -150,30 +134,6 @@ namespace UCR.Core.Models.Profile
 
         #endregion
 
-        #region Subscription
-
-        public bool Activate()
-        {
-            InitializeDeviceGroups();
-            return true;
-        }
-
-        private void InitializeDeviceGroups()
-        {
-            InputDeviceGroup = new DeviceGroup()
-            {
-                Guid = InputDeviceGroupGuid,
-                Devices = GetCopiedList(DeviceIoType.Input)
-            };
-            OutputDeviceGroup = new DeviceGroup()
-            {
-                Guid = OutputDeviceGroupGuid,
-                Devices = GetCopiedList(DeviceIoType.Output)
-            };
-        }
-
-        #endregion
-
         #region Device
 
         public Device.Device GetDevice(DeviceBinding deviceBinding)
@@ -191,19 +151,13 @@ namespace UCR.Core.Models.Profile
 
         public List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, GetDeviceGroupGuid(deviceIoType))?.Devices ?? new List<Device.Device>();
-        }
+            var deviceGroupGuid = GetDeviceGroupGuid(deviceIoType);
+            if (ParentProfile != null && deviceGroupGuid.Equals(Guid.Empty))
+            {
+                return ParentProfile.GetDeviceList(deviceIoType);
+            }
 
-        public Device.Device GetLocalDevice(DeviceBinding deviceBinding)
-        {
-            var deviceList = GetLocalDeviceList(deviceBinding);
-            return deviceBinding.DeviceNumber < deviceList.Count ? deviceList[deviceBinding.DeviceNumber] : null;
-        }
-
-        private List<Device.Device> GetLocalDeviceList(DeviceBinding deviceBinding)
-        {
-            var deviceList = deviceBinding.DeviceIoType == DeviceIoType.Input ? InputDeviceGroup : OutputDeviceGroup;
-            return deviceList.Devices;
+            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid)?.Devices ?? new List<Device.Device>();
         }
 
         #endregion
@@ -219,7 +173,6 @@ namespace UCR.Core.Models.Profile
         {
             
             if (plugin.Title == null) plugin.Title = title;
-            plugin.BindingCallback = OnDeviceBindingChange;
             plugin.ParentProfile = this;
             plugin.ContainingList = Plugins;
             Plugins.Add(plugin);
@@ -247,21 +200,7 @@ namespace UCR.Core.Models.Profile
         /// <returns></returns>
         public bool IsActive()
         {
-            // TODO Refactor to SubscriptionManager
-            return context.ActiveProfile != null && context.ActiveProfile.Guid == Guid;
-        }
-
-        // TODO Deprecated
-        private static bool IsGlobalProfileTitle(string title)
-        {
-            return string.Compare(title, GlobalProfileTitle, StringComparison.InvariantCultureIgnoreCase) == 0;
-        }
-
-        private List<Device.Device> GetCopiedList(DeviceIoType deviceIoType)
-        {
-            var deviceList = Device.Device.CopyDeviceList(GetDeviceList(deviceIoType));
-            deviceList.ForEach(d => d.Reset(this));
-            return deviceList;
+            return context.SubscriptionsManager.GetActiveProfile() != null && context.SubscriptionsManager.GetActiveProfile().Guid == Guid;
         }
 
         private Guid GetDeviceGroupGuid(DeviceIoType deviceIoType)
@@ -286,20 +225,6 @@ namespace UCR.Core.Models.Profile
         }
 
         #endregion
-
-        internal void OnDeviceBindingChange(Plugin.Plugin plugin)
-        {
-            return;
-
-            // TODO Unsupported with SubscriptionManager
-            if (!IsActive()) return;
-            foreach (var deviceBinding in plugin.GetInputs())
-            {
-                var device = GetLocalDevice(deviceBinding);
-                if (device == null) return; 
-                device.SubscribeDeviceBindingInput(context, deviceBinding);
-            }
-        }
 
         internal void PostLoad(Context context, Profile parentProfile = null)
         {

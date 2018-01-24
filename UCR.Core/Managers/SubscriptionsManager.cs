@@ -23,6 +23,11 @@ namespace UCR.Core.Managers
 
         #region ManagerApi
 
+        public Profile GetActiveProfile()
+        {
+            return SubscriptionState?.ActiveProfile;
+        }
+
         public bool ActivateProfile(Profile profile)
         {
             Logger.Debug($"Activating profile: {{{profile.ProfileBreadCrumbs()}}}");
@@ -34,12 +39,18 @@ namespace UCR.Core.Managers
                 Logger.Error("Failed to populate SubscriptionState");
                 return false;
             }
-            Logger.Debug($"Successfully subscribed profile");
+            Logger.Debug("Successfully populated subscription state");
 
-            if (!ActivateSubscriptionState(state)) return false;
+            if (!ActivateSubscriptionState(state))
+            {
+                Logger.Error("Failed to activate profile successfully");
+                return false;
+            }
             Logger.Debug("SubscriptionState successfully activated");
 
             if (!DeactivateProfile()) Logger.Error("Failed to deactivate previous profile successfully");
+
+            _context.IOController.SetProfileState(state.StateGuid, true);
 
             SubscriptionState = state;
             _context.ActiveProfile = profile;
@@ -58,30 +69,27 @@ namespace UCR.Core.Managers
             var state = SubscriptionState;
 
             if (!state.IsActive) return true;
-            var profiles = state.ActiveProfile.GetAncestry();
-            foreach (var profile in profiles)
-            {
-                success &= _context.IOController.SetProfileState(profile.Guid, false);
-            }
 
             foreach (var deviceBindingSubscriptionsGroup in state.DeviceBindingSubscriptions)
             {
                 foreach (var subscription in deviceBindingSubscriptionsGroup.Value)
                 {
                     if (subscription.IsOverwritten) continue;
-                    success &= UnsubscribeDeviceBindingInput(subscription);
+                    success &= UnsubscribeDeviceBindingInput(state, subscription);
                 }
             }
 
             foreach (var deviceSubscription in state.DeviceSubscriptions)
             {
-                success &= UnsubscribeOutput(deviceSubscription.Device);
+                success &= UnsubscribeOutput(state, deviceSubscription);
             }
 
             foreach (var plugin in state.ActivePlugins)
             {
                 plugin.OnDeactivate();
             }
+
+            _context.IOController.SetProfileState(state.StateGuid, false);
 
             SubscriptionState = null;
             _context.ActiveProfile = null;
@@ -110,7 +118,6 @@ namespace UCR.Core.Managers
                 state.AddOutputDevice(device, profile);
             }
 
-            // InputSubscriptions
             foreach (var profilePlugin in profile.Plugins)
             {
                 state.AddDeviceBindingSubscriptions(profilePlugin);
@@ -127,16 +134,10 @@ namespace UCR.Core.Managers
         {
             var success = true;
             if (state.IsActive) return true;
-            var profiles = state.ActiveProfile.GetAncestry();
-            foreach (var profile in profiles)
-            {
-                profile.Activate();
-            }
 
             foreach (var deviceSubscription in state.DeviceSubscriptions)
             {
-                deviceSubscription.Device.Reset(deviceSubscription.Profile);
-                success &= SubscribeOutput(deviceSubscription.Device);
+                success &= SubscribeOutput(state, deviceSubscription);
             }
 
             foreach (var deviceBindingSubscriptionsGroup in state.DeviceBindingSubscriptions)
@@ -144,13 +145,8 @@ namespace UCR.Core.Managers
                 foreach (var subscription in deviceBindingSubscriptionsGroup.Value)
                 {
                     if (subscription.IsOverwritten) continue;
-                    success &= SubscribeDeviceBindingInput(subscription);
+                    success &= SubscribeDeviceBindingInput(state, subscription);
                 }
-            }
-
-            foreach (var profile in profiles)
-            {
-                success &= _context.IOController.SetProfileState(profile.Guid, true);
             }
 
             foreach (var plugin in state.ActivePlugins)
@@ -162,78 +158,66 @@ namespace UCR.Core.Managers
             return success;
         }
 
-        private bool SubscribeDeviceBindingInput(DeviceBindingSubscription deviceBindingSubscription)
+        private bool SubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
             return deviceBindingSubscription.DeviceBinding.IsBound
-                ? _context.IOController.SubscribeInput(GetInputSubscriptionRequest(deviceBindingSubscription))
-                : UnsubscribeDeviceBindingInput(deviceBindingSubscription);
+                ? _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription))
+                : UnsubscribeDeviceBindingInput(state, deviceBindingSubscription);
         }
 
-        private bool UnsubscribeDeviceBindingInput(DeviceBindingSubscription deviceBindingSubscription)
+        private bool UnsubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
-            return _context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBindingSubscription));
+            return _context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 
-        public bool SubscribeOutput(Device device)
+        private bool SubscribeOutput(SubscriptionState state, DeviceSubscription deviceSubscription)
         {
-            Logger.Debug($"Subscribing output device: {{{device.LogName()}}}");
-            if (string.IsNullOrEmpty(device.ProviderName) || string.IsNullOrEmpty(device.DeviceHandle))
+            Logger.Debug($"Subscribing output device: {{{deviceSubscription.Device.LogName()}}}");
+            if (string.IsNullOrEmpty(deviceSubscription.Device.ProviderName) || string.IsNullOrEmpty(deviceSubscription.Device.DeviceHandle))
             {
-                Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{device.LogName()}}}");
+                Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{deviceSubscription.Device.LogName()}}}");
                 return false;
             }
-            if (device.IsAcquired)
-            {
-                Logger.Debug("Device already acquired");
-                return true;
-            }
-            device.IsAcquired = true;
-            return _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(device));
+            return _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
         }
 
-        public bool UnsubscribeOutput(Device device)
+        private bool UnsubscribeOutput(SubscriptionState state, DeviceSubscription deviceSubscription)
         {
-            Logger.Debug($"Unsubscribing output device: {{{device.LogName()}}}");
-            if (string.IsNullOrEmpty(device.ProviderName) || string.IsNullOrEmpty(device.DeviceHandle))
+            Logger.Debug($"Unsubscribing output device: {{{deviceSubscription.Device.LogName()}}}");
+            if (string.IsNullOrEmpty(deviceSubscription.Device.ProviderName) || string.IsNullOrEmpty(deviceSubscription.Device.DeviceHandle))
             {
-                Logger.Error($"Failed to unsubscribe output device. Providername or devicehandle missing from: {{{device.LogName()}}}");
+                Logger.Error($"Failed to unsubscribe output device. Providername or devicehandle missing from: {{{deviceSubscription.Device.LogName()}}}");
                 return false;
             }
-            if (!device.IsAcquired)
-            {
-                Logger.Debug("Device already unacquired");
-                return true;
-            }
-            device.IsAcquired = false;
-            return _context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest(device));
+            return _context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
         }
 
         #region DescriptionHelpers
 
-        private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBindingSubscription deviceBindingSubscription)
+        private InputSubscriptionRequest GetInputSubscriptionRequest(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
-            var device = deviceBindingSubscription.GetLocalDevice();
+            var device = deviceBindingSubscription.DeviceSubscription.Device;
             return new InputSubscriptionRequest()
             {
                 ProviderDescriptor = GetProviderDescriptor(device),
                 DeviceDescriptor = GetDeviceDescriptor(device),
-                SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBindingSubscription.DeviceBinding.Guid, deviceBindingSubscription.DeviceBinding.Plugin.ParentProfile.Guid),
+                SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBindingSubscription.DeviceBindingSubscriptionGuid, state.StateGuid),
                 BindingDescriptor = GetBindingDescriptor(deviceBindingSubscription.DeviceBinding),
                 Callback = deviceBindingSubscription.DeviceBinding.Callback
             };
         }
 
-        private OutputSubscriptionRequest GetOutputSubscriptionRequest(Device device)
+        public static OutputSubscriptionRequest GetOutputSubscriptionRequest(Guid subscriptionStateGuid, DeviceSubscription deviceSubscription)
         {
             return new OutputSubscriptionRequest()
             {
-                ProviderDescriptor = GetProviderDescriptor(device),
-                DeviceDescriptor = GetDeviceDescriptor(device),
-                SubscriptionDescriptor = GetSubscriptionDescriptor(device.Guid, device.ParentProfile.Guid)
+                ProviderDescriptor = GetProviderDescriptor(deviceSubscription.Device),
+                DeviceDescriptor = GetDeviceDescriptor(deviceSubscription.Device),
+                SubscriptionDescriptor = GetSubscriptionDescriptor(deviceSubscription.DeviceSubscriptionGuid, subscriptionStateGuid)
             };
         }
 
-        private ProviderDescriptor GetProviderDescriptor(Device device)
+        private static ProviderDescriptor GetProviderDescriptor(Device device)
         {
             return new ProviderDescriptor()
             {
@@ -241,7 +225,7 @@ namespace UCR.Core.Managers
             };
         }
 
-        private DeviceDescriptor GetDeviceDescriptor(Device device)
+        private static DeviceDescriptor GetDeviceDescriptor(Device device)
         {
             return new DeviceDescriptor()
             {
@@ -250,7 +234,7 @@ namespace UCR.Core.Managers
             };
         }
 
-        private SubscriptionDescriptor GetSubscriptionDescriptor(Guid subscriberGuid, Guid profileGuid)
+        private static SubscriptionDescriptor GetSubscriptionDescriptor(Guid subscriberGuid, Guid profileGuid)
         {
             return new SubscriptionDescriptor()
             {
@@ -259,7 +243,7 @@ namespace UCR.Core.Managers
             };
         }
 
-        private BindingDescriptor GetBindingDescriptor(DeviceBinding deviceBinding)
+        public static BindingDescriptor GetBindingDescriptor(DeviceBinding deviceBinding)
         {
             return new BindingDescriptor()
             {

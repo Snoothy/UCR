@@ -127,8 +127,7 @@ namespace UCR.Core
             }
             catch (IOException e)
             {
-                Console.Write(e.ToString());
-                // TODO log exception
+                Logger.Error("Failed to load context.xml", e);
                 context = new Context();
             }
             return context;

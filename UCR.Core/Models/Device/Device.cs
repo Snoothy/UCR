@@ -33,26 +33,17 @@ namespace UCR.Core.Models.Device
         public Profile.Profile ParentProfile { get; private set; }
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
-        [XmlIgnore]
-        public bool IsAcquired { get; set; }
-
-        // Subscriptions
-        private Dictionary<string, List<DeviceBinding>> Subscriptions;
 
         #region Constructors
 
         public Device()
         {
             Guid = Guid.NewGuid();
-            IsAcquired = false;
-            ClearSubscribers();
         }
 
         public Device(Guid guid = new Guid())
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
-            IsAcquired = false;
-            ClearSubscribers();
         }
 
         public Device(Device device) : this(device.Guid)
@@ -75,53 +66,6 @@ namespace UCR.Core.Models.Device
         }
 
         #endregion
-
-        public void Reset(Profile.Profile profile)
-        {
-            Guid = Guid.NewGuid();
-            ParentProfile = profile;
-            IsAcquired = false;
-            ClearSubscribers();
-        }
-
-        public void WriteOutput(Context context, DeviceBinding deviceBinding, long value)
-        {
-            if (DeviceHandle == null || ProviderName == null) return;
-            context.IOController.SetOutputstate(GetOutputSubscriptionRequest(), GetBindingDescriptor(deviceBinding), (int)value);
-        }
-
-        public bool AddDeviceBinding(DeviceBinding deviceBinding)
-        {
-            List<DeviceBinding> currentSub = null;
-            if (Subscriptions.ContainsKey(deviceBinding.Plugin.Title))
-            {
-                currentSub = Subscriptions[deviceBinding.Plugin.Title];
-            }
-
-            if (currentSub == null || currentSub.Count == 0)
-            {
-                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> { deviceBinding };
-                return true;
-            }
-
-            // Override bindings if Profile parent does not match. Root is loaded first and active profile last
-            if (!string.Equals(currentSub[0].Plugin.ParentProfile.Title, deviceBinding.Plugin.ParentProfile.Title))
-            {
-                Subscriptions[deviceBinding.Plugin.Title] = new List<DeviceBinding> { deviceBinding };
-            }
-            else
-            {
-                var existingBinding = currentSub.Find(b => b.Guid == deviceBinding.Guid);
-                if (existingBinding != null)
-                {
-                    // Remove existing binding if it exists
-                    Subscriptions[deviceBinding.Plugin.Title].Remove(existingBinding);
-                }
-                Subscriptions[deviceBinding.Plugin.Title].Add(deviceBinding);
-            }
-
-            return true;
-        }
 
         private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
         {
@@ -166,61 +110,6 @@ namespace UCR.Core.Models.Device
             return result.Count != 0 ? result : null;
         }
 
-
-
-        private void ClearSubscribers()
-        {
-            Subscriptions = new Dictionary<string, List<DeviceBinding>>();
-        }
-
-        public bool SubscribeDeviceBindings(Context context)
-        {
-            var success = true;
-            foreach (var deviceBindingList in Subscriptions)
-            {
-                foreach (var deviceBinding in deviceBindingList.Value)
-                {
-                    var bindingSuccess = SubscribeDeviceBindingInput(context, deviceBinding);
-                    if (!bindingSuccess) Logger.Error($"Failed to subscribe device binding in plugin: {{{deviceBinding?.Plugin?.Title}}}");
-                    success &= bindingSuccess;
-                }
-            }
-            return success;
-        }
-
-        public bool UnsubscribeDeviceBindings(Context context)
-        {
-            var success = true;
-            foreach (var deviceBindingList in Subscriptions)
-            {
-                foreach (var deviceBinding in deviceBindingList.Value)
-                {
-                    var bindingSuccess = UnsubscribeDeviceBindingInput(context, deviceBinding);
-                    if (!bindingSuccess) Logger.Error($"Failed to unsubscribe device binding in plugin: {{{deviceBinding?.Plugin?.Title}}}");
-                    success &= bindingSuccess;
-                }
-            }
-            return success;
-        }
-
-        /// <summary>
-        /// Subscribe a devicebining with the backend. Unsubscribe devicebinding if it is not bound
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="deviceBinding"></param>
-        /// <returns>If the subscription succeeded</returns>
-        public bool SubscribeDeviceBindingInput(Context context, DeviceBinding deviceBinding)
-        {
-            return deviceBinding.IsBound 
-                ? context.IOController.SubscribeInput(GetInputSubscriptionRequest(deviceBinding))
-                : UnsubscribeDeviceBindingInput(context, deviceBinding);
-        }
-
-        public bool UnsubscribeDeviceBindingInput(Context context, DeviceBinding deviceBinding)
-        {
-            return context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(deviceBinding));
-        }
-
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
@@ -251,98 +140,6 @@ namespace UCR.Core.Models.Device
                    deviceBindingNode.DeviceBinding.KeyType == deviceBinding.KeyType &&
                    deviceBindingNode.DeviceBinding.KeySubValue == deviceBinding.KeySubValue &&
                    deviceBindingNode.DeviceBinding.KeyValue == deviceBinding.KeyValue;
-        }
-
-        public bool SubscribeOutput(Context context)
-        {
-            Logger.Debug($"Subscribing output device: {{{LogName()}}}");
-            if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
-            {
-                Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{LogName()}}}");
-                return false;
-            }
-            if (IsAcquired)
-            {
-                Logger.Debug("Device already acquired");
-                return true;
-            }
-            IsAcquired = true;
-            return context.IOController.SubscribeOutput(GetOutputSubscriptionRequest());
-        }
-
-        public bool UnsubscribeOutput(Context context)
-        {
-            Logger.Debug($"Unsubscribing output device: {{{LogName()}}}");
-            if (string.IsNullOrEmpty(ProviderName) || string.IsNullOrEmpty(DeviceHandle))
-            {
-                Logger.Error($"Failed to unsubscribe output device. Providername or devicehandle missing from: {{{LogName()}}}");
-                return false;
-            }
-            if (!IsAcquired)
-            {
-                Logger.Debug("Device already unacquired");
-                return true;
-            }
-            IsAcquired = false;
-            return context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest());
-        }
-
-        private InputSubscriptionRequest GetInputSubscriptionRequest(DeviceBinding deviceBinding)
-        {
-            return new InputSubscriptionRequest()
-            {
-                ProviderDescriptor = GetProviderDescriptor(),
-                DeviceDescriptor = GetDeviceDescriptor(),
-                SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBinding.Guid),
-                BindingDescriptor = GetBindingDescriptor(deviceBinding),
-                Callback = deviceBinding.Callback
-            };
-        }
-
-        private OutputSubscriptionRequest GetOutputSubscriptionRequest()
-        {
-            return new OutputSubscriptionRequest()
-            {
-                ProviderDescriptor = GetProviderDescriptor(),
-                DeviceDescriptor = GetDeviceDescriptor(),
-                SubscriptionDescriptor = GetSubscriptionDescriptor(Guid)
-            };
-        }
-
-        private ProviderDescriptor GetProviderDescriptor()
-        {
-            return new ProviderDescriptor()
-            {
-                ProviderName = ProviderName
-            };
-        }
-
-        private DeviceDescriptor GetDeviceDescriptor()
-        {
-            return new DeviceDescriptor()
-            {
-                DeviceHandle = DeviceHandle,
-                DeviceInstance = DeviceNumber
-            };
-        }
-
-        private SubscriptionDescriptor GetSubscriptionDescriptor(Guid subscriberGuid)
-        {
-            return new SubscriptionDescriptor()
-            {
-                SubscriberGuid = subscriberGuid,
-                ProfileGuid = ParentProfile.Guid
-            };
-        }
-
-        private BindingDescriptor GetBindingDescriptor(DeviceBinding deviceBinding)
-        {
-            return new BindingDescriptor()
-            {
-                Type = (BindingType)deviceBinding.KeyType,
-                Index = deviceBinding.KeyValue,
-                SubIndex = deviceBinding.KeySubValue
-            };
         }
 
         public static List<Device> CopyDeviceList(List<Device> devicelist)

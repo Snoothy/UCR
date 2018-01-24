@@ -38,6 +38,8 @@ namespace UCR.Core.Models.Binding
         public delegate void ValueChanged(long value);
         [XmlIgnore]
         public ValueChanged Callback { get; set; }
+        [XmlIgnore]
+        public ValueChanged OutputSink { get; set; }
 
         private DeviceBinding()
         {
@@ -67,7 +69,6 @@ namespace UCR.Core.Models.Binding
         public void SetDeviceNumber(int number)
         {
             DeviceNumber = number;
-            if (DeviceIoType == DeviceIoType.Input) Plugin.BindingCallback(Plugin);
             Plugin.ParentProfile.context.ContextChanged();
         }
 
@@ -77,7 +78,6 @@ namespace UCR.Core.Models.Binding
             KeyValue = value;
             KeySubValue = subValue;
             IsBound = true;
-            if (DeviceIoType == Device.DeviceIoType.Input) Plugin.BindingCallback(Plugin);
             Plugin.ParentProfile.context.ContextChanged();
         }
         
@@ -102,6 +102,11 @@ namespace UCR.Core.Models.Binding
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bindingInfoCategory), bindingInfoCategory, null);
             }
+        }
+
+        public void WriteOutput(long value)
+        {
+            OutputSink?.Invoke(value);
         }
     }
 }

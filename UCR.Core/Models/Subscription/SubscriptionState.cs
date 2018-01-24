@@ -1,24 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Models.Binding;
+using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Subscription
 {
     public class SubscriptionState
     {
+        public Guid StateGuid { get; }
         public Profile.Profile ActiveProfile { get; }
-        public Boolean IsActive { get; set; }
+        public bool IsActive { get; set; }
 
-        public List<DeviceSubscription> DeviceSubscriptions { get; set; }
-        public Dictionary<string, List<DeviceBindingSubscription>> DeviceBindingSubscriptions;
-        public List<Plugin.Plugin> ActivePlugins;
+        public List<DeviceSubscription> DeviceSubscriptions { get; }
+        public Dictionary<string, List<DeviceBindingSubscription>> DeviceBindingSubscriptions { get; }
+        public Dictionary<string, List<DeviceBindingSubscription>> OutputDeviceBindingSubscriptions { get; }
+        public List<Plugin.Plugin> ActivePlugins { get; }
 
         public SubscriptionState(Profile.Profile profile)
         {
+            StateGuid = Guid.NewGuid();
             ActiveProfile = profile;
             DeviceSubscriptions = new List<DeviceSubscription>();
             DeviceBindingSubscriptions = new Dictionary<string, List<DeviceBindingSubscription>>();
+            OutputDeviceBindingSubscriptions = new Dictionary<string, List<DeviceBindingSubscription>>();
             ActivePlugins = new List<Plugin.Plugin>();
             IsActive = false;
         }
@@ -30,17 +34,25 @@ namespace UCR.Core.Models.Subscription
 
         public void AddDeviceBindingSubscriptions(Plugin.Plugin plugin)
         {
-            if (DeviceBindingSubscriptions.ContainsKey(plugin.Title))
+            AddDeviceBindingSubscriptions(plugin, DeviceIoType.Input);
+            AddDeviceBindingSubscriptions(plugin, DeviceIoType.Output);
+        }
+
+        private void AddDeviceBindingSubscriptions(Plugin.Plugin plugin, DeviceIoType deviceIoType)
+        {
+            var deviceBindings = deviceIoType == DeviceIoType.Input ? plugin.GetInputs() : plugin.Outputs;
+            var deviceBindingsList = deviceIoType == DeviceIoType.Input ? DeviceBindingSubscriptions : OutputDeviceBindingSubscriptions;
+            if (deviceBindingsList.ContainsKey(plugin.Title))
             {
-                foreach (var deviceBindingSubscription in DeviceBindingSubscriptions[plugin.Title])
+                foreach (var deviceBindingSubscription in deviceBindingsList[plugin.Title])
                 {
                     deviceBindingSubscription.IsOverwritten = true;
                 }
-                DeviceBindingSubscriptions[plugin.Title].AddRange(DeviceBindingSubscription.GetSubscriptionsFromList(plugin.GetInputs()));
+                deviceBindingsList[plugin.Title].AddRange(DeviceBindingSubscription.GetSubscriptionsFromList(deviceBindings, StateGuid, DeviceSubscriptions));
             }
             else
             {
-                DeviceBindingSubscriptions[plugin.Title] = DeviceBindingSubscription.GetSubscriptionsFromList(plugin.GetInputs());
+                deviceBindingsList[plugin.Title] = DeviceBindingSubscription.GetSubscriptionsFromList(deviceBindings, StateGuid, DeviceSubscriptions);
             }
         }
 

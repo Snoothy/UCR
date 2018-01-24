@@ -20,7 +20,7 @@ namespace UCR.Core.Managers
 
         public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType, Guid deviceGroupGuid)
         {
-            return GetDeviceGroupList(deviceIoType).FirstOrDefault(d => d.Guid == deviceGroupGuid);
+            return GetDeviceGroupList(deviceIoType).FirstOrDefault(d => d.Guid == deviceGroupGuid) ?? new DeviceGroup();
         }
 
         public Guid AddDeviceGroup(string Title, DeviceIoType deviceIoType)
