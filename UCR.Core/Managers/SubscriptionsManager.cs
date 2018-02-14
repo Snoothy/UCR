@@ -1,6 +1,6 @@
 ﻿using System;
 using NLog;
-using IProvider;
+using HidWizards.IOWrapper.DataTransferObjects;
 using UCR.Core.Models.Binding;
 using UCR.Core.Models.Device;
 using UCR.Core.Models.Profile;

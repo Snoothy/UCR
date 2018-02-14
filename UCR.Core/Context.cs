@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
-using IOWrapper;
+using HidWizards.IOWrapper.Core;
 using Mono.Options;
 using NLog;
 using UCR.Core.Managers;
