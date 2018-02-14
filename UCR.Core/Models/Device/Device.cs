@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Resources;
 using System.Xml.Serialization;
 using NLog;
-using Providers;
+using IProvider;
 using UCR.Core.Models.Binding;
 
 namespace UCR.Core.Models.Device

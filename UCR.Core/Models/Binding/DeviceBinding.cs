@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Providers;
+using IProvider;
 using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Binding
