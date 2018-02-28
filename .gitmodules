@@ -1,0 +1,3 @@
+[submodule "submodules/IOWrapper"]
+	path = submodules/IOWrapper
+	url = https://github.com/evilC/IOWrapper.git
