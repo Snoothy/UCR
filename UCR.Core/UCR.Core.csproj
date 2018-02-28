@@ -35,7 +35,7 @@
     </Reference>
     <Reference Include="IOWrapper.DTOs">
       <HintPath>..\dependencies\IOWrapper\IOWrapper.DTOs.dll</HintPath>
-	</Reference>
+    </Reference>
     <Reference Include="Mono.Options, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
       <Private>True</Private>
@@ -85,6 +85,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(MSBuildBinPath)\msbuild.exe" /t:restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
+"$(MSBuildBinPath)\msbuild.exe" $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /S "$(SolutionDir)\submodules\IOWrapper\Artifacts" "$(SolutionDir)\dependencies"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
