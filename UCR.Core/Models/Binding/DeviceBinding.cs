@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Providers;
+using HidWizards.IOWrapper.DataTransferObjects;
 using UCR.Core.Models.Device;
 
 namespace UCR.Core.Models.Binding
