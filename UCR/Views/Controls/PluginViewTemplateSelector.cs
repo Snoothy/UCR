@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models.Plugin;
 
-namespace UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls
 {
     class PluginViewTemplateSelector : DataTemplateSelector
     {

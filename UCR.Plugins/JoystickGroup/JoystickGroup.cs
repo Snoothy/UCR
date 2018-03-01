@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Plugin;
 
-namespace UCR.Plugins.JoystickGroup
+namespace HidWizards.UCR.Plugins.JoystickGroup
 {
     [Export(typeof(Plugin))]
     public class JoystickGroup : PluginGroup

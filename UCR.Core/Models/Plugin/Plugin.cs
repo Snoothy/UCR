@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Xml.Serialization;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Device;
 
-namespace UCR.Core.Models.Plugin
+namespace HidWizards.UCR.Core.Models.Plugin
 {
     public abstract class Plugin : IComparable<Plugin>
     {

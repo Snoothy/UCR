@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using UCR.Core.Models.Binding;
-using UCR.Core.Utilities;
-using UCR.Utilities.Commands;
-using UCR.ViewModels;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Utilities.Commands;
+using HidWizards.UCR.ViewModels;
 
-namespace UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls
 {
     /// <summary>
     /// Interaction logic for DeviceBindingControl.xaml

@@ -1,4 +1,4 @@
-﻿namespace UCR.Core.Utilities
+﻿namespace HidWizards.UCR.Core.Utilities
 {
     public static class Constants
     {

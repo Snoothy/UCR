@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using RestSharp;
 
-namespace UCR.Utilities
+namespace HidWizards.UCR.Utilities
 {
     internal class HidGuardianClient : IDisposable
     {

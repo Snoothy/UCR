@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Plugin;
 using NLog;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
 
-namespace UCR.Core.Models.Profile
+namespace HidWizards.UCR.Core.Models.Profile
 {
     public class Profile
     {

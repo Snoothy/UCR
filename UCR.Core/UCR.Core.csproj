@@ -7,7 +7,7 @@
     <ProjectGuid>{676D3228-C3F0-4BE7-8951-B83F7A16CEA7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UCR.Core</RootNamespace>
+    <RootNamespace>HidWizards.UCR.Core</RootNamespace>
     <AssemblyName>UCR.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,6 +35,9 @@
     </Reference>
     <Reference Include="IOWrapper.DTOs">
       <HintPath>..\dependencies\IOWrapper\IOWrapper.DTOs.dll</HintPath>
+    </Reference>
+    <Reference Include="IOWrapper.IProvider">
+      <HintPath>..\dependencies\IOWrapper\IOWrapper.IProvider.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Options, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
@@ -86,7 +89,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(MSBuildBinPath)\msbuild.exe" /t:restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
+    <PreBuildEvent>nuget restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
+"$(MSBuildBinPath)\msbuild.exe" /t:restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
 "$(MSBuildBinPath)\msbuild.exe" $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

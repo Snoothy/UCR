@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace UCR.Utilities.Commands
+namespace HidWizards.UCR.Utilities.Commands
 {
     public class RelayCommand : ICommand
     {

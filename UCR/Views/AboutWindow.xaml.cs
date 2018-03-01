@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 
-namespace UCR.Views
+namespace HidWizards.UCR.Views
 {
     /// <summary>
     /// Interaction logic for About.xaml

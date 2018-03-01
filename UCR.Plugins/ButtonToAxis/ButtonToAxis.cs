@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
-using UCR.Core.Utilities;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Utilities;
 
-namespace UCR.Plugins.ButtonToAxis
+namespace HidWizards.UCR.Plugins.ButtonToAxis
 {
     [Export(typeof(Plugin))]
     public class ButtonToAxis : Plugin

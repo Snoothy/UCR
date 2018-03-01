@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Dynamic;
-using System.Resources;
 using System.Xml.Serialization;
-using NLog;
 using HidWizards.IOWrapper.DataTransferObjects;
-using UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Binding;
+using NLog;
 
-namespace UCR.Core.Models.Device
+namespace HidWizards.UCR.Core.Models.Device
 {
     public enum DeviceIoType
     {

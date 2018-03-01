@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 
-namespace UCR.Plugins.ButtonToAxis
+namespace HidWizards.UCR.Plugins.ButtonToAxis
 {
     [Export(typeof(ResourceDictionary))]
     public partial class Resources : ResourceDictionary

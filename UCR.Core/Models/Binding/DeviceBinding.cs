@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.DataTransferObjects;
-using UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Device;
 
-namespace UCR.Core.Models.Binding
+namespace HidWizards.UCR.Core.Models.Binding
 {
     public enum DeviceBindingCategory
     {

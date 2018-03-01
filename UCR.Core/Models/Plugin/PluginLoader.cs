@@ -3,7 +3,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 
-namespace UCR.Core.Models.Plugin
+namespace HidWizards.UCR.Core.Models.Plugin
 {
     internal class PluginLoader
     {

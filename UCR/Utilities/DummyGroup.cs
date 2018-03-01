@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UCR.Core.Models.Plugin;
+﻿using HidWizards.UCR.Core.Models.Plugin;
 
-namespace UCR.Utilities
+namespace HidWizards.UCR.Utilities
 {
     public class DummyGroup : PluginGroup
     {

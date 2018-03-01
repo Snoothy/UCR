@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 
-namespace UCR.Plugins.AxisToAxis
+namespace HidWizards.UCR.Plugins.AxisToAxis
 {
     [Export(typeof(ResourceDictionary))]
     public partial class Resources : ResourceDictionary

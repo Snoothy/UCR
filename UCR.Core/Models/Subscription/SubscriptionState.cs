@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Device;
 
-namespace UCR.Core.Models.Subscription
+namespace HidWizards.UCR.Core.Models.Subscription
 {
     public class SubscriptionState
     {

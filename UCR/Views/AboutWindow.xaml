@@ -1,9 +1,9 @@
-﻿<Window x:Class="UCR.Views.AboutWindow"
+﻿<Window x:Class="HidWizards.UCR.Views.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UCR.Views"
+        xmlns:local="clr-namespace:HidWizards.UCR.Views"
         mc:Ignorable="d"
         Title="About" Height="250" Width="500">
     <Grid Margin="10">

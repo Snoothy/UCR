@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
+﻿using HidWizards.UCR.Core.Models.Device;
 
-namespace UCR.Views.Profile
+namespace HidWizards.UCR.Views.Profile
 {
     class DeviceGroupComboBoxItem
     {

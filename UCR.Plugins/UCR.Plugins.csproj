@@ -7,7 +7,7 @@
     <ProjectGuid>{35B5A93F-03EA-445F-BDF6-2B37C256578F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UCR.Plugins</RootNamespace>
+    <RootNamespace>HidWizards.UCR.Plugins</RootNamespace>
     <AssemblyName>UCR.Plugins</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

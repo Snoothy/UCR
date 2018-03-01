@@ -1,14 +1,14 @@
 ﻿using System;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Profile;
+using HidWizards.UCR.Plugins.ButtonToButton;
+using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
-using UCR.Core;
-using UCR.Core.Managers;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Profile;
-using UCR.Plugins.ButtonToButton;
-using UCR.Tests.Factory;
 
-namespace UCR.Tests.ModelTests
+namespace HidWizards.UCR.Tests.ModelTests
 {
     [TestFixture]
     internal class ProfileTests

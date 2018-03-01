@@ -1,8 +1,8 @@
 ﻿using System;
+using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
-using UCR.Tests.Factory;
 
-namespace UCR.Tests.FactoryTests
+namespace HidWizards.UCR.Tests.FactoryTests
 {
     [TestFixture]
     class DeviceFactoryTests

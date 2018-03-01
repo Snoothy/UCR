@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using UCR.Core;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
-using UCR.ViewModels;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.ViewModels;
 
-namespace UCR.Views.Profile
+namespace HidWizards.UCR.Views.Profile
 {
     /// <summary>
     /// Interaction logic for ProfileWindow.xaml
@@ -15,13 +15,13 @@ namespace UCR.Views.Profile
     public partial class ProfileWindow : Window
     {
         private Context Context { get; set; }
-        private Core.Models.Profile.Profile Profile { get; set; }
+        private global::HidWizards.UCR.Core.Models.Profile.Profile Profile { get; set; }
         private bool HasLoaded = false;
 
         public List<ComboBoxItemViewModel> InputGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGroups { get; set; }
 
-        public ProfileWindow(Context context, Core.Models.Profile.Profile profile)
+        public ProfileWindow(Context context, global::HidWizards.UCR.Core.Models.Profile.Profile profile)
         {
             Context = context;
             Profile = profile;

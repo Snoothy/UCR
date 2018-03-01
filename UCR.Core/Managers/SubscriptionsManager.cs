@@ -1,13 +1,13 @@
 ﻿using System;
-using NLog;
 using HidWizards.IOWrapper.DataTransferObjects;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Profile;
-using UCR.Core.Models.Subscription;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Profile;
+using HidWizards.UCR.Core.Models.Subscription;
+using NLog;
 using Logger = NLog.Logger;
 
-namespace UCR.Core.Managers
+namespace HidWizards.UCR.Core.Managers
 {
     public class SubscriptionsManager : IDisposable
     {

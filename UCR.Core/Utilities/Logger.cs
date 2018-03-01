@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace UCR.Core.Utilities
+namespace HidWizards.UCR.Core.Utilities
 {
     public static class Logger
     {

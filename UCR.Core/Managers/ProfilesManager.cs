@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HidWizards.UCR.Core.Models.Profile;
 using NLog;
-using UCR.Core.Models.Profile;
 
-namespace UCR.Core.Managers
+namespace HidWizards.UCR.Core.Managers
 {
     public class ProfilesManager
     {

@@ -6,14 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using UCR.Annotations;
-using UCR.Core;
-using UCR.Utilities;
-using UCR.ViewModels;
-using UCR.Views.Device;
-using UCR.Views.Profile;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Properties;
+using HidWizards.UCR.Utilities;
+using HidWizards.UCR.ViewModels;
+using HidWizards.UCR.Views.Device;
+using HidWizards.UCR.Views.Profile;
 
-namespace UCR.Views
+namespace HidWizards.UCR.Views
 {
 
     public partial class MainWindow : Window, INotifyPropertyChanged

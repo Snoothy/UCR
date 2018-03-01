@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Plugins.ButtonToButton;
+using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
-using UCR.Core;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Plugins.ButtonToButton;
-using UCR.Tests.Factory;
 
-namespace UCR.Tests.ModelTests
+namespace HidWizards.UCR.Tests.ModelTests
 {
     [TestFixture]
     internal class PersistenceTests

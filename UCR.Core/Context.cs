@@ -5,14 +5,14 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.Core;
+using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models.Profile;
 using Mono.Options;
 using NLog;
-using UCR.Core.Managers;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
-using UCR.Core.Models.Profile;
 
-namespace UCR.Core
+namespace HidWizards.UCR.Core
 {
     public class Context : IDisposable
     {

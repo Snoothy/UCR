@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Plugin;
 
-namespace UCR.Plugins.ButtonToButton
+namespace HidWizards.UCR.Plugins.ButtonToButton
 {
     [Export(typeof(Plugin))]
     public class ButtonToButton : Plugin

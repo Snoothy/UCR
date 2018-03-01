@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UCR.Core.Models.Subscription
+namespace HidWizards.UCR.Core.Models.Subscription
 {
     public class DeviceSubscription
     {

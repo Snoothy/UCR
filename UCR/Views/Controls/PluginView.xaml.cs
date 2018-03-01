@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models.Plugin;
 
-namespace UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls
 {
     public partial class PluginView : UserControl
     {

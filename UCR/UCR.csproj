@@ -7,7 +7,7 @@
     <ProjectGuid>{2F2E9A0C-C97C-4AC7-A598-03D334B2D827}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UCR</RootNamespace>
+    <RootNamespace>HidWizards.UCR</RootNamespace>
     <AssemblyName>UCR</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

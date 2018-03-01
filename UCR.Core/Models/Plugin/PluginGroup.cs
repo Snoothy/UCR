@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Binding;
 
-namespace UCR.Core.Models.Plugin
+namespace HidWizards.UCR.Core.Models.Plugin
 {
     public abstract class PluginGroup : Plugin
     {

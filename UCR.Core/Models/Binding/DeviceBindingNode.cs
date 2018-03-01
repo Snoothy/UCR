@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UCR.Core.Models.Binding
+namespace HidWizards.UCR.Core.Models.Binding
 {
     public class DeviceBindingNode
     {

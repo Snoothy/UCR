@@ -1,8 +1,8 @@
 ﻿using System.Windows;
-using UCR.Core;
-using UCR.ViewModels.Device;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.ViewModels.Device;
 
-namespace UCR.Views.Device
+namespace HidWizards.UCR.Views.Device
 {
     /// <summary>
     /// Interaction logic for DeviceListWindow.xaml

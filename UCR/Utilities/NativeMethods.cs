@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace UCR.Utilities
+namespace HidWizards.UCR.Utilities
 {
     internal static class NativeMethods
     {

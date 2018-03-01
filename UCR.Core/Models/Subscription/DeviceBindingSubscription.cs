@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Managers;
-using UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models.Binding;
 
-namespace UCR.Core.Models.Subscription
+namespace HidWizards.UCR.Core.Models.Subscription
 {
     public class DeviceBindingSubscription
     {

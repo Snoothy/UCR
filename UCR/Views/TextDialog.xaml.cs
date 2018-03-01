@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace UCR.Views
+namespace HidWizards.UCR.Views
 {
     public partial class TextDialog: Window
     {

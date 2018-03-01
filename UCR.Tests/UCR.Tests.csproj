@@ -7,7 +7,7 @@
     <ProjectGuid>{F401B642-1E27-44C2-BFFA-5F3CFBFD14BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UCR.Tests</RootNamespace>
+    <RootNamespace>HidWizards.UCR.Tests</RootNamespace>
     <AssemblyName>UCR.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

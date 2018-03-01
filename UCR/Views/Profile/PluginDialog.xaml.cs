@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using UCR.Core;
-using UCR.Core.Models.Plugin;
-using UCR.Core.Utilities;
-using UCR.ViewModels;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.ViewModels;
 
-namespace UCR.Views.Profile
+namespace HidWizards.UCR.Views.Profile
 {
     public partial class PluginDialog: Window
     {

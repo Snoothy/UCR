@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 
-namespace UCR.Utilities
+namespace HidWizards.UCR.Utilities
 {
     internal class SingleGlobalInstance : IDisposable
     {
