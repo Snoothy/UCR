@@ -46,8 +46,6 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
 
         public AxisToAxis()
         {
-            InputAxis = InitializeInputMapping(InputChanged);
-            OutputAxis = InitializeOutputMapping();
             DeadZone = "0";
             Sensitivity = "100";
         }

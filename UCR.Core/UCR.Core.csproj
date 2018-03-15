@@ -66,8 +66,8 @@
     <Compile Include="Models\Device\Device.cs" />
     <Compile Include="Models\Device\DeviceGroup.cs" />
     <Compile Include="Models\Binding\DeviceBinding.cs" />
+    <Compile Include="Models\Mapping\Mapping.cs" />
     <Compile Include="Models\Plugin\Plugin.cs" />
-    <Compile Include="Models\Plugin\PluginGroup.cs" />
     <Compile Include="Models\Plugin\PluginLoader.cs" />
     <Compile Include="Models\Profile\Profile.cs" />
     <Compile Include="Models\Subscription\DeviceBindingSubscription.cs" />

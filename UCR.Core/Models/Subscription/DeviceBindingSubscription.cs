@@ -30,7 +30,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
 
         public static List<DeviceBindingSubscription> GetSubscriptionsFromList(List<DeviceBinding> deviceBindings, Guid subscriptionStateGuid, List<DeviceSubscription> deviceSubscriptions)
         {
-            return deviceBindings.Select(deviceBinding => new DeviceBindingSubscription(deviceBinding, deviceBinding.Plugin.ParentProfile, subscriptionStateGuid, deviceSubscriptions)).ToList();
+            return deviceBindings.Select(deviceBinding => new DeviceBindingSubscription(deviceBinding, deviceBinding.Profile, subscriptionStateGuid, deviceSubscriptions)).ToList();
         }
 
         private Device.Device GetDevice()
@@ -41,7 +41,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public void WriteOutput(long value)
         {
             // TODO get context properly
-            var success = Profile.context.IOController.SetOutputstate(SubscriptionsManager.GetOutputSubscriptionRequest(SubscriptionStateGuid, DeviceSubscription), SubscriptionsManager.GetBindingDescriptor(DeviceBinding), (int)value);
+            var success = Profile.Context.IOController.SetOutputstate(SubscriptionsManager.GetOutputSubscriptionRequest(SubscriptionStateGuid, DeviceSubscription), SubscriptionsManager.GetBindingDescriptor(DeviceBinding), (int)value);
             var a = 1;
         }
     }

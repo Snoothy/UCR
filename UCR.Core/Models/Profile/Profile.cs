@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Models.Device;
-using HidWizards.UCR.Core.Models.Plugin;
 using NLog;
 
 namespace HidWizards.UCR.Core.Models.Profile
@@ -16,7 +15,8 @@ namespace HidWizards.UCR.Core.Models.Profile
         public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
-        public List<Models.Plugin.Plugin> Plugins { get; set; }
+        public List<string> States { get; set; }
+        public List<Mapping.Mapping> Mappings { get; set; }
 
         // IO
         public Guid InputDeviceGroupGuid { get; set; }
@@ -25,7 +25,7 @@ namespace HidWizards.UCR.Core.Models.Profile
         
         /* Runtime */
         [XmlIgnore]
-        public Context context;
+        public Context Context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
 
@@ -38,17 +38,16 @@ namespace HidWizards.UCR.Core.Models.Profile
 
         public Profile(Context context)
         {
-            this.context = context;
+            this.Context = context;
             Init();
         }
 
         private void Init()
         {
-            Plugins = Plugins ?? new List<Models.Plugin.Plugin>();
-            ChildProfiles = ChildProfiles ?? new List<Profile>();
-            Plugins = Plugins ?? new List<Models.Plugin.Plugin>();
-
-            Guid = Guid == Guid.Empty ? Guid.NewGuid() : Guid;
+            Guid = Guid.NewGuid();
+            ChildProfiles = new List<Profile>();
+            States = new List<string>();
+            Mappings = new List<Mapping.Mapping>();
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -73,23 +72,23 @@ namespace HidWizards.UCR.Core.Models.Profile
         public void AddNewChildProfile(string title)
         {
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
-            ChildProfiles.Add(CreateProfile(context, title, this));
-            context.ContextChanged();
+            ChildProfiles.Add(CreateProfile(Context, title, this));
+            Context.ContextChanged();
         }
 
         public void AddChildProfile(Profile profile)
         {
             if (ChildProfiles == null) ChildProfiles = new List<Profile>();
-            profile.context = context;
+            profile.Context = Context;
             profile.ParentProfile = this;
             ChildProfiles.Add(profile);
-            context.ContextChanged();
+            Context.ContextChanged();
         }
 
         public bool Rename(string title)
         {
             Title = title;
-            context.ContextChanged();
+            Context.ContextChanged();
             return true;
         }
 
@@ -97,13 +96,13 @@ namespace HidWizards.UCR.Core.Models.Profile
         {
             if (ParentProfile == null)
             {
-                context.Profiles.Remove(this);
+                Context.Profiles.Remove(this);
             }
             else
             {
                 ParentProfile.ChildProfiles.Remove(this);
             }
-            context.ContextChanged();
+            Context.ContextChanged();
         }
 
         public void SetDeviceGroup(DeviceIoType ioType, Guid deviceGroupGuid)
@@ -119,17 +118,33 @@ namespace HidWizards.UCR.Core.Models.Profile
                 default:
                     throw new ArgumentOutOfRangeException(nameof(ioType), ioType, null);
             }
-            context.ContextChanged();
+            Context.ContextChanged();
         }
 
         public bool ActivateProfile()
         {
-            return context.SubscriptionsManager.ActivateProfile(this);
+            return Context.SubscriptionsManager.ActivateProfile(this);
         }
 
         public bool Deactivate()
         {
-            return context.SubscriptionsManager.DeactivateProfile();
+            return Context.SubscriptionsManager.DeactivateProfile();
+        }
+
+        #endregion
+
+        #region Mapping
+
+        public Mapping.Mapping AddMapping(string title)
+        {
+            var mapping = new Mapping.Mapping(title);
+            Mappings.Add(mapping);
+            return mapping;
+        }
+
+        public bool RemoveMapping(Mapping.Mapping mapping)
+        {
+            return Mappings.Remove(mapping);
         }
 
         #endregion
@@ -161,32 +176,35 @@ namespace HidWizards.UCR.Core.Models.Profile
             {
                 return ParentProfile?.GetDeviceGroup(deviceIoType);
             }
-            return context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid);
+            return Context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid);
         }
 
         #endregion
 
         #region Plugin
 
-        public void AddNewPlugin(Plugin.Plugin plugin, string title = "Untitled")
+        public bool AddNewPlugin(Mapping.Mapping mapping, Plugin.Plugin plugin, string title = "Untitled", string state = null)
         {
-            AddPlugin((Plugin.Plugin)Activator.CreateInstance(plugin.GetType()), title);
+            return AddPlugin(mapping, (Plugin.Plugin)Activator.CreateInstance(plugin.GetType()), title, state);
         }
 
-        public void AddPlugin(Plugin.Plugin plugin, string title = "Untitled")
+        public bool AddPlugin(Mapping.Mapping mapping, Plugin.Plugin plugin, string title = "Untitled", string state = null)
         {
-            
+            if (!Mappings.Contains(mapping)) return false;
             if (plugin.Title == null) plugin.Title = title;
-            plugin.ParentProfile = this;
-            plugin.ContainingList = Plugins;
-            Plugins.Add(plugin);
-            context.ContextChanged();
+            plugin.State = state;
+            plugin.Profile = this;
+            mapping.Plugins.Add(plugin);
+            Context.ContextChanged();
+            return true;
         }
 
-        public void RemovePlugin(Models.Plugin.Plugin plugin)
+        public bool RemovePlugin(Mapping.Mapping mapping, Models.Plugin.Plugin plugin)
         {
-            Plugins.Remove(plugin);
-            context.ContextChanged();
+            if (!Mappings.Contains(mapping)) return false;
+            mapping.Plugins.Remove(plugin);
+            Context.ContextChanged();
+            return true;
         }
 
         #endregion
@@ -204,7 +222,7 @@ namespace HidWizards.UCR.Core.Models.Profile
         /// <returns></returns>
         public bool IsActive()
         {
-            return context.SubscriptionsManager.GetActiveProfile() != null && context.SubscriptionsManager.GetActiveProfile().Guid == Guid;
+            return Context.SubscriptionsManager.GetActiveProfile() != null && Context.SubscriptionsManager.GetActiveProfile().Guid == Guid;
         }
 
         private Guid GetDeviceGroupGuid(DeviceIoType deviceIoType)
@@ -232,7 +250,7 @@ namespace HidWizards.UCR.Core.Models.Profile
 
         internal void PostLoad(Context context, Profile parentProfile = null)
         {
-            this.context = context;
+            Context = context;
             ParentProfile = parentProfile;
 
             foreach (var profile in ChildProfiles)
@@ -240,17 +258,9 @@ namespace HidWizards.UCR.Core.Models.Profile
                 profile.PostLoad(context, this);
             }
 
-            foreach (var plugin in Plugins)
+            foreach (var mapping in Mappings)
             {
-                var group = plugin as PluginGroup;
-                if (group != null)
-                {
-                    group.PostLoad(context, this);
-                }
-                else
-                {
-                    plugin.PostLoad(context, this);
-                }
+                mapping.PostLoad(context, this);
             }
         }
     }

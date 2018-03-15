@@ -41,9 +41,6 @@ namespace HidWizards.UCR.Plugins.AxisToButton
 
         public AxisToButton()
         {
-            Input = InitializeInputMapping(InputChanged);
-            OutputLow = InitializeOutputMapping();
-            OutputHigh = InitializeOutputMapping();
             DeadZone = "30";
         }
 

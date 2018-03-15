@@ -10,12 +10,6 @@ namespace HidWizards.UCR.Plugins.ButtonToAxis
     [Export(typeof(Plugin))]
     public class ButtonToAxis : Plugin
     {
-        [XmlIgnore]
-        public DeviceBinding InputHigh { get; set; }
-        [XmlIgnore]
-        public DeviceBinding InputLow { get; set; }
-        [XmlIgnore]
-        public DeviceBinding Output { get; set; }
 
         private long _direction = 0;
 
@@ -26,9 +20,7 @@ namespace HidWizards.UCR.Plugins.ButtonToAxis
 
         public ButtonToAxis()
         {
-            InputLow = InitializeInputMapping(InputLowChanged);
-            InputHigh = InitializeInputMapping(InputHighChanged);
-            Output = InitializeOutputMapping();
+
         }
 
         private void InputLowChanged(long value)

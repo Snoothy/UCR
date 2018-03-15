@@ -118,10 +118,11 @@ namespace HidWizards.UCR.Core.Managers
                 state.AddOutputDevice(device, profile);
             }
 
-            foreach (var profilePlugin in profile.Plugins)
-            {
-                state.AddDeviceBindingSubscriptions(profilePlugin);
-            }
+            // TODO
+            //foreach (var profilePlugin in profile.Plugins)
+            //{
+            //    state.AddDeviceBindingSubscriptions(profilePlugin);
+            //}
 
             state.BuildActivePluginsList();
 

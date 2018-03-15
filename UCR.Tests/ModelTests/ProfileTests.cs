@@ -3,6 +3,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models.Mapping;
 using HidWizards.UCR.Core.Models.Profile;
 using HidWizards.UCR.Plugins.ButtonToButton;
 using HidWizards.UCR.Tests.Factory;
@@ -15,6 +16,7 @@ namespace HidWizards.UCR.Tests.ModelTests
     {
         private Context _context;
         private Profile _profile;
+        private Mapping _mapping;
         private string _profileName;
 
         [SetUp]
@@ -23,6 +25,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             _context = new Context();
             _context.ProfilesManager.AddProfile("Base profile");
             _profile = _context.Profiles[0];
+            _mapping = _profile.AddMapping("Test mapping");
             _profileName = "Test";
         }
 
@@ -64,13 +67,14 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void AddPlugin()
         {
             var pluginName = "Test plugin";
-            _profile.AddPlugin(new ButtonToButton(), pluginName);
-            var plugin = _profile.Plugins[0];
+            var pluginState = "State";
+            _profile.AddPlugin(_mapping, new ButtonToButton(), pluginName, pluginState);
+            var plugin = _mapping.Plugins[0];
             Assert.That(plugin, Is.Not.Null);
             Assert.That(plugin.Title, Is.EqualTo(pluginName));
-            Assert.That(plugin.Inputs, Is.Not.Null);
-            Assert.That(plugin.Outputs, Is.Not.Null);
-            Assert.That(plugin.ParentProfile, Is.EqualTo(_profile));
+            Assert.That(plugin.State, Is.EqualTo(pluginState));
+            Assert.That(plugin.Output, Is.Not.Null);
+            Assert.That(plugin.Profile, Is.EqualTo(_profile));
             Assert.That(_context.IsNotSaved, Is.True);
         }
 
@@ -147,7 +151,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
             Assert.That(newProfile.Title, Is.EqualTo("Copy"));
             Assert.That(newProfile.ParentProfile, Is.Null);
-            Assert.That(newProfile.context, Is.Not.Null);
+            Assert.That(newProfile.Context, Is.Not.Null);
         }
 
         [Test]
@@ -162,7 +166,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
             Assert.That(newProfile.Title, Is.EqualTo("Copy"));
             Assert.That(newProfile.ParentProfile.Guid, Is.EqualTo(parentProfile.Guid));
-            Assert.That(newProfile.context, Is.Not.Null);
+            Assert.That(newProfile.Context, Is.Not.Null);
         }
 
         [Test]

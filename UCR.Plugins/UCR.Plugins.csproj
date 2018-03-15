@@ -54,8 +54,6 @@
     <Compile Include="ButtonToAxis\Resources.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
     <Compile Include="ButtonToButton\Resources.cs" />
-    <Compile Include="JoystickGroup\JoystickGroup.cs" />
-    <Compile Include="JoystickGroup\Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,10 +72,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ButtonToButton\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="JoystickGroup\Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

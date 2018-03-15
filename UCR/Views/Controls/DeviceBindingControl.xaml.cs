@@ -64,7 +64,7 @@ namespace HidWizards.UCR.Views.Controls
 
         private void LoadDeviceInputs()
         {
-            var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
+            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
             for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, Constants.MaxDevices); i++)
             {
@@ -108,9 +108,9 @@ namespace HidWizards.UCR.Views.Controls
         private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
-            var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
+            var device = DeviceBinding.Profile.GetDevice(DeviceBinding);
             if (device == null) return;
-            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Plugin.ParentProfile.context, DeviceBinding.DeviceIoType));
+            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
         }
 
         private ObservableCollection<ContextMenuItem> BuildMenu(List<DeviceBindingNode> deviceBindingNodes)

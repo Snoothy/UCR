@@ -47,13 +47,14 @@ namespace HidWizards.UCR.Views.Profile
             Profile.Deactivate();
         }
 
+        // TODO Add plugin
         private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
         {
             var win = new PluginDialog(Context, "Add plugin", "Untitled");
             win.ShowDialog();
             if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
             // TODO Check if plugin with same name exists
-            Profile.AddNewPlugin(win.Plugin, win.TextResult);
+            //Profile.AddNewPlugin(win.Plugin, win.TextResult);
             PluginsListBox.Items.Refresh();
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
@@ -73,11 +74,12 @@ namespace HidWizards.UCR.Views.Profile
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
 
+        // TODO Remove plugin
         private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin plugin;
             if (!GetSelectedItem(out plugin)) return;
-            Profile.RemovePlugin(plugin);
+            //Profile.RemovePlugin(plugin);
             PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }

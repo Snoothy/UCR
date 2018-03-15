@@ -80,7 +80,6 @@
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
-    <Compile Include="Utilities\DummyGroup.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
@@ -102,10 +101,8 @@
     <Compile Include="Views\Controls\PluginView.xaml.cs">
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginGroupViewTemplateSelector.cs" />
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\Device\DeviceListControlViewModel.cs" />
-    <Compile Include="Views\Controls\PluginGroupView.cs" />
     <Compile Include="Views\Device\DeviceListWindow.xaml.cs">
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
@@ -149,10 +146,6 @@
     <Page Include="Views\Controls\PluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\PluginGroupView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Device\DeviceListWindow.xaml">
       <SubType>Designer</SubType>
