@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
 
-namespace HidWizards.UCR.Core.Models.Plugin
+namespace HidWizards.UCR.Core.Models
 {
     public abstract class Plugin : IComparable<Plugin>
     {
@@ -14,7 +12,7 @@ namespace HidWizards.UCR.Core.Models.Plugin
         public DeviceBinding Output { get; }
 
         // Runtime
-        internal Profile.Profile Profile { get; set; }
+        internal Profile Profile { get; set; }
 
         // Abstract
         public abstract string PluginName();
@@ -45,12 +43,12 @@ namespace HidWizards.UCR.Core.Models.Plugin
             return 0L;
         }
 
-        public Device.Device GetDevice(DeviceBinding deviceBinding)
+        public Device GetDevice(DeviceBinding deviceBinding)
         {
             return Profile.GetDevice(deviceBinding);
         }
 
-        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return Profile.GetDeviceList(deviceBinding);
         }
@@ -67,7 +65,7 @@ namespace HidWizards.UCR.Core.Models.Plugin
             Profile.Context.ContextChanged();
         }
 
-        public void PostLoad(Context context, Profile.Profile parentProfile)
+        public void PostLoad(Context context, Profile parentProfile)
         {
             Profile = parentProfile;
         }

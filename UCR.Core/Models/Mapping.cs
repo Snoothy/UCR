@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
 
-namespace HidWizards.UCR.Core.Models.Mapping
+namespace HidWizards.UCR.Core.Models
 {
     public class Mapping
     {
         public String Title { get; set; }
         public Guid Guid { get; set; }
         public List<DeviceBinding> DeviceBindings { get; set; }
-        public List<Plugin.Plugin> Plugins { get; set; }
+        public List<Plugin> Plugins { get; set; }
 
-        internal Profile.Profile Profile { get; set; }
+        internal Profile Profile { get; set; }
 
         public Mapping()
         {
             Guid = Guid.NewGuid();
             DeviceBindings = new List<DeviceBinding>();
-            Plugins = new List<Plugin.Plugin>();
+            Plugins = new List<Plugin>();
         }
 
         public Mapping(string title) : this()
@@ -32,7 +31,7 @@ namespace HidWizards.UCR.Core.Models.Mapping
 
         }
 
-        internal void PostLoad(Context context, Profile.Profile profile = null)
+        internal void PostLoad(Context context, Profile profile = null)
         {
             Profile = profile;
 

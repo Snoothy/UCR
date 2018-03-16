@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Views.Controls
 {

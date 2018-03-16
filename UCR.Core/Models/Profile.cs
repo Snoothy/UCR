@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
 using NLog;
 
-namespace HidWizards.UCR.Core.Models.Profile
+namespace HidWizards.UCR.Core.Models
 {
     public class Profile
     {
@@ -16,7 +15,7 @@ namespace HidWizards.UCR.Core.Models.Profile
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<string> States { get; set; }
-        public List<Mapping.Mapping> Mappings { get; set; }
+        public List<Mapping> Mappings { get; set; }
 
         // IO
         public Guid InputDeviceGroupGuid { get; set; }
@@ -47,7 +46,7 @@ namespace HidWizards.UCR.Core.Models.Profile
             Guid = Guid.NewGuid();
             ChildProfiles = new List<Profile>();
             States = new List<string>();
-            Mappings = new List<Mapping.Mapping>();
+            Mappings = new List<Mapping>();
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -135,14 +134,14 @@ namespace HidWizards.UCR.Core.Models.Profile
 
         #region Mapping
 
-        public Mapping.Mapping AddMapping(string title)
+        public Mapping AddMapping(string title)
         {
-            var mapping = new Mapping.Mapping(title);
+            var mapping = new Mapping(title);
             Mappings.Add(mapping);
             return mapping;
         }
 
-        public bool RemoveMapping(Mapping.Mapping mapping)
+        public bool RemoveMapping(Mapping mapping)
         {
             return Mappings.Remove(mapping);
         }
@@ -151,7 +150,7 @@ namespace HidWizards.UCR.Core.Models.Profile
 
         #region Device
 
-        public Device.Device GetDevice(DeviceBinding deviceBinding)
+        public Device GetDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetDeviceList(deviceBinding);
             return deviceBinding.DeviceNumber < deviceList.Count
@@ -159,14 +158,14 @@ namespace HidWizards.UCR.Core.Models.Profile
                 : null;
         }
 
-        public List<Device.Device> GetDeviceList(DeviceBinding deviceBinding)
+        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
         {
             return GetDeviceList(deviceBinding.DeviceIoType);
         }
 
-        private List<Device.Device> GetDeviceList(DeviceIoType deviceIoType)
+        private List<Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            return GetDeviceGroup(deviceIoType)?.Devices ?? new List<Device.Device>();
+            return GetDeviceGroup(deviceIoType)?.Devices ?? new List<Device>();
         }
 
         public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType)
@@ -183,12 +182,12 @@ namespace HidWizards.UCR.Core.Models.Profile
 
         #region Plugin
 
-        public bool AddNewPlugin(Mapping.Mapping mapping, Plugin.Plugin plugin, string title = "Untitled", string state = null)
+        public bool AddNewPlugin(Mapping mapping, Plugin plugin, string title = "Untitled", string state = null)
         {
-            return AddPlugin(mapping, (Plugin.Plugin)Activator.CreateInstance(plugin.GetType()), title, state);
+            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()), title, state);
         }
 
-        public bool AddPlugin(Mapping.Mapping mapping, Plugin.Plugin plugin, string title = "Untitled", string state = null)
+        public bool AddPlugin(Mapping mapping, Plugin plugin, string title = "Untitled", string state = null)
         {
             if (!Mappings.Contains(mapping)) return false;
             if (plugin.Title == null) plugin.Title = title;
@@ -199,7 +198,7 @@ namespace HidWizards.UCR.Core.Models.Profile
             return true;
         }
 
-        public bool RemovePlugin(Mapping.Mapping mapping, Models.Plugin.Plugin plugin)
+        public bool RemovePlugin(Mapping mapping, Plugin plugin)
         {
             if (!Mappings.Contains(mapping)) return false;
             mapping.Plugins.Remove(plugin);

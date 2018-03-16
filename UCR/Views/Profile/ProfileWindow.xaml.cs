@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core;
-using HidWizards.UCR.Core.Models.Device;
-using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
 
 namespace HidWizards.UCR.Views.Profile
@@ -15,13 +14,13 @@ namespace HidWizards.UCR.Views.Profile
     public partial class ProfileWindow : Window
     {
         private Context Context { get; set; }
-        private global::HidWizards.UCR.Core.Models.Profile.Profile Profile { get; set; }
+        private Core.Models.Profile Profile { get; set; }
         private bool HasLoaded = false;
 
         public List<ComboBoxItemViewModel> InputGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGroups { get; set; }
 
-        public ProfileWindow(Context context, global::HidWizards.UCR.Core.Models.Profile.Profile profile)
+        public ProfileWindow(Context context, Core.Models.Profile profile)
         {
             Context = context;
             Profile = profile;

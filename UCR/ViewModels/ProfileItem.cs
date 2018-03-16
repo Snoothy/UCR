@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using HidWizards.UCR.Core.Models.Profile;
+using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels
 {

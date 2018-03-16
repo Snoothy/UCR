@@ -5,7 +5,7 @@ using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Models.Binding;
 using NLog;
 
-namespace HidWizards.UCR.Core.Models.Device
+namespace HidWizards.UCR.Core.Models
 {
     public enum DeviceIoType
     {
@@ -27,7 +27,7 @@ namespace HidWizards.UCR.Core.Models.Device
         [XmlIgnore]
         public Guid Guid { get; set; }
         [XmlIgnore]
-        public Profile.Profile ParentProfile { get; private set; }
+        public Profile ParentProfile { get; private set; }
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
 
@@ -43,7 +43,7 @@ namespace HidWizards.UCR.Core.Models.Device
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
         }
 
-        public Device(Device device) : this(device.Guid)
+        public Device(Device device) : this((Guid) device.Guid)
         {
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;

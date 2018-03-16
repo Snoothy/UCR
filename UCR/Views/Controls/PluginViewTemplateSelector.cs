@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using HidWizards.UCR.Core.Models.Plugin;
 
 namespace HidWizards.UCR.Views.Controls
 {

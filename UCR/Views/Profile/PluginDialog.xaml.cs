@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using HidWizards.UCR.Core;
-using HidWizards.UCR.Core.Models.Plugin;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
 
 namespace HidWizards.UCR.Views.Profile

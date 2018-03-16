@@ -1,7 +1,7 @@
 ﻿using HidWizards.UCR.Core;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.ViewModels.Device
+namespace HidWizards.UCR.ViewModels.DeviceViewModels
 {
     public class DeviceListWindowViewModel
     {

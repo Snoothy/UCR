@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HidWizards.UCR.Core.Models.Profile;
+using HidWizards.UCR.Core.Models;
 using NLog;
 
 namespace HidWizards.UCR.Core.Managers

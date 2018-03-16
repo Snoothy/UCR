@@ -2,17 +2,18 @@
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.Core.Models.Plugin
+namespace HidWizards.UCR.Core.Managers
 {
-    internal class PluginLoader
+    internal class PluginManager
     {
         private CompositionContainer _Container;
 
         [ImportMany(typeof(Plugin))]
         public List<Plugin> Plugins { get; set; }
 
-        public PluginLoader(string basePath)
+        public PluginManager(string basePath)
         {
             var catalog = new AggregateCatalog();
 

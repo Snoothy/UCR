@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Core.Managers
 {

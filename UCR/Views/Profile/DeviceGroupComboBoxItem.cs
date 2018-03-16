@@ -1,4 +1,4 @@
-﻿using HidWizards.UCR.Core.Models.Device;
+﻿using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Views.Profile
 {

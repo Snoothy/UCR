@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Properties;
 
-namespace HidWizards.UCR.ViewModels.Device
+namespace HidWizards.UCR.ViewModels.DeviceViewModels
 {
     public class DeviceGroupViewModel : INotifyPropertyChanged
     {
@@ -26,13 +26,13 @@ namespace HidWizards.UCR.ViewModels.Device
 
         public Guid Guid { get; set; }
         public ObservableCollection<DeviceGroupViewModel> Groups { get; set; }
-        public ObservableCollection<global::HidWizards.UCR.Core.Models.Device.Device> Devices { get; set; }
+        public ObservableCollection<Device> Devices { get; set; }
 
         public DeviceGroupViewModel(string title = null, Guid guid = new Guid())
         {
             Title = title;
             Groups = new ObservableCollection<DeviceGroupViewModel>();
-            Devices = new ObservableCollection<global::HidWizards.UCR.Core.Models.Device.Device>();
+            Devices = new ObservableCollection<Device>();
             Guid = guid.Equals(Guid.Empty) ? Guid.NewGuid() : guid;
         }
 
@@ -54,7 +54,7 @@ namespace HidWizards.UCR.ViewModels.Device
             }
         }
 
-        public static DeviceGroupViewModel FindDeviceGroupViewModelWithDevice(Collection<DeviceGroupViewModel> deviceGroupViewModels, global::HidWizards.UCR.Core.Models.Device.Device device)
+        public static DeviceGroupViewModel FindDeviceGroupViewModelWithDevice(Collection<DeviceGroupViewModel> deviceGroupViewModels, Device device)
         {
             DeviceGroupViewModel result = null;
             foreach (var deviceGroupViewModel in deviceGroupViewModels)

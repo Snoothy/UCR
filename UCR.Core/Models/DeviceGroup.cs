@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HidWizards.UCR.Core.Models.Device
+namespace HidWizards.UCR.Core.Models
 {
     public class DeviceGroup
     {

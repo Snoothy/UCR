@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.DataTransferObjects;
-using HidWizards.UCR.Core.Models.Device;
 
 namespace HidWizards.UCR.Core.Models.Binding
 {
@@ -28,7 +27,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
-        public Profile.Profile Profile { get; set; }
+        public Profile Profile { get; set; }
         [XmlIgnore]
         public DeviceIoType DeviceIoType { get; set; }
         [XmlIgnore]
@@ -46,7 +45,7 @@ namespace HidWizards.UCR.Core.Models.Binding
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(ValueChanged callback, Profile.Profile profile, DeviceIoType deviceIoType)
+        public DeviceBinding(ValueChanged callback, Profile profile, DeviceIoType deviceIoType)
         {
             Callback = callback;
             Profile = profile;

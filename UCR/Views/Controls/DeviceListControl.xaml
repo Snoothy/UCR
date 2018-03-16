@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
-             xmlns:device="clr-namespace:HidWizards.UCR.ViewModels.Device"
-             xmlns:devices1="clr-namespace:HidWizards.UCR.Core.Models.Device;assembly=UCR.Core"
+             xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
+             xmlns:device="clr-namespace:HidWizards.UCR.ViewModels.DeviceViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignData Source=/SampleData/DeviceListControlSampleData.xaml}"
              d:DesignHeight="600" d:DesignWidth="400">
@@ -27,7 +27,7 @@
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type devices1:Device}">
+                <HierarchicalDataTemplate DataType="{x:Type models:Device}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel.ContextMenu>
                             <ContextMenu>
@@ -78,7 +78,7 @@
                         <TextBlock Text="{Binding Title}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type devices1:Device}">
+                <HierarchicalDataTemplate DataType="{x:Type models:Device}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel.ContextMenu>
                             <ContextMenu>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Plugin;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.AxisToAxis

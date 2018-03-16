@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using HidWizards.UCR.Core;
-using HidWizards.UCR.ViewModels.Device;
+using HidWizards.UCR.ViewModels.DeviceViewModels;
 
 namespace HidWizards.UCR.Views.Device
 {

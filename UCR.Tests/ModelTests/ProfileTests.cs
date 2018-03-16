@@ -1,10 +1,8 @@
 ﻿using System;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
-using HidWizards.UCR.Core.Models.Mapping;
-using HidWizards.UCR.Core.Models.Profile;
 using HidWizards.UCR.Plugins.ButtonToButton;
 using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;

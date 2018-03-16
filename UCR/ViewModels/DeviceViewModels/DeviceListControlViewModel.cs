@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using HidWizards.UCR.Core;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.ViewModels.Device
+namespace HidWizards.UCR.ViewModels.DeviceViewModels
 {
     public class DeviceListControlViewModel
     {
@@ -50,13 +50,13 @@ namespace HidWizards.UCR.ViewModels.Device
             context.DeviceGroupsManager.RenameDeviceGroup(deviceGroup.Guid, _deviceIoType, title);
         }
 
-        public void AddDeviceToDeviceGroup(global::HidWizards.UCR.Core.Models.Device.Device device, Guid deviceGroupGuid)
+        public void AddDeviceToDeviceGroup(Device device, Guid deviceGroupGuid)
         {
             context.DeviceGroupsManager.AddDeviceToDeviceGroup(device, _deviceIoType, deviceGroupGuid);
             OutputDeviceGroups.First(d => d.Guid == deviceGroupGuid).Devices.Add(device);
         }
 
-        public void RemoveDeviceFromDeviceGroup(global::HidWizards.UCR.Core.Models.Device.Device device)
+        public void RemoveDeviceFromDeviceGroup(Device device)
         {
             var deviceGroupViewModel = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(OutputDeviceGroups, device);
             context.DeviceGroupsManager.RemoveDeviceFromDeviceGroup(device, _deviceIoType, deviceGroupViewModel.Guid);

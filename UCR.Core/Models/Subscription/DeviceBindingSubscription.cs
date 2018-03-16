@@ -9,13 +9,13 @@ namespace HidWizards.UCR.Core.Models.Subscription
     public class DeviceBindingSubscription
     {
         public DeviceBinding DeviceBinding { get; }
-        public Profile.Profile Profile { get; }
+        public Profile Profile { get; }
         public Guid SubscriptionStateGuid { get; set; }
         public Guid DeviceBindingSubscriptionGuid { get; set; }
         public bool IsOverwritten { get; set; }
         public DeviceSubscription DeviceSubscription { get; }
 
-        public DeviceBindingSubscription(DeviceBinding deviceBinding, Profile.Profile profile, Guid subscriptionStateGuid, List<DeviceSubscription> deviceSubscriptions)
+        public DeviceBindingSubscription(DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid, List<DeviceSubscription> deviceSubscriptions)
         {
             DeviceBinding = deviceBinding;
             deviceBinding.OutputSink = WriteOutput;
@@ -33,7 +33,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
             return deviceBindings.Select(deviceBinding => new DeviceBindingSubscription(deviceBinding, deviceBinding.Profile, subscriptionStateGuid, deviceSubscriptions)).ToList();
         }
 
-        private Device.Device GetDevice()
+        private Device GetDevice()
         {
             return Profile.GetDevice(DeviceBinding);
         }

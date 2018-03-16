@@ -1,8 +1,7 @@
 ﻿using System;
 using HidWizards.IOWrapper.DataTransferObjects;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
-using HidWizards.UCR.Core.Models.Profile;
 using HidWizards.UCR.Core.Models.Subscription;
 using NLog;
 using Logger = NLog.Logger;

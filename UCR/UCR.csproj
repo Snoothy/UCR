@@ -86,7 +86,7 @@
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
-    <Compile Include="ViewModels\Device\DeviceGroupViewModel.cs" />
+    <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
@@ -102,11 +102,11 @@
       <DependentUpon>PluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
-    <Compile Include="ViewModels\Device\DeviceListControlViewModel.cs" />
+    <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
     <Compile Include="Views\Device\DeviceListWindow.xaml.cs">
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Device\DeviceListWindowViewModel.cs" />
+    <Compile Include="ViewModels\DeviceViewModels\DeviceListWindowViewModel.cs" />
     <Compile Include="Views\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
