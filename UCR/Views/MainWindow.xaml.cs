@@ -10,8 +10,8 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
-using HidWizards.UCR.Views.Device;
-using HidWizards.UCR.Views.Profile;
+using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
+using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
 namespace HidWizards.UCR.Views
 {

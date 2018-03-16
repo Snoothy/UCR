@@ -89,6 +89,7 @@
     <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -98,20 +99,23 @@
     <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
       <DependentUpon>DeviceListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginView.xaml.cs">
-      <DependentUpon>PluginView.xaml</DependentUpon>
+    <Compile Include="Views\Controls\MappingControl.xaml.cs">
+      <DependentUpon>MappingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\PluginControl.xaml.cs">
+      <DependentUpon>PluginControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
-    <Compile Include="Views\Device\DeviceListWindow.xaml.cs">
+    <Compile Include="Views\DeviceViews\DeviceListWindow.xaml.cs">
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DeviceViewModels\DeviceListWindowViewModel.cs" />
     <Compile Include="Views\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Profile\DeviceGroupComboBoxItem.cs" />
-    <Compile Include="Views\Profile\PluginDialog.xaml.cs">
+    <Compile Include="Views\ProfileViews\DeviceGroupComboBoxItem.cs" />
+    <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
@@ -125,7 +129,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Commands\MyCommands.cs" />
-    <Compile Include="Views\Profile\ProfileWindow.xaml.cs">
+    <Compile Include="Views\ProfileViews\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
@@ -143,11 +147,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\PluginView.xaml">
+    <Page Include="Views\Controls\MappingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\PluginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Device\DeviceListWindow.xaml">
+    <Page Include="Views\DeviceViews\DeviceListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,7 +163,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Profile\PluginDialog.xaml">
+    <Page Include="Views\ProfileViews\PluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -167,7 +175,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Profile\ProfileWindow.xaml">
+    <Page Include="Views\ProfileViews\ProfileWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

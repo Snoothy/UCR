@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Utilities;
@@ -21,22 +22,10 @@ namespace HidWizards.UCR.Plugins.ButtonToAxis
 
         }
 
-        private void InputLowChanged(long value)
+        // TODO Implement value to set 
+        public override long Update(List<long> values)
         {
-            _direction += value == 0 ? 1 : -1;
-            WriteOutput();
-        }
-
-        private void InputHighChanged(long value)
-        {
-            _direction += value == 0 ? -1 : 1;
-            WriteOutput();
-        }
-
-        private void WriteOutput()
-        {
-            _direction = Math.Sign(_direction);
-            WriteOutput(Output, _direction*Constants.AxisMaxValue);
+            return values[0] * Constants.AxisMaxValue;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.Views.Profile
+namespace HidWizards.UCR.Views.ProfileViews
 {
     class DeviceGroupComboBoxItem
     {

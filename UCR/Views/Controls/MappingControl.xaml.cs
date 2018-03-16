@@ -5,10 +5,10 @@ using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Views.Controls
 {
-    public partial class PluginView : UserControl
+    public partial class PluginControl : UserControl
     {
 
-        public PluginView()
+        public PluginControl()
         {
             InitializeComponent();
         }

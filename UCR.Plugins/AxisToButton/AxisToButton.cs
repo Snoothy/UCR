@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models;
@@ -44,11 +45,13 @@ namespace HidWizards.UCR.Plugins.AxisToButton
             DeadZone = "30";
         }
 
-        private void InputChanged(long value)
+
+        // TODO implement high/low select
+        public override long Update(List<long> values)
         {
+            var value = values[0];
             if (Invert) value *= -1;
             value = Math.Sign(ApplyDeadZone(value));
-            if (value == _direction && value != 0) return;
             switch (value)
             {
                 case 0:
@@ -65,6 +68,7 @@ namespace HidWizards.UCR.Plugins.AxisToButton
                     break;
             }
             _direction = value;
+            return value;
         }
 
         private long ApplyDeadZone(long value)

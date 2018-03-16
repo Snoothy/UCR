@@ -6,7 +6,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
 
-namespace HidWizards.UCR.Views.Profile
+namespace HidWizards.UCR.Views.ProfileViews
 {
     public partial class PluginDialog: Window
     {

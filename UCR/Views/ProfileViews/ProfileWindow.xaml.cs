@@ -6,7 +6,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
 
-namespace HidWizards.UCR.Views.Profile
+namespace HidWizards.UCR.Views.ProfileViews
 {
     /// <summary>
     /// Interaction logic for ProfileWindow.xaml
@@ -14,7 +14,7 @@ namespace HidWizards.UCR.Views.Profile
     public partial class ProfileWindow : Window
     {
         private Context Context { get; set; }
-        private Core.Models.Profile Profile { get; set; }
+        private Profile Profile { get; set; }
         private bool HasLoaded = false;
 
         public List<ComboBoxItemViewModel> InputGroups { get; set; }

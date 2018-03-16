@@ -1,0 +1,158 @@
+﻿<Window x:Class="HidWizards.UCR.Views.ProfileViews.ProfileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
+        mc:Ignorable="d"
+        x:Name="ProfileWindowName"
+        Title="{Binding Title}" Height="800" Width="1000">
+    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top">
+            <MenuItem Header="_Profile">
+                <MenuItem Header="Activate profile" Click="ActivateProfile" />
+                <MenuItem Header="Deactivate profile" Click="DeactivateProfile" />
+                <Separator/>
+                <MenuItem Header="Manage device groups" Click="DeactivateProfile" />
+                <Separator/>
+                <MenuItem Header="Close" Click="Close_OnClick"/>
+            </MenuItem>
+            <MenuItem Header="_Plugins">
+                <MenuItem Header="Add plugin…" Click="AddPlugin_OnClick" />
+                <Separator/>
+                <MenuItem Header="Rename plugin…" Click="RenamePlugin_OnClick" />
+                <MenuItem Header="Remove plugin" Click="RemovePlugin_OnClick" />
+            </MenuItem>
+        </Menu>
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Input device group" Margin="5">
+            <ComboBox x:Name="InputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Output device group" Margin="5">
+            <ComboBox x:Name="OutputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
+        </GroupBox>
+
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="Mappings" Grid.Row="0" Grid.Column="0" Padding="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Header="Mapping" Padding="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Padding="5,0,5,0">Add</Button>
+                            <TextBox Grid.Column="1"></TextBox>
+                        </Grid>
+                    </GroupBox>
+
+                    <ListBox Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" x:Name="MappingsListBox"  ItemsSource="{Binding Mappings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
+                             VirtualizingPanel.ScrollUnit='Pixel'
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <controls:MappingControl/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="0" Grid.Column="1" Header="Current mapping">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Grid.Column="0" Header="Plugin" Margin="5" Padding="5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Padding="5,0,5,0">Add</Button>
+                                <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Grid.Column="1" Header="State" Margin="0,5,0,5">
+                            <ComboBox Text="Default" Margin="5">Default</ComboBox>
+                        </GroupBox>
+                    </Grid>
+
+                    
+
+                    <ListBox Grid.Row="1" x:Name="PluginsListBox"  ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
+                             VirtualizingPanel.ScrollUnit='Pixel'
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.Resources>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListBox.Resources>
+                        <ListBox.Style>
+                            <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                <Style.Triggers>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Add an output plugin</TextBlock>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Style>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate >
+                                <controls:PluginControl />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

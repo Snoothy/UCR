@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.AxisToAxis
@@ -10,11 +9,6 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
     [Export(typeof(Plugin))]
     public class AxisToAxis : Plugin
     {
-        [XmlIgnore]
-        public DeviceBinding InputAxis { get; set; }
-        [XmlIgnore]
-        public DeviceBinding OutputAxis { get; set; }
-
         public bool Invert { get; set; }
         public bool Linear { get; set; }
 
@@ -55,12 +49,13 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
             return "Axis to axis";
         }
 
-        private void InputChanged(long value)
+        public override long Update(List<long> values)
         {
+            var value = values[0];
             if (Invert) value *= -1;
             if (_deadZoneValue != 0) value = ApplyDeadZone(value);
             if (_sensitivityValue != 100) value = ApplySensitivity(value);
-            WriteOutput(OutputAxis, Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue));
+            return Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
         }
 
         private long ApplySensitivity(long value)

@@ -4,6 +4,6 @@
              ShutdownMode="OnMainWindowClose"
              Exit="App_OnExit">
     <Application.Resources>
-        <ResourceDictionary  Source="Views/Controls/PluginGroupView.xaml"/>
+        
     </Application.Resources>
 </Application>
