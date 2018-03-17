@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Utilities.Commands;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 
@@ -57,6 +59,11 @@ namespace HidWizards.UCR.Views.ProfileViews
         #region Mappings
 
         private void AddMapping_OnClick(object sender, RoutedEventArgs e)
+        {
+            AddMappingFromText();
+        }
+
+        private void AddMappingFromText()
         {
             var title = MappingNameField.Text;
             if (string.IsNullOrEmpty(title))
@@ -202,6 +209,14 @@ namespace HidWizards.UCR.Views.ProfileViews
             if (PluginsListBox.Items.Count == 0)
             {
                 PopulatePluginsComboBox();
+            }
+        }
+
+        private void MappingNameField_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                AddMappingFromText();
             }
         }
     }
