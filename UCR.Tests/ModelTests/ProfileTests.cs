@@ -64,12 +64,10 @@ namespace HidWizards.UCR.Tests.ModelTests
         [Test]
         public void AddPlugin()
         {
-            var pluginName = "Test plugin";
             var pluginState = "State";
-            _profile.AddPlugin(_mapping, new ButtonToButton(), pluginName, pluginState);
+            _profile.AddPlugin(_mapping, new ButtonToButton(), pluginState);
             var plugin = _mapping.Plugins[0];
             Assert.That(plugin, Is.Not.Null);
-            Assert.That(plugin.Title, Is.EqualTo(pluginName));
             Assert.That(plugin.State, Is.EqualTo(pluginState));
             Assert.That(plugin.Output, Is.Not.Null);
             Assert.That(plugin.Profile, Is.EqualTo(_profile));

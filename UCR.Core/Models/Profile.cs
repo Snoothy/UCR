@@ -185,15 +185,14 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin
 
-        public bool AddNewPlugin(Mapping mapping, Plugin plugin, string title = "Untitled", string state = null)
+        public bool AddNewPlugin(Mapping mapping, Plugin plugin, string state = null)
         {
-            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()), title, state);
+            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()), state);
         }
 
-        public bool AddPlugin(Mapping mapping, Plugin plugin, string title = "Untitled", string state = null)
+        public bool AddPlugin(Mapping mapping, Plugin plugin, string state = null)
         {
             if (!Mappings.Contains(mapping)) return false;
-            if (plugin.Title == null) plugin.Title = title;
             plugin.State = state;
             plugin.Profile = this;
             mapping.Plugins.Add(plugin);

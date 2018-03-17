@@ -8,7 +8,7 @@ namespace HidWizards.UCR.Plugins.ButtonToButton
     [Export(typeof(Plugin))]
     public class ButtonToButton : Plugin
     {
-        public override string PluginName => "Button to Button";
+        public override string PluginName => "Button to button";
         public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Momentary;
         protected override List<PluginInput> InputCategories => new List<PluginInput>()
         {

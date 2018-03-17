@@ -37,7 +37,7 @@
             </DockPanel>
         </DockPanel>
         <Grid Height="auto">
-            <ListBox x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+            <ListBox Background="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
                              VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                              VirtualizingPanel.ScrollUnit='Pixel'
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">

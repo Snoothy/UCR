@@ -54,6 +54,10 @@ namespace HidWizards.UCR.Core.Models
         {
             var plugins = Profile.Context.GetPlugins();
             plugins.Sort();
+            if (Plugins.Count > 0)
+            {
+                plugins = plugins.FindAll(p => p.HasSameInputCategories(Plugins[0]));
+            }
             return plugins;
         }
 

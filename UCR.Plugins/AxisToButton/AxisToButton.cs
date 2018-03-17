@@ -11,7 +11,7 @@ namespace HidWizards.UCR.Plugins.AxisToButton
     [Export(typeof(Plugin))]
     public class AxisToButton : Plugin
     {
-        public override string PluginName => "Axis to buttons";
+        public override string PluginName => "Axis to button";
         public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Momentary;
         protected override List<PluginInput> InputCategories => new List<PluginInput>()
         {

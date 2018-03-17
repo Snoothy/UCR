@@ -96,23 +96,13 @@ namespace HidWizards.UCR.Views.ProfileViews
 
             ProfileViewModel.SelectedMapping.AddPlugin(plugin);
 
+            if (ProfileViewModel.SelectedMapping.Plugins.Count == 1)
+            {
+                PopulatePluginsComboBox();
+            }
+
             PluginsListBox.Items.Refresh();
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
-            PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
-        }
-
-        // TODO Rename
-        private void RenamePlugin_OnClick(object sender, RoutedEventArgs e)
-        {
-            Plugin plugin;
-            if (!GetSelectedItem(out plugin)) return;
-            var win = new TextDialog("Rename plugin", ((Plugin)PluginsListBox.SelectedItem).Title);
-            win.ShowDialog();
-            if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
-            // TODO Check if plugin with same name exists
-            plugin.Rename(win.TextResult);
-
-            PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
         
@@ -205,6 +195,14 @@ namespace HidWizards.UCR.Views.ProfileViews
             PopulatePluginsComboBox();
             PluginsListBox.ItemsSource = ProfileViewModel.SelectedMapping.Plugins;
             PluginsListBox.Items.Refresh();
+        }
+
+        private void PluginsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PluginsListBox.Items.Count == 0)
+            {
+                PopulatePluginsComboBox();
+            }
         }
     }
 }

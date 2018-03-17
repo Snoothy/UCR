@@ -8,7 +8,6 @@ namespace HidWizards.UCR.Core.Models
     public abstract class Plugin : IComparable<Plugin>
     {
         // Persistence
-        public string Title { get; set; }
         public string State { get; set; }
         public DeviceBinding Output { get; set; }
         
@@ -74,12 +73,6 @@ namespace HidWizards.UCR.Core.Models
         {
             Output.WriteOutput(value);
         }
-        
-        public void Rename(string title)
-        {
-            Title = title;
-            Profile.Context.ContextChanged();
-        }
 
         public void PostLoad(Context context, Profile parentProfile)
         {
@@ -107,6 +100,17 @@ namespace HidWizards.UCR.Core.Models
         public int CompareTo(Plugin other)
         {
             return string.Compare(PluginName, other.PluginName, StringComparison.Ordinal);
+        }
+
+        public bool HasSameInputCategories(Plugin other)
+        {
+            if (InputCategories.Count != other.GetInputCategories().Count) return false;
+            for (var i = 0; i < InputCategories.Count; i++)
+            {
+                if (InputCategories[i].Category != other.GetInputCategories()[i].Category) return false;
+            }
+
+            return true;
         }
     }
 }
