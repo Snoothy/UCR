@@ -5,16 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HidWizards.UCR.Views"
         xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
-        xmlns:controls1="clr-namespace:HidWizards.UCR.Views.Controls"
         mc:Ignorable="d"
         Title="Device groups" Height="600" Width="600">
     <Grid>
         <TabControl>
             <TabItem Header="Input groups">
-                <controls1:DeviceListControl DataContext="{Binding InputDeviceList}" />
+                <controls:DeviceListControl DataContext="{Binding InputDeviceList}" />
             </TabItem>
             <TabItem Header="Output groups">
-                <controls1:DeviceListControl DataContext="{Binding OutputDeviceList}" />
+                <controls:DeviceListControl DataContext="{Binding OutputDeviceList}" />
             </TabItem>
         </TabControl>
     </Grid>

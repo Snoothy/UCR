@@ -89,7 +89,8 @@
     <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
-    <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -133,6 +134,12 @@
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
     <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
+    <DesignData Include="SampleData\ProfileViewModelSampleData.xaml">
+      <SubType>Designer</SubType>
+    </DesignData>
+    <DesignData Include="SampleData\MappingControlSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
     <Page Include="Views\AboutWindow.xaml">

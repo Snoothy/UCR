@@ -1,0 +1,21 @@
+﻿<profileViewModels:ProfileViewModel xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
+                             xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
+                             xmlns:profileViewModels="clr-namespace:HidWizards.UCR.ViewModels.ProfileViewModels">
+    <profileViewModels:ProfileViewModel.MappingsList>
+        <profileViewModels:MappingViewModel>
+            <models:Mapping>
+                <models:Mapping.Title>Mappine one</models:Mapping.Title>
+            </models:Mapping>
+        </profileViewModels:MappingViewModel>
+        <profileViewModels:MappingViewModel>
+            <models:Mapping>
+                <models:Mapping.Title>Mappine two</models:Mapping.Title>
+            </models:Mapping>
+        </profileViewModels:MappingViewModel>
+        <profileViewModels:MappingViewModel>
+            <models:Mapping>
+                <models:Mapping.Title>Mappine three</models:Mapping.Title>
+            </models:Mapping>
+        </profileViewModels:MappingViewModel>
+    </profileViewModels:ProfileViewModel.MappingsList>
+</profileViewModels:ProfileViewModel>

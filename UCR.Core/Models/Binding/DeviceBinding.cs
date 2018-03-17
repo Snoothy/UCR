@@ -40,7 +40,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         [XmlIgnore]
         public ValueChanged OutputSink { get; set; }
 
-        private DeviceBinding()
+        public DeviceBinding()
         {
             Guid = Guid.NewGuid();
         }

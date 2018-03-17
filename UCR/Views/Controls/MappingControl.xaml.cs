@@ -1,35 +1,24 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.Controls
 {
-    public partial class PluginControl : UserControl
+    public partial class MappingControl : UserControl
     {
 
-        public PluginControl()
+        public MappingControl()
         {
             InitializeComponent();
         }
 
-        private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
+        private void Remove_OnClick(object sender, RoutedEventArgs e)
         {
             var button = ((Button)sender);
-            var plugin = button.DataContext as Plugin;
-            plugin?.Remove();
-            var containingListbox = FindAncestor<ListBox>(sender as DependencyObject);
-            containingListbox.Items.Refresh();
+            var mappingViewModel = button.DataContext as MappingViewModel;
+            mappingViewModel.Remove();
         }
 
-        public static T FindAncestor<T>(DependencyObject dependencyObject) where T : DependencyObject
-        {
-            var parent = VisualTreeHelper.GetParent(dependencyObject);
-
-            if (parent == null) return null;
-
-            var parentT = parent as T;
-            return parentT ?? FindAncestor<T>(parent);
-        }
     }
 }

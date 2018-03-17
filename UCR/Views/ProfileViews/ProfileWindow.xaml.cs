@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
+using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.ProfileViews
 {
@@ -13,25 +14,29 @@ namespace HidWizards.UCR.Views.ProfileViews
     /// </summary>
     public partial class ProfileWindow : Window
     {
-        private Context Context { get; set; }
-        private Profile Profile { get; set; }
-        private bool HasLoaded = false;
+        private Context Context { get; }
+        private Profile Profile { get; }
+        private ProfileViewModel ProfileViewModel { get; }
+        private bool _hasLoaded;
 
         public List<ComboBoxItemViewModel> InputGroups { get; set; }
         public List<ComboBoxItemViewModel> OutputGroups { get; set; }
 
-        public ProfileWindow(Context context, Core.Models.Profile profile)
+        public ProfileWindow(Context context, Profile profile)
         {
             Context = context;
             Profile = profile;
+            ProfileViewModel = new ProfileViewModel(profile);
             InitializeComponent();
             Title = "Edit " + profile.Title;
-            DataContext = Profile;
+            DataContext = ProfileViewModel;
 
             PopulateComboBox(InputGroups, DeviceIoType.Input, profile.InputDeviceGroupGuid, InputComboBox);
             PopulateComboBox(OutputGroups, DeviceIoType.Output, profile.OutputDeviceGroupGuid, OutputComboBox);
             Loaded += Window_Loaded;
         }
+
+        #region Profile
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
@@ -45,6 +50,25 @@ namespace HidWizards.UCR.Views.ProfileViews
         {
             Profile.Deactivate();
         }
+
+        #endregion
+
+        #region Mappings
+
+        private void AddMapping_OnClick(object sender, RoutedEventArgs e)
+        {
+            var title = MappingNameField.Text;
+            if (string.IsNullOrEmpty(title))
+            {
+                MessageBox.Show("Please write a title to add a new mapping", "No title!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
+            ProfileViewModel.AddMapping(title);
+            MappingNameField.Text = "";
+        }
+
+        #endregion
 
         // TODO Add plugin
         private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
@@ -103,7 +127,11 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            HasLoaded = true;
+            _hasLoaded = true;
+            if (ProfileViewModel.MappingsList.Count > 0)
+            {
+                MappingsListBox.SelectedItem = ProfileViewModel.MappingsList[0];
+            }
         }
 
         private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
@@ -138,7 +166,7 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private void DeviceGroup_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!HasLoaded) return;
+            if (!_hasLoaded) return;
             var comboBox = sender as ComboBox;
             var selectedItem = comboBox?.SelectedItem as ComboBoxItemViewModel;
             if (selectedItem == null) return;
@@ -154,6 +182,12 @@ namespace HidWizards.UCR.Views.ProfileViews
             if (parentDeviceGroup != null) parentDeviceGroupName = parentDeviceGroup.Title;
             if (Profile.ParentProfile != null) parentDeviceGroupName += " (Inherited)";
             return parentDeviceGroupName;
+        }
+
+        private void MappingsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var mappingViewModel = sender as MappingViewModel;
+            ProfileViewModel.SelectedMapping = mappingViewModel;
         }
     }
 }

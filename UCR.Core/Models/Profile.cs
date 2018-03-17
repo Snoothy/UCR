@@ -138,12 +138,15 @@ namespace HidWizards.UCR.Core.Models
         {
             var mapping = new Mapping(title);
             Mappings.Add(mapping);
+            Context.ContextChanged();
             return mapping;
         }
 
         public bool RemoveMapping(Mapping mapping)
         {
-            return Mappings.Remove(mapping);
+            if (!Mappings.Remove(mapping)) return false;
+            Context.ContextChanged();
+            return true;
         }
 
         #endregion

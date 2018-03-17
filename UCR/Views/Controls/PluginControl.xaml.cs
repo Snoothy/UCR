@@ -5,20 +5,31 @@ using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Views.Controls
 {
-    public partial class MappingControl : UserControl
+    public partial class PluginControl : UserControl
     {
 
-        public MappingControl()
+        public PluginControl()
         {
             InitializeComponent();
         }
 
-        private void Remove_OnClick(object sender, RoutedEventArgs e)
+        private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
         {
             var button = ((Button)sender);
-            var mapping = button.DataContext as Mapping;
-            //mapping?.Remove();
-            // TODO
+            var plugin = button.DataContext as Plugin;
+            plugin?.Remove();
+            var containingListbox = FindAncestor<ListBox>(sender as DependencyObject);
+            containingListbox.Items.Refresh();
+        }
+
+        public static T FindAncestor<T>(DependencyObject dependencyObject) where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(dependencyObject);
+
+            if (parent == null) return null;
+
+            var parentT = parent as T;
+            return parentT ?? FindAncestor<T>(parent);
         }
     }
 }
