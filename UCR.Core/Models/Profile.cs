@@ -166,7 +166,7 @@ namespace HidWizards.UCR.Core.Models
             return GetDeviceList(deviceBinding.DeviceIoType);
         }
 
-        private List<Device> GetDeviceList(DeviceIoType deviceIoType)
+        public List<Device> GetDeviceList(DeviceIoType deviceIoType)
         {
             return GetDeviceGroup(deviceIoType)?.Devices ?? new List<Device>();
         }

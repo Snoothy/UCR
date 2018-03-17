@@ -39,35 +39,17 @@ namespace HidWizards.UCR.Plugins.AxisToButton
 
         private long _direction = 0;
         
-
         public AxisToButton()
         {
             DeadZone = "30";
         }
 
-
-        // TODO implement high/low select
         public override long Update(List<long> values)
         {
             var value = values[0];
             if (Invert) value *= -1;
+            if (value < 0) value = 0;
             value = Math.Sign(ApplyDeadZone(value));
-            //switch (value)
-            //{
-            //    case 0:
-            //        WriteOutput(OutputLow, 0);
-            //        WriteOutput(OutputHigh, 0);
-            //        break;
-            //    case -1:
-            //        WriteOutput(OutputLow, 1);
-            //        WriteOutput(OutputHigh, 0);
-            //        break;
-            //    case 1:
-            //        WriteOutput(OutputLow, 0);
-            //        WriteOutput(OutputHigh, 1);
-            //        break;
-            //}
-            _direction = value;
             return value;
         }
 

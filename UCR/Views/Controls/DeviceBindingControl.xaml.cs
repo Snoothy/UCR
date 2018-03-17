@@ -76,7 +76,6 @@ namespace HidWizards.UCR.Views.Controls
                 {
                     Devices.Add(new ComboBoxItemViewModel(i + 1+". N/A", i));
                 }
-                
             }
 
             ComboBoxItemViewModel selectedDevice = null;

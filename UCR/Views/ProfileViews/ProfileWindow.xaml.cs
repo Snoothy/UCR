@@ -94,7 +94,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             if (plugin == null) return;
             plugin.SetProfile(Profile);
 
-            ProfileViewModel.SelectedMapping.AddPlugin(plugin);
+            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin));
 
             if (ProfileViewModel.SelectedMapping.Plugins.Count == 1)
             {

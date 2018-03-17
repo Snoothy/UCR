@@ -34,11 +34,12 @@ namespace HidWizards.UCR.Core
         public DeviceGroupsManager DeviceGroupsManager { get; set; }
         [XmlIgnore]
         public SubscriptionsManager SubscriptionsManager { get; set; }
+        [XmlIgnore]
+        public PluginManager PluginManager { get; set; }
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
         internal readonly List<Action> ActiveProfileCallbacks = new List<Action>();
-        private PluginManager _pluginManager;
         private OptionSet options;
 
         public Context()
@@ -59,7 +60,7 @@ namespace HidWizards.UCR.Core
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
-            _pluginManager = new PluginManager(PluginPath);
+            PluginManager = new PluginManager(PluginPath);
         }
 
         private void SetCommandLineOptions()
@@ -89,7 +90,7 @@ namespace HidWizards.UCR.Core
 
         public List<Plugin> GetPlugins()
         {
-            return _pluginManager.Plugins;
+            return PluginManager.Plugins;
         }
 
         public void ContextChanged()

@@ -83,6 +83,8 @@ namespace HidWizards.UCR.Core.Models
                     DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
                 }
             }
+            
+            plugin.SetProfile(Profile);
             Plugins.Add(plugin);
             Profile.Context.ContextChanged();
             return true;

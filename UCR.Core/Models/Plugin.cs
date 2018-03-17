@@ -77,6 +77,7 @@ namespace HidWizards.UCR.Core.Models
         public void PostLoad(Context context, Profile parentProfile)
         {
             SetProfile(parentProfile);
+            Output.DeviceIoType = DeviceIoType.Output;
         }
 
         public void SetProfile(Profile profile)

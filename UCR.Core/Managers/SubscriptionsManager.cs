@@ -121,6 +121,15 @@ namespace HidWizards.UCR.Core.Managers
             {
                 profileOutputDevices.Add(state.AddOutputDevice(device, profile));
             }
+
+            // Devices are inherited, load them for the subscription model
+            if (outputDeviceGroup.Devices.Count == 0)
+            {
+                foreach (var device in profile.GetDeviceGroup(DeviceIoType.Output).Devices)
+                {
+                    profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                }
+            }
             
             foreach (var profileMapping in profile.Mappings)
             {

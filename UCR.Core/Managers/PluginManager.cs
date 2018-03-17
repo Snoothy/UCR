@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
@@ -6,7 +7,7 @@ using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    internal class PluginManager
+    public class PluginManager
     {
         private CompositionContainer _Container;
 
@@ -28,6 +29,11 @@ namespace HidWizards.UCR.Core.Managers
 
             _Container = new CompositionContainer(catalog);
             _Container.ComposeParts(this);
+        }
+
+        public Plugin GetNewPlugin(Plugin plugin)
+        {
+            return (Plugin)Activator.CreateInstance(plugin.GetType());
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Plugins.AxisToAxis;
 using HidWizards.UCR.Plugins.ButtonToButton;
 using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
@@ -54,9 +56,12 @@ namespace HidWizards.UCR.Tests.ModelTests
                 Assert.That(newcontext.Profiles[0].Guid, Is.EqualTo(context.Profiles[0].Guid));
                 Assert.That(newcontext.Profiles[0].Mappings.Count, Is.EqualTo(context.Profiles[0].Mappings.Count));
 
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Title, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Title));
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Guid, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Mappings.Count, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Mappings.Count));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Title,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Title));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Guid,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Mappings.Count,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Mappings.Count));
                 newcontext.SaveContext();
             }
         }
@@ -94,6 +99,8 @@ namespace HidWizards.UCR.Tests.ModelTests
 
                 for (var j = 0; j < mapping.DeviceBindings.Count; j++)
                 {
+                    Assert.That(newDeviceBindings[j].Profile.Guid, Is.Not.EqualTo(Guid.Empty));
+                    Assert.That(newDeviceBindings[j].Profile.Guid, Is.EqualTo(deviceBindings[j].Profile.Guid));
                     Assert.That(newDeviceBindings[j].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
                     Assert.That(newDeviceBindings[j].Guid, Is.Not.EqualTo(deviceBindings[j].Guid));
                     Assert.That(newDeviceBindings[j].IsBound, Is.EqualTo(deviceBindings[j].IsBound));
@@ -135,7 +142,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             for (var i = 0; i < _saveReloadTimes; i++)
             {
                 var newcontext = Context.Load();
-                
+
                 Assert.That(newcontext.InputGroups.Count, Is.EqualTo(context.InputGroups.Count));
                 Assert.That(newcontext.OutputGroups.Count, Is.EqualTo(context.OutputGroups.Count));
 
@@ -146,9 +153,12 @@ namespace HidWizards.UCR.Tests.ModelTests
 
                     for (var k = 0; k < context.InputGroups[j].Devices.Count; k++)
                     {
-                        Assert.That(newcontext.InputGroups[j].Devices[k].Title, Is.EqualTo(context.InputGroups[j].Devices[k].Title));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName, Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].Title,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].Title));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
                     }
                 }
 
