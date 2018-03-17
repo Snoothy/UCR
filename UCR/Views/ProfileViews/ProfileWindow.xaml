@@ -27,12 +27,6 @@
                 <Separator/>
                 <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
-            <MenuItem Header="_Plugins">
-                <MenuItem Header="Add plugin…" Click="AddPlugin_OnClick" />
-                <Separator/>
-                <MenuItem Header="Rename plugin…" Click="RenamePlugin_OnClick" />
-                <MenuItem Header="Remove plugin" Click="RemovePlugin_OnClick" />
-            </MenuItem>
         </Menu>
         <GroupBox Grid.Row="1" Grid.Column="0" Header="Input device group" Margin="5">
             <ComboBox x:Name="InputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
@@ -57,15 +51,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Header="Mapping" Padding="5">
+                    <GroupBox Header="Mapping">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Padding="5,0,5,0" Click="AddMapping_OnClick">Add</Button>
-                            <TextBox Grid.Column="1" x:Name="MappingNameField"></TextBox>
+                            <Button Padding="5,2,5,2" Margin="5" Click="AddMapping_OnClick">Add</Button>
+                            <TextBox Grid.Column="1" Margin="0,5,5,5" x:Name="MappingNameField"></TextBox>
                         </Grid>
                     </GroupBox>
 
@@ -114,7 +108,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Button Padding="5,0,5,0">Add</Button>
+                                <Button Padding="5,0,5,0" Click="AddPlugin_OnClick">Add</Button>
                                 <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
                             </Grid>
                         </GroupBox>
@@ -124,9 +118,7 @@
                         </GroupBox>
                     </Grid>
 
-                    
-
-                    <ListBox Grid.Row="1" x:Name="PluginsListBox"  ItemsSource="{Binding Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+                    <ListBox Grid.Row="1" x:Name="PluginsListBox"  ItemsSource="{Binding SelectedMapping.Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
                              VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                              VirtualizingPanel.ScrollUnit='Pixel'
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">

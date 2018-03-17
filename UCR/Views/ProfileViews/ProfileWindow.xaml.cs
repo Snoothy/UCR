@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core;
@@ -66,23 +67,41 @@ namespace HidWizards.UCR.Views.ProfileViews
 
             ProfileViewModel.AddMapping(title);
             MappingNameField.Text = "";
+            MappingsListBox.SelectedIndex = MappingsListBox.Items.Count - 1;
+            MappingsListBox.ScrollIntoView(MappingsListBox.SelectedItem);
+            MappingNameField.Focus();
         }
 
         #endregion
 
-        // TODO Add plugin
+        #region Plugin
+
+        private void PopulatePluginsComboBox()
+        {
+            var pluginlist = ProfileViewModel.SelectedMapping.Mapping.GetPluginList();
+            var plugins = new ObservableCollection<ComboBoxItemViewModel>();
+            foreach (var plugin in pluginlist)
+            {
+                plugins.Add(new ComboBoxItemViewModel(plugin.PluginName, plugin));
+            }
+            PluginsComboBox.ItemsSource = plugins;
+            PluginsComboBox.SelectedIndex = 0;
+        }
+
         private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new PluginDialog(Context, "Add plugin", "Untitled");
-            win.ShowDialog();
-            if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
-            // TODO Check if plugin with same name exists
-            //Profile.AddNewPlugin(win.Plugin, win.TextResult);
+            var plugin = ((ComboBoxItemViewModel)PluginsComboBox.SelectedItem)?.Value;
+            if (plugin == null) return;
+            plugin.SetProfile(Profile);
+
+            ProfileViewModel.SelectedMapping.AddPlugin(plugin);
+
             PluginsListBox.Items.Refresh();
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
 
+        // TODO Rename
         private void RenamePlugin_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin plugin;
@@ -96,16 +115,8 @@ namespace HidWizards.UCR.Views.ProfileViews
             PluginsListBox.Items.Refresh();
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
-
-        // TODO Remove plugin
-        private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
-        {
-            Plugin plugin;
-            if (!GetSelectedItem(out plugin)) return;
-            //Profile.RemovePlugin(plugin);
-            PluginsListBox.Items.Refresh();
-            PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
-        }
+        
+        #endregion
 
         private bool GetSelectedItem(out Plugin selection)
         {
@@ -186,8 +197,14 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private void MappingsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var mappingViewModel = sender as MappingViewModel;
+            var listBox = sender as ListBox;
+            var mappingViewModel = listBox.SelectedItem as MappingViewModel;
             ProfileViewModel.SelectedMapping = mappingViewModel;
+            if (mappingViewModel == null) return;
+
+            PopulatePluginsComboBox();
+            PluginsListBox.ItemsSource = ProfileViewModel.SelectedMapping.Plugins;
+            PluginsListBox.Items.Refresh();
         }
     }
 }

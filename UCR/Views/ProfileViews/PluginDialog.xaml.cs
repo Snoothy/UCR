@@ -30,7 +30,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             var plugins = new ObservableCollection<ComboBoxItemViewModel>();
             foreach (var plugin in Plugins)
             {
-                plugins.Add(new ComboBoxItemViewModel(plugin.PluginName(), plugin));
+                plugins.Add(new ComboBoxItemViewModel(plugin.PluginName, plugin));
             }
             PluginsListBox.ItemsSource = plugins;
         }

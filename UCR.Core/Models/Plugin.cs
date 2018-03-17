@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Core.Models
@@ -9,19 +10,34 @@ namespace HidWizards.UCR.Core.Models
         // Persistence
         public string Title { get; set; }
         public string State { get; set; }
-        public DeviceBinding Output { get; }
-
+        public DeviceBinding Output { get; set; }
+        
         // Runtime
         internal Profile Profile { get; set; }
 
         // Abstract
-        public abstract string PluginName();
-        
+        [XmlIgnore]
+        public abstract string PluginName { get; }
+        [XmlIgnore]
+        public abstract DeviceBindingCategory OutputCategory { get; }
+        protected abstract List<PluginInput> InputCategories { get; }
+
+        public struct PluginInput
+        {
+            public string Name;
+            public DeviceBindingCategory Category;
+        }
+
         protected Plugin()
         {
             Output = new DeviceBinding(null, Profile, DeviceIoType.Output);
         }
-        
+
+        public List<PluginInput> GetInputCategories()
+        {
+            return InputCategories;
+        }
+
         public bool Remove()
         {
             Profile.Context.ContextChanged();
@@ -54,9 +70,9 @@ namespace HidWizards.UCR.Core.Models
         }
 
         // TODO 
-        protected void WriteOutput(DeviceBinding output, long value)
+        internal void WriteOutput(long value)
         {
-            output.WriteOutput(value);
+            Output.WriteOutput(value);
         }
         
         public void Rename(string title)
@@ -67,7 +83,13 @@ namespace HidWizards.UCR.Core.Models
 
         public void PostLoad(Context context, Profile parentProfile)
         {
-            Profile = parentProfile;
+            SetProfile(parentProfile);
+        }
+
+        public void SetProfile(Profile profile)
+        {
+            Profile = profile;
+            Output.Profile = profile;
         }
 
         public Plugin Duplicate()
@@ -84,7 +106,7 @@ namespace HidWizards.UCR.Core.Models
 
         public int CompareTo(Plugin other)
         {
-            return string.Compare(PluginName(), other.PluginName(), StringComparison.Ordinal);
+            return string.Compare(PluginName, other.PluginName, StringComparison.Ordinal);
         }
     }
 }

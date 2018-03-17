@@ -89,6 +89,8 @@
     <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\ProfileItem.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">

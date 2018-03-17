@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.Controls
 {
@@ -16,10 +16,8 @@ namespace HidWizards.UCR.Views.Controls
         private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
         {
             var button = ((Button)sender);
-            var plugin = button.DataContext as Plugin;
+            var plugin = button.DataContext as PluginViewModel;
             plugin?.Remove();
-            var containingListbox = FindAncestor<ListBox>(sender as DependencyObject);
-            containingListbox.Items.Refresh();
         }
 
         public static T FindAncestor<T>(DependencyObject dependencyObject) where T : DependencyObject

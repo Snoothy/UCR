@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.AxisToAxis
@@ -9,6 +10,17 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
     [Export(typeof(Plugin))]
     public class AxisToAxis : Plugin
     {
+        public override string PluginName => "Axis to axis";
+        public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Range;
+        protected override List<PluginInput> InputCategories => new List<PluginInput>()
+        {
+            new PluginInput()
+            {
+                Name = "Axis",
+                Category = DeviceBindingCategory.Range
+            }
+        };
+
         public bool Invert { get; set; }
         public bool Linear { get; set; }
 
@@ -42,11 +54,6 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
         {
             DeadZone = "0";
             Sensitivity = "100";
-        }
-
-        public override string PluginName()
-        {
-            return "Axis to axis";
         }
 
         public override long Update(List<long> values)

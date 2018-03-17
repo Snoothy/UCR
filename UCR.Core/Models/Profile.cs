@@ -136,7 +136,7 @@ namespace HidWizards.UCR.Core.Models
 
         public Mapping AddMapping(string title)
         {
-            var mapping = new Mapping(title);
+            var mapping = new Mapping(this, title);
             Mappings.Add(mapping);
             Context.ContextChanged();
             return mapping;

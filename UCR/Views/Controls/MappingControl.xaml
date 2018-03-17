@@ -37,7 +37,7 @@
             </DockPanel>
         </DockPanel>
         <Grid Height="auto">
-            <ListBox x:Name="DeviceBindingsListBox"  ItemsSource="{Binding Mapping.DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+            <ListBox x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
                              VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                              VirtualizingPanel.ScrollUnit='Pixel'
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -65,7 +65,7 @@
                 </ListBox.Style>
                 <ListBox.ItemTemplate>
                     <DataTemplate >
-                        <controls:DeviceBindingControl />
+                        <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -15,7 +15,7 @@
         <DockPanel Background="{x:Static SystemColors.ControlDarkBrush}" HorizontalAlignment="Left" Height="30" LastChildFill="False" VerticalAlignment="Top"
                    Width="{Binding ActualWidth, ElementName=PluginViewName}">
             <DockPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}}">
-                <Label Content="{Binding Title}" VerticalAlignment="Center"/>
+                <Label Content="{Binding Plugin.PluginName}" VerticalAlignment="Center"/>
                 <StackPanel x:Name="RemovePluginButton" HorizontalAlignment="Right" Orientation="Horizontal" >
                     <Button Click="RemovePlugin_OnClick">
                         <Canvas Height="25"  Width="25">
@@ -39,7 +39,12 @@
             </DockPanel>
         </DockPanel>
         <Grid Margin="5" Height="auto">
-            <ContentPresenter Content="{Binding}" ContentTemplateSelector="{StaticResource PluginViewTemplateSelector}"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ContentPresenter Grid.Column="0" Content="{Binding Plugin}" ContentTemplateSelector="{StaticResource PluginViewTemplateSelector}"/>
+            <controls:DeviceBindingControl Label="Output" DeviceBinding="{Binding Plugin.Output}" Category="{Binding Plugin.OutputCategory}" Grid.Column="1" Margin="5,0,0,0"/>
         </Grid>
     </StackPanel>
 </UserControl>
