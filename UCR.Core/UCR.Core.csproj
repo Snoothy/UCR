@@ -72,6 +72,8 @@
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Subscription\DeviceBindingSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
+    <Compile Include="Models\Subscription\MappingSubscription.cs" />
+    <Compile Include="Models\Subscription\PluginSubscription.cs" />
     <Compile Include="Models\Subscription\SubscriptionState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Constants.cs" />

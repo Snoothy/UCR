@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.XPath;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Core.Models
@@ -29,17 +30,29 @@ namespace HidWizards.UCR.Core.Models
             Title = title;
         }
 
+        internal bool IsBound()
+        {
+            if (DeviceBindings.Count == 0) return false;
+            var result = true;
+            foreach (var deviceBinding in DeviceBindings)
+            {
+                result &= deviceBinding.IsBound;
+            }
+            return result;
+        }
+
         internal void PrepareMapping()
         {
             InputCache = new List<long>();
-            foreach (var _ in DeviceBindings)
+            foreach (var deviceBinding in DeviceBindings)
             {
+                deviceBinding.Callback = Update;
                 InputCache.Add(0L);
             }
         }
 
         // TODO Add Guid to distinguish devicebindings
-        internal void Update(long value)
+        public void Update(long value)
         {
             InputCache[0] = value;
             foreach (var plugin in Plugins)
