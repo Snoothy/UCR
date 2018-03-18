@@ -10,6 +10,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
+using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
@@ -91,10 +92,10 @@ namespace HidWizards.UCR.Views
 
         private void AddProfile(object sender, RoutedEventArgs e)
         {
-            var w = new TextDialog("Profile name");
+            var w = new ProfileDialog(context, null);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            context.ProfilesManager.AddProfile(w.TextResult);
+
             ReloadProfileTree();
         }
 
@@ -102,10 +103,10 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var w = new TextDialog("Profile name");
+            var w = new ProfileDialog(context, pi.profile);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            pi.profile.AddNewChildProfile(w.TextResult);
+
             ReloadProfileTree();
         }
 

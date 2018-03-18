@@ -181,6 +181,15 @@ namespace HidWizards.UCR.Core.Models
             return Context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid);
         }
 
+        public string GetInheritedDeviceGroupName(DeviceIoType deviceIoType)
+        {
+            var parentDeviceGroupName = "None";
+            var parentDeviceGroup = ParentProfile?.GetDeviceGroup(deviceIoType);
+            if (parentDeviceGroup != null) parentDeviceGroupName = parentDeviceGroup.Title;
+            if (ParentProfile != null) parentDeviceGroupName += " (Inherited)";
+            return parentDeviceGroupName;
+        }
+
         #endregion
 
         #region Plugin

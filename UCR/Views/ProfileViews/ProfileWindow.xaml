@@ -11,7 +11,6 @@
     <Grid Background="{x:Static SystemColors.ControlBrush}" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -23,24 +22,18 @@
                 <MenuItem Header="Activate profile" Click="ActivateProfile" />
                 <MenuItem Header="Deactivate profile" Click="DeactivateProfile" />
                 <Separator/>
-                <MenuItem Header="Manage device groups" Click="DeactivateProfile" />
+                <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
                 <Separator/>
                 <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
         </Menu>
-        <GroupBox Grid.Row="1" Grid.Column="0" Header="Input device group" Margin="5">
-            <ComboBox x:Name="InputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        </GroupBox>
-        <GroupBox Grid.Row="1" Grid.Column="1" Header="Output device group" Margin="5">
-            <ComboBox x:Name="OutputComboBox" Margin="5" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceGroup_OnSelectionChanged"/>
-        </GroupBox>
 
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}" Margin="5">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="16*"/>
+                <ColumnDefinition Width="18*"/>
                 <ColumnDefinition Width="40*"/>
             </Grid.ColumnDefinitions>
 

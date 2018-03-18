@@ -54,6 +54,8 @@
     <Compile Include="ButtonToAxis\Resources.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
     <Compile Include="ButtonToButton\Resources.cs" />
+    <Compile Include="MouseToAxis\MouseToAxis.cs" />
+    <Compile Include="MouseToAxis\Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="MouseToAxis\Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="AxisToAxis\Resources.xaml">
@@ -86,6 +92,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildPlugins">
     <CSC Condition="%(Compile.Plugin) == 'true'" Sources="%(Compile.FullPath)" TargetType="library" OutputAssembly="$(OutputPath)%(Compile.FileName).dll" EmitDebugInformation="true" />

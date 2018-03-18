@@ -9,6 +9,7 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Utilities.Commands;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
+using UCR.Views.ProfileViews;
 
 namespace HidWizards.UCR.Views.ProfileViews
 {
@@ -22,9 +23,6 @@ namespace HidWizards.UCR.Views.ProfileViews
         private ProfileViewModel ProfileViewModel { get; }
         private bool _hasLoaded;
 
-        public List<ComboBoxItemViewModel> InputGroups { get; set; }
-        public List<ComboBoxItemViewModel> OutputGroups { get; set; }
-
         public ProfileWindow(Context context, Profile profile)
         {
             Context = context;
@@ -34,8 +32,6 @@ namespace HidWizards.UCR.Views.ProfileViews
             Title = "Edit " + profile.Title;
             DataContext = ProfileViewModel;
 
-            PopulateComboBox(InputGroups, DeviceIoType.Input, profile.InputDeviceGroupGuid, InputComboBox);
-            PopulateComboBox(OutputGroups, DeviceIoType.Output, profile.OutputDeviceGroupGuid, OutputComboBox);
             Loaded += Window_Loaded;
         }
 
@@ -115,19 +111,6 @@ namespace HidWizards.UCR.Views.ProfileViews
         
         #endregion
 
-        private bool GetSelectedItem(out Plugin selection)
-        {
-            var item = PluginsListBox.SelectedItem as Plugin;
-            if (item == null)
-            {
-                MessageBox.Show("Please select a plugin", "No plugin selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                selection = null;
-                return false;
-            }
-            selection = item;
-            return true;
-        }
-
         private void Close_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
@@ -142,34 +125,11 @@ namespace HidWizards.UCR.Views.ProfileViews
             }
         }
 
-        private void PopulateComboBox(List<ComboBoxItemViewModel> groups, DeviceIoType deviceIoType, Guid currentGroup, ComboBox comboBox)
+        private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
         {
-            groups = new List<ComboBoxItemViewModel>();
-            ComboBoxItemViewModel selectedItem = null;
-
-            groups.Add(new ComboBoxItemViewModel(GetInheritedDeviceGroupName(deviceIoType), new DeviceGroupComboBoxItem()
-            {
-                DeviceIoType = deviceIoType
-            }));
-            foreach (var deviceGroup in Context.DeviceGroupsManager.GetDeviceGroupList(deviceIoType))
-            {
-                var model = new ComboBoxItemViewModel(deviceGroup.Title, new DeviceGroupComboBoxItem()
-                {
-                    DeviceGroup = deviceGroup,
-                    DeviceIoType = deviceIoType
-                });
-                groups.Add(model);
-                if (deviceGroup.Guid == currentGroup) selectedItem = model;
-            }
-            comboBox.ItemsSource = groups;
-            if (selectedItem != null)
-            {
-                comboBox.SelectedItem = selectedItem;
-            }
-            else
-            {
-                comboBox.SelectedItem = groups[0];
-            }
+            var win = new ProfileDeviceGroupWindow(Context, Profile);
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
         }
 
         private void DeviceGroup_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -181,15 +141,6 @@ namespace HidWizards.UCR.Views.ProfileViews
             var value = selectedItem.Value as DeviceGroupComboBoxItem;
             Profile.SetDeviceGroup(value.DeviceIoType, value.DeviceGroup?.Guid ?? Guid.Empty);
             PluginsListBox.Items.Refresh();
-        }
-
-        private string GetInheritedDeviceGroupName(DeviceIoType deviceIoType)
-        {
-            var parentDeviceGroupName = "None";
-            var parentDeviceGroup = Profile.ParentProfile?.GetDeviceGroup(deviceIoType);
-            if (parentDeviceGroup != null) parentDeviceGroupName = parentDeviceGroup.Title;
-            if (Profile.ParentProfile != null) parentDeviceGroupName += " (Inherited)";
-            return parentDeviceGroupName;
         }
 
         private void MappingsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

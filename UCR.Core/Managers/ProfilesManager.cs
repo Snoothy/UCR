@@ -18,9 +18,29 @@ namespace HidWizards.UCR.Core.Managers
             _profiles = profiles;
         }
 
+        public Profile CreateProfile()
+        {
+            return Profile.CreateProfile(_context, "");
+        }
+
         public bool AddProfile(string title)
         {
             _profiles.Add(Profile.CreateProfile(_context, title));
+            _context.ContextChanged();
+            return true;
+        }
+
+        public bool AddProfile(Profile newProfile, Profile parentProfile = null)
+        {
+            if (parentProfile != null)
+            {
+                parentProfile.AddChildProfile(newProfile);
+            }
+            else
+            {
+                _profiles.Add(newProfile);
+            }
+
             _context.ContextChanged();
             return true;
         }

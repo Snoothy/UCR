@@ -7,14 +7,14 @@ using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    public class PluginManager
+    public class PluginsManager
     {
         private CompositionContainer _Container;
 
         [ImportMany(typeof(Plugin))]
         public List<Plugin> Plugins { get; set; }
 
-        public PluginManager(string basePath)
+        public PluginsManager(string basePath)
         {
             var catalog = new AggregateCatalog();
 

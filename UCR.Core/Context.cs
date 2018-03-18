@@ -35,7 +35,7 @@ namespace HidWizards.UCR.Core
         [XmlIgnore]
         public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore]
-        public PluginManager PluginManager { get; set; }
+        public PluginsManager PluginManager { get; set; }
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
@@ -60,7 +60,7 @@ namespace HidWizards.UCR.Core
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
-            PluginManager = new PluginManager(PluginPath);
+            PluginManager = new PluginsManager(PluginPath);
         }
 
         private void SetCommandLineOptions()
@@ -147,7 +147,7 @@ namespace HidWizards.UCR.Core
 
         private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes, Type type)
         {
-            var plugins = new PluginManager(PluginPath);
+            var plugins = new PluginsManager(PluginPath);
             var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
             if (additionalPluginTypes != null) pluginTypes.AddRange(additionalPluginTypes);
             return new XmlSerializer(type, pluginTypes.ToArray());
