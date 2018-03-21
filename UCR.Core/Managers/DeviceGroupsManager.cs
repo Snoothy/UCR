@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Core.Managers
 {

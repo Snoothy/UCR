@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.DataTransferObjects;
-using HidWizards.UCR.Core.Models.Device;
 
 namespace HidWizards.UCR.Core.Models.Binding
 {
@@ -18,7 +17,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         // Persistence
         public bool IsBound { get; set; }
         // Index in its device list
-        public int DeviceNumber { get; set; }
+        public Guid DeviceGuid { get; set; }
         // Subscription key
         public int KeyType { get; set; }
         public int KeyValue { get; set; }
@@ -28,7 +27,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
-        public Models.Plugin.Plugin Plugin { get; set; }
+        public Profile Profile { get; set; }
         [XmlIgnore]
         public DeviceIoType DeviceIoType { get; set; }
         [XmlIgnore]
@@ -41,15 +40,15 @@ namespace HidWizards.UCR.Core.Models.Binding
         [XmlIgnore]
         public ValueChanged OutputSink { get; set; }
 
-        private DeviceBinding()
+        public DeviceBinding()
         {
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(ValueChanged callback, Plugin.Plugin plugin, DeviceIoType deviceIoType)
+        public DeviceBinding(ValueChanged callback, Profile profile, DeviceIoType deviceIoType)
         {
             Callback = callback;
-            Plugin = plugin;
+            Profile = profile;
             DeviceIoType = deviceIoType;
             Guid = Guid.NewGuid();
             IsBound = false;
@@ -57,19 +56,19 @@ namespace HidWizards.UCR.Core.Models.Binding
 
         public DeviceBinding(DeviceBinding deviceBinding)
         {
-            DeviceNumber = deviceBinding.DeviceNumber;
+            DeviceGuid = deviceBinding.DeviceGuid;
             KeyType = deviceBinding.KeyType;
             KeyValue = deviceBinding.KeyValue;
-            Plugin = deviceBinding.Plugin;
+            Profile = deviceBinding.Profile;
             Callback = deviceBinding.Callback;
             Guid = deviceBinding.Guid;
             IsBound = deviceBinding.IsBound;
         }
 
-        public void SetDeviceNumber(int number)
+        public void SetDeviceGuid(Guid deviceGuid)
         {
-            DeviceNumber = number;
-            Plugin.ParentProfile.context.ContextChanged();
+            DeviceGuid = deviceGuid;
+            Profile.Context.ContextChanged();
         }
 
         public void SetKeyTypeValue(int type, int value, int subValue)
@@ -78,12 +77,12 @@ namespace HidWizards.UCR.Core.Models.Binding
             KeyValue = value;
             KeySubValue = subValue;
             IsBound = true;
-            Plugin.ParentProfile.context.ContextChanged();
+            Profile.Context.ContextChanged();
         }
         
         public string BoundName()
         {
-            return Plugin.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
+            return Profile.GetDevice(this)?.GetBindingName(this) ?? "Device unavailable";
         }
 
         public static DeviceBindingCategory MapCategory(BindingCategory bindingInfoCategory)

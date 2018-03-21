@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using HidWizards.UCR.ViewModels.Device;
+using HidWizards.UCR.ViewModels.DeviceViewModels;
+using HidWizards.UCR.Core.Models;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -27,8 +28,8 @@ namespace HidWizards.UCR.Views.Controls
 
         private void AddDevice_OnClick(object sender, RoutedEventArgs e)
         {
-            var device = (sender as MenuItem)?.DataContext as global::HidWizards.UCR.Core.Models.Device.Device
-                         ?? DeviceTreeView.SelectedItem as global::HidWizards.UCR.Core.Models.Device.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Models.Device
+                         ?? DeviceTreeView.SelectedItem as Core.Models.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -38,7 +39,7 @@ namespace HidWizards.UCR.Views.Controls
             var deviceGroup = DeviceGroupTreeView.SelectedItem as DeviceGroupViewModel;
             if (deviceGroup == null)
             {
-                var outputDevice = DeviceGroupTreeView.SelectedItem as global::HidWizards.UCR.Core.Models.Device.Device;
+                var outputDevice = DeviceGroupTreeView.SelectedItem as Core.Models.Device;
                 if (outputDevice != null)
                 {
                     deviceGroup = DeviceGroupViewModel.FindDeviceGroupViewModelWithDevice(GetViewModel().OutputDeviceGroups, outputDevice);
@@ -55,8 +56,8 @@ namespace HidWizards.UCR.Views.Controls
         private void RemoveDevice_OnClick(object sender, RoutedEventArgs e)
         {
             // Select device from context menu first, then default to selected item
-            var device = (sender as MenuItem)?.DataContext as global::HidWizards.UCR.Core.Models.Device.Device
-                ?? DeviceGroupTreeView.SelectedItem as global::HidWizards.UCR.Core.Models.Device.Device;
+            var device = (sender as MenuItem)?.DataContext as Core.Models.Device
+                ?? DeviceGroupTreeView.SelectedItem as Core.Models.Device;
             if (device == null)
             {
                 MessageBox.Show("Please select a device to remove", "No device selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);

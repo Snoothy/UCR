@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using HidWizards.IOWrapper.DataTransferObjects;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
-using HidWizards.UCR.Core.Models.Profile;
 using HidWizards.UCR.Core.Models.Subscription;
 using NLog;
 using Logger = NLog.Logger;
@@ -62,6 +62,7 @@ namespace HidWizards.UCR.Core.Managers
             return true;
         }
 
+        // TODO
         public bool DeactivateProfile()
         {
             if (SubscriptionState == null) return true;
@@ -70,23 +71,25 @@ namespace HidWizards.UCR.Core.Managers
 
             if (!state.IsActive) return true;
 
-            foreach (var deviceBindingSubscriptionsGroup in state.DeviceBindingSubscriptions)
+            foreach (var mappingSubscription in state.MappingSubscriptions)
             {
-                foreach (var subscription in deviceBindingSubscriptionsGroup.Value)
+                foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {
-                    if (subscription.IsOverwritten) continue;
-                    success &= UnsubscribeDeviceBindingInput(state, subscription);
+                    success &= UnsubscribeDeviceBindingInput(state, deviceBindingSubscription);
                 }
             }
 
-            foreach (var deviceSubscription in state.DeviceSubscriptions)
+            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
             {
                 success &= UnsubscribeOutput(state, deviceSubscription);
             }
 
-            foreach (var plugin in state.ActivePlugins)
+            foreach (var mappingSubscription in state.MappingSubscriptions)
             {
-                plugin.OnDeactivate();
+                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
+                {
+                    pluginSubscription.Plugin.OnDeactivate();
+                }
             }
 
             _context.IOController.SetProfileState(state.StateGuid, false);
@@ -112,61 +115,78 @@ namespace HidWizards.UCR.Core.Managers
             }
 
             // Output devices
+            var profileOutputDevices = new List<DeviceSubscription>();
             var outputDeviceGroup = _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Output, profile.OutputDeviceGroupGuid);
             foreach (var device in outputDeviceGroup.Devices)
             {
-                state.AddOutputDevice(device, profile);
+                profileOutputDevices.Add(state.AddOutputDevice(device, profile));
             }
 
-            foreach (var profilePlugin in profile.Plugins)
+            // Devices are inherited, load them for the subscription model
+            if (outputDeviceGroup.Devices.Count == 0)
             {
-                state.AddDeviceBindingSubscriptions(profilePlugin);
+                var deviceGroup = profile.GetDeviceGroup(DeviceIoType.Output);
+                if (deviceGroup != null)
+                {
+                    foreach (var device in deviceGroup.Devices)
+                    {
+                        profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                    }
+                }
             }
-
-            state.BuildActivePluginsList();
-
+            
+            foreach (var profileMapping in profile.Mappings)
+            {
+                state.AddMapping(profileMapping, profile, profileOutputDevices);
+            }
+            
             return success;
         }
 
         
+        // TODO
         // Subscribes the backend when it is built
         private bool ActivateSubscriptionState(SubscriptionState state)
         {
             var success = true;
             if (state.IsActive) return true;
 
-            foreach (var deviceSubscription in state.DeviceSubscriptions)
+            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
             {
                 success &= SubscribeOutput(state, deviceSubscription);
             }
 
-            foreach (var deviceBindingSubscriptionsGroup in state.DeviceBindingSubscriptions)
+            foreach (var mappingSubscription in state.MappingSubscriptions)
             {
-                foreach (var subscription in deviceBindingSubscriptionsGroup.Value)
-                {
-                    if (subscription.IsOverwritten) continue;
-                    success &= SubscribeDeviceBindingInput(state, subscription);
-                }
-            }
+                mappingSubscription.Mapping.PrepareMapping();
 
-            foreach (var plugin in state.ActivePlugins)
-            {
-                plugin.OnActivate();
+                foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
+                {
+                    success &= SubscribeDeviceBindingInput(state, deviceBindingSubscription);
+                }
+
+                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
+                {
+                    pluginSubscription.Plugin.OnActivate();
+                }
             }
 
             state.IsActive = true;
             return success;
         }
 
+
+        #region Subscriber Actions
+        
         private bool SubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
-            return deviceBindingSubscription.DeviceBinding.IsBound
-                ? _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription))
-                : UnsubscribeDeviceBindingInput(state, deviceBindingSubscription);
+            if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
+            return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 
         private bool UnsubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
+            if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
             return _context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 
@@ -191,6 +211,8 @@ namespace HidWizards.UCR.Core.Managers
             }
             return _context.IOController.UnsubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
         }
+
+        #endregion
 
         #region DescriptionHelpers
 

@@ -9,7 +9,7 @@ namespace HidWizards.UCR.Utilities
     {
         public bool HasHandle { get; }
         Mutex _mutex;
-        private const string MutexGuid = "edfb1606-ecfd-4bc4-9a41-56d3ba492d62";
+        private const string MutexGuid = "f043c687-6714-45b8-b293-9939066dcd73";
 
         private void InitMutex()
         {

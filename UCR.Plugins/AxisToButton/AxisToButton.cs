@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Xml.Serialization;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Plugin;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.AxisToButton
@@ -10,13 +11,17 @@ namespace HidWizards.UCR.Plugins.AxisToButton
     [Export(typeof(Plugin))]
     public class AxisToButton : Plugin
     {
-        [XmlIgnore]
-        public DeviceBinding Input { get; set; }
-        [XmlIgnore]
-        public DeviceBinding OutputLow { get; set; }
-        [XmlIgnore]
-        public DeviceBinding OutputHigh { get; set; }
-        
+        public override string PluginName => "Axis to button";
+        public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Momentary;
+        protected override List<PluginInput> InputCategories => new List<PluginInput>()
+        {
+            new PluginInput()
+            {
+                Name = "Axis",
+                Category = DeviceBindingCategory.Range
+            }
+        };
+
         public bool Invert { get; set; }
 
         private int _deadZoneValue;
@@ -33,41 +38,19 @@ namespace HidWizards.UCR.Plugins.AxisToButton
         }
 
         private long _direction = 0;
-
-        public override string PluginName()
-        {
-            return "Axis to buttons";
-        }
-
+        
         public AxisToButton()
         {
-            Input = InitializeInputMapping(InputChanged);
-            OutputLow = InitializeOutputMapping();
-            OutputHigh = InitializeOutputMapping();
             DeadZone = "30";
         }
 
-        private void InputChanged(long value)
+        public override long Update(List<long> values)
         {
+            var value = values[0];
             if (Invert) value *= -1;
+            if (value < 0) value = 0;
             value = Math.Sign(ApplyDeadZone(value));
-            if (value == _direction && value != 0) return;
-            switch (value)
-            {
-                case 0:
-                    WriteOutput(OutputLow, 0);
-                    WriteOutput(OutputHigh, 0);
-                    break;
-                case -1:
-                    WriteOutput(OutputLow, 1);
-                    WriteOutput(OutputHigh, 0);
-                    break;
-                case 1:
-                    WriteOutput(OutputLow, 0);
-                    WriteOutput(OutputHigh, 1);
-                    break;
-            }
-            _direction = value;
+            return value;
         }
 
         private long ApplyDeadZone(long value)

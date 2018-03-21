@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Xml.Serialization;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Plugin;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.ButtonToAxis
@@ -10,43 +10,28 @@ namespace HidWizards.UCR.Plugins.ButtonToAxis
     [Export(typeof(Plugin))]
     public class ButtonToAxis : Plugin
     {
-        [XmlIgnore]
-        public DeviceBinding InputHigh { get; set; }
-        [XmlIgnore]
-        public DeviceBinding InputLow { get; set; }
-        [XmlIgnore]
-        public DeviceBinding Output { get; set; }
+        public override string PluginName => "Button to axis";
+        public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Range;
+        protected override List<PluginInput> InputCategories => new List<PluginInput>()
+        {
+            new PluginInput()
+            {
+                Name = "Button",
+                Category = DeviceBindingCategory.Momentary
+            }
+        };
 
         private long _direction = 0;
 
-        public override string PluginName()
-        {
-            return "Button to Axis";
-        }
-
         public ButtonToAxis()
         {
-            InputLow = InitializeInputMapping(InputLowChanged);
-            InputHigh = InitializeInputMapping(InputHighChanged);
-            Output = InitializeOutputMapping();
+
         }
 
-        private void InputLowChanged(long value)
+        // TODO Implement value to set 
+        public override long Update(List<long> values)
         {
-            _direction += value == 0 ? 1 : -1;
-            WriteOutput();
-        }
-
-        private void InputHighChanged(long value)
-        {
-            _direction += value == 0 ? -1 : 1;
-            WriteOutput();
-        }
-
-        private void WriteOutput()
-        {
-            _direction = Math.Sign(_direction);
-            WriteOutput(Output, _direction*Constants.AxisMaxValue);
+            return values[0] * Constants.AxisMaxValue;
         }
     }
 }

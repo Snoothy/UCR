@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Models.Device;
+using HidWizards.UCR.Plugins.AxisToAxis;
 using HidWizards.UCR.Plugins.ButtonToButton;
 using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
@@ -52,59 +54,61 @@ namespace HidWizards.UCR.Tests.ModelTests
 
                 Assert.That(newcontext.Profiles[0].Title, Is.EqualTo(context.Profiles[0].Title));
                 Assert.That(newcontext.Profiles[0].Guid, Is.EqualTo(context.Profiles[0].Guid));
-                Assert.That(newcontext.Profiles[0].Plugins.Count, Is.EqualTo(context.Profiles[0].Plugins.Count));
+                Assert.That(newcontext.Profiles[0].Mappings.Count, Is.EqualTo(context.Profiles[0].Mappings.Count));
 
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Title, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Title));
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Guid, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
-                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Plugins.Count, Is.EqualTo(context.Profiles[0].ChildProfiles[0].Plugins.Count));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Title,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Title));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Guid,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
+                Assert.That(newcontext.Profiles[0].ChildProfiles[0].Mappings.Count,
+                    Is.EqualTo(context.Profiles[0].ChildProfiles[0].Mappings.Count));
                 newcontext.SaveContext();
             }
         }
 
         [Test]
-        public void PluginContext()
+        public void MappingContext()
         {
             var context = new Context();
             var pluginTypes = new List<Type>();
             pluginTypes.Add(typeof(ButtonToButton));
             context.ProfilesManager.AddProfile("Root profile");
-
             var profile = context.Profiles[0];
-            profile.AddPlugin(new ButtonToButton(), "Button to button 1");
-            profile.AddPlugin(new ButtonToButton(), "Button to button 2");
+            var mapping = profile.AddMapping("Jump");
+            profile.AddPlugin(mapping, new ButtonToButton(), "Button to button 1");
+            profile.AddPlugin(mapping, new ButtonToButton(), "Button to button 2");
 
-            for (var i = 0; i < profile.Plugins.Count; i++)
+            var bindingCount = 10;
+            mapping.InitializeMappings(bindingCount);
+            for (var i = 0; i < bindingCount; i++)
             {
-                SetDeviceBindingValues(profile.Plugins[i].Inputs[0], i + 1);
-                SetDeviceBindingValues(profile.Plugins[i].Outputs[0], i + 2);
+                SetDeviceBindingValues(profile.Mappings[0].DeviceBindings[i], i + 1);
             }
 
-            var plugins = profile.Plugins;
+            var deviceBindings = mapping.DeviceBindings;
             context.SaveContext(pluginTypes);
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
                 var newcontext = Context.Load(pluginTypes);
-                var newProfile = newcontext.Profiles[0];
-                Assert.That(newProfile.Plugins.Count, Is.EqualTo(profile.Plugins.Count));
+                var newMapping = newcontext.Profiles[0].Mappings[0];
+                var newDeviceBindings = newcontext.Profiles[0].Mappings[0].DeviceBindings;
+                Assert.That(newMapping.Title, Is.EqualTo(mapping.Title));
+                Assert.That(newMapping.Plugins.Count, Is.EqualTo(mapping.Plugins.Count));
+                Assert.That(newMapping.Guid, Is.EqualTo(mapping.Guid));
 
-                for (var j = 0; j < plugins.Count; j++)
+                for (var j = 0; j < mapping.DeviceBindings.Count; j++)
                 {
-                    Assert.That(newProfile.Plugins[j].Title, Is.EqualTo(plugins[j].Title));
-                    Assert.That(newProfile.Plugins[j].Inputs.Count, Is.EqualTo(plugins[j].Inputs.Count));
-                    Assert.That(newProfile.Plugins[j].Outputs.Count, Is.EqualTo(plugins[j].Outputs.Count));
-                    Assert.That(newProfile.Plugins[j].Outputs[0].DeviceIoType, Is.EqualTo(DeviceIoType.Output));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].Guid, Is.Not.EqualTo(plugins[j].Inputs[0].Guid));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].IsBound, Is.EqualTo(plugins[j].Inputs[0].IsBound));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].DeviceNumber, Is.EqualTo(plugins[j].Inputs[0].DeviceNumber));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].KeyType, Is.EqualTo(plugins[j].Inputs[0].KeyType));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].KeyValue, Is.EqualTo(plugins[j].Inputs[0].KeyValue));
-                    Assert.That(newProfile.Plugins[j].Inputs[0].KeySubValue, Is.EqualTo(plugins[j].Inputs[0].KeySubValue));
+                    Assert.That(newDeviceBindings[j].Profile.Guid, Is.Not.EqualTo(Guid.Empty));
+                    Assert.That(newDeviceBindings[j].Profile.Guid, Is.EqualTo(deviceBindings[j].Profile.Guid));
+                    Assert.That(newDeviceBindings[j].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
+                    Assert.That(newDeviceBindings[j].Guid, Is.Not.EqualTo(deviceBindings[j].Guid));
+                    Assert.That(newDeviceBindings[j].IsBound, Is.EqualTo(deviceBindings[j].IsBound));
+                    Assert.That(newDeviceBindings[j].DeviceGuid, Is.EqualTo(deviceBindings[j].DeviceGuid));
+                    Assert.That(newDeviceBindings[j].KeyType, Is.EqualTo(deviceBindings[j].KeyType));
+                    Assert.That(newDeviceBindings[j].KeyValue, Is.EqualTo(deviceBindings[j].KeyValue));
+                    Assert.That(newDeviceBindings[j].KeySubValue, Is.EqualTo(deviceBindings[j].KeySubValue));
                 }
-
-                Assert.That(((ButtonToButton)newProfile.Plugins[0]).Input.Guid, Is.EqualTo(newProfile.Plugins[0].Inputs[0].Guid));
-                Assert.That(((ButtonToButton)newProfile.Plugins[0]).Output.Guid, Is.EqualTo(newProfile.Plugins[0].Outputs[0].Guid));
 
                 newcontext.SaveContext(pluginTypes);
             }
@@ -112,7 +116,7 @@ namespace HidWizards.UCR.Tests.ModelTests
 
         private static void SetDeviceBindingValues(DeviceBinding deviceBinding, int value)
         {
-            deviceBinding.DeviceNumber = value;
+            deviceBinding.DeviceGuid = Guid.NewGuid();
             deviceBinding.KeyType = value;
             deviceBinding.KeyValue = value;
             deviceBinding.KeySubValue = value;
@@ -138,7 +142,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             for (var i = 0; i < _saveReloadTimes; i++)
             {
                 var newcontext = Context.Load();
-                
+
                 Assert.That(newcontext.InputGroups.Count, Is.EqualTo(context.InputGroups.Count));
                 Assert.That(newcontext.OutputGroups.Count, Is.EqualTo(context.OutputGroups.Count));
 
@@ -149,9 +153,12 @@ namespace HidWizards.UCR.Tests.ModelTests
 
                     for (var k = 0; k < context.InputGroups[j].Devices.Count; k++)
                     {
-                        Assert.That(newcontext.InputGroups[j].Devices[k].Title, Is.EqualTo(context.InputGroups[j].Devices[k].Title));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle, Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName, Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].Title,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].Title));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
+                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName,
+                            Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
                     }
                 }
 
