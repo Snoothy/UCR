@@ -132,23 +132,12 @@ namespace HidWizards.UCR.Views.ProfileViews
             Dispatcher.BeginInvoke(showAction);
         }
 
-        private void DeviceGroup_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_hasLoaded) return;
-            var comboBox = sender as ComboBox;
-            var selectedItem = comboBox?.SelectedItem as ComboBoxItemViewModel;
-            if (selectedItem == null) return;
-            var value = selectedItem.Value as DeviceGroupComboBoxItem;
-            Profile.SetDeviceGroup(value.DeviceIoType, value.DeviceGroup?.Guid ?? Guid.Empty);
-            PluginsListBox.Items.Refresh();
-        }
-
         private void MappingsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listBox = sender as ListBox;
             var mappingViewModel = listBox.SelectedItem as MappingViewModel;
-            ProfileViewModel.SelectedMapping = mappingViewModel;
             if (mappingViewModel == null) return;
+            ProfileViewModel.SelectedMapping = mappingViewModel;
 
             PopulatePluginsComboBox();
             PluginsListBox.ItemsSource = ProfileViewModel.SelectedMapping.Plugins;

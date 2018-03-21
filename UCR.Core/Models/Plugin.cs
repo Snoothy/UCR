@@ -105,7 +105,7 @@ namespace HidWizards.UCR.Core.Models
 
         public bool HasSameInputCategories(Plugin other)
         {
-            if (InputCategories.Count != other.GetInputCategories().Count) return false;
+            if (InputCategories.Count > other.GetInputCategories().Count) return false;
             for (var i = 0; i < InputCategories.Count; i++)
             {
                 if (InputCategories[i].Category != other.GetInputCategories()[i].Category) return false;

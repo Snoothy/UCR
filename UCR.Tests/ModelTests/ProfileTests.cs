@@ -77,14 +77,17 @@ namespace HidWizards.UCR.Tests.ModelTests
         [Test]
         public void GetDevice()
         {
+            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
+            var deviceList = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
+            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = deviceList;
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceNumber = 0,
-                IsBound = true
+                IsBound = true,
+                DeviceGuid = deviceList[0].Guid
             };
+
             Assert.That(_profile.GetDevice(deviceBinding), Is.Null);
-            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
-            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
+            
             Assert.That(guid, Is.Not.EqualTo(Guid.Empty));
             _profile.SetDeviceGroup(deviceBinding.DeviceIoType, guid);
             Assert.That(_context.IsNotSaved, Is.True);
@@ -97,7 +100,6 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceNumber = 0,
                 IsBound = true
             };
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Empty);
@@ -113,7 +115,6 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
             {
-                DeviceNumber = 0,
                 IsBound = true
             };
 
@@ -132,7 +133,6 @@ namespace HidWizards.UCR.Tests.ModelTests
             Assert.That(childProfile.GetDevice(deviceBinding).Guid, Is.EqualTo(deviceList[0].Guid));
 
             Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.Not.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
-            deviceBinding.DeviceNumber = 1;
             Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
             Assert.That(childProfile.GetDeviceList(deviceBinding).Count, Is.EqualTo(4));
         }

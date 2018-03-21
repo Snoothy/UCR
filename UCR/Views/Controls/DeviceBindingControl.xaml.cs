@@ -66,33 +66,29 @@ namespace HidWizards.UCR.Views.Controls
         {
             var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
-            for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, Constants.MaxDevices); i++)
+            foreach (var device in devicelist)
             {
-                if (devicelist != null && i < devicelist.Count)
-                {
-                    Devices.Add(new ComboBoxItemViewModel(i + 1 + ". " + devicelist[i].Title, i));
-                }
-                else
-                {
-                    Devices.Add(new ComboBoxItemViewModel(i + 1+". N/A", i));
-                }
+                Devices.Add(new ComboBoxItemViewModel(device.Title, device.Guid));
             }
 
             ComboBoxItemViewModel selectedDevice = null;
             
             foreach (var comboBoxItem in Devices)
             {
-                if (comboBoxItem.Value == DeviceBinding.DeviceNumber)
+                if (comboBoxItem.Value == DeviceBinding.DeviceGuid)
                 {
                     selectedDevice = comboBoxItem;
                     break;
                 }
             }
+
+            if (Devices.Count == 0) Devices.Add(new ComboBoxItemViewModel("No device group", Guid.Empty));
             if (selectedDevice == null)
             {
-                selectedDevice = new ComboBoxItemViewModel(DeviceBinding.DeviceNumber+1+ ". N/A", DeviceBinding.DeviceNumber);
-                Devices.Add(selectedDevice);
+                selectedDevice = Devices[0];
+                DeviceBinding.SetDeviceGuid(selectedDevice.Value);
             }
+
             DeviceNumberBox.ItemsSource = Devices;
             DeviceNumberBox.SelectedItem = selectedDevice;
         }
@@ -161,14 +157,9 @@ namespace HidWizards.UCR.Views.Controls
         {
             if (!HasLoaded) return;
             if (DeviceNumberBox.SelectedItem == null) return;
-            DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
+            DeviceBinding.SetDeviceGuid(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
             LoadContextMenu();
             LoadBindingName();
-        }
-        
-        private void DeviceNumberBox_OnDropDownOpened(object sender, EventArgs e)
-        {
-            LoadDeviceInputs();
         }
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)

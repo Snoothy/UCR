@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
 using NLog;
@@ -156,9 +157,7 @@ namespace HidWizards.UCR.Core.Models
         public Device GetDevice(DeviceBinding deviceBinding)
         {
             var deviceList = GetDeviceList(deviceBinding);
-            return deviceBinding.DeviceNumber < deviceList.Count
-                ? deviceList[deviceBinding.DeviceNumber]
-                : null;
+            return deviceList.FirstOrDefault(d => d.Guid == deviceBinding.DeviceGuid);
         }
 
         public List<Device> GetDeviceList(DeviceBinding deviceBinding)

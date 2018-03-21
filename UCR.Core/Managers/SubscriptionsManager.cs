@@ -125,9 +125,13 @@ namespace HidWizards.UCR.Core.Managers
             // Devices are inherited, load them for the subscription model
             if (outputDeviceGroup.Devices.Count == 0)
             {
-                foreach (var device in profile.GetDeviceGroup(DeviceIoType.Output).Devices)
+                var deviceGroup = profile.GetDeviceGroup(DeviceIoType.Output);
+                if (deviceGroup != null)
                 {
-                    profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                    foreach (var device in deviceGroup.Devices)
+                    {
+                        profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                    }
                 }
             }
             
@@ -176,13 +180,13 @@ namespace HidWizards.UCR.Core.Managers
         
         private bool SubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
-            return deviceBindingSubscription.DeviceBinding.IsBound
-                ? _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription))
-                : UnsubscribeDeviceBindingInput(state, deviceBindingSubscription);
+            if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
+            return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 
         private bool UnsubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
         {
+            if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
             return _context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 

@@ -104,7 +104,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                     Assert.That(newDeviceBindings[j].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
                     Assert.That(newDeviceBindings[j].Guid, Is.Not.EqualTo(deviceBindings[j].Guid));
                     Assert.That(newDeviceBindings[j].IsBound, Is.EqualTo(deviceBindings[j].IsBound));
-                    Assert.That(newDeviceBindings[j].DeviceNumber, Is.EqualTo(deviceBindings[j].DeviceNumber));
+                    Assert.That(newDeviceBindings[j].DeviceGuid, Is.EqualTo(deviceBindings[j].DeviceGuid));
                     Assert.That(newDeviceBindings[j].KeyType, Is.EqualTo(deviceBindings[j].KeyType));
                     Assert.That(newDeviceBindings[j].KeyValue, Is.EqualTo(deviceBindings[j].KeyValue));
                     Assert.That(newDeviceBindings[j].KeySubValue, Is.EqualTo(deviceBindings[j].KeySubValue));
@@ -116,7 +116,7 @@ namespace HidWizards.UCR.Tests.ModelTests
 
         private static void SetDeviceBindingValues(DeviceBinding deviceBinding, int value)
         {
-            deviceBinding.DeviceNumber = value;
+            deviceBinding.DeviceGuid = Guid.NewGuid();
             deviceBinding.KeyType = value;
             deviceBinding.KeyValue = value;
             deviceBinding.KeySubValue = value;

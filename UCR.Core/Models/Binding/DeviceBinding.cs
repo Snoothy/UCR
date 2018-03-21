@@ -17,7 +17,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         // Persistence
         public bool IsBound { get; set; }
         // Index in its device list
-        public int DeviceNumber { get; set; }
+        public Guid DeviceGuid { get; set; }
         // Subscription key
         public int KeyType { get; set; }
         public int KeyValue { get; set; }
@@ -56,7 +56,7 @@ namespace HidWizards.UCR.Core.Models.Binding
 
         public DeviceBinding(DeviceBinding deviceBinding)
         {
-            DeviceNumber = deviceBinding.DeviceNumber;
+            DeviceGuid = deviceBinding.DeviceGuid;
             KeyType = deviceBinding.KeyType;
             KeyValue = deviceBinding.KeyValue;
             Profile = deviceBinding.Profile;
@@ -65,9 +65,9 @@ namespace HidWizards.UCR.Core.Models.Binding
             IsBound = deviceBinding.IsBound;
         }
 
-        public void SetDeviceNumber(int number)
+        public void SetDeviceGuid(Guid deviceGuid)
         {
-            DeviceNumber = number;
+            DeviceGuid = deviceGuid;
             Profile.Context.ContextChanged();
         }
 

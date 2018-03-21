@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HidWizards.UCR.Core.Managers;
 
 namespace HidWizards.UCR.Core.Models.Subscription
@@ -16,7 +17,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
             Plugin = plugin;
             SubscriptionStateGuid = subscriptionStateGuid;
             Plugin.Output.OutputSink = WriteOutput;
-            OutputDeviceSubscription = outputDeviceSubscriptions[Plugin.Output.DeviceNumber];
+            OutputDeviceSubscription = outputDeviceSubscriptions.FirstOrDefault(d => d.Device.Guid == Plugin.Output.DeviceGuid);
         }
 
         private void WriteOutput(long value)
