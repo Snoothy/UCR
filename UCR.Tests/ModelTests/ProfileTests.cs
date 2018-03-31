@@ -69,7 +69,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var plugin = _mapping.Plugins[0];
             Assert.That(plugin, Is.Not.Null);
             Assert.That(plugin.State, Is.EqualTo(pluginState));
-            Assert.That(plugin.Output, Is.Not.Null);
+            Assert.That(plugin.Outputs, Is.Not.Null);
             Assert.That(plugin.Profile, Is.EqualTo(_profile));
             Assert.That(_context.IsNotSaved, Is.True);
         }

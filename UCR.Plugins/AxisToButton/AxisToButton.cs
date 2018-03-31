@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Xml.Serialization;
+using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.AxisToButton
 {
-    [Export(typeof(Plugin))]
+    [Plugin("Axis to button")]
+    [PluginInput(DeviceBindingCategory.Range, "Axis")]
+    [PluginOutput(DeviceBindingCategory.Momentary, "Button")]
     public class AxisToButton : Plugin
     {
-        public override string PluginName => "Axis to button";
-        public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Momentary;
-        protected override List<PluginInput> InputCategories => new List<PluginInput>()
-        {
-            new PluginInput()
-            {
-                Name = "Axis",
-                Category = DeviceBindingCategory.Range
-            }
-        };
-
         public bool Invert { get; set; }
 
         private int _deadZoneValue;
@@ -44,13 +35,13 @@ namespace HidWizards.UCR.Plugins.AxisToButton
             DeadZone = "30";
         }
 
-        public override long Update(List<long> values)
+        public override void Update(List<long> values)
         {
             var value = values[0];
             if (Invert) value *= -1;
             if (value < 0) value = 0;
             value = Math.Sign(ApplyDeadZone(value));
-            return value;
+            WriteOutput(0, value);
         }
 
         private long ApplyDeadZone(long value)

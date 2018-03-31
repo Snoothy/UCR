@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Core.Models.Subscription
 {
-    public class DeviceBindingSubscription
+    public class InputSubscription
     {
         public DeviceBinding DeviceBinding { get; }
         public Profile Profile { get; }
@@ -15,7 +12,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public bool IsOverwritten { get; set; }
         public DeviceSubscription DeviceSubscription { get; }
 
-        public DeviceBindingSubscription(DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid)
+        public InputSubscription(DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid)
         {
             DeviceBinding = deviceBinding;
             Profile = profile;

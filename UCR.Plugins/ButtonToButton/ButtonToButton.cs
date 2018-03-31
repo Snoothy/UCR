@@ -1,27 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Plugins.ButtonToButton
 {
-    [Export(typeof(Plugin))]
+    [Plugin("Button to button")]
+    [PluginInput(DeviceBindingCategory.Momentary, "Button")]
+    [PluginOutput(DeviceBindingCategory.Momentary, "Button")]
     public class ButtonToButton : Plugin
     {
-        public override string PluginName => "Button to button";
-        public override DeviceBindingCategory OutputCategory => DeviceBindingCategory.Momentary;
-        protected override List<PluginInput> InputCategories => new List<PluginInput>()
+        public override void Update(List<long> values)
         {
-            new PluginInput()
-            {
-                Name = "Button",
-                Category = DeviceBindingCategory.Momentary
-            }
-        };
-
-        public override long Update(List<long> values)
-        {
-            return values[0];
+            WriteOutput(0, values[0]);
         }
     }
 }

@@ -58,6 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\PluginAttribute.cs" />
+    <Compile Include="Attributes\PluginOutput.cs" />
+    <Compile Include="Attributes\PluginInput.cs" />
+    <Compile Include="Attributes\PluginIoAttribute.cs" />
     <Compile Include="Managers\SubscriptionsManager.cs" />
     <Compile Include="Models\Binding\DeviceBindingNode.cs" />
     <Compile Include="Managers\DeviceGroupsManager.cs" />
@@ -70,9 +74,10 @@
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Managers\PluginsManager.cs" />
     <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\Subscription\DeviceBindingSubscription.cs" />
+    <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
     <Compile Include="Models\Subscription\MappingSubscription.cs" />
+    <Compile Include="Models\Subscription\OutputSubscription.cs" />
     <Compile Include="Models\Subscription\PluginSubscription.cs" />
     <Compile Include="Models\Subscription\SubscriptionState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,6 +94,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>nuget restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln

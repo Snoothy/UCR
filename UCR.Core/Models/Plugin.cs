@@ -1,51 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 using System.Xml.Serialization;
+using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Core.Models
 {
+    [InheritedExport(typeof(Plugin))]
     public abstract class Plugin : IComparable<Plugin>
     {
         // Persistence
         public string State { get; set; }
-        public DeviceBinding Output { get; set; }
+        public List<DeviceBinding> Outputs { get; set; }
         
         // Runtime
         internal Profile Profile { get; set; }
+        private List<IODefinition> inputCategories;
+        private List<IODefinition> outputCategories;
 
-        // Abstract
         [XmlIgnore]
-        public abstract string PluginName { get; }
-        [XmlIgnore]
-        public abstract DeviceBindingCategory OutputCategory { get; }
-        protected abstract List<PluginInput> InputCategories { get; }
+        public List<IODefinition> InputCategories
+        {
+            get
+            {
+                if (inputCategories != null) return inputCategories;
+                inputCategories = GetIODefinitions(DeviceIoType.Input);
+                return inputCategories;
+            }
+        }
 
-        public struct PluginInput
+        [XmlIgnore]
+        public List<IODefinition> OutputCategories
+        {
+            get
+            {
+                if (outputCategories != null) return outputCategories;
+                outputCategories = GetIODefinitions(DeviceIoType.Output);
+                return outputCategories;
+            }
+        }
+
+        internal string PluginName => GetPluginAttribute().Name;
+        
+        public struct IODefinition
         {
             public string Name;
             public DeviceBindingCategory Category;
         }
 
+        #region Life cycle
+
         protected Plugin()
         {
-            Output = new DeviceBinding(null, Profile, DeviceIoType.Output);
-        }
-
-        public List<PluginInput> GetInputCategories()
-        {
-            return InputCategories;
-        }
-
-        public bool Remove()
-        {
-            Profile.Context.ContextChanged();
-            return true;
+            Outputs = new List<DeviceBinding>();
+            foreach (var _ in OutputCategories)
+            {
+                Outputs.Add(new DeviceBinding(null, Profile, DeviceIoType.Output));
+            }
         }
 
         public virtual void OnActivate()
         {
-            
+
+        }
+
+        public virtual void Update(List<long> values)
+        {
+
         }
 
         public virtual void OnDeactivate()
@@ -53,11 +76,14 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
-        public virtual long Update(List<long> values)
+        // TODO 
+        protected void WriteOutput(int number, long value)
         {
-            return 0L;
+            Outputs[number].WriteOutput(value);
         }
 
+        #endregion
+        
         public Device GetDevice(DeviceBinding deviceBinding)
         {
             return Profile.GetDevice(deviceBinding);
@@ -68,22 +94,11 @@ namespace HidWizards.UCR.Core.Models
             return Profile.GetDeviceList(deviceBinding);
         }
 
-        // TODO 
-        internal void WriteOutput(long value)
-        {
-            Output.WriteOutput(value);
-        }
-
-        public void PostLoad(Context context, Profile parentProfile)
-        {
-            SetProfile(parentProfile);
-            Output.DeviceIoType = DeviceIoType.Output;
-        }
-
+        
         public void SetProfile(Profile profile)
         {
             Profile = profile;
-            Output.Profile = profile;
+            Outputs.ForEach(o => o.Profile = profile);
         }
 
         public Plugin Duplicate()
@@ -98,6 +113,14 @@ namespace HidWizards.UCR.Core.Models
             Profile?.Context?.ContextChanged();
         }
 
+        public void PostLoad(Context context, Profile parentProfile)
+        {
+            SetProfile(parentProfile);
+            Outputs.ForEach(o => o.DeviceIoType = DeviceIoType.Output);
+        }
+
+        #region Comparison
+
         public int CompareTo(Plugin other)
         {
             return string.Compare(PluginName, other.PluginName, StringComparison.Ordinal);
@@ -105,13 +128,37 @@ namespace HidWizards.UCR.Core.Models
 
         public bool HasSameInputCategories(Plugin other)
         {
-            if (InputCategories.Count > other.GetInputCategories().Count) return false;
+            if (InputCategories.Count > other.InputCategories.Count) return false;
             for (var i = 0; i < InputCategories.Count; i++)
             {
-                if (InputCategories[i].Category != other.GetInputCategories()[i].Category) return false;
+                if (InputCategories[i].Category != other.InputCategories[i].Category) return false;
             }
 
             return true;
         }
+
+        #endregion
+
+        #region Attributes
+
+        private PluginAttribute GetPluginAttribute()
+        {
+            var pluginAttribute = (PluginAttribute)Attribute.GetCustomAttribute(GetType(), typeof(PluginAttribute));
+
+            return pluginAttribute ?? new PluginAttribute("Invalid plugin");
+        }
+        
+        private List<IODefinition> GetIODefinitions(DeviceIoType deviceIoType)
+        {
+            var attributes = (PluginIoAttribute[])Attribute.GetCustomAttributes(GetType(), typeof(PluginIoAttribute));
+            
+            return attributes.Where(a => a.DeviceIoType == deviceIoType).Select(a => new IODefinition()
+            {
+                Category = a.DeviceBindingCategory,
+                Name = a.Name
+            }).ToList();
+        }
+
+        #endregion
     }
 }

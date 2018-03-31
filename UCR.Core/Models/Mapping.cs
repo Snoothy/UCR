@@ -57,7 +57,7 @@ namespace HidWizards.UCR.Core.Models
             InputCache[0] = value;
             foreach (var plugin in Plugins)
             {
-                plugin.WriteOutput(plugin.Update(InputCache));
+                plugin.Update(InputCache);
             }
         }
 
@@ -78,7 +78,7 @@ namespace HidWizards.UCR.Core.Models
         {
             if (Plugins.Count == 0)
             {
-                foreach (var _ in plugin.GetInputCategories())
+                foreach (var _ in plugin.InputCategories)
                 {
                     DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
                 }

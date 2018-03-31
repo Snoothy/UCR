@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
@@ -42,13 +39,13 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             if (Mapping.Plugins.Count == 0) return;
 
             var plugin = Mapping.Plugins[0];
-            for (var i = 0; i < plugin.GetInputCategories().Count; i++)
+            for (var i = 0; i < plugin.InputCategories.Count; i++)
             {
                 DeviceBindings.Add(new DeviceBindingViewModel()
                 {
                     DeviceBinding = Mapping.DeviceBindings[i],
-                    DeviceBindingName = plugin.GetInputCategories()[i].Name,
-                    DeviceBindingCategory = plugin.GetInputCategories()[i].Category
+                    DeviceBindingName = plugin.InputCategories[i].Name,
+                    DeviceBindingCategory = plugin.InputCategories[i].Category
                 });
             }
         }

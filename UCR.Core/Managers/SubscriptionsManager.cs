@@ -178,13 +178,13 @@ namespace HidWizards.UCR.Core.Managers
 
         #region Subscriber Actions
         
-        private bool SubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
+        private bool SubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
             return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
         }
 
-        private bool UnsubscribeDeviceBindingInput(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
+        private bool UnsubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
             return _context.IOController.UnsubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
@@ -216,7 +216,7 @@ namespace HidWizards.UCR.Core.Managers
 
         #region DescriptionHelpers
 
-        private InputSubscriptionRequest GetInputSubscriptionRequest(SubscriptionState state, DeviceBindingSubscription deviceBindingSubscription)
+        private InputSubscriptionRequest GetInputSubscriptionRequest(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             var device = deviceBindingSubscription.DeviceSubscription.Device;
             return new InputSubscriptionRequest()

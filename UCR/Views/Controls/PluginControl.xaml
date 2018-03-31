@@ -44,7 +44,21 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ContentPresenter Grid.Column="0" Content="{Binding Plugin}" ContentTemplateSelector="{StaticResource PluginViewTemplateSelector}"/>
-            <controls:DeviceBindingControl Label="Output" DeviceBinding="{Binding Plugin.Output}" Category="{Binding Plugin.OutputCategory}" Grid.Column="1" Margin="5,0,0,0"/>
+            <ListBox Grid.Column="1" Margin="5,0,0,0" Background="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
+                             VirtualizingPanel.ScrollUnit='Pixel'
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate >
+                        <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </StackPanel>
 </UserControl>
