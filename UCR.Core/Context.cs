@@ -90,7 +90,7 @@ namespace HidWizards.UCR.Core
 
         public List<Plugin> GetPlugins()
         {
-            return PluginManager.Plugins;
+            return PluginManager.Plugins.Where(p => !p.IsDisabled).ToList();
         }
 
         public void ContextChanged()

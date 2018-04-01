@@ -56,6 +56,8 @@ namespace HidWizards.UCR.Core.Models
 
         [XmlIgnore]
         public string PluginName => GetPluginAttribute().Name;
+        [XmlIgnore]
+        public bool IsDisabled => GetPluginAttribute().Disabled;
         
         public struct IODefinition
         {

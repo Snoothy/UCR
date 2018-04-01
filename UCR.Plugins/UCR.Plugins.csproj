@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AxisToAxis\AxisToAxis.cs" />
     <Compile Include="AxisToButton\AxisToButton.cs" />
+    <Compile Include="AxisToMouse\AxisToMouse.cs" />
     <Compile Include="ButtonToAxis\ButtonToAxis.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
     <Compile Include="MouseToAxis\MouseToAxis.cs" />

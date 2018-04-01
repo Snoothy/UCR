@@ -247,14 +247,6 @@ namespace HidWizards.UCR.Core.Models
             }
         }
 
-        public List<Profile> GetAncestry()
-        {
-            var result = new List<Profile>();
-            if (ParentProfile != null) result.AddRange(ParentProfile.GetAncestry());
-            result.Add(this);
-            return result;
-        }
-
         #endregion
 
         internal void PostLoad(Context context, Profile parentProfile = null)

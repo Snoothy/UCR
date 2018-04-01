@@ -6,7 +6,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.MouseToAxis
 {
-    [Plugin("Mouse to Axis")]
+    [Plugin("Mouse to Axis", Disabled = true)]
     [PluginInput(DeviceBindingCategory.Delta, "Mouse axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class MouseToAxis: Plugin
