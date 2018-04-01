@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using HidWizards.UCR.Core.Attributes;
+﻿using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
@@ -12,17 +10,21 @@ namespace HidWizards.UCR.Plugins.ButtonToAxis
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonToAxis : Plugin
     {
-        private long _direction = 0;
+        [PluginGui("Invert", ColumnOrder = 0)]
+        public bool Invert { get; set; }
+
+        [PluginGui("Range target", ColumnOrder = 1)]
+        public int Range { get; set; }
 
         public ButtonToAxis()
         {
-
+            Range = 100;
         }
 
-        // TODO Implement value to set 
-        public override void Update(List<long> values)
+        public override void Update(params long[] values)
         {
-            WriteOutput(0, values[0] * Constants.AxisMaxValue);
+            if (Invert) values[0] = values[0] * - 1;
+            WriteOutput(0, values[0] * (long)(Constants.AxisMaxValue * ( Range / 100.0 )));
         }
     }
 }

@@ -13,21 +13,22 @@ namespace HidWizards.UCR.Core.Models
     {
         // Persistence
         public string State { get; set; }
-        public List<DeviceBinding> Outputs { get; set; }
+        public List<DeviceBinding> Outputs { get; }
         
         // Runtime
         internal Profile Profile { get; set; }
-        private List<IODefinition> inputCategories;
-        private List<IODefinition> outputCategories;
+        private List<IODefinition> _inputCategories;
+        private List<IODefinition> _outputCategories;
+        private List<List<PluginProperty>> _guiMatrix;
 
         [XmlIgnore]
         public List<IODefinition> InputCategories
         {
             get
             {
-                if (inputCategories != null) return inputCategories;
-                inputCategories = GetIODefinitions(DeviceIoType.Input);
-                return inputCategories;
+                if (_inputCategories != null) return _inputCategories;
+                _inputCategories = GetIODefinitions(DeviceIoType.Input);
+                return _inputCategories;
             }
         }
 
@@ -36,13 +37,25 @@ namespace HidWizards.UCR.Core.Models
         {
             get
             {
-                if (outputCategories != null) return outputCategories;
-                outputCategories = GetIODefinitions(DeviceIoType.Output);
-                return outputCategories;
+                if (_outputCategories != null) return _outputCategories;
+                _outputCategories = GetIODefinitions(DeviceIoType.Output);
+                return _outputCategories;
             }
         }
 
-        internal string PluginName => GetPluginAttribute().Name;
+        [XmlIgnore]
+        public List<List<PluginProperty>> GuiMatrix
+        {
+            get
+            {
+                if (_guiMatrix != null) return _guiMatrix;
+                _guiMatrix = GetGuiMatrix();
+                return _guiMatrix;
+            }
+        }
+
+        [XmlIgnore]
+        public string PluginName => GetPluginAttribute().Name;
         
         public struct IODefinition
         {
@@ -66,7 +79,7 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
-        public virtual void Update(List<long> values)
+        public virtual void Update(params long[] values)
         {
 
         }
@@ -84,17 +97,6 @@ namespace HidWizards.UCR.Core.Models
 
         #endregion
         
-        public Device GetDevice(DeviceBinding deviceBinding)
-        {
-            return Profile.GetDevice(deviceBinding);
-        }
-
-        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
-        {
-            return Profile.GetDeviceList(deviceBinding);
-        }
-
-        
         public void SetProfile(Profile profile)
         {
             Profile = profile;
@@ -108,17 +110,42 @@ namespace HidWizards.UCR.Core.Models
             return newPlugin;
         }
 
-        protected void ContextChanged()
+        public void ContextChanged()
         {
             Profile?.Context?.ContextChanged();
         }
 
+        #region Loading
+
         public void PostLoad(Context context, Profile parentProfile)
         {
             SetProfile(parentProfile);
+            ZipDeviceBindingList(Outputs);
             Outputs.ForEach(o => o.DeviceIoType = DeviceIoType.Output);
+
         }
 
+        private static void ZipDeviceBindingList(IList<DeviceBinding> deviceBindings)
+        {
+            if (deviceBindings.Count == 0) return;
+            var split = deviceBindings.Count / 2;
+            for (var i = 0; i < split; i++)
+            {
+                deviceBindings[i].IsBound = deviceBindings[i + split].IsBound;
+                deviceBindings[i].DeviceGuid = deviceBindings[i + split].DeviceGuid;
+                deviceBindings[i].KeyType = deviceBindings[i + split].KeyType;
+                deviceBindings[i].KeyValue = deviceBindings[i + split].KeyValue;
+                deviceBindings[i].KeySubValue = deviceBindings[i + split].KeySubValue;
+            }
+
+            for (var i = deviceBindings.Count - 1; i >= split; i--)
+            {
+                deviceBindings.Remove(deviceBindings[i]);
+            }
+        }
+
+        #endregion
+        
         #region Comparison
 
         public int CompareTo(Plugin other)
@@ -157,6 +184,40 @@ namespace HidWizards.UCR.Core.Models
                 Category = a.DeviceBindingCategory,
                 Name = a.Name
             }).ToList();
+        }
+
+        private List<PluginProperty> GetGuiProperties()
+        {
+            var properties = from p in GetType().GetProperties()
+                let attr = p.GetCustomAttributes(typeof(PluginGuiAttribute), true)
+                where attr.Length == 1
+                select new { Property = p, Attribute = attr.First() as PluginGuiAttribute };
+
+
+            return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.RowOrder, prop.Attribute.ColumnOrder)).ToList();
+        }
+
+        public List<List<PluginProperty>> GetGuiMatrix()
+        {
+            var result = new List<List<PluginProperty>>();
+            var currentRow = new List<PluginProperty>();
+            result.Add(currentRow);
+
+            var guiProperties = GetGuiProperties();
+            guiProperties.Sort();
+
+            foreach (var pluginProperty in guiProperties)
+            {
+                if (currentRow.Count != 0 && currentRow[0].RowOrder != pluginProperty.RowOrder)
+                {
+                    currentRow = new List<PluginProperty>();
+                    result.Add(currentRow);
+                }
+
+                currentRow.Add(pluginProperty);
+            }
+
+            return result;
         }
 
         #endregion

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -13,74 +11,32 @@ namespace HidWizards.UCR.Plugins.AxisToAxis
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin
     {
+        [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
+
+        [PluginGui("Linear", ColumnOrder = 3)]
         public bool Linear { get; set; }
 
-        private int _deadZoneValue;
-        private string _deadZone;
-        public string DeadZone
-        {
-            get { return _deadZone; }
-            set
-            {
-                SetIntValue(ref _deadZoneValue, value);
-                ContextChanged();
-                _deadZone = value;
-            }
-        }
+        [PluginGui("Dead zone", ColumnOrder = 1)]
+        public int DeadZone { get; set; }
 
-        private int _sensitivityValue;
-        private string _sensitivity;
-        public string Sensitivity
-        {
-            get { return _sensitivity; }
-            set
-            {
-                SetIntValue(ref _sensitivityValue, value);
-                ContextChanged();
-                _sensitivity = value;
-            }
-        }
+        [PluginGui("Sensitivity", ColumnOrder = 2)]
+        public int Sensitivity { get; set; }
 
         public AxisToAxis()
         {
-            DeadZone = "0";
-            Sensitivity = "100";
+            DeadZone = 0;
+            Sensitivity = 100;
         }
 
-        public override void Update(List<long> values)
+        public override void Update(params long[] values)
         {
             var value = values[0];
             if (Invert) value *= -1;
-            if (_deadZoneValue != 0) value = ApplyDeadZone(value);
-            if (_sensitivityValue != 100) value = ApplySensitivity(value);
+            if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
+            if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, Linear);
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             WriteOutput(0, value);
-        }
-
-        private long ApplySensitivity(long value)
-        {
-            var sensitivityPercent = (_sensitivityValue / 100.0);
-            if (Linear) return (long) (value * sensitivityPercent);
-            // TODO https://github.com/evilC/UCR/blob/master/Libraries/StickOps/StickOps.ahk#L60
-            return value;
-        }
-
-        private long ApplyDeadZone(long value)
-        {
-            var gap = (_deadZoneValue / 100.0) * Constants.AxisMaxValue;
-            var remainder = Constants.AxisMaxValue - gap;
-            var gapPercent = Math.Max(0, Math.Abs(value) - gap) / remainder;
-            return (long)(gapPercent * Constants.AxisMaxValue * Math.Sign(value));
-        }
-
-        private static void SetIntValue(ref int field, string value)
-        {
-            int result;
-            if (int.TryParse(value, out result))
-            {
-                field = result;
-            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using HidWizards.UCR.Core.Attributes;
+﻿using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
@@ -10,9 +9,20 @@ namespace HidWizards.UCR.Plugins.ButtonToButton
     [PluginOutput(DeviceBindingCategory.Momentary, "Button")]
     public class ButtonToButton : Plugin
     {
-        public override void Update(List<long> values)
+
+        [PluginGui("Invert", ColumnOrder = 0, RowOrder = 0)]
+        public bool Invert { get; set; }
+
+        public override void Update(params long[] values)
         {
-            WriteOutput(0, values[0]);
+            if (Invert)
+            {
+                WriteOutput(0, values[0] == 0 ? 1 : 0);
+            }
+            else
+            {
+                WriteOutput(0, values[0]);
+            }
         }
     }
 }

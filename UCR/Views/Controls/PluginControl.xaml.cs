@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 
@@ -18,6 +20,12 @@ namespace HidWizards.UCR.Views.Controls
             var button = ((Button)sender);
             var plugin = button.DataContext as PluginViewModel;
             plugin?.Remove();
+        }
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

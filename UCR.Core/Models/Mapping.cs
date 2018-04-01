@@ -57,7 +57,7 @@ namespace HidWizards.UCR.Core.Models
             InputCache[0] = value;
             foreach (var plugin in Plugins)
             {
-                plugin.Update(InputCache);
+                plugin.Update(InputCache.ToArray());
             }
         }
 

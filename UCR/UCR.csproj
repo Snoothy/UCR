@@ -108,6 +108,7 @@
     <Compile Include="Views\Controls\PluginControl.xaml.cs">
       <DependentUpon>PluginControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\PluginGuiTemplateSelector.cs" />
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
     <Compile Include="Views\DeviceViews\DeviceListWindow.xaml.cs">

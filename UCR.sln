@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", ".\build\.build.csproj", "{199C7B20-7300-4F41-877E-15C100097EAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", "build\.build.csproj", "{199C7B20-7300-4F41-877E-15C100097EAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR", "UCR\UCR.csproj", "{2F2E9A0C-C97C-4AC7-A598-03D334B2D827}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35B5A93F-03EA-445F-BDF6-2B37C256578F} = {35B5A93F-03EA-445F-BDF6-2B37C256578F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR.Tests", "UCR.Tests\UCR.Tests.csproj", "{F401B642-1E27-44C2-BFFA-5F3CFBFD14BD}"
 EndProject
@@ -40,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {141F569E-6EF9-4F6A-9868-4828B35B51E5}
 	EndGlobalSection
 EndGlobal

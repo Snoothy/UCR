@@ -37,17 +37,14 @@
             </DockPanel>
         </DockPanel>
         <Grid Height="auto">
-            <ListBox Background="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                             VirtualizingPanel.ScrollUnit='Pixel'
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.Resources>
+            <ItemsControl x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" Margin="5">
+                <ItemsControl.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
-                </ListBox.Resources>
-                <ListBox.Style>
-                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                </ItemsControl.Resources>
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
                         <Style.Triggers>
                             <Trigger Property="HasItems" Value="False">
                                 <Setter Property="Template">
@@ -62,13 +59,13 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                </ListBox.Style>
-                <ListBox.ItemTemplate>
+                </ItemsControl.Style>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate >
                         <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </StackPanel>
 </UserControl>

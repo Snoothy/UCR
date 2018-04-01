@@ -21,5 +21,16 @@ namespace HidWizards.UCR.Tests.ModelTests
             Assert.AreEqual(outputs[0].Category, DeviceBindingCategory.Momentary);
             Assert.AreEqual(outputs[0].Name, "Button");
         }
+
+        [Test]
+        public void ButtonToButtonGuiMatrixTest()
+        {
+            var plugin = new ButtonToButton();
+
+            var guiMatrix = plugin.GetGuiMatrix();
+            var invertProperty = guiMatrix[0][0];
+
+            Assert.AreEqual(invertProperty.Name, "Invert");
+        }
     }
 }

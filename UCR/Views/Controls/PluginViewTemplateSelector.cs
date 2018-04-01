@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace HidWizards.UCR.Views.Controls
@@ -17,7 +18,15 @@ namespace HidWizards.UCR.Views.Controls
         public override DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             if (item == null) return PluginTemplate;
-            PluginTemplate = (DataTemplate)Window.FindResource(item.GetType().Name);
+            try
+            {
+                PluginTemplate = (DataTemplate)Window.FindResource(item.GetType().Name);
+            }
+            catch (ResourceReferenceKeyNotFoundException)
+            {
+                return null;
+            }
+            
             return PluginTemplate;
         }
     }

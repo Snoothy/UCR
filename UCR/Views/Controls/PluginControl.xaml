@@ -10,6 +10,7 @@
              x:Name="PluginViewName" Margin="0,0,0,5">
     <UserControl.Resources>
         <controls:PluginViewTemplateSelector x:Key="PluginViewTemplateSelector" />
+        <controls:PluginGuiTemplateSelector x:Key="PluginGuiTemplateSelector" />
     </UserControl.Resources>
     <StackPanel Height="auto" Background="{x:Static SystemColors.ControlBrush}" >
         <DockPanel Background="{x:Static SystemColors.ControlDarkBrush}" HorizontalAlignment="Left" Height="30" LastChildFill="False" VerticalAlignment="Top"
@@ -43,22 +44,58 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ContentPresenter Grid.Column="0" Content="{Binding Plugin}" ContentTemplateSelector="{StaticResource PluginViewTemplateSelector}"/>
-            <ListBox Grid.Column="1" Margin="5,0,0,0" Background="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+
+            <ItemsControl Grid.Column="1" Margin="5,0,0,0" x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
                              VirtualizingPanel.IsVirtualizingWhenGrouping='True'
                              VirtualizingPanel.ScrollUnit='Pixel'
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.Resources>
+                <ItemsControl.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
-                </ListBox.Resources>
-                <ListBox.ItemTemplate>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate >
                         <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl Grid.Column="0"  ItemsSource="{Binding Plugin.GuiMatrix}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate >
+
+                        <ItemsControl Margin="0,0,0,5" ItemsSource="{Binding}" ItemTemplateSelector="{StaticResource PluginGuiTemplateSelector}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.Resources>
+
+                                <DataTemplate x:Key="BooleanTemplate">
+                                    <GroupBox Header="{Binding Name}"  Width="Auto">
+                                        <CheckBox Margin="10,5,0,0" IsChecked="{Binding Property, Mode=TwoWay}"/>
+                                    </GroupBox>
+                                </DataTemplate>
+                                <DataTemplate x:Key="NumberTemplate">
+                                    <GroupBox Header="{Binding Name}" Width="Auto" Padding="5" PreviewTextInput="NumberValidationTextBox">
+                                        <TextBox Width="30" Text="{Binding Property, Mode=TwoWay}"/>
+                                    </GroupBox>
+                                </DataTemplate>
+                                <DataTemplate x:Key="StringTemplate">
+                                    <GroupBox Header="{Binding Name}" Width="Auto" Padding="5">
+                                        <TextBox Width="100" Text="{Binding Property, Mode=TwoWay}"/>
+                                    </GroupBox>
+                                </DataTemplate>
+
+                            </ItemsControl.Resources>
+                        </ItemsControl>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
         </Grid>
     </StackPanel>
 </UserControl>

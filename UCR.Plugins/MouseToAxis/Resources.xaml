@@ -1,9 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    x:Class="HidWizards.UCR.Plugins.MouseToAxis.Resources">
-    <DataTemplate x:Key="MouseToAxis">
-        <Grid>
-
-        </Grid>
-    </DataTemplate>
-</ResourceDictionary>

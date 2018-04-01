@@ -47,15 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AxisToAxis\AxisToAxis.cs" />
-    <Compile Include="AxisToAxis\Resources.cs" />
     <Compile Include="AxisToButton\AxisToButton.cs" />
-    <Compile Include="AxisToButton\Resources.cs" />
     <Compile Include="ButtonToAxis\ButtonToAxis.cs" />
-    <Compile Include="ButtonToAxis\Resources.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
-    <Compile Include="ButtonToButton\Resources.cs" />
     <Compile Include="MouseToAxis\MouseToAxis.cs" />
-    <Compile Include="MouseToAxis\Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,34 +58,6 @@
       <Project>{676d3228-c3f0-4be7-8951-b83f7a16cea7}</Project>
       <Name>UCR.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UCR\UCR.csproj">
-      <Project>{2F2E9A0C-C97C-4AC7-A598-03D334B2D827}</Project>
-      <Name>UCR</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="AxisToButton\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ButtonToButton\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MouseToAxis\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="AxisToAxis\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ButtonToAxis\Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

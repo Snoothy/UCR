@@ -11,8 +11,10 @@ namespace HidWizards.UCR.Plugins.MouseToAxis
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class MouseToAxis: Plugin
     {
+        [PluginGui("Invert", RowOrder = 0, ColumnOrder = 0)]
+        public bool Invert { get; set; }
 
-        public override void Update(List<long> values)
+        public override void Update(params long[] values)
         {
             WriteOutput(0, values[0]*(Constants.AxisMaxValue/1000));
         }
