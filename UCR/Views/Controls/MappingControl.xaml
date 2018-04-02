@@ -13,7 +13,7 @@
         <DockPanel Background="{x:Static SystemColors.ControlDarkBrush}" HorizontalAlignment="Left" Height="30" LastChildFill="False" VerticalAlignment="Top"
                    Width="{Binding ActualWidth, ElementName=MappingViewName}">
             <DockPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}}">
-                <Label Content="{Binding Mapping.Title}" VerticalAlignment="Center"/>
+                <Label Content="{Binding Mapping.FullTitle}" VerticalAlignment="Center"/>
                 <StackPanel x:Name="RemovePluginButton" HorizontalAlignment="Right" Orientation="Horizontal" >
                     <Button Click="Remove_OnClick">
                         <Canvas Height="25"  Width="25">

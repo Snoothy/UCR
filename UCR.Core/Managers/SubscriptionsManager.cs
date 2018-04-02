@@ -73,23 +73,22 @@ namespace HidWizards.UCR.Core.Managers
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
             {
+                if (mappingSubscription.Overriden) continue;
+
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {
                     success &= UnsubscribeDeviceBindingInput(state, deviceBindingSubscription);
+                }
+
+                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
+                {
+                    pluginSubscription.Plugin.OnDeactivate();
                 }
             }
 
             foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
             {
                 success &= UnsubscribeOutput(state, deviceSubscription);
-            }
-
-            foreach (var mappingSubscription in state.MappingSubscriptions)
-            {
-                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
-                {
-                    pluginSubscription.Plugin.OnDeactivate();
-                }
             }
 
             _context.IOController.SetProfileState(state.StateGuid, false);
@@ -134,11 +133,8 @@ namespace HidWizards.UCR.Core.Managers
                     }
                 }
             }
-            
-            foreach (var profileMapping in profile.Mappings)
-            {
-                state.AddMapping(profileMapping, profile, profileOutputDevices);
-            }
+
+            state.AddMappings(profile, profileOutputDevices);
             
             return success;
         }
@@ -158,6 +154,8 @@ namespace HidWizards.UCR.Core.Managers
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
             {
+                if (mappingSubscription.Overriden) continue;
+
                 mappingSubscription.Mapping.PrepareMapping();
 
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)

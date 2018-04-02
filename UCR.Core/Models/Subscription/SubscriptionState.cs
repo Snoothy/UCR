@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HidWizards.UCR.Core.Models.Subscription
 {
@@ -29,10 +28,32 @@ namespace HidWizards.UCR.Core.Models.Subscription
             OutputDeviceSubscriptions.Add(deviceSubscription);
             return deviceSubscription;
         }
-
-        public void AddMapping(Mapping mapping, Profile profile, List<DeviceSubscription> profileOutputDevices)
+        
+        public void AddMappings(Profile profile, List<DeviceSubscription> profileOutputDevices)
         {
-            MappingSubscriptions.Add(new MappingSubscription(profile, mapping, StateGuid, profileOutputDevices));
+            var profileMappings = new List<MappingSubscription>();
+
+            foreach (var profileMapping in profile.Mappings)
+            {
+                profileMappings.Add(new MappingSubscription(profile, profileMapping, StateGuid, profileOutputDevices));
+            }
+
+            OverrideParentMappings(profileMappings);
+            MappingSubscriptions.AddRange(profileMappings);
+        }
+
+        private void OverrideParentMappings(List<MappingSubscription> profileMappingSubscriptions)
+        {
+            foreach (var profileMappingSubscription in profileMappingSubscriptions)
+            {
+                foreach (var subscription in MappingSubscriptions)
+                {
+                    if (profileMappingSubscription.Mapping.Title.Equals(subscription.Mapping.Title))
+                    {
+                        subscription.Overriden = true;
+                    }
+                }
+            }
         }
     }
 }

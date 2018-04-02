@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using System.Xml.XPath;
 using HidWizards.UCR.Core.Models.Binding;
 
@@ -16,6 +17,16 @@ namespace HidWizards.UCR.Core.Models
         // Runtime
         internal Profile Profile { get; set; }
         private List<long> InputCache { get; set; }
+
+        [XmlIgnore]
+        public string FullTitle
+        {
+            get
+            {
+                var mapping = GetOverridenMapping();
+                return mapping != null ? $"{Title} (Overrides {GetOverridenMapping().Profile.Title})" : Title;
+            }
+        }
 
         public Mapping()
         {
@@ -49,6 +60,27 @@ namespace HidWizards.UCR.Core.Models
                 deviceBinding.Callback = Update;
                 InputCache.Add(0L);
             }
+        }
+
+        internal Mapping GetOverridenMapping()
+        {
+            var list = new List<Mapping>();
+            var parentProfile = Profile.ParentProfile;
+            if (parentProfile != null) list.AddRange(parentProfile.Mappings);
+
+            while (list.Count > 0)
+            {
+                var mapping = list[0];
+                list.RemoveAt(0);
+                if (string.Compare(Title, mapping.Title, StringComparison.CurrentCultureIgnoreCase) == 0)
+                {
+                    return mapping;
+                }
+                parentProfile = parentProfile?.ParentProfile;
+                if (parentProfile != null) list.AddRange(parentProfile.Mappings);
+            }
+
+            return null;
         }
 
         // TODO Add Guid to distinguish devicebindings
