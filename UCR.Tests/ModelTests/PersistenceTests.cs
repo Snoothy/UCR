@@ -75,8 +75,8 @@ namespace HidWizards.UCR.Tests.ModelTests
             context.ProfilesManager.AddProfile("Root profile");
             var profile = context.Profiles[0];
             var mapping = profile.AddMapping("Jump");
-            profile.AddPlugin(mapping, new ButtonToButton(), "Button to button 1");
-            profile.AddPlugin(mapping, new ButtonToButton(), "Button to button 2");
+            profile.AddPlugin(mapping, new ButtonToButton(), Guid.Empty);
+            profile.AddPlugin(mapping, new ButtonToButton(), Guid.Empty);
 
             var bindingCount = 10;
             mapping.InitializeMappings(bindingCount);

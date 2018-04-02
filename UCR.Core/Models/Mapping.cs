@@ -89,7 +89,10 @@ namespace HidWizards.UCR.Core.Models
             InputCache[0] = value;
             foreach (var plugin in Plugins)
             {
-                plugin.Update(InputCache.ToArray());
+                if (plugin.State == Guid.Empty || Profile.GetRuntimeState(plugin.State))
+                {
+                    plugin.Update(InputCache.ToArray());
+                }
             }
         }
 

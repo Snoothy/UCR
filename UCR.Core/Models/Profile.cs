@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -15,10 +16,8 @@ namespace HidWizards.UCR.Core.Models
         public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
-        public List<string> States { get; set; }
+        public List<State> States { get; set; }
         public List<Mapping> Mappings { get; set; }
-
-        // IO
         public Guid InputDeviceGroupGuid { get; set; }
         public Guid OutputDeviceGroupGuid { get; set; }
 
@@ -28,6 +27,7 @@ namespace HidWizards.UCR.Core.Models
         public Context Context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
+        internal ConcurrentDictionary<Guid, bool> StateDictionary { get; set; }
 
         #region Constructors
 
@@ -38,7 +38,7 @@ namespace HidWizards.UCR.Core.Models
 
         public Profile(Context context)
         {
-            this.Context = context;
+            Context = context;
             Init();
         }
 
@@ -46,7 +46,7 @@ namespace HidWizards.UCR.Core.Models
         {
             Guid = Guid.NewGuid();
             ChildProfiles = new List<Profile>();
-            States = new List<string>();
+            States = new List<State>();
             Mappings = new List<Mapping>();
         }
 
@@ -131,6 +131,12 @@ namespace HidWizards.UCR.Core.Models
             return Context.SubscriptionsManager.DeactivateProfile();
         }
 
+        internal void PrepareProfile()
+        {
+            StateDictionary = new ConcurrentDictionary<Guid, bool>();
+            States.ForEach(s => StateDictionary.TryAdd(s.Guid, false));
+        }
+
         #endregion
 
         #region Mapping
@@ -193,15 +199,15 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin
 
-        public bool AddNewPlugin(Mapping mapping, Plugin plugin, string state = null)
+        public bool AddNewPlugin(Mapping mapping, Plugin plugin, Guid? state = null)
         {
             return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()), state);
         }
 
-        public bool AddPlugin(Mapping mapping, Plugin plugin, string state = null)
+        public bool AddPlugin(Mapping mapping, Plugin plugin, Guid? state = null)
         {
             if (!Mappings.Contains(mapping)) return false;
-            plugin.State = state;
+            plugin.State = state ?? Guid.Empty;
             plugin.Profile = this;
             mapping.Plugins.Add(plugin);
             Context.ContextChanged();
@@ -217,7 +223,45 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
-        
+
+        #region State
+
+        public bool AddState(string title)
+        {
+            if (States.Find(s => s.Title == title) != null) return false;
+            States.Add(new State(title));
+            return true;
+        }
+
+        public bool RemoveState(State state)
+        {
+            var success = States.Remove(state);
+            // TODO remove all plugins with state
+
+            return success;
+        }
+
+        public string GetStateTitle(Guid stateGuid)
+        {
+            var state = States.Find(s => s.Guid == stateGuid);
+            return state == null ? "" : state.Title;
+        }
+
+        public void SetRuntimeState(Guid stateGuid, bool newState)
+        {
+            if (StateDictionary.TryGetValue(stateGuid, out var currentState))
+            {
+                StateDictionary.TryUpdate(stateGuid, newState, currentState);
+            }
+        }
+
+        public bool GetRuntimeState(Guid stateGuid)
+        {
+            return StateDictionary.TryGetValue(stateGuid, out var currentState) && currentState;
+        }
+
+        #endregion
+
         #region Helpers
 
         public string ProfileBreadCrumbs()

@@ -62,7 +62,6 @@ namespace HidWizards.UCR.Core.Managers
             return true;
         }
 
-        // TODO
         public bool DeactivateProfile()
         {
             if (SubscriptionState == null) return true;
@@ -108,6 +107,8 @@ namespace HidWizards.UCR.Core.Managers
         private bool PopulateSubscriptionStateForProfile(SubscriptionState state, Profile profile)
         {
             var success = true;
+            profile.PrepareProfile();
+
             if (profile.ParentProfile != null)
             {
                 success &= PopulateSubscriptionStateForProfile(state, profile.ParentProfile);
@@ -139,8 +140,6 @@ namespace HidWizards.UCR.Core.Managers
             return success;
         }
 
-        
-        // TODO
         // Subscribes the backend when it is built
         private bool ActivateSubscriptionState(SubscriptionState state)
         {

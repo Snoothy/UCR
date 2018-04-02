@@ -12,7 +12,7 @@ namespace HidWizards.UCR.Core.Models
     public abstract class Plugin : IComparable<Plugin>
     {
         // Persistence
-        public string State { get; set; }
+        public Guid State { get; set; }
         public List<DeviceBinding> Outputs { get; }
         
         // Runtime
@@ -21,6 +21,8 @@ namespace HidWizards.UCR.Core.Models
         private List<IODefinition> _outputCategories;
         private List<List<PluginProperty>> _guiMatrix;
 
+        #region Properties
+        
         [XmlIgnore]
         public List<IODefinition> InputCategories
         {
@@ -58,14 +60,19 @@ namespace HidWizards.UCR.Core.Models
         public string PluginName => GetPluginAttribute().Name;
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
-        
+
+        public string StateTitle
+        {
+            get => Profile.GetStateTitle(State);
+        }
+
+        #endregion
+
         public struct IODefinition
         {
             public string Name;
             public DeviceBindingCategory Category;
         }
-
-        #region Life cycle
 
         protected Plugin()
         {
@@ -76,6 +83,8 @@ namespace HidWizards.UCR.Core.Models
             }
         }
 
+        #region Life cycle
+        
         public virtual void OnActivate()
         {
 
@@ -91,10 +100,23 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
-        // TODO 
+        #endregion
+
+        #region Plugin methods
+
         protected void WriteOutput(int number, long value)
         {
             Outputs[number].WriteOutput(value);
+        }
+
+        protected void SetState(Guid stateGuid, bool newState)
+        {
+            Profile.SetRuntimeState(stateGuid, newState);
+        }
+
+        protected bool GetState(Guid stateGuid)
+        {
+            return Profile.GetRuntimeState(stateGuid);
         }
 
         #endregion

@@ -51,6 +51,7 @@
     <Compile Include="AxisToMouse\AxisToMouse.cs" />
     <Compile Include="ButtonToAxis\ButtonToAxis.cs" />
     <Compile Include="ButtonToButton\ButtonToButton.cs" />
+    <Compile Include="ButtonToState\ButtonToState.cs" />
     <Compile Include="MouseToAxis\MouseToAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -64,11 +64,12 @@ namespace HidWizards.UCR.Tests.ModelTests
         [Test]
         public void AddPlugin()
         {
-            var pluginState = "State";
-            _profile.AddPlugin(_mapping, new ButtonToButton(), pluginState);
+            var pluginState = new State("State");
+            _profile.AddPlugin(_mapping, new ButtonToButton(), pluginState.Guid);
             var plugin = _mapping.Plugins[0];
+
             Assert.That(plugin, Is.Not.Null);
-            Assert.That(plugin.State, Is.EqualTo(pluginState));
+            Assert.That(plugin.State, Is.EqualTo(pluginState.Guid));
             Assert.That(plugin.Outputs, Is.Not.Null);
             Assert.That(plugin.Profile, Is.EqualTo(_profile));
             Assert.That(_context.IsNotSaved, Is.True);
@@ -110,33 +111,6 @@ namespace HidWizards.UCR.Tests.ModelTests
             Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Empty);
         }
 
-        [Test, Ignore("Irrelevant")]
-        public void GetDeviceFromParent()
-        {
-            var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
-            {
-                IsBound = true
-            };
-
-            var singleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Single device", DeviceIoType.Input);
-            var deviceList = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceIoType, singleGuid).Devices = deviceList;
-            var multipleGuid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
-            _context.DeviceGroupsManager.GetDeviceGroup(deviceBinding.DeviceIoType, multipleGuid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 4);
-
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, multipleGuid);
-
-            _profile.AddNewChildProfile("Child profile");
-            var childProfile = _profile.ChildProfiles[0];
-            childProfile.SetDeviceGroup(deviceBinding.DeviceIoType, singleGuid);
-
-            Assert.That(childProfile.GetDevice(deviceBinding).Guid, Is.EqualTo(deviceList[0].Guid));
-
-            Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.Not.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
-            Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(childProfile.GetDevice(deviceBinding).Guid));
-            Assert.That(childProfile.GetDeviceList(deviceBinding).Count, Is.EqualTo(4));
-        }
-
         [Test]
         public void CopyProfile()
         {
@@ -144,6 +118,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var profile = _context.Profiles[0];
             profileManager.CopyProfile(profile, "Copy");
             var newProfile = _context.Profiles[1];
+
             Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
             Assert.That(newProfile.Title, Is.EqualTo("Copy"));
             Assert.That(newProfile.ParentProfile, Is.Null);
@@ -159,17 +134,11 @@ namespace HidWizards.UCR.Tests.ModelTests
             var profile = parentProfile.ChildProfiles[0];
             profileManager.CopyProfile(profile, "Copy");
             var newProfile = parentProfile.ChildProfiles[1];
+
             Assert.That(newProfile.Guid, Is.Not.EqualTo(profile.Guid));
             Assert.That(newProfile.Title, Is.EqualTo("Copy"));
             Assert.That(newProfile.ParentProfile.Guid, Is.EqualTo(parentProfile.Guid));
             Assert.That(newProfile.Context, Is.Not.Null);
-        }
-
-        [Test]
-        public void ActivateProfile()
-        {
-            // TODO
-            //_profile.
         }
     }
 }
