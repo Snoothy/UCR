@@ -128,6 +128,9 @@
     <Compile Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml.cs">
       <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
+      <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -188,6 +191,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProfileViews\ProfileStateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

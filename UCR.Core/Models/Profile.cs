@@ -21,7 +21,26 @@ namespace HidWizards.UCR.Core.Models
         public Guid InputDeviceGroupGuid { get; set; }
         public Guid OutputDeviceGroupGuid { get; set; }
 
-        
+        /* Property helpers */
+        [XmlIgnore]
+        public List<State> AllStates
+        {
+            get
+            {
+                var list = new List<State>
+                {
+                    new State
+                    {
+                        Guid = Guid.Empty,
+                        Title = "Default"
+                    }
+                };
+                list.AddRange(States);
+                return list;
+            }
+        }
+
+
         /* Runtime */
         [XmlIgnore]
         public Context Context;
@@ -226,11 +245,13 @@ namespace HidWizards.UCR.Core.Models
 
         #region State
 
-        public bool AddState(string title)
+        public State AddState(string title)
         {
-            if (States.Find(s => s.Title == title) != null) return false;
-            States.Add(new State(title));
-            return true;
+            if (States.Find(s => s.Title == title) != null) return null;
+            var newState = new State(title);
+            States.Add(newState);
+            Context.ContextChanged();
+            return newState;
         }
 
         public bool RemoveState(State state)
@@ -238,6 +259,7 @@ namespace HidWizards.UCR.Core.Models
             var success = States.Remove(state);
             // TODO remove all plugins with state
 
+            Context.ContextChanged();
             return success;
         }
 

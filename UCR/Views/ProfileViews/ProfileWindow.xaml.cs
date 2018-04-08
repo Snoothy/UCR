@@ -159,5 +159,12 @@ namespace HidWizards.UCR.Views.ProfileViews
                 AddMappingFromText();
             }
         }
+
+        private void ManageStates_OnClick(object sender, RoutedEventArgs e)
+        {
+            var win = new ProfileStateWindow(Context, Profile);
+            Action showAction = () => win.Show();
+            Dispatcher.BeginInvoke(showAction);
+        }
     }
 }

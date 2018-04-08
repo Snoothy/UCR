@@ -26,6 +26,9 @@
                 <Separator/>
                 <MenuItem Header="Close" Click="Close_OnClick"/>
             </MenuItem>
+            <MenuItem Header="_States">
+                <MenuItem Header="Manage states" Click="ManageStates_OnClick" />
+            </MenuItem>
         </Menu>
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}" Margin="5">
