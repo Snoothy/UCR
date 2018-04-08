@@ -17,14 +17,14 @@ namespace HidWizards.UCR.Core.Models
     {
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
-        // Persistance
+        /* Persistance */
         public Guid Guid { get; set; }
         public string Title { get; set; }
         public string ProviderName { get; set; }
         public string DeviceHandle { get; set; }
         public int DeviceNumber { get; set; }
 
-        // Runtime
+        /* Runtime */
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
 

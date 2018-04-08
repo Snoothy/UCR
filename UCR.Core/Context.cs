@@ -18,12 +18,12 @@ namespace HidWizards.UCR.Core
         private const string ContextName = "context.xml";
         private const string PluginPath = "Plugins";
 
-        // Persistence
+        /* Persistence */
         public List<Profile> Profiles { get; set; }
         public List<DeviceGroup> InputGroups { get; set; }
         public List<DeviceGroup> OutputGroups { get; set; }
 
-        // Runtime
+        /* Runtime */
         [XmlIgnore]
         public Profile ActiveProfile { get; set; }
         [XmlIgnore]

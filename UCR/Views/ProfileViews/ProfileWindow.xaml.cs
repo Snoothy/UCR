@@ -6,22 +6,17 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.Utilities.Commands;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 using UCR.Views.ProfileViews;
 
 namespace HidWizards.UCR.Views.ProfileViews
 {
-    /// <summary>
-    /// Interaction logic for ProfileWindow.xaml
-    /// </summary>
     public partial class ProfileWindow : Window
     {
         private Context Context { get; }
         private Profile Profile { get; }
         private ProfileViewModel ProfileViewModel { get; }
-        private bool _hasLoaded;
 
         public ProfileWindow(Context context, Profile profile)
         {
@@ -95,9 +90,11 @@ namespace HidWizards.UCR.Views.ProfileViews
         {
             var plugin = ((ComboBoxItemViewModel)PluginsComboBox.SelectedItem)?.Value;
             if (plugin == null) return;
-            plugin.SetProfile(Profile);
 
-            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin));
+            var comboBoxItem = StatesComboBox.SelectedItem as ComboBoxItemViewModel;
+            var state = comboBoxItem?.Value as State;
+
+            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin), state?.Guid);
 
             if (ProfileViewModel.SelectedMapping.Plugins.Count == 1)
             {
@@ -108,7 +105,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
             PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
-        
+
         #endregion
 
         private void Close_OnClick(object sender, RoutedEventArgs e)
@@ -118,7 +115,6 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _hasLoaded = true;
             if (ProfileViewModel.MappingsList.Count > 0)
             {
                 MappingsListBox.SelectedItem = ProfileViewModel.MappingsList[0];

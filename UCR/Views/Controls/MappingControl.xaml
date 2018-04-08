@@ -14,7 +14,7 @@
                    Width="{Binding ActualWidth, ElementName=MappingViewName}">
             <DockPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}}">
                 <Label Content="{Binding Mapping.FullTitle}" VerticalAlignment="Center"/>
-                <StackPanel x:Name="RemovePluginButton" HorizontalAlignment="Right" Orientation="Horizontal" >
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" >
                     <Button Click="Remove_OnClick">
                         <Canvas Height="25"  Width="25">
                             <Path Stroke="Black" StrokeThickness="1">
@@ -37,7 +37,7 @@
             </DockPanel>
         </DockPanel>
         <Grid Height="auto">
-            <ItemsControl x:Name="DeviceBindingsListBox"  ItemsSource="{Binding DeviceBindings}" Margin="5">
+            <ItemsControl ItemsSource="{Binding DeviceBindings}" Margin="5">
                 <ItemsControl.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

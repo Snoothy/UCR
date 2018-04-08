@@ -11,11 +11,11 @@ namespace HidWizards.UCR.Core.Models
     [InheritedExport(typeof(Plugin))]
     public abstract class Plugin : IComparable<Plugin>
     {
-        // Persistence
+        /* Persistence */
         public Guid State { get; set; }
         public List<DeviceBinding> Outputs { get; }
         
-        // Runtime
+        /* Runtime */
         internal Profile Profile { get; set; }
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
@@ -57,7 +57,8 @@ namespace HidWizards.UCR.Core.Models
         }
 
         [XmlIgnore]
-        public string PluginName => GetPluginAttribute().Name;
+        public string PluginName => State.Equals(Guid.Empty) ? GetPluginAttribute().Name : $"{GetPluginAttribute().Name} - State: {StateTitle}";
+
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
 

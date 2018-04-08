@@ -18,10 +18,10 @@ namespace HidWizards.UCR.Views.Controls
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
 
-        // DDL
+        /* DDL */
         private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
 
-        // ContextMenu
+        /* ContextMenu */
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
 
         private bool HasLoaded = false;

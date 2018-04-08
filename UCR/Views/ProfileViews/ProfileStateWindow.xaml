@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
             <Button Margin="0,0,5,5" Click="AddState_OnClick">Add</Button>
-            <TextBox x:Name="StateTextBox" Grid.Column="1" Margin="0,0,0,5"></TextBox>
+            <TextBox x:Name="StateTextBox" Grid.Column="1" Margin="0,0,0,5" KeyDown="AddState_OnKeyDown"></TextBox>
         </Grid>
         
         <ListBox x:Name="StateListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding States}">
@@ -33,6 +33,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Grid.Row="2" Margin="0,5,0,0" Click="RemoveState_OnClick" Grid.Column="1">Remove</Button>
+        <Button Grid.Row="2" Margin="0,5,0,0" Click="RemoveState_OnClick">Remove</Button>
     </Grid>
 </Window>

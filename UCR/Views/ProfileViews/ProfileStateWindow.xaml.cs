@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 
@@ -38,16 +39,23 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private void AddState_OnClick(object sender, RoutedEventArgs e)
         {
+            AddState();
+        }
+
+        private void AddState()
+        {
             if (string.IsNullOrEmpty(StateTextBox.Text))
             {
-                MessageBox.Show("Please input a name for the state", "Missing state name!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Please input a name for the state", "Missing state name!", MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
                 return;
             }
 
             var state = _profile.AddState(StateTextBox.Text);
             if (state == null)
             {
-                MessageBox.Show("The state name already exists", "Failed to add state!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The state name already exists", "Failed to add state!", MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
                 return;
             }
 
@@ -71,6 +79,14 @@ namespace HidWizards.UCR.Views.ProfileViews
             }
 
             States.Remove(state);
+        }
+
+        private void AddState_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                AddState();
+            }
         }
     }
 }

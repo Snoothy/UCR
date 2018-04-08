@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
@@ -24,9 +25,9 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             ProfileViewModel.RemoveMapping(this);
         }
 
-        public void AddPlugin(Plugin plugin)
+        public void AddPlugin(Plugin plugin, Guid? state)
         {
-            if (!Mapping.AddPlugin(plugin)) return;
+            if (!Mapping.AddPlugin(plugin, state)) return;
 
             Plugins.Add(new PluginViewModel(this, plugin));
             if (Plugins.Count != 1) return;

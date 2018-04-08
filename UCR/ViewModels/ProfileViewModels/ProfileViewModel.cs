@@ -8,6 +8,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
     {
         public Profile Profile { get; }
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
+        public ObservableCollection<ComboBoxItemViewModel> StatesList { get; set; }
         public MappingViewModel SelectedMapping { get; set; }
 
         public ProfileViewModel()
@@ -19,6 +20,18 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         {
             Profile = profile;
             PopulateMappingsList(profile);
+            PopulateStatesComboBox();
+        }
+
+        private void PopulateStatesComboBox()
+        {
+            var states = Profile.AllStates;
+            StatesList = new ObservableCollection<ComboBoxItemViewModel>();
+            foreach (var state in states)
+            {
+                StatesList.Add(new ComboBoxItemViewModel(state.Title, state));
+            }
+
         }
 
         private void PopulateMappingsList(Profile profile)

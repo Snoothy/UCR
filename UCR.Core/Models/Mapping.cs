@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using System.Xml.XPath;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Core.Models
 {
     public class Mapping
     {
-        // Persistence
-        public String Title { get; set; }
+        /* Persistence */
+        public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<DeviceBinding> DeviceBindings { get; set; }
         public List<Plugin> Plugins { get; set; }
 
-        // Runtime
-        internal Profile Profile { get; set; }
+        /* Runtime */
+        private Profile Profile { get; set; }
         private List<long> InputCache { get; set; }
 
         [XmlIgnore]
@@ -109,7 +108,7 @@ namespace HidWizards.UCR.Core.Models
             return plugins;
         }
 
-        public bool AddPlugin(Plugin plugin)
+        public bool AddPlugin(Plugin plugin, Guid? state)
         {
             if (Plugins.Count == 0)
             {
@@ -120,7 +119,9 @@ namespace HidWizards.UCR.Core.Models
             }
             
             plugin.SetProfile(Profile);
+            if (state != null) plugin.State = state.Value;
             Plugins.Add(plugin);
+
             Profile.Context.ContextChanged();
             return true;
         }

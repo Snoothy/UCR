@@ -14,7 +14,7 @@ namespace HidWizards.UCR.Core.Models.Binding
 
     public class DeviceBinding
     {
-        // Persistence
+        /* Persistence */
         public bool IsBound { get; set; }
         // Index in its device list
         public Guid DeviceGuid { get; set; }
@@ -23,7 +23,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         public int KeyValue { get; set; }
         public int KeySubValue { get; set; }
 
-        // Runtime
+        /* Runtime */
         [XmlIgnore]
         public Guid Guid { get; }
         [XmlIgnore]
