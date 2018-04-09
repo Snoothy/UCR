@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core.Models;
@@ -29,6 +27,12 @@ namespace HidWizards.UCR.Views.Controls
                     return element.FindResource("NumberTemplate") as DataTemplate;
                 case TypeCode.String:
                     return element.FindResource("StringTemplate") as DataTemplate;
+                case TypeCode.Object:
+                    if (pluginProperty.PropertyInfo.PropertyType == typeof(Guid))
+                    {
+                        return element.FindResource("StateTemplate") as DataTemplate;
+                    }
+                    return null;
                 default:
                     return null;
             }

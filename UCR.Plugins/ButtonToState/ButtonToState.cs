@@ -10,13 +10,15 @@ namespace HidWizards.UCR.Plugins.ButtonToState
     public class ButtonToState : Plugin
     {
 
-        [PluginGui("Invert", ColumnOrder = 0, RowOrder = 0)]
+        [PluginGui("Invert", ColumnOrder = 1, RowOrder = 0)]
         public bool Invert { get; set; }
+
+        [PluginGui("State", ColumnOrder = 0, RowOrder = 0)]
+        public Guid StateGuid { get; set; }
 
         public override void Update(params long[] values)
         {
             long value;
-            var guid = Guid.Parse("2f9ec6c0-18f6-4a8d-a432-95a64a26814a");
             if (Invert)
             {
                 value = values[0] == 0 ? 1 : 0;
@@ -26,7 +28,7 @@ namespace HidWizards.UCR.Plugins.ButtonToState
                 value = values[0];
             }
 
-            SetState(guid, value != 0);
+            SetState(StateGuid, value != 0);
         }
     }
 }

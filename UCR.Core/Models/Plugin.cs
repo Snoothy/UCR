@@ -242,6 +242,11 @@ namespace HidWizards.UCR.Core.Models
                 currentRow.Add(pluginProperty);
             }
 
+            foreach (var pluginPropertiesRow in result)
+            {
+                pluginPropertiesRow.Sort((x, y) => x.ColumnOrder.CompareTo(y.ColumnOrder));
+            }
+
             return result;
         }
 

@@ -88,6 +88,9 @@
                                         <TextBox Width="100" Text="{Binding Property, Mode=TwoWay}"/>
                                     </GroupBox>
                                 </DataTemplate>
+                                <DataTemplate x:Key="StateTemplate">
+                                    <controls:StateControl PluginProperty="{Binding}"/>
+                                </DataTemplate>
 
                             </ItemsControl.Resources>
                         </ItemsControl>

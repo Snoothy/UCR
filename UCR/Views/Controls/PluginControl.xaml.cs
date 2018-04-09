@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.Controls
