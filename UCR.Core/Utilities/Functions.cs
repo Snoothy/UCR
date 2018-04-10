@@ -19,5 +19,22 @@ namespace HidWizards.UCR.Core.Utilities
             // TODO https://github.com/evilC/UCR/blob/master/Libraries/StickOps/StickOps.ahk#L60
             return value;
         }
+
+        public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
+        {
+            long value;
+            if (positiveRange)
+            {
+                value = axis > 0L ? axis : 0L;
+            }
+            else
+            {
+                value = axis < 0 ? axis * -1 : 0L;
+            }
+            
+            value = Constants.AxisMinValue + value * 2;
+            
+            return invert ? value * -1 : value; 
+        }
     }
 }
