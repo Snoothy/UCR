@@ -46,6 +46,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AxisSplitter\AxisSplitter.cs" />
     <Compile Include="AxisToAxis\AxisToAxis.cs" />
     <Compile Include="AxisToButton\AxisToButton.cs" />
     <Compile Include="AxisToMouse\AxisToMouse.cs" />

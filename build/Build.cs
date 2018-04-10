@@ -18,7 +18,7 @@ using static Nuke.Core.EnvironmentInfo;
 class Build : NukeBuild
 {
     // Console application entry. Also defines the default target.
-    public static int Main() => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Test);
 
     // Auto-injection fields:
 
