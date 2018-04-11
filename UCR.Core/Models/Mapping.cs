@@ -16,6 +16,7 @@ namespace HidWizards.UCR.Core.Models
         /* Runtime */
         private Profile Profile { get; set; }
         private List<long> InputCache { get; set; }
+        private List<CallbackMultiplexer> Multiplexer { get; set; }
 
         [XmlIgnore]
         public string FullTitle
@@ -54,10 +55,13 @@ namespace HidWizards.UCR.Core.Models
         internal void PrepareMapping()
         {
             InputCache = new List<long>();
-            foreach (var deviceBinding in DeviceBindings)
+            DeviceBindings.ForEach(_ => InputCache.Add(0L));
+            Multiplexer = new List<CallbackMultiplexer>();
+            for (var i = 0; i < DeviceBindings.Count; i++)
             {
-                deviceBinding.Callback = Update;
-                InputCache.Add(0L);
+                var cm = new CallbackMultiplexer(InputCache, i, Update);
+                Multiplexer.Add(cm);
+                DeviceBindings[i].Callback = cm.Update;
             }
         }
 
@@ -81,11 +85,9 @@ namespace HidWizards.UCR.Core.Models
 
             return null;
         }
-
-        // TODO Add Guid to distinguish devicebindings
+        
         public void Update(long value)
         {
-            InputCache[0] = value;
             foreach (var plugin in Plugins)
             {
                 if (plugin.State == Guid.Empty || Profile.GetRuntimeState(plugin.State))

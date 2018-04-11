@@ -4,8 +4,7 @@ using System.Diagnostics;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Plugins.AxisToAxis;
-using HidWizards.UCR.Plugins.ButtonToButton;
+using HidWizards.UCR.Plugins.Remapper;
 using HidWizards.UCR.Tests.Factory;
 using NUnit.Framework;
 

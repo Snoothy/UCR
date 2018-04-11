@@ -2,7 +2,7 @@
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
-namespace HidWizards.UCR.Plugins.ButtonToButton
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Button to button")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]

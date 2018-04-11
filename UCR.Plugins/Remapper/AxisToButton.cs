@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.AxisToButton
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Axis to button")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]

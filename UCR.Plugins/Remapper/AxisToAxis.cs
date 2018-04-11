@@ -4,7 +4,7 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.AxisToAxis
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Axis to axis")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]

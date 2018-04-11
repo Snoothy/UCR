@@ -3,7 +3,7 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.ButtonToAxis
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Button to axis")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]

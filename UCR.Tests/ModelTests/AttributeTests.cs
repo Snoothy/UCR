@@ -1,5 +1,5 @@
 ﻿using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Plugins.ButtonToButton;
+using HidWizards.UCR.Plugins.Remapper;
 using NUnit.Framework;
 
 namespace HidWizards.UCR.Tests.ModelTests

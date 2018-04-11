@@ -3,7 +3,7 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.AxisSplitter
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Axis splitter")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]

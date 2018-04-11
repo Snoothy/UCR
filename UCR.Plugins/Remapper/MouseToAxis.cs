@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using HidWizards.UCR.Core.Attributes;
+﻿using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.MouseToAxis
+namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Mouse to Axis", Disabled = true)]
     [PluginInput(DeviceBindingCategory.Delta, "Mouse axis")]

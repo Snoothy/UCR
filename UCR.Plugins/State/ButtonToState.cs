@@ -3,7 +3,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
-namespace HidWizards.UCR.Plugins.ButtonToState
+namespace HidWizards.UCR.Plugins.State
 {
     [Plugin("Button to state")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]

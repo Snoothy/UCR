@@ -46,14 +46,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AxisSplitter\AxisSplitter.cs" />
-    <Compile Include="AxisToAxis\AxisToAxis.cs" />
-    <Compile Include="AxisToButton\AxisToButton.cs" />
-    <Compile Include="AxisToMouse\AxisToMouse.cs" />
-    <Compile Include="ButtonToAxis\ButtonToAxis.cs" />
-    <Compile Include="ButtonToButton\ButtonToButton.cs" />
-    <Compile Include="ButtonToState\ButtonToState.cs" />
-    <Compile Include="MouseToAxis\MouseToAxis.cs" />
+    <Compile Include="Remapper\AxisMerger.cs" />
+    <Compile Include="Remapper\AxisSplitter.cs" />
+    <Compile Include="Remapper\AxisToAxis.cs" />
+    <Compile Include="Remapper\AxisToButton.cs" />
+    <Compile Include="Remapper\AxisToMouse.cs" />
+    <Compile Include="Remapper\ButtonToAxis.cs" />
+    <Compile Include="Remapper\ButtonToButton.cs" />
+    <Compile Include="State\ButtonToState.cs" />
+    <Compile Include="Remapper\MouseToAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

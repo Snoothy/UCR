@@ -111,6 +111,9 @@
     <Compile Include="Views\Controls\PluginGuiTemplateSelector.cs" />
     <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
+    <Compile Include="Views\Controls\EnumControl.xaml.cs">
+      <DependentUpon>EnumControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\StateControl.xaml.cs">
       <DependentUpon>StateControl.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,10 @@
     <Page Include="Views\Controls\PluginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\EnumControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\StateControl.xaml">
       <SubType>Designer</SubType>

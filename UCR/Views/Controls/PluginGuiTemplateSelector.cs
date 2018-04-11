@@ -24,6 +24,10 @@ namespace HidWizards.UCR.Views.Controls
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
+                    if (pluginProperty.Property is Enum)
+                    {
+                        return element.FindResource("EnumTemplate") as DataTemplate;
+                    }
                     return element.FindResource("NumberTemplate") as DataTemplate;
                 case TypeCode.String:
                     return element.FindResource("StringTemplate") as DataTemplate;
@@ -33,6 +37,7 @@ namespace HidWizards.UCR.Views.Controls
                         return element.FindResource("StateTemplate") as DataTemplate;
                     }
                     return null;
+
                 default:
                     return null;
             }

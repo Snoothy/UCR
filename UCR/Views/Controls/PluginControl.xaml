@@ -91,6 +91,9 @@
                                 <DataTemplate x:Key="StateTemplate">
                                     <controls:StateControl PluginProperty="{Binding}"/>
                                 </DataTemplate>
+                                <DataTemplate x:Key="EnumTemplate">
+                                    <controls:EnumControl PluginProperty="{Binding}"/>
+                                </DataTemplate>
 
                             </ItemsControl.Resources>
                         </ItemsControl>
