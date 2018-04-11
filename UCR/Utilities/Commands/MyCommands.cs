@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace UCR.Utilities.Commands
+namespace HidWizards.UCR.Utilities.Commands
 {
     // TODO Refactor
     public static class MyCommands

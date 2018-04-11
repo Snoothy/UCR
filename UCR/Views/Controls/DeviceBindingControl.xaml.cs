@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using UCR.Core.Models.Binding;
-using UCR.Core.Utilities;
-using UCR.Utilities.Commands;
-using UCR.ViewModels;
+using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Utilities.Commands;
+using HidWizards.UCR.ViewModels;
 
-namespace UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls
 {
     /// <summary>
     /// Interaction logic for DeviceBindingControl.xaml
@@ -18,10 +18,10 @@ namespace UCR.Views.Controls
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
 
-        // DDL
+        /* DDL */
         private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
 
-        // ContextMenu
+        /* ContextMenu */
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
 
         private bool HasLoaded = false;
@@ -64,36 +64,31 @@ namespace UCR.Views.Controls
 
         private void LoadDeviceInputs()
         {
-            var devicelist = DeviceBinding.Plugin.GetDeviceList(DeviceBinding);
+            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
-            for(var i = 0; i < Math.Max(devicelist?.Count ?? 0, Constants.MaxDevices); i++)
+            foreach (var device in devicelist)
             {
-                if (devicelist != null && i < devicelist.Count)
-                {
-                    Devices.Add(new ComboBoxItemViewModel(i + 1 + ". " + devicelist[i].Title, i));
-                }
-                else
-                {
-                    Devices.Add(new ComboBoxItemViewModel(i + 1+". N/A", i));
-                }
-                
+                Devices.Add(new ComboBoxItemViewModel(device.Title, device.Guid));
             }
 
             ComboBoxItemViewModel selectedDevice = null;
             
             foreach (var comboBoxItem in Devices)
             {
-                if (comboBoxItem.Value == DeviceBinding.DeviceNumber)
+                if (comboBoxItem.Value == DeviceBinding.DeviceGuid)
                 {
                     selectedDevice = comboBoxItem;
                     break;
                 }
             }
+
+            if (Devices.Count == 0) Devices.Add(new ComboBoxItemViewModel("No device group", Guid.Empty));
             if (selectedDevice == null)
             {
-                selectedDevice = new ComboBoxItemViewModel(DeviceBinding.DeviceNumber+1+ ". N/A", DeviceBinding.DeviceNumber);
-                Devices.Add(selectedDevice);
+                selectedDevice = Devices[0];
+                DeviceBinding.SetDeviceGuid(selectedDevice.Value);
             }
+
             DeviceNumberBox.ItemsSource = Devices;
             DeviceNumberBox.SelectedItem = selectedDevice;
         }
@@ -108,9 +103,9 @@ namespace UCR.Views.Controls
         private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
-            var device = DeviceBinding.Plugin.GetDevice(DeviceBinding);
+            var device = DeviceBinding.Profile.GetDevice(DeviceBinding);
             if (device == null) return;
-            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Plugin.ParentProfile.context, DeviceBinding.DeviceIoType));
+            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
         }
 
         private ObservableCollection<ContextMenuItem> BuildMenu(List<DeviceBindingNode> deviceBindingNodes)
@@ -162,14 +157,9 @@ namespace UCR.Views.Controls
         {
             if (!HasLoaded) return;
             if (DeviceNumberBox.SelectedItem == null) return;
-            DeviceBinding.SetDeviceNumber(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
+            DeviceBinding.SetDeviceGuid(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
             LoadContextMenu();
             LoadBindingName();
-        }
-        
-        private void DeviceNumberBox_OnDropDownOpened(object sender, EventArgs e)
-        {
-            LoadDeviceInputs();
         }
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)

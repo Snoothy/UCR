@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 
-namespace UCR.Views
+namespace HidWizards.UCR.Views
 {
     /// <summary>
     /// Interaction logic for About.xaml
@@ -22,7 +22,7 @@ namespace UCR.Views
 
         private string GetVersion()
         {
-            return "v0.2.0";
+            return "v0.3.0";
             // TODO
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);

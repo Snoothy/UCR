@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using UCR.Core.Models.Binding;
-using UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
-namespace UCR.Core.Managers
+namespace HidWizards.UCR.Core.Managers
 {
     public class DevicesManager
     {

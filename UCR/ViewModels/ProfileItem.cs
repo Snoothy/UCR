@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using UCR.Core.Models.Profile;
+using HidWizards.UCR.Core.Models;
 
-namespace UCR.ViewModels
+namespace HidWizards.UCR.ViewModels
 {
     public class ProfileItem
     {

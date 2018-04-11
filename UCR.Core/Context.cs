@@ -4,15 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
-using IOWrapper;
+using HidWizards.IOWrapper.Core;
+using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models;
 using Mono.Options;
 using NLog;
-using UCR.Core.Managers;
-using UCR.Core.Models.Device;
-using UCR.Core.Models.Plugin;
-using UCR.Core.Models.Profile;
 
-namespace UCR.Core
+namespace HidWizards.UCR.Core
 {
     public class Context : IDisposable
     {
@@ -20,12 +18,12 @@ namespace UCR.Core
         private const string ContextName = "context.xml";
         private const string PluginPath = "Plugins";
 
-        // Persistence
+        /* Persistence */
         public List<Profile> Profiles { get; set; }
         public List<DeviceGroup> InputGroups { get; set; }
         public List<DeviceGroup> OutputGroups { get; set; }
 
-        // Runtime
+        /* Runtime */
         [XmlIgnore]
         public Profile ActiveProfile { get; set; }
         [XmlIgnore]
@@ -36,11 +34,12 @@ namespace UCR.Core
         public DeviceGroupsManager DeviceGroupsManager { get; set; }
         [XmlIgnore]
         public SubscriptionsManager SubscriptionsManager { get; set; }
+        [XmlIgnore]
+        public PluginsManager PluginManager { get; set; }
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
         internal readonly List<Action> ActiveProfileCallbacks = new List<Action>();
-        private PluginLoader _pluginLoader;
         private OptionSet options;
 
         public Context()
@@ -61,7 +60,7 @@ namespace UCR.Core
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
-            _pluginLoader = new PluginLoader(PluginPath);
+            PluginManager = new PluginsManager(PluginPath);
         }
 
         private void SetCommandLineOptions()
@@ -91,7 +90,7 @@ namespace UCR.Core
 
         public List<Plugin> GetPlugins()
         {
-            return _pluginLoader.Plugins;
+            return PluginManager.Plugins.Where(p => !p.IsDisabled).ToList();
         }
 
         public void ContextChanged()
@@ -148,7 +147,7 @@ namespace UCR.Core
 
         private static XmlSerializer GetXmlSerializer(List<Type> additionalPluginTypes, Type type)
         {
-            var plugins = new PluginLoader(PluginPath);
+            var plugins = new PluginsManager(PluginPath);
             var pluginTypes = plugins.Plugins.Select(p => p.GetType()).ToList();
             if (additionalPluginTypes != null) pluginTypes.AddRange(additionalPluginTypes);
             return new XmlSerializer(type, pluginTypes.ToArray());

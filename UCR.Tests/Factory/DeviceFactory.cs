@@ -1,8 +1,7 @@
-﻿
-using System.Collections.Generic;
-using UCR.Core.Models.Device;
+﻿using System.Collections.Generic;
+using HidWizards.UCR.Core.Models;
 
-namespace UCR.Tests.Factory
+namespace HidWizards.UCR.Tests.Factory
 {
     internal static class DeviceFactory
     {

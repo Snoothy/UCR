@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UCR.Core.Models.Device;
+using HidWizards.UCR.Core.Models;
 
-namespace UCR.Core.Managers
+namespace HidWizards.UCR.Core.Managers
 {
     public class DeviceGroupsManager
     {

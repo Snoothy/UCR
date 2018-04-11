@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
-using UCR.Core.Models.Plugin;
 
-namespace UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls
 {
     class PluginViewTemplateSelector : DataTemplateSelector
     {
@@ -18,8 +18,15 @@ namespace UCR.Views.Controls
         public override DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             if (item == null) return PluginTemplate;
-            if (item is PluginGroup) return (DataTemplate)Window.FindResource("PluginGroup");
-            PluginTemplate = (DataTemplate)Window.FindResource(item.GetType().Name);
+            try
+            {
+                PluginTemplate = (DataTemplate)Window.FindResource(item.GetType().Name);
+            }
+            catch (ResourceReferenceKeyNotFoundException)
+            {
+                return null;
+            }
+            
             return PluginTemplate;
         }
     }

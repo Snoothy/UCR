@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace UCR.Views
+namespace HidWizards.UCR.Views
 {
     /// <summary>
     /// Interaction logic for HelpWindow.xaml

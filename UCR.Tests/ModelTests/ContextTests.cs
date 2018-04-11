@@ -1,8 +1,8 @@
 ﻿using System;
+using HidWizards.UCR.Core;
 using NUnit.Framework;
-using UCR.Core;
 
-namespace UCR.Tests.ModelTests
+namespace HidWizards.UCR.Tests.ModelTests
 {
     [TestFixture]
     public class ContextTests

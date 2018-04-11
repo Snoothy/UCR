@@ -1,22 +1,119 @@
-﻿<device:DeviceListControlViewModel xmlns:device="clr-namespace:UCR.ViewModels.Device"
-                                   xmlns:device2="clr-namespace:UCR.Core.Models.Device;assembly=UCR.Core">
-    <device:DeviceListControlViewModel.InputDeviceGroups>
-        <device:DeviceGroupViewModel>
-            <device:DeviceGroupViewModel.Title>SharpDX</device:DeviceGroupViewModel.Title>
-            <device:DeviceGroupViewModel.Devices>
-                <device2:Device>
-                    <device2:Device.Title>USB Gamepad</device2:Device.Title>
-                </device2:Device>
-                <device2:Device>
-                    <device2:Device.Title>vJoy 1</device2:Device.Title>
-                </device2:Device>
-                <device2:Device>
-                    <device2:Device.Title>vJoy 2</device2:Device.Title>
-                </device2:Device>
-            </device:DeviceGroupViewModel.Devices>
-        </device:DeviceGroupViewModel>
-    </device:DeviceListControlViewModel.InputDeviceGroups>
-</device:DeviceListControlViewModel>
+﻿<deviceViewModels:DeviceListControlViewModel
+    xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
+    xmlns:deviceViewModels="clr-namespace:HidWizards.UCR.ViewModels.DeviceViewModels">
+    <deviceViewModels:DeviceListControlViewModel.InputDeviceGroups>
+        <deviceViewModels:DeviceGroupViewModel>
+            <deviceViewModels:DeviceGroupViewModel.Title>SharpDX</deviceViewModels:DeviceGroupViewModel.Title>
+            <deviceViewModels:DeviceGroupViewModel.Devices>
+                <models:Device>
+                    <models:Device.Title>USB Gamepad</models:Device.Title>
+                </models:Device>
+                <models:Device>
+                    <models:Device.Title>vJoy 1</models:Device.Title>
+                </models:Device>
+                <models:Device>
+                    <models:Device.Title>vJoy 2</models:Device.Title>
+                </models:Device>
+            </deviceViewModels:DeviceGroupViewModel.Devices>
+        </deviceViewModels:DeviceGroupViewModel>
+    </deviceViewModels:DeviceListControlViewModel.InputDeviceGroups>
+</deviceViewModels:DeviceListControlViewModel>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

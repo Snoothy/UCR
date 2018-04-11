@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using UCR.Core;
-using UCR.Core.Utilities;
-using UCR.Utilities;
-using UCR.Views;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Utilities;
+using HidWizards.UCR.Views;
 using Application = System.Windows.Application;
 
-namespace UCR
+namespace HidWizards.UCR
 {
     /// <summary>
     /// Interaction logic for App.xaml

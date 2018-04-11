@@ -4,7 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Windows;
 
-namespace UCR.Utilities
+namespace HidWizards.UCR.Utilities
 {
     public class ResourceLoader
     {

@@ -1,66 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UCR.Core.Models.Device;
 
-namespace UCR.Core.Models.Subscription
+namespace HidWizards.UCR.Core.Models.Subscription
 {
     public class SubscriptionState
     {
         public Guid StateGuid { get; }
-        public Profile.Profile ActiveProfile { get; }
+        public Profile ActiveProfile { get; }
         public bool IsActive { get; set; }
 
-        public List<DeviceSubscription> DeviceSubscriptions { get; }
-        public Dictionary<string, List<DeviceBindingSubscription>> DeviceBindingSubscriptions { get; }
-        public Dictionary<string, List<DeviceBindingSubscription>> OutputDeviceBindingSubscriptions { get; }
-        public List<Plugin.Plugin> ActivePlugins { get; }
+        public List<DeviceSubscription> OutputDeviceSubscriptions { get; }
+        public List<MappingSubscription> MappingSubscriptions { get; set; }
 
-        public SubscriptionState(Profile.Profile profile)
+
+        public SubscriptionState(Profile profile)
         {
             StateGuid = Guid.NewGuid();
             ActiveProfile = profile;
-            DeviceSubscriptions = new List<DeviceSubscription>();
-            DeviceBindingSubscriptions = new Dictionary<string, List<DeviceBindingSubscription>>();
-            OutputDeviceBindingSubscriptions = new Dictionary<string, List<DeviceBindingSubscription>>();
-            ActivePlugins = new List<Plugin.Plugin>();
+            OutputDeviceSubscriptions = new List<DeviceSubscription>();
+            MappingSubscriptions = new List<MappingSubscription>();
             IsActive = false;
         }
 
-        public void AddOutputDevice(Device.Device device, Profile.Profile profile)
+        public DeviceSubscription AddOutputDevice(Device device, Profile profile)
         {
-            DeviceSubscriptions.Add(new DeviceSubscription(device, profile));
+            var deviceSubscription = new DeviceSubscription(device, profile);
+            OutputDeviceSubscriptions.Add(deviceSubscription);
+            return deviceSubscription;
         }
-
-        public void AddDeviceBindingSubscriptions(Plugin.Plugin plugin)
+        
+        public void AddMappings(Profile profile, List<DeviceSubscription> profileOutputDevices)
         {
-            AddDeviceBindingSubscriptions(plugin, DeviceIoType.Input);
-            AddDeviceBindingSubscriptions(plugin, DeviceIoType.Output);
-        }
+            var profileMappings = new List<MappingSubscription>();
 
-        private void AddDeviceBindingSubscriptions(Plugin.Plugin plugin, DeviceIoType deviceIoType)
-        {
-            var deviceBindings = deviceIoType == DeviceIoType.Input ? plugin.GetInputs() : plugin.Outputs;
-            var deviceBindingsList = deviceIoType == DeviceIoType.Input ? DeviceBindingSubscriptions : OutputDeviceBindingSubscriptions;
-            if (deviceBindingsList.ContainsKey(plugin.Title))
+            foreach (var profileMapping in profile.Mappings)
             {
-                foreach (var deviceBindingSubscription in deviceBindingsList[plugin.Title])
+                profileMappings.Add(new MappingSubscription(profile, profileMapping, StateGuid, profileOutputDevices));
+            }
+
+            OverrideParentMappings(profileMappings);
+            MappingSubscriptions.AddRange(profileMappings);
+        }
+
+        private void OverrideParentMappings(List<MappingSubscription> profileMappingSubscriptions)
+        {
+            foreach (var profileMappingSubscription in profileMappingSubscriptions)
+            {
+                foreach (var subscription in MappingSubscriptions)
                 {
-                    deviceBindingSubscription.IsOverwritten = true;
+                    if (profileMappingSubscription.Mapping.Title.Equals(subscription.Mapping.Title))
+                    {
+                        subscription.Overriden = true;
+                    }
                 }
-                deviceBindingsList[plugin.Title].AddRange(DeviceBindingSubscription.GetSubscriptionsFromList(deviceBindings, StateGuid, DeviceSubscriptions));
-            }
-            else
-            {
-                deviceBindingsList[plugin.Title] = DeviceBindingSubscription.GetSubscriptionsFromList(deviceBindings, StateGuid, DeviceSubscriptions);
-            }
-        }
-
-        public void BuildActivePluginsList()
-        {
-            foreach (var subscription in DeviceBindingSubscriptions)
-            {
-                ActivePlugins.Add(subscription.Value.First(d => d.IsOverwritten == false).DeviceBinding.Plugin);
             }
         }
     }

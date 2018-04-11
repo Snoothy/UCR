@@ -7,7 +7,7 @@
     <ProjectGuid>{676D3228-C3F0-4BE7-8951-B83F7A16CEA7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UCR.Core</RootNamespace>
+    <RootNamespace>HidWizards.UCR.Core</RootNamespace>
     <AssemblyName>UCR.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -30,11 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IOWrapper">
-      <HintPath>..\dependencies\IOController\IOWrapper.dll</HintPath>
+    <Reference Include="IOWrapper.Core">
+      <HintPath>..\dependencies\IOWrapper\IOWrapper.Core.dll</HintPath>
     </Reference>
-    <Reference Include="IProvider">
-      <HintPath>..\dependencies\IOController\IProvider.dll</HintPath>
+    <Reference Include="IOWrapper.DTOs">
+      <HintPath>..\dependencies\IOWrapper\IOWrapper.DTOs.dll</HintPath>
+    </Reference>
+    <Reference Include="IOWrapper.IProvider">
+      <HintPath>..\dependencies\IOWrapper\IOWrapper.IProvider.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Options, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
@@ -55,24 +58,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\PluginAttribute.cs" />
+    <Compile Include="Attributes\PluginGuiAttribute.cs" />
+    <Compile Include="Attributes\PluginOutput.cs" />
+    <Compile Include="Attributes\PluginInput.cs" />
+    <Compile Include="Attributes\PluginIoAttribute.cs" />
     <Compile Include="Managers\SubscriptionsManager.cs" />
     <Compile Include="Models\Binding\DeviceBindingNode.cs" />
     <Compile Include="Managers\DeviceGroupsManager.cs" />
     <Compile Include="Managers\DevicesManager.cs" />
     <Compile Include="Managers\ProfilesManager.cs" />
-    <Compile Include="Models\Device\Device.cs" />
-    <Compile Include="Models\Device\DeviceGroup.cs" />
+    <Compile Include="Models\CallbackMultiplexer.cs" />
+    <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceGroup.cs" />
     <Compile Include="Models\Binding\DeviceBinding.cs" />
-    <Compile Include="Models\Plugin\Plugin.cs" />
-    <Compile Include="Models\Plugin\PluginGroup.cs" />
-    <Compile Include="Models\Plugin\PluginLoader.cs" />
-    <Compile Include="Models\Profile\Profile.cs" />
-    <Compile Include="Models\Subscription\DeviceBindingSubscription.cs" />
+    <Compile Include="Models\Mapping.cs" />
+    <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Managers\PluginsManager.cs" />
+    <Compile Include="Models\PluginProperty.cs" />
+    <Compile Include="Models\Profile.cs" />
+    <Compile Include="Models\State.cs" />
+    <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
+    <Compile Include="Models\Subscription\MappingSubscription.cs" />
+    <Compile Include="Models\Subscription\OutputSubscription.cs" />
+    <Compile Include="Models\Subscription\PluginSubscription.cs" />
     <Compile Include="Models\Subscription\SubscriptionState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Utilities\Functions.cs" />
     <Compile Include="Utilities\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +99,16 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>nuget restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
+"$(MSBuildBinPath)\msbuild.exe" /t:restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln
+"$(MSBuildBinPath)\msbuild.exe" $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /S "$(SolutionDir)\submodules\IOWrapper\Artifacts" "$(SolutionDir)\dependencies"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

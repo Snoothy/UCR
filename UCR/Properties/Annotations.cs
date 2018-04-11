@@ -30,7 +30,7 @@ using System;
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
 
-namespace UCR.Annotations
+namespace HidWizards.UCR.Properties
 {
   /// <summary>
   /// Indicates that the value of the marked element could be <c>null</c> sometimes,
