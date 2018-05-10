@@ -1,4 +1,5 @@
 <img src="icon.png" align="right" />
+
 # Universal Control Remapper
 [![GitHub release](https://img.shields.io/badge/release-v0.3.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.3.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.1-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
 
