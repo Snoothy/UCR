@@ -1,7 +1,7 @@
 <img src="icon.png" align="right" />
 
 # Universal Control Remapper
-[![GitHub release](https://img.shields.io/badge/release-v0.3.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.3.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.1-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
+[![GitHub release](https://img.shields.io/badge/release-v0.3.1-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.3.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.4-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
 
 Universal Control Remapper is a complete rewrite of the original [UCR](https://github.com/evilC/UCR), created in collaboration with [evilC](https://github.com/evilC/).
 
@@ -34,7 +34,7 @@ Documentation for Universal Control Remapper are hosted on GitHub at [https://gi
 
 ## Support / Discussion / Feedback
 
-Please **do not** use the UCR thread on the AutoHotkey forums. Either raise an issue on the [issue tracker](/Snoothy/UCR/issues) or join us in the [HidWizards chat channel on Discord](https://discord.gg/MmnhQYQ)
+Please **do not** use the UCR thread on the AutoHotkey forums. Either raise an issue on the [issue tracker](https://github.com/Snoothy/UCR/issues) or join us in the [HidWizards chat channel on Discord](https://discord.gg/MmnhQYQ)
 
 
 
