@@ -19,6 +19,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 _deviceBinding = value;
                 _deviceBinding.PropertyChanged += DeviceBindingOnPropertyChanged;
+                CurrentValue = _deviceBinding.CurrentValue;
             }
         }
 

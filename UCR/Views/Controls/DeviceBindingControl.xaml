@@ -28,7 +28,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <TextBlock Grid.Row="2" x:Name="PreviewBlock" Text="{Binding CurrentValue}"/>
+            <local:PreviewControl Grid.Row="2" DataContext="{Binding}"/>
         </Grid>
     </GroupBox>
 </UserControl>
