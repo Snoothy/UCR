@@ -56,7 +56,7 @@
                 </ItemsControl.Resources>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate >
-                        <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
+                        <controls:DeviceBindingControl DataContext="{Binding}" DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
