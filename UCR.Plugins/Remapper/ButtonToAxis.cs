@@ -13,8 +13,12 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
 
-        [PluginGui("Range target", ColumnOrder = 1)]
+        [PluginGui("Absolute", ColumnOrder = 1)]
+        public bool Absolute { get; set; }
+
+        [PluginGui("Range target", ColumnOrder = 2)]
         public int Range { get; set; }
+
 
         public ButtonToAxis()
         {
@@ -23,8 +27,18 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void Update(params long[] values)
         {
-            if (Invert) values[0] = values[0] * - 1;
-            WriteOutput(0, values[0] * (long)(Constants.AxisMaxValue * ( Range / 100.0 )));
+            var value = values[0];
+            var inverse = value == 0 ^ Invert;
+
+            if (Absolute)
+            {
+                WriteOutput(0, (long)((Constants.AxisMinValue + value * Constants.AxisMaxValue * 2 * (Range / 100.0))) * (Invert ? -1 : 1));
+            }
+            else
+            {
+                WriteOutput(0, value * (long)((inverse ? Constants.AxisMinValue : Constants.AxisMaxValue) * (Range / 100.0)));
+            }
         }
+
     }
 }
