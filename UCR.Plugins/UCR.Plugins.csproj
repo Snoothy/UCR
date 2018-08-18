@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Remapper\AxisMerger.cs" />
     <Compile Include="Remapper\AxisSplitter.cs" />
+    <Compile Include="Remapper\AxisToRelativeAxis.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
     <Compile Include="Remapper\AxisToMouse.cs" />
