@@ -20,6 +20,13 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
+        public static long ApplyRelativeIncrement(long value)
+        {
+            var output = 0.0;
+            output += value;
+            return (long)output;
+        }
+
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
         {
             long value;
@@ -31,10 +38,10 @@ namespace HidWizards.UCR.Core.Utilities
             {
                 value = axis < 0 ? axis * -1 : 0L;
             }
-            
+
             value = Constants.AxisMinValue + value * 2;
-            
-            return invert ? value * -1 : value; 
+
+            return invert ? value * -1 : value;
         }
     }
 }
