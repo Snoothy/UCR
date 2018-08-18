@@ -20,11 +20,21 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
-        public static long ApplyRelativeIncrement(long value)
+        public static long ApplyRelativeIncrement(long last, long prev, int sensitivity)
         {
-            var output = 0.0;
-            output += value;
-            return (long)output;
+            var sensitivityPercent = (sensitivity / 100.0);
+            last = (long)(last * sensitivityPercent);
+            return last + prev;
+        }
+
+        public static long ApplyContinueRelativeIncrement(long last, long prev, int sensitivity)
+        {
+            // placeholder!
+            var sensitivityPercent = (sensitivity / 100.0);
+            last = (long)(last * sensitivityPercent);
+            long output = 0;
+            output += (last + prev);
+            return output;
         }
 
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
