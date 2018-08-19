@@ -62,6 +62,7 @@ namespace HidWizards.UCR.Core.Models
                 var cm = new CallbackMultiplexer(InputCache, i, Update);
                 Multiplexer.Add(cm);
                 DeviceBindings[i].Callback = cm.Update;
+                DeviceBindings[i].CurrentValue = 0;
             }
         }
 
