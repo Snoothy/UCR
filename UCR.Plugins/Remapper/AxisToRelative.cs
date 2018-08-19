@@ -16,11 +16,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
 
+        [PluginGui("Linear", ColumnOrder = 3)]
+        public bool Linear { get; set; }
+
         [PluginGui("Dead zone", ColumnOrder = 1)]
         public int DeadZone { get; set; }
 
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
+
+        [PluginGui("Relative Divider", ColumnOrder = 4)]
+        public int RelativeDivider { get; set; }
 
         /// <summary>
         /// To constantly add current axis values to the output - WORK IN PROGRESS!!!
@@ -40,6 +46,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             DeadZone = 0;
             Sensitivity = 100;
             Continue = false;
+            RelativeDivider = 50;
         }
 
         public override void Update(params long[] values)
@@ -48,7 +55,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             if (Invert) value *= -1;
             if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
-            if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, false);
+            if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, Linear);
 
             // Respect the axis min and max ranges.
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
@@ -110,11 +117,11 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void RelativeUpdate()
         {
-            var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, Sensitivity);
+            //var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, RelativeDivider);
+            var value = (_currentInputValue / RelativeDivider) + _currentOutputValue;
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             WriteOutput(0, value);
             _currentOutputValue = value;
-
         }
     }
 }
