@@ -8,7 +8,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to relative")]
+    [Plugin("Axis to axis (Relative)")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToRelative : Plugin
@@ -28,19 +28,18 @@ namespace HidWizards.UCR.Plugins.Remapper
         /// <summary>
         /// To constantly add current axis values to the output - WORK IN PROGRESS!!!
         /// </summary>
-        [PluginGui("Relative RelativeContinue", ColumnOrder = 1, RowOrder = 2)]
+        [PluginGui("Relative Continue", ColumnOrder = 1, RowOrder = 2)]
         public bool RelativeContinue { get; set; }
 
         [PluginGui("Relative Sensitivity", ColumnOrder = 2, RowOrder = 2)]
-        public long RelativeSensitivity { get; set; }
+        public decimal RelativeSensitivity { get; set; }
 
 
         private long _currentOutputValue;
         private long _currentInputValue;
         private readonly object _threadLock = new object();
-        
+
         private Thread _relativeThread;
-        private bool _relativeThreadState = false;
 
         public AxisToRelative()
         {
@@ -48,6 +47,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             Sensitivity = 100;
             RelativeContinue = true;
             RelativeSensitivity = 2;
+            _relativeThread = new Thread(RelativeThread);
         }
 
         public override void Update(params long[] values)
@@ -64,19 +64,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             if (RelativeContinue)
             {
-                lock (_threadLock)
-                {
-                    if (value != 0 && !_relativeThreadState)
-                    {
-                        SetRelativeThreadState(true);
-                        //Debug.WriteLine("UCR| Started Thread");
-                    }
-                    else if (value == 0 && _relativeThreadState)
-                    {
-                        SetRelativeThreadState(false);
-                        //Debug.WriteLine("UCR| Stopped Thread");
-                    }
-                }
+                SetRelativeThreadState(value != 0);
             }
             else
             {
@@ -84,22 +72,35 @@ namespace HidWizards.UCR.Plugins.Remapper
             }
         }
 
+        public override void OnDeactivate()
+        {
+            SetRelativeThreadState(false);
+        }
+
         private void SetRelativeThreadState(bool state)
         {
-            if (_relativeThreadState == state) return;
-            if (!_relativeThreadState && state)
+            lock (_threadLock)
             {
-                _relativeThread = new Thread(RelativeThread);
-                _relativeThread.Start();
+                var relativeThreadActive = RelativeThreadActive();
+                if (!relativeThreadActive && state)
+                {
+                    _relativeThread = new Thread(RelativeThread);
+                    _relativeThread.Start();
+                    Debug.WriteLine("UCR| Started Relative Thread");
+                }
+                else if (relativeThreadActive && !state)
+                {
+                    _relativeThread.Abort();
+                    _relativeThread.Join();
+                    _relativeThread = null;
+                    Debug.WriteLine("UCR| Stopped Relative Thread");
+                }
             }
-            else if (_relativeThreadState && !state)
-            {
-                _relativeThread.Abort();
-                _relativeThread.Join();
-                _relativeThread = null;
-            }
+        }
 
-            _relativeThreadState = state;
+        private bool RelativeThreadActive()
+        {
+            return _relativeThread != null && _relativeThread.IsAlive;
         }
 
         public void RelativeThread()
@@ -109,17 +110,11 @@ namespace HidWizards.UCR.Plugins.Remapper
                 RelativeUpdate();
                 Thread.Sleep(10);
             }
-
-            lock (_threadLock)
-            {
-                _relativeThreadState = false;
-            }
         }
 
         private void RelativeUpdate()
         {
-            //var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, RelativeSensitivity);
-            var value = (long)((_currentInputValue * (float)(RelativeSensitivity / 100.0)) + _currentOutputValue);
+            var value = (long)((_currentInputValue * (RelativeSensitivity / 100)) + _currentOutputValue);
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             WriteOutput(0, value);
             _currentOutputValue = value;
