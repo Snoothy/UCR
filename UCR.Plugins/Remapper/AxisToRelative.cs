@@ -50,23 +50,30 @@ namespace HidWizards.UCR.Plugins.Remapper
             if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
             if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, false);
 
-            lock (_threadLock)
-            {
-                if (value != 0 && !_relativeThreadState)
-                {
-                    SetRelativeThreadState(true);
-                    //Debug.WriteLine("UCR| Started Thread");
-                }
-                else if (value == 0 && _relativeThreadState)
-                {
-                    SetRelativeThreadState(false);
-                    //Debug.WriteLine("UCR| Stopped Thread");
-                }
-            }
-
             // Respect the axis min and max ranges.
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             _currentInputValue = value;
+
+            if (Continue)
+            {
+                lock (_threadLock)
+                {
+                    if (value != 0 && !_relativeThreadState)
+                    {
+                        SetRelativeThreadState(true);
+                        //Debug.WriteLine("UCR| Started Thread");
+                    }
+                    else if (value == 0 && _relativeThreadState)
+                    {
+                        SetRelativeThreadState(false);
+                        //Debug.WriteLine("UCR| Stopped Thread");
+                    }
+                }
+            }
+            else
+            {
+                RelativeUpdate();
+            }
         }
 
         private void SetRelativeThreadState(bool state)
@@ -89,14 +96,25 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public void RelativeThread()
         {
-            while (true)
+            while (Continue)
             {
-                var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, Sensitivity);
-                value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
-                WriteOutput(0, value);
-                _currentOutputValue = value;
+                RelativeUpdate();
                 Thread.Sleep(10);
             }
+
+            lock (_threadLock)
+            {
+                _relativeThreadState = false;
+            }
+        }
+
+        private void RelativeUpdate()
+        {
+            var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, Sensitivity);
+            value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+            WriteOutput(0, value);
+            _currentOutputValue = value;
+
         }
     }
 }
