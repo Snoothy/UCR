@@ -105,16 +105,6 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin methods
 
-        protected virtual void OnStart()
-        {
-
-        }
-
-        protected virtual void OnStop()
-        {
-
-        }
-
         protected void WriteOutput(int number, long value)
         {
             Outputs[number].WriteOutput(value);
