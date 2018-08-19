@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -26,10 +28,12 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Continue", ColumnOrder = 3)]
         public bool Continue { get; set; }
 
-        /// <summary>
-        /// Create the previous values field, which will be updated on each iteration.
-        /// </summary>
-        private long previousValue = 0;
+        private long _currentOutputValue;
+        private long _currentInputValue;
+        private readonly object _threadLock = new object();
+        
+        private Thread _relativeThread;
+        private bool _relativeThreadState = false;
 
         public AxisToRelative()
         {
@@ -46,16 +50,53 @@ namespace HidWizards.UCR.Plugins.Remapper
             if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
             if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, false);
 
-            if (Continue) value = Functions.ApplyContinueRelativeIncrement(value, previousValue, Sensitivity);
-            else value = Functions.ApplyRelativeIncrement(value, previousValue, Sensitivity);
+            lock (_threadLock)
+            {
+                if (value != 0 && !_relativeThreadState)
+                {
+                    SetRelativeThreadState(true);
+                    //Debug.WriteLine("UCR| Started Thread");
+                }
+                else if (value == 0 && _relativeThreadState)
+                {
+                    SetRelativeThreadState(false);
+                    //Debug.WriteLine("UCR| Stopped Thread");
+                }
+            }
 
             // Respect the axis min and max ranges.
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+            _currentInputValue = value;
+        }
 
-            WriteOutput(0, value);
+        private void SetRelativeThreadState(bool state)
+        {
+            if (_relativeThreadState == state) return;
+            if (!_relativeThreadState && state)
+            {
+                _relativeThread = new Thread(RelativeThread);
+                _relativeThread.Start();
+            }
+            else if (_relativeThreadState && !state)
+            {
+                _relativeThread.Abort();
+                _relativeThread.Join();
+                _relativeThread = null;
+            }
 
-            // Store the last value and use it as previous, on next iteration.
-            previousValue = value;
+            _relativeThreadState = state;
+        }
+
+        public void RelativeThread()
+        {
+            while (true)
+            {
+                var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, Sensitivity);
+                value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+                WriteOutput(0, value);
+                _currentOutputValue = value;
+                Thread.Sleep(10);
+            }
         }
     }
 }
