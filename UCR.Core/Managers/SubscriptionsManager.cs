@@ -13,7 +13,7 @@ namespace HidWizards.UCR.Core.Managers
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private SubscriptionState SubscriptionState { get; set; }
+        internal SubscriptionState SubscriptionState { get; set; }
         private readonly Context _context;
 
         public SubscriptionsManager(Context context)

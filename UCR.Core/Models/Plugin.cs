@@ -105,6 +105,16 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin methods
 
+        protected virtual void OnStart()
+        {
+
+        }
+
+        protected virtual void OnStop()
+        {
+
+        }
+
         protected void WriteOutput(int number, long value)
         {
             Outputs[number].WriteOutput(value);
@@ -118,6 +128,11 @@ namespace HidWizards.UCR.Core.Models
         protected bool GetState(Guid stateGuid)
         {
             return Profile.GetRuntimeState(stateGuid);
+        }
+
+        protected long ReadOutput(int number)
+        {
+            return Outputs[number].CurrentValue;
         }
 
         #endregion
