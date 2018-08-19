@@ -25,14 +25,15 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
-        [PluginGui("Relative Divider", ColumnOrder = 4)]
-        public int RelativeDivider { get; set; }
-
         /// <summary>
         /// To constantly add current axis values to the output - WORK IN PROGRESS!!!
         /// </summary>
-        [PluginGui("Continue", ColumnOrder = 3)]
-        public bool Continue { get; set; }
+        [PluginGui("Relative RelativeContinue", ColumnOrder = 1, RowOrder = 2)]
+        public bool RelativeContinue { get; set; }
+
+        [PluginGui("Relative Sensitivity", ColumnOrder = 2, RowOrder = 2)]
+        public long RelativeSensitivity { get; set; }
+
 
         private long _currentOutputValue;
         private long _currentInputValue;
@@ -45,8 +46,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             DeadZone = 0;
             Sensitivity = 100;
-            Continue = false;
-            RelativeDivider = 50;
+            RelativeContinue = true;
+            RelativeSensitivity = 2;
         }
 
         public override void Update(params long[] values)
@@ -61,7 +62,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             _currentInputValue = value;
 
-            if (Continue)
+            if (RelativeContinue)
             {
                 lock (_threadLock)
                 {
@@ -103,7 +104,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public void RelativeThread()
         {
-            while (Continue)
+            while (RelativeContinue)
             {
                 RelativeUpdate();
                 Thread.Sleep(10);
@@ -117,8 +118,8 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void RelativeUpdate()
         {
-            //var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, RelativeDivider);
-            var value = (_currentInputValue / RelativeDivider) + _currentOutputValue;
+            //var value = Functions.ApplyRelativeIncrement(_currentInputValue, _currentOutputValue, RelativeSensitivity);
+            var value = (long)((_currentInputValue * (float)(RelativeSensitivity / 100.0)) + _currentOutputValue);
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             WriteOutput(0, value);
             _currentOutputValue = value;
