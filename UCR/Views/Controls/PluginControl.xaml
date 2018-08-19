@@ -83,6 +83,11 @@
                                         <TextBox Width="30" Text="{Binding Property, Mode=TwoWay}"/>
                                     </GroupBox>
                                 </DataTemplate>
+                                <DataTemplate x:Key="DecimalTemplate">
+                                    <GroupBox Header="{Binding Name}" Width="Auto" Padding="5" PreviewTextInput="DecimalValidationTextBox">
+                                        <TextBox Width="30" Text="{Binding Property, Mode=TwoWay}"/>
+                                    </GroupBox>
+                                </DataTemplate>
                                 <DataTemplate x:Key="StringTemplate">
                                     <GroupBox Header="{Binding Name}" Width="Auto" Padding="5">
                                         <TextBox Width="100" Text="{Binding Property, Mode=TwoWay}"/>
