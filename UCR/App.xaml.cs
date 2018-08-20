@@ -39,8 +39,7 @@ namespace HidWizards.UCR
             {
                 if (MainWindow.WindowState == WindowState.Normal)
                 {
-                    this.MainWindow.Hide();
-                    this.MainWindow.WindowState = WindowState.Minimized;
+                    hideMainWindow();
                 }
                 else
                 {
@@ -49,7 +48,7 @@ namespace HidWizards.UCR
                 }
             };
 
-            CreateMenuStructure();
+            systrayContextMenu();
 
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
@@ -73,29 +72,74 @@ namespace HidWizards.UCR
             }
         }
 
-        private void CreateMenuStructure()
+        #region SystemTray_ContextMenu
+
+        private void hideMainWindow()
+        {
+            this.MainWindow.Hide();
+            this.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        private void showMainWindow()
+        {
+            this.MainWindow.Show();
+            this.MainWindow.WindowState = WindowState.Normal;
+        }
+
+        private void systrayContextMenu()
         {
             // Show
             var mnuShow = new System.Windows.Forms.MenuItem("Show UCR");
             stMenu.MenuItems.Add(mnuShow);
             notify.ContextMenu = stMenu;
             mnuShow.Visible = true;
+            mnuShow.Click += MnuShow_Click;
+
             // Hide
             var mnuHide = new System.Windows.Forms.MenuItem("Hide UCR");
             stMenu.MenuItems.Add(mnuHide);
             notify.ContextMenu = stMenu;
             mnuHide.Visible = true;
+            mnuHide.Click += MnuHide_Click;
+
             // Setup
             var mnuSetup = new System.Windows.Forms.MenuItem("Setup");
             stMenu.MenuItems.Add(mnuSetup);
             notify.ContextMenu = stMenu;
             mnuSetup.Visible = true;
+            mnuSetup.Enabled = false;
+            mnuSetup.Click += MnuSetup_Click;
+
             // Exit
             var mnuExit = new System.Windows.Forms.MenuItem("Exit");
             stMenu.MenuItems.Add(mnuExit);
             notify.ContextMenu = stMenu;
             mnuExit.Visible = true;
+            mnuExit.Click += MnuExit_Click;
         }
+
+        private static void MnuExit_Click(object sender, EventArgs e)
+        {
+            Current.Shutdown();
+        }
+
+        private static void MnuSetup_Click(object sender, EventArgs e)
+        {
+            // open a setup form, with a shortcut to all the configuration:
+            // device groups, profiles, etc...
+        }
+
+        private void MnuHide_Click(object sender, EventArgs e)
+        {
+            hideMainWindow();
+        }
+
+        private void MnuShow_Click(object sender, EventArgs e)
+        {
+            showMainWindow();
+        }
+
+        #endregion SystemTray_ContextMenu
 
         private static Process[] GetProcesses()
         {
