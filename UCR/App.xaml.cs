@@ -20,12 +20,21 @@ namespace HidWizards.UCR
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
 
+        // acces the notifyicon assembly
+        private System.Windows.Forms.NotifyIcon notify;
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            // create the systray icon
+            this.notify = new System.Windows.Forms.NotifyIcon();
+            this.notify.Text = "Universal Control Remapper";
+            this.notify.Icon = UCR.Properties.Resources.UCR_load;
+            this.notify.Visible = true;
+
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
 
-            mutex = new SingleGlobalInstance(); 
+            mutex = new SingleGlobalInstance();
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 Logger.Info("Launching UCR");
@@ -49,7 +58,7 @@ namespace HidWizards.UCR
             return Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
         }
 
-        private void SendArgs(string args)
+        private static void SendArgs(string args)
         {
             Logger.Info($"UCR is already running, sending args: {{{args}}}");
             // Find the window with the name of the main form
@@ -57,11 +66,11 @@ namespace HidWizards.UCR
             processes = processes.Where(p => p.Id != Process.GetCurrentProcess().Id).ToArray();
             if (processes.Length == 0) return;
 
-            IntPtr ptrCopyData = IntPtr.Zero;
+            var ptrCopyData = IntPtr.Zero;
             try
             {
                 // Create the data structure and fill with data
-                NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT
+                var copyData = new NativeMethods.COPYDATASTRUCT
                 {
                     dwData = new IntPtr(2),
                     cbData = args.Length + 1,
@@ -80,7 +89,6 @@ namespace HidWizards.UCR
                     if (proc.MainWindowHandle == IntPtr.Zero) continue;
                     NativeMethods.SendMessage(proc.MainWindowHandle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ptrCopyData);
                 }
-                    
             }
             catch (Exception e)
             {
@@ -99,16 +107,23 @@ namespace HidWizards.UCR
             mutex.Dispose();
             context?.Dispose();
             _hidGuardianClient?.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)
         {
             Dispose();
+
+            // clear the systray icon
+            if (this.notify != null)
+            {
+                this.notify.Dispose();
+            }
         }
 
         private static void AppDomain_CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var exception = (Exception) e.ExceptionObject;
+            var exception = (Exception)e.ExceptionObject;
             Logger.Fatal(exception.Message, exception);
         }
     }
