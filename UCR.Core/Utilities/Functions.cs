@@ -29,6 +29,23 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
+        public static long ApplyRelativeIncrement(long last, long prev, int sensitivity)
+        {
+            var sensitivityPercent = (sensitivity / 100.0);
+            last = (long)(last * sensitivityPercent);
+            return last + prev;
+        }
+
+        public static long ApplyContinueRelativeIncrement(long last, long prev, int sensitivity)
+        {
+            // placeholder!
+            var sensitivityPercent = (sensitivity / 100.0);
+            last = (long)(last * sensitivityPercent);
+            long output = 0;
+            output += (last + prev);
+            return output;
+        }
+
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
         {
             long value;
@@ -40,10 +57,10 @@ namespace HidWizards.UCR.Core.Utilities
             {
                 value = axis < 0 ? axis * -1 : 0L;
             }
-            
+
             value = Constants.AxisMinValue + value * 2;
-            
-            return invert ? value * -1 : value; 
+
+            return invert ? value * -1 : value;
         }
     }
 }
