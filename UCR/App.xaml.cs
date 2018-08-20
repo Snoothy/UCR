@@ -31,6 +31,21 @@ namespace HidWizards.UCR
             this.notify.Icon = UCR.Properties.Resources.UCR_load;
             this.notify.Visible = true;
 
+            this.notify.DoubleClick +=
+            (object sender, EventArgs args) =>
+            {
+                if (MainWindow.WindowState != WindowState.Normal)
+                {
+                    this.MainWindow.Show();
+                    this.MainWindow.WindowState = WindowState.Normal;
+                }
+                else
+                {
+                    this.MainWindow.Hide();
+                    this.MainWindow.WindowState = WindowState.Minimized;
+                }
+            };
+
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
 
