@@ -20,12 +20,41 @@ namespace HidWizards.UCR
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
 
+        // define the systemtray icon and the contextmenu
+        public System.Windows.Forms.NotifyIcon notify;
+
+        public System.Windows.Forms.ContextMenu stMenu = new System.Windows.Forms.ContextMenu();
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            // create the systray icon
+            this.notify = new System.Windows.Forms.NotifyIcon();
+            this.notify.Text = "Universal Control Remapper";
+            this.notify.Icon = UCR.Properties.Resources.UCR_load;
+            this.notify.Visible = true;
+
+            // minimize/restore on double click
+            this.notify.DoubleClick +=
+            (object sender, EventArgs args) =>
+            {
+                if (MainWindow.WindowState == WindowState.Normal)
+                {
+                    this.MainWindow.Hide();
+                    this.MainWindow.WindowState = WindowState.Minimized;
+                }
+                else
+                {
+                    this.MainWindow.Show();
+                    this.MainWindow.WindowState = WindowState.Normal;
+                }
+            };
+
+            CreateMenuStructure();
+
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
 
-            mutex = new SingleGlobalInstance(); 
+            mutex = new SingleGlobalInstance();
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 Logger.Info("Launching UCR");
@@ -44,12 +73,36 @@ namespace HidWizards.UCR
             }
         }
 
+        private void CreateMenuStructure()
+        {
+            // Show
+            var mnuShow = new System.Windows.Forms.MenuItem("Show UCR");
+            stMenu.MenuItems.Add(mnuShow);
+            notify.ContextMenu = stMenu;
+            mnuShow.Visible = true;
+            // Hide
+            var mnuHide = new System.Windows.Forms.MenuItem("Hide UCR");
+            stMenu.MenuItems.Add(mnuHide);
+            notify.ContextMenu = stMenu;
+            mnuHide.Visible = true;
+            // Setup
+            var mnuSetup = new System.Windows.Forms.MenuItem("Setup");
+            stMenu.MenuItems.Add(mnuSetup);
+            notify.ContextMenu = stMenu;
+            mnuSetup.Visible = true;
+            // Exit
+            var mnuExit = new System.Windows.Forms.MenuItem("Exit");
+            stMenu.MenuItems.Add(mnuExit);
+            notify.ContextMenu = stMenu;
+            mnuExit.Visible = true;
+        }
+
         private static Process[] GetProcesses()
         {
             return Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
         }
 
-        private void SendArgs(string args)
+        private static void SendArgs(string args)
         {
             Logger.Info($"UCR is already running, sending args: {{{args}}}");
             // Find the window with the name of the main form
@@ -57,11 +110,11 @@ namespace HidWizards.UCR
             processes = processes.Where(p => p.Id != Process.GetCurrentProcess().Id).ToArray();
             if (processes.Length == 0) return;
 
-            IntPtr ptrCopyData = IntPtr.Zero;
+            var ptrCopyData = IntPtr.Zero;
             try
             {
                 // Create the data structure and fill with data
-                NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT
+                var copyData = new NativeMethods.COPYDATASTRUCT
                 {
                     dwData = new IntPtr(2),
                     cbData = args.Length + 1,
@@ -80,7 +133,6 @@ namespace HidWizards.UCR
                     if (proc.MainWindowHandle == IntPtr.Zero) continue;
                     NativeMethods.SendMessage(proc.MainWindowHandle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ptrCopyData);
                 }
-                    
             }
             catch (Exception e)
             {
@@ -99,16 +151,24 @@ namespace HidWizards.UCR
             mutex.Dispose();
             context?.Dispose();
             _hidGuardianClient?.Dispose();
+            GC.SuppressFinalize(this);
+            stMenu.Dispose();
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)
         {
             Dispose();
+
+            // clear the systray icon
+            if (this.notify != null)
+            {
+                this.notify.Dispose();
+            }
         }
 
         private static void AppDomain_CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var exception = (Exception) e.ExceptionObject;
+            var exception = (Exception)e.ExceptionObject;
             Logger.Fatal(exception.Message, exception);
         }
     }
