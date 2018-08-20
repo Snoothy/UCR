@@ -20,8 +20,10 @@ namespace HidWizards.UCR
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
 
-        // acces the notifyicon assembly
-        private System.Windows.Forms.NotifyIcon notify;
+        // define the systemtray icon and the contextmenu
+        public System.Windows.Forms.NotifyIcon notify;
+
+        public System.Windows.Forms.ContextMenu stMenu = new System.Windows.Forms.ContextMenu();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -31,20 +33,23 @@ namespace HidWizards.UCR
             this.notify.Icon = UCR.Properties.Resources.UCR_load;
             this.notify.Visible = true;
 
+            // minimize/restore on double click
             this.notify.DoubleClick +=
             (object sender, EventArgs args) =>
             {
-                if (MainWindow.WindowState != WindowState.Normal)
-                {
-                    this.MainWindow.Show();
-                    this.MainWindow.WindowState = WindowState.Normal;
-                }
-                else
+                if (MainWindow.WindowState == WindowState.Normal)
                 {
                     this.MainWindow.Hide();
                     this.MainWindow.WindowState = WindowState.Minimized;
                 }
+                else
+                {
+                    this.MainWindow.Show();
+                    this.MainWindow.WindowState = WindowState.Normal;
+                }
             };
+
+            CreateMenuStructure();
 
             base.OnStartup(e);
             AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
@@ -66,6 +71,30 @@ namespace HidWizards.UCR
                 SendArgs(string.Join(";", e.Args));
                 Current.Shutdown();
             }
+        }
+
+        private void CreateMenuStructure()
+        {
+            // Show
+            var mnuShow = new System.Windows.Forms.MenuItem("Show UCR");
+            stMenu.MenuItems.Add(mnuShow);
+            notify.ContextMenu = stMenu;
+            mnuShow.Visible = true;
+            // Hide
+            var mnuHide = new System.Windows.Forms.MenuItem("Hide UCR");
+            stMenu.MenuItems.Add(mnuHide);
+            notify.ContextMenu = stMenu;
+            mnuHide.Visible = true;
+            // Setup
+            var mnuSetup = new System.Windows.Forms.MenuItem("Setup");
+            stMenu.MenuItems.Add(mnuSetup);
+            notify.ContextMenu = stMenu;
+            mnuSetup.Visible = true;
+            // Exit
+            var mnuExit = new System.Windows.Forms.MenuItem("Exit");
+            stMenu.MenuItems.Add(mnuExit);
+            notify.ContextMenu = stMenu;
+            mnuExit.Visible = true;
         }
 
         private static Process[] GetProcesses()
@@ -123,6 +152,7 @@ namespace HidWizards.UCR
             context?.Dispose();
             _hidGuardianClient?.Dispose();
             GC.SuppressFinalize(this);
+            stMenu.Dispose();
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)

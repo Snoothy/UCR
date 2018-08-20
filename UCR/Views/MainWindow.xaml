@@ -49,19 +49,19 @@
         <TreeView Grid.Row="1" Name="ProfileTree" Margin="10,5,10,0">
             <TreeView.Style>
                 <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
-                <Style.Triggers>
-                    <Trigger Property="HasItems" Value="False">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first profile</TextBlock>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
+                    <Style.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first profile</TextBlock>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </TreeView.Style>
             <TreeView.ItemContainerStyle>
