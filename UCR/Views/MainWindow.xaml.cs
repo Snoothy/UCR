@@ -266,30 +266,5 @@ namespace HidWizards.UCR.Views
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
-
-        IUCRSettings IPersistence.CreateSettings()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPersistence.OnLocationChanged(EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPersistence.OnRenderSizeChanged(SizeChangedInfo info)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPersistence.OnStateChanged(EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPersistence.ApplySettings()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
