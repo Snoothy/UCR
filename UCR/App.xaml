@@ -4,6 +4,5 @@
              ShutdownMode="OnMainWindowClose"
              Exit="App_OnExit">
     <Application.Resources>
-        
     </Application.Resources>
 </Application>

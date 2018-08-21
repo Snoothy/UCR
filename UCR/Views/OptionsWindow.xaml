@@ -1,0 +1,41 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HidWizards.UCR.Views"
+        xmlns:Controls="clr-namespace:HidWizards.UCR.Views.Controls" x:Class="HidWizards.UCR.Views.OptionsWindow"
+        mc:Ignorable="d"
+        Title="UCR Setup" Height="185" Width="272" MinWidth="272" MinHeight="185" WindowStyle="None" Topmost="True" ResizeMode="NoResize" Icon="/UCR;component/UCR.ico" ShowInTaskbar="False" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition>
+            </ColumnDefinition>
+            <ColumnDefinition Width="110">
+            </ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Content="Universal Control Remapper" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Grid.Column="0" Grid.ColumnSpan="2" />
+        <TextBlock></TextBlock>
+        <GroupBox Header="Startup" Grid.Column="0" Grid.Row="1" Padding="5,5,5,0" Margin="6,2,3,2">
+            <StackPanel>
+                <CheckBox Content="Run at Logon" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,3" IsEnabled="False" />
+                <CheckBox Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="0,0,0,3" Name="startMinimized" Checked="startMinimized_Checked" />
+
+                <Separator Height="10" Margin="0" />
+
+                <CheckBox Content="Activate when start" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1"  Margin="0,0,0,3" IsEnabled="False" />
+                <ComboBox Text="Default profile"  Margin="0,0,0,3" />
+            </StackPanel>
+        </GroupBox>
+        <Canvas HorizontalAlignment="Left" Grid.RowSpan="2" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Margin="5">
+            <Image Height="100" Width="100" Source="/Resources/icon.png" Stretch="UniformToFill" />
+        </Canvas>
+
+        <Button Content="Save and Close" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Grid.Row="2" Grid.ColumnSpan="2" Name="optClose" Click="ButtonClose_Clicked" Margin="0,0,0,2" />
+    </Grid>
+</Window>
