@@ -11,8 +11,5 @@
     <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">250, 400</Value>
     </Setting>
-    <Setting Name="WindowState" Type="System.Windows.WindowState" Scope="User">
-      <Value Profile="(Default)">Normal</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
