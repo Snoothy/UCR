@@ -39,6 +39,15 @@ namespace HidWizards.UCR.Views
         /// <param name="e"></param>
         protected override void OnSourceInitialized(EventArgs e)
         {
+            if (Properties.Settings.Default.StartMinimized)
+            {
+                this.WindowState = WindowState.Minimized;
+            }
+            else
+            {
+                this.WindowState = WindowState.Normal;
+            }
+
             base.OnSourceInitialized(e);
 
             EnableMessageHandling();

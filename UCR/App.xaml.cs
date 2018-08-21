@@ -7,6 +7,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.Views;
+using HidWizards.UCR.ViewModels.DeviceViewModels;
 using Application = System.Windows.Application;
 
 namespace HidWizards.UCR
@@ -16,7 +17,7 @@ namespace HidWizards.UCR
     /// </summary>
     public partial class App : Application, IDisposable
     {
-        private Context context;
+        private static Context context;
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
 
@@ -74,18 +75,6 @@ namespace HidWizards.UCR
 
         #region SystemTray_ContextMenu
 
-        private void hideMainWindow()
-        {
-            this.MainWindow.Hide();
-            this.MainWindow.WindowState = WindowState.Minimized;
-        }
-
-        private void showMainWindow()
-        {
-            this.MainWindow.Show();
-            this.MainWindow.WindowState = WindowState.Normal;
-        }
-
         private void systrayContextMenu()
         {
             // Show
@@ -102,13 +91,12 @@ namespace HidWizards.UCR
             mnuHide.Visible = true;
             mnuHide.Click += MnuHide_Click;
 
-            // Setup
-            var mnuSetup = new System.Windows.Forms.MenuItem("Setup");
-            stMenu.MenuItems.Add(mnuSetup);
+            // Options
+            var mnuOptions = new System.Windows.Forms.MenuItem("Options");
+            stMenu.MenuItems.Add(mnuOptions);
             notify.ContextMenu = stMenu;
-            mnuSetup.Visible = true;
-            mnuSetup.Enabled = false;
-            mnuSetup.Click += MnuSetup_Click;
+            mnuOptions.Visible = true;
+            mnuOptions.Click += MnuOptions_Click;
 
             // Exit
             var mnuExit = new System.Windows.Forms.MenuItem("Exit");
@@ -123,10 +111,11 @@ namespace HidWizards.UCR
             Current.Shutdown();
         }
 
-        private static void MnuSetup_Click(object sender, EventArgs e)
+        private static void MnuOptions_Click(object sender, EventArgs e)
         {
             // open a setup form, with a shortcut to all the configuration:
             // device groups, profiles, etc...
+            openOptionsWindow();
         }
 
         private void MnuHide_Click(object sender, EventArgs e)
@@ -137,6 +126,24 @@ namespace HidWizards.UCR
         private void MnuShow_Click(object sender, EventArgs e)
         {
             showMainWindow();
+        }
+
+        private static void openOptionsWindow()
+        {
+            var optionsWindow = new OptionsWindow();
+            optionsWindow.Show();
+        }
+
+        private void hideMainWindow()
+        {
+            this.MainWindow.Hide();
+            this.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        private void showMainWindow()
+        {
+            this.MainWindow.Show();
+            this.MainWindow.WindowState = WindowState.Normal;
         }
 
         #endregion SystemTray_ContextMenu
