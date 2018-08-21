@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HidWizards.UCR.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="StartMinimized" Type="System.Boolean" Scope="User">
+    <Setting Name="StartMinimized" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="WindowLocation" Type="System.Drawing.Point" Scope="User">
+    <Setting Name="WindowLocation" Type="System.Drawing.Point" Scope="Application">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
-    <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
+    <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="Application">
       <Value Profile="(Default)">250, 400</Value>
     </Setting>
   </Settings>

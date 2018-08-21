@@ -32,7 +32,7 @@ namespace HidWizards.UCR.Views
         public Point WindowLocation { get => _settings.WindowLocation; set => _settings.WindowLocation = value; }
         public Size WindowSize { get => _settings.WindowSize; set => _settings.WindowSize = value; }
 
-        public MainWindow(Context context, ISettingsProvider settings)
+        public MainWindow(Context context)
         {
             DataContext = this;
             this.context = context;
@@ -40,7 +40,6 @@ namespace HidWizards.UCR.Views
 
             context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
-            _settings = settings;
         }
 
         /// <summary>
@@ -57,6 +56,29 @@ namespace HidWizards.UCR.Views
         }
 
         #region Get/Set settings
+
+        protected ISettingsProvider GetSettings()
+        {
+            return (ISettingsProvider)new ConfigSettings(this);
+        }
+
+        private class ConfigSettings : SettingsProvider
+        {
+            private MainWindow mainWindow;
+            private const string START_MINIMIZED = nameof(StartMinimized);
+            private const string WINDOW_LOCATION = nameof(WindowLocation);
+            private const string WINDOW_SIZE = nameof(WindowSize);
+
+            public ConfigSettings(MainWindow mainWindow)
+
+                : base(UCR.Properties.Settings.Default,
+                START_MINIMIZED,
+                WINDOW_LOCATION,
+                WINDOW_SIZE)
+            {
+                this.mainWindow = mainWindow;
+            }
+        }
 
         protected override void OnLocationChanged(EventArgs e)
         {

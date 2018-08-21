@@ -7,7 +7,6 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.Views;
-using HidWizards.UCR.Settings;
 using HidWizards.UCR.ViewModels.DeviceViewModels;
 using Application = System.Windows.Application;
 
@@ -26,33 +25,6 @@ namespace HidWizards.UCR
         public System.Windows.Forms.NotifyIcon notify;
 
         public System.Windows.Forms.ContextMenu stMenu = new System.Windows.Forms.ContextMenu();
-
-        #region Settings
-
-        protected ISettingsProvider GetSettings()
-        {
-            return (ISettingsProvider)new ConfigSettings(this);
-        }
-
-        private class ConfigSettings : SettingsProvider
-        {
-            private readonly App app;
-            private const string START_MINIMIZED = nameof(StartMinimized);
-            private const string WINDOW_LOCATION = nameof(WindowLocation);
-            private const string WINDOW_SIZE = nameof(WindowSize);
-
-            public ConfigSettings(App app)
-
-                : base(UCR.Properties.Settings.Default,
-                START_MINIMIZED,
-                WINDOW_LOCATION,
-                WINDOW_SIZE)
-            {
-                this.app = app;
-            }
-        }
-
-        #endregion Settings
 
         protected override void OnStartup(StartupEventArgs e)
         {
