@@ -152,6 +152,9 @@
     <Compile Include="Views\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
+    <None Include="Views\Settings\PersistenceOld" />
+    <Compile Include="Views\Settings\Persistence.cs" />
+    <Compile Include="Views\Settings\UCRSettings.cs" />
     <Compile Include="Views\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
@@ -310,9 +313,7 @@
   <ItemGroup>
     <None Include="Resources\icon.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Settings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

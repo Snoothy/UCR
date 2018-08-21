@@ -10,13 +10,15 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
+using HidWizards.UCR.Views.ProfileViews;
+using HidWizards.UCR.Views.Settings;
 using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
 namespace HidWizards.UCR.Views
 {
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged, IPersistence
     {
         private Context context;
 
@@ -263,6 +265,31 @@ namespace HidWizards.UCR.Views
             var win = new HelpWindow();
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
+        }
+
+        IUCRSettings IPersistence.CreateSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IPersistence.OnLocationChanged(EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IPersistence.OnRenderSizeChanged(SizeChangedInfo info)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IPersistence.OnStateChanged(EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IPersistence.ApplySettings()
+        {
+            throw new NotImplementedException();
         }
     }
 }

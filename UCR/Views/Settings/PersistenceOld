@@ -3,26 +3,26 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace ConfigurableWindowDemo
+namespace UCR.Views.Settings
 {
     /// <summary>
-    /// An abstract Window descendant that provides simple 
-    /// user settings persistence. The concrete backing 
-    /// store is exposed by subclasses via overriding the 
+    /// An abstract Window descendant that provides simple
+    /// user settings persistence. The concrete backing
+    /// store is exposed by subclasses via overriding the
     /// CreateSettings method.
     /// </summary>
-    public abstract class ConfigurableWindow : Window
+    public abstract class IPersistentSetupWindow : Window
     {
         #region Data
 
-        bool _isLoaded;
-        readonly IConfigurableWindowSettings _settings;
+        private bool _isLoaded;
+        private readonly IUCRSettings _settings;
 
-        #endregion // Data
+        #endregion Data
 
         #region Constructor
 
-        protected ConfigurableWindow()
+        protected IPersistentSetupWindow()
         {
             _settings = this.CreateSettings();
 
@@ -34,18 +34,18 @@ namespace ConfigurableWindowDemo
             this.ApplySettings();
         }
 
-        #endregion // Constructor
+        #endregion Constructor
 
         #region CreateSettings
 
         /// <summary>
-        /// Derived classes must return the object which exposes 
-        /// persisted window settings. This method is only invoked 
+        /// Derived classes must return the object which exposes
+        /// persisted window settings. This method is only invoked
         /// once per Window, during construction.
         /// </summary>
-        protected abstract IConfigurableWindowSettings CreateSettings();
+        protected abstract IUCRSettings CreateSettings();
 
-        #endregion // CreateSettings
+        #endregion CreateSettings
 
         #region Base Class Overrides
 
@@ -53,11 +53,11 @@ namespace ConfigurableWindowDemo
         {
             base.OnLocationChanged(e);
 
-            // We need to delay this call because we are 
-            // notified of a location change before a 
-            // window state change.  That causes a problem 
-            // when maximizing the window because we record 
-            // the maximized window's location, which is not 
+            // We need to delay this call because we are
+            // notified of a location change before a
+            // window state change.  That causes a problem
+            // when maximizing the window because we record
+            // the maximized window's location, which is not
             // something worth saving.
             base.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
@@ -65,7 +65,7 @@ namespace ConfigurableWindowDemo
                 {
                     if (_isLoaded && base.WindowState == WindowState.Normal)
                     {
-                        Point loc = new Point(base.Left, base.Top);
+                        var loc = new Point(base.Left, base.Top);
                         _settings.WindowLocation = loc;
                     }
                 }));
@@ -87,7 +87,7 @@ namespace ConfigurableWindowDemo
 
             if (_isLoaded)
             {
-                // We don't want the Window to open in the 
+                // We don't want the Window to open in the
                 // minimized state, so ignore that value.
                 if (base.WindowState != WindowState.Minimized)
                     _settings.WindowState = base.WindowState;
@@ -96,28 +96,28 @@ namespace ConfigurableWindowDemo
             }
         }
 
-        #endregion // Base Class Overrides
+        #endregion Base Class Overrides
 
         #region Private Helpers
 
-        void ApplySettings()
+        private void ApplySettings()
         {
-            Size sz = _settings.WindowSize;
+            var sz = _settings.WindowSize;
             base.Width = sz.Width;
             base.Height = sz.Height;
 
-            Point loc = _settings.WindowLocation;
+            var loc = _settings.WindowLocation;
 
             // If the user's machine had two monitors but now only
             // has one, and the Window was previously on the other
             // monitor, we need to move the Window into view.
-            bool outOfBounds =
+            var outOfBounds =
                 loc.X <= -sz.Width ||
                 loc.Y <= -sz.Height ||
                 SystemParameters.VirtualScreenWidth <= loc.X ||
                 SystemParameters.VirtualScreenHeight <= loc.Y;
 
-            if (_settings.IsFirstRun || outOfBounds)
+            if (_settings.StartMinimized || outOfBounds)
             {
                 base.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
@@ -138,6 +138,6 @@ namespace ConfigurableWindowDemo
             }
         }
 
-        #endregion // Private Helpers
+        #endregion Private Helpers
     }
 }

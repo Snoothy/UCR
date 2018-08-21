@@ -1,24 +1,24 @@
 ﻿using System.Configuration;
 using System.Windows;
 
-namespace ConfigurableWindowDemo
+namespace HidWizards.UCR.Views.Settings
 {
     /// <summary>
-    /// Represents a type that can be used to save and 
-    /// retrieve window settings. This contract is used 
-    /// by the ConfigurableWindow to describe a backing 
+    /// Represents a type that can be used to save and
+    /// retrieve window settings. This contract is used
+    /// by the ConfigurableWindow to describe a backing
     /// store for its persisted configuration settings.
     /// </summary>
-    public interface IConfigurableWindowSettings
+    public interface IUCRSettings
     {
         /// <summary>
-        /// Returns true if the application has never 
+        /// Returns true if the application has never
         /// been run before by the current user.  If
         /// this returns true, the Window's initial
         /// location is determined by the operating
         /// system, not the WindowLocation property.
         /// </summary>
-        bool IsFirstRun { get; }
+        bool StartMinimized { get; }
 
         /// <summary>
         /// Gets/sets the Window's desktop coordinate.
@@ -37,43 +37,43 @@ namespace ConfigurableWindowDemo
     }
 
     /// <summary>
-    /// Provides a convenient implementation 
-    /// of IConfigurableWindowSettings that  
-    /// uses the ApplicationSettingsBase class 
+    /// Provides a convenient implementation
+    /// of IConfigurableWindowSettings that
+    /// uses the ApplicationSettingsBase class
     /// as a backing store for setting values.
     /// </summary>
-    public class ConfigurableWindowSettings 
-        : IConfigurableWindowSettings
+    public class ConfigurableWindowSettings
+        : IUCRSettings
     {
         #region Data
 
-        readonly ApplicationSettingsBase _settings;
+        private readonly ApplicationSettingsBase _settings;
 
-        readonly string _isFirstRunProp;
-        readonly string _windowLocationProp;
-        readonly string _windowSizeProp;
-        readonly string _windowStateProp;
+        private readonly string _startMinimizedProp;
+        private readonly string _windowLocationProp;
+        private readonly string _windowSizeProp;
+        private readonly string _windowStateProp;
 
-        #endregion // Data
+        #endregion Data
 
         #region Constructor
 
         public ConfigurableWindowSettings(
             ApplicationSettingsBase settings,
-            string isFirstRunProp,
+            string startMinimizedProp,
             string windowLocationProp,
             string windowSizeProp,
             string windowStateProp)
         {
             _settings = settings;
 
-            _isFirstRunProp = isFirstRunProp;
+            _startMinimizedProp = startMinimizedProp;
             _windowLocationProp = windowLocationProp;
             _windowSizeProp = windowSizeProp;
             _windowStateProp = windowStateProp;
         }
 
-        #endregion // Constructor
+        #endregion Constructor
 
         #region GetValue / SetValue
 
@@ -88,14 +88,14 @@ namespace ConfigurableWindowDemo
             _settings.Save();
         }
 
-        #endregion // GetValue / SetValue
+        #endregion GetValue / SetValue
 
         #region IConfigurableWindowSettings Members
 
-        public bool IsFirstRun
+        public bool StartMinimized
         {
-            get { return GetValue<bool>(_isFirstRunProp); }
-            protected set { SetValue(_isFirstRunProp, value); }
+            get { return GetValue<bool>(_startMinimizedProp); }
+            protected set { SetValue(_startMinimizedProp, value); }
         }
 
         public Point WindowLocation
@@ -116,6 +116,6 @@ namespace ConfigurableWindowDemo
             set { SetValue(_windowStateProp, value); }
         }
 
-        #endregion // IConfigurableWindowSettings Members
+        #endregion IConfigurableWindowSettings Members
     }
 }
