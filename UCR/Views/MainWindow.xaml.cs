@@ -11,20 +11,28 @@ using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.Views.ProfileViews;
-using HidWizards.UCR.Views.Settings;
+using HidWizards.UCR.Settings;
 using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
 namespace HidWizards.UCR.Views
 {
-    public partial class MainWindow : Window, INotifyPropertyChanged, IPersistence
+    public partial class MainWindow : Window, INotifyPropertyChanged, ISettingsProvider
     {
+        private readonly bool _isLoaded;
+
+        private readonly ISettingsProvider _settings;
+
         private Context context;
 
         public string ActiveProfileBreadCrumbs => context?.ActiveProfile != null ? context.ActiveProfile.ProfileBreadCrumbs() : "None";
 
-        public MainWindow(Context context)
+        public bool StartMinimized { get => _settings.StartMinimized; set => _settings.StartMinimized = value; }
+        public Point WindowLocation { get => _settings.WindowLocation; set => _settings.WindowLocation = value; }
+        public Size WindowSize { get => _settings.WindowSize; set => _settings.WindowSize = value; }
+
+        public MainWindow(Context context, ISettingsProvider settings)
         {
             DataContext = this;
             this.context = context;
@@ -32,6 +40,7 @@ namespace HidWizards.UCR.Views
 
             context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
+            _settings = settings;
         }
 
         /// <summary>
@@ -41,21 +50,66 @@ namespace HidWizards.UCR.Views
         /// <param name="e"></param>
         protected override void OnSourceInitialized(EventArgs e)
         {
-            if (Properties.Settings.Default.StartMinimized)
-            {
-                this.WindowState = WindowState.Minimized;
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-            }
-
             base.OnSourceInitialized(e);
 
             EnableMessageHandling();
             var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
-            hwndSource?.AddHook(WndProc);
         }
+
+        #region Get/Set settings
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+
+            // We need to delay this call because we are
+            // notified of a location change before a
+            // window state change.  That causes a problem
+            // when maximizing the window because we record
+            // the maximized window's location, which is not
+            // something worth saving.
+            if (_isLoaded && base.WindowState == WindowState.Normal)
+            {
+                var wLocation = new Point(base.Left, base.Top);
+                _settings.WindowLocation = wLocation;
+            };
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo info)
+        {
+            base.OnRenderSizeChanged(info);
+
+            if (_isLoaded && base.WindowState == WindowState.Normal)
+            {
+                _settings.WindowSize = base.RenderSize;
+            }
+        }
+
+        private void ApplySettings()
+        {
+            // WindowState
+            var wState = _settings.StartMinimized;
+            this.WindowState = wState ? WindowState.Minimized : WindowState.Normal;
+
+            // WindowSize
+            var wSize = _settings.WindowSize;
+            this.Width = wSize.Width;
+            this.Height = wSize.Height;
+
+            // WindowLocation
+            var wLocation = _settings.WindowLocation;
+
+            // If the user's machine had two monitors but now only
+            // has one, and the Window was previously on the other
+            // monitor, we need to move the Window into view.
+            var outOfBounds =
+                wLocation.X <= -wSize.Width ||
+                wLocation.Y <= -wSize.Height ||
+                SystemParameters.VirtualScreenWidth <= wLocation.X ||
+                SystemParameters.VirtualScreenHeight <= wLocation.Y;
+        }
+
+        #endregion Get/Set settings
 
         private bool GetSelectedItem(out ProfileItem profileItem)
         {

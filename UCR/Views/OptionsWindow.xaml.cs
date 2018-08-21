@@ -43,17 +43,6 @@ namespace HidWizards.UCR.Views
 
         private void startMinimized_Checked(object sender, RoutedEventArgs e)
         {
-            // start minimized
-            if (startMinimized.IsChecked == false)
-            {
-                Properties.Settings.Default.StartMinimized = true;
-                Properties.Settings.Default.Save();
-            }
-            else // start not minimized
-            {
-                Properties.Settings.Default.StartMinimized = false;
-                Properties.Settings.Default.Save();
-            }
         }
     }
 }
