@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -10,13 +11,13 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
+using HidWizards.UCR.Views.ProfileViews;
 using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
 namespace HidWizards.UCR.Views
 {
-
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private Context context;
@@ -27,8 +28,9 @@ namespace HidWizards.UCR.Views
         {
             DataContext = this;
             this.context = context;
+
             InitializeComponent();
-            
+
             context.SetActiveProfileCallback(ActiveProfileChanged);
             ReloadProfileTree();
         }
@@ -44,7 +46,6 @@ namespace HidWizards.UCR.Views
 
             EnableMessageHandling();
             var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
-            hwndSource?.AddHook(WndProc);
         }
 
         private bool GetSelectedItem(out ProfileItem profileItem)
@@ -52,7 +53,7 @@ namespace HidWizards.UCR.Views
             var pi = ProfileTree.SelectedItem as ProfileItem;
             if (pi == null)
             {
-                MessageBox.Show("Please select a profile", "No profile selected!",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Please select a profile", "No profile selected!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 profileItem = null;
                 return false;
             }
@@ -65,7 +66,6 @@ namespace HidWizards.UCR.Views
             var profileTree = ProfileItem.GetProfileTree(context.Profiles);
             ProfileTree.ItemsSource = profileTree;
         }
-
 
         #region Profile Actions
 
@@ -83,7 +83,7 @@ namespace HidWizards.UCR.Views
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (context.ActiveProfile == null) return;
-            
+
             if (!context.SubscriptionsManager.DeactivateProfile())
             {
                 MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -152,7 +152,7 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var result = MessageBox.Show("Are you sure you want to remove '" + pi.profile.Title +"'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Are you sure you want to remove '" + pi.profile.Title + "'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
             pi.profile.Remove();
             ReloadProfileTree();
@@ -178,15 +178,19 @@ namespace HidWizards.UCR.Views
                     case MessageBoxResult.Cancel:
                         e.Cancel = true;
                         return;
+
                     case MessageBoxResult.Yes:
                         context.SaveContext();
                         break;
+
                     case MessageBoxResult.No:
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
+            Settings.Default.Save();
             context.Dispose();
         }
 
@@ -213,11 +217,10 @@ namespace HidWizards.UCR.Views
             e.CanExecute = context.IsNotSaved;
         }
 
-
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
-            
+
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) context.ParseCommandLineArguments(argsString.Split(';'));
