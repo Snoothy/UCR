@@ -83,7 +83,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Settings\ISettingsProvider.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />

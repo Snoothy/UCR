@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
         xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
+        xmlns:Properties="clr-namespace:HidWizards.UCR.Properties"
         mc:Ignorable="d"
-        Title="Universal Control Remapper" Height="525" Width="350"
+        Title="Universal Control Remapper"
+        Height="{Binding Height, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Width="{Binding Width, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding Left, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Top="{Binding Top, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        WindowState="{Binding WindowState, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
         Closing="MainWindow_OnClosing" ShowInTaskbar="False">
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
