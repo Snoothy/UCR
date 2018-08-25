@@ -95,7 +95,7 @@ namespace HidWizards.UCR
             var mnuOptions = new System.Windows.Forms.MenuItem("Options");
             stMenu.MenuItems.Add(mnuOptions);
             notify.ContextMenu = stMenu;
-            mnuOptions.Visible = true;
+            mnuOptions.Visible = false;
             mnuOptions.Click += MnuOptions_Click;
 
             // Exit
