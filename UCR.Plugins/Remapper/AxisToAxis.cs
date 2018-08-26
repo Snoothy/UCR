@@ -14,14 +14,14 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear", ColumnOrder = 3)]
-        public bool Linear { get; set; }
-
         [PluginGui("Dead zone", ColumnOrder = 1)]
         public int DeadZone { get; set; }
 
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
+
+        [PluginGui("Linear", ColumnOrder = 3)]
+        public bool Linear { get; set; }
 
         public AxisToAxis()
         {
