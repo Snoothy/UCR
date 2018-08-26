@@ -20,10 +20,13 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
-        [PluginGui("Multiplier", ColumnOrder = 3)]
+        [PluginGui("Linear", ColumnOrder = 3)]
+        public bool Linear { get; set; }
+
+        [PluginGui("Multiplier", ColumnOrder = 4, RowOrder = 2)]
         public int Multiplier { get; set; }
 
-        [PluginGui("Curve", ColumnOrder = 4)]
+        [PluginGui("Exponential Curve", ColumnOrder = 5, RowOrder = 2)]
         public double Curve { get; set; }
 
         private long AxisRest;
