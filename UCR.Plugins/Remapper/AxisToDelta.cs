@@ -6,10 +6,10 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to mouse", Disabled = true)]
+    [Plugin("Axis to Delta")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
-    [PluginOutput(DeviceBindingCategory.Delta, "Mouse")]
-    public class AxisToMouse : Plugin
+    [PluginOutput(DeviceBindingCategory.Delta, "Delta")]
+    public class AxisToDelta : Plugin
     {
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
@@ -20,7 +20,9 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
-        public AxisToMouse()
+        private long _currentValue;
+
+        public AxisToDelta()
         {
             DeadZone = 0;
             Sensitivity = 1;
@@ -33,7 +35,10 @@ namespace HidWizards.UCR.Plugins.Remapper
             if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
             if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, false);
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
-            WriteOutput(0, value);
+
+            var delta = value - _currentValue;
+            _currentValue = value;
+            WriteOutput(0, delta);
         }
     }
 }
