@@ -53,8 +53,8 @@
     <Compile Include="Remapper\AxisToMouse.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
+    <Compile Include="Remapper\DeltaToAxis.cs" />
     <Compile Include="State\ButtonToState.cs" />
-    <Compile Include="Remapper\MouseToAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
