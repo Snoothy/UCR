@@ -28,7 +28,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public int AbsoluteTimeout { get; set; }
 
         private long _currentValue;
-        private static System.Timers.Timer _absoluteModeTimer;
+        private static Timer _absoluteModeTimer;
 
         public DeltaToAxis()
         {
@@ -37,7 +37,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             RelativeSensitivity = 100;
             AbsoluteSensitivity = 10000;
             AbsoluteTimeout = 100;
-            _absoluteModeTimer = new System.Timers.Timer();
+            _absoluteModeTimer = new Timer();
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
 
