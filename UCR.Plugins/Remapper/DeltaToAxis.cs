@@ -81,5 +81,11 @@ namespace HidWizards.UCR.Plugins.Remapper
                 _absoluteModeTimer.Stop();
             }
         }
+
+        public override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            SetAbsoluteTimerState(false);
+        }
     }
 }
