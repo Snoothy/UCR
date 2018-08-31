@@ -71,7 +71,8 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 - Keyboard (using [interception](https://github.com/oblitum/Interception))
 - Mouse (using [interception](https://github.com/oblitum/Interception))
 
-
+## Build ##
+It is required to run the build script before building with Visual Studio. Run `.\build.ps1 InitProject` from powershell to initialize the required dependencies. All subsequent builds can be done from Visual Studio 2017
 
 ## License ##
 

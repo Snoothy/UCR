@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.DataTransferObjects;
+using HidWizards.UCR.Core.Annotations;
 
 namespace HidWizards.UCR.Core.Models.Binding
 {
@@ -12,7 +15,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         Delta
     }
 
-    public class DeviceBinding
+    public class DeviceBinding : INotifyPropertyChanged
     {
         /* Persistence */
         public bool IsBound { get; set; }
@@ -35,10 +38,33 @@ namespace HidWizards.UCR.Core.Models.Binding
 
 
         public delegate void ValueChanged(long value);
+        
+        private ValueChanged _callback;
+
         [XmlIgnore]
-        public ValueChanged Callback { get; set; }
+        public ValueChanged Callback
+        {
+            get => InputChanged;
+            set
+            {
+                _callback = value;
+                OnPropertyChanged();
+            }
+        }
         [XmlIgnore]
         public ValueChanged OutputSink { get; set; }
+
+        private long _currentValue;
+        [XmlIgnore]
+        public long CurrentValue
+        {
+            get => _currentValue;
+            set
+            {
+                _currentValue = value;
+                OnPropertyChanged();
+            }
+        }
 
         public DeviceBinding()
         {
@@ -105,7 +131,22 @@ namespace HidWizards.UCR.Core.Models.Binding
 
         public void WriteOutput(long value)
         {
+            CurrentValue = value;
             OutputSink?.Invoke(value);
+        }
+
+        private void InputChanged(long value)
+        {
+            CurrentValue = value;
+            _callback(value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

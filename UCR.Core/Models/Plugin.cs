@@ -120,6 +120,11 @@ namespace HidWizards.UCR.Core.Models
             return Profile.GetRuntimeState(stateGuid);
         }
 
+        protected long ReadOutput(int number)
+        {
+            return Outputs[number].CurrentValue;
+        }
+
         #endregion
         
         public void SetProfile(Profile profile)

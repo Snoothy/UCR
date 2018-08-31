@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core.Models.Binding;
-using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities.Commands;
 using HidWizards.UCR.ViewModels;
 
@@ -26,7 +25,6 @@ namespace HidWizards.UCR.Views.Controls
 
         private bool HasLoaded = false;
         public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
-
 
         public DeviceBindingControl()
         {

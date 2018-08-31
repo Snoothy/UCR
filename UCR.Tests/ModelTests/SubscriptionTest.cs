@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Core.Models.Subscription;
+using HidWizards.UCR.Plugins.Remapper;
+using NUnit.Framework;
+
+namespace HidWizards.UCR.Tests.ModelTests
+{
+    [TestFixture]
+    internal class SubscriptionTest
+    {
+
+        private Context _context;
+        private Profile _profile;
+        private Mapping _mapping;
+        private string _profileName;
+
+        [SetUp]
+        public void Setup()
+        {
+            _context = new Context();
+            _profileName = "Test";
+            _context.ProfilesManager.AddProfile(_profileName);
+            _profile = _context.Profiles[0];
+        }
+
+        [Test]
+        public void TestEmptyProfile()
+        {
+            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
+
+            var state = getSubscriptionState();
+            Assert.IsTrue(state.IsActive);
+            Assert.AreEqual(0, state.MappingSubscriptions.Count);
+        }
+
+        [Test]
+        public void TestOneBindingProfile()
+        {
+            var mapping = _profile.AddMapping("Button");
+            var plugin = new ButtonToButton();
+            mapping.AddPlugin(plugin, null);
+
+            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
+
+            var state = getSubscriptionState();
+            Assert.IsTrue(state.IsActive);
+            Assert.AreEqual(1, state.MappingSubscriptions.Count);
+            Assert.AreEqual(1, state.MappingSubscriptions[0].PluginSubscriptions.Count);
+            Assert.AreEqual(plugin, state.MappingSubscriptions[0].PluginSubscriptions[0].Plugin);
+        }
+
+        private SubscriptionState getSubscriptionState()
+        {
+            return _context.SubscriptionsManager.SubscriptionState;
+        }
+    }
+}

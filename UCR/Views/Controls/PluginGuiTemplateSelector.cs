@@ -29,6 +29,9 @@ namespace HidWizards.UCR.Views.Controls
                         return element.FindResource("EnumTemplate") as DataTemplate;
                     }
                     return element.FindResource("NumberTemplate") as DataTemplate;
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                    return element.FindResource("DecimalTemplate") as DataTemplate;
                 case TypeCode.String:
                     return element.FindResource("StringTemplate") as DataTemplate;
                 case TypeCode.Object:

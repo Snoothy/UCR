@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
+             xmlns:validators="clr-namespace:HidWizards.UCR.Utilities.Validators"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300"
              x:Name="PluginViewName" Margin="0,0,0,5">
@@ -56,7 +57,7 @@
                 </ItemsControl.Resources>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate >
-                        <controls:DeviceBindingControl DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
+                        <controls:DeviceBindingControl DataContext="{Binding}" DeviceBinding="{Binding DeviceBinding}" Label="{Binding DeviceBindingName}" Category="{Binding DeviceBindingCategory}"  />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -80,7 +81,28 @@
                                 </DataTemplate>
                                 <DataTemplate x:Key="NumberTemplate">
                                     <GroupBox Header="{Binding Name}" Width="Auto" Padding="5" PreviewTextInput="NumberValidationTextBox">
-                                        <TextBox Width="30" Text="{Binding Property, Mode=TwoWay}"/>
+                                        <TextBox Width="30">
+                                            <TextBox.Text>
+                                                <Binding Path="Property">
+                                                    <Binding.ValidationRules>
+                                                        <validators:NumberBindingValidator/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </GroupBox>
+                                </DataTemplate>
+                                <DataTemplate x:Key="DecimalTemplate">
+                                    <GroupBox Header="{Binding Name}" Width="Auto" Padding="5" PreviewTextInput="DecimalValidationTextBox">
+                                        <TextBox Width="30">
+                                            <TextBox.Text>
+                                                <Binding Path="Property">
+                                                    <Binding.ValidationRules>
+                                                        <validators:DecimalBindingValidator/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </GroupBox>
                                 </DataTemplate>
                                 <DataTemplate x:Key="StringTemplate">
