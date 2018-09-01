@@ -10,7 +10,7 @@
         /// and then clamp the value</para>
         /// </summary>
         public const int AxisMaxAbsValue = short.MinValue * -1; // For short, this should be 32768
-        public const int AxisMaxValue = short.MaxValue; // ToDo: This will be 32767, meaning that negative scaling does not go to -32768. Fix.
+        public const int AxisMaxValue = short.MaxValue;
         public const int AxisMinValue = short.MinValue;
     }
 }
