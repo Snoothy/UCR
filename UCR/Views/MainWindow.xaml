@@ -5,13 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
         xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
+        xmlns:Properties="clr-namespace:HidWizards.UCR.Properties"
         mc:Ignorable="d"
-        Title="Universal Control Remapper" Height="525" Width="350"
-        Closing="MainWindow_OnClosing">
+        Title="Universal Control Remapper"
+        Height="{Binding Height, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Width="{Binding Width, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding Left, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Top="{Binding Top, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        WindowState="{Binding WindowState, Source={x:Static Properties:Settings.Default}, Mode=TwoWay}"
+        Closing="MainWindow_OnClosing" ShowInTaskbar="False">
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
     </Window.CommandBindings>
-    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+    <Grid Background="{x:Static SystemColors.ControlBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="1*" />
@@ -29,7 +35,7 @@
                 <Separator />
                 <MenuItem Header="New" Click="AddProfile" />
                 <MenuItem Header="Add child" Click="AddChildProfile" />
-                <MenuItem Header="Copy" Click="CopyProfile"/>
+                <MenuItem Header="Copy" Click="CopyProfile" />
                 <Separator />
                 <MenuItem Header="Edit" Click="EditProfile" />
                 <MenuItem Header="Rename" Click="RenameProfile" />
@@ -40,45 +46,45 @@
                 <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="Help" Click="Help_OnClick"/>
+                <MenuItem Header="Help" Click="Help_OnClick" />
                 <Separator />
-                <MenuItem Header="About" Click="About_OnClick"/>
+                <MenuItem Header="About" Click="About_OnClick" />
             </MenuItem>
         </Menu>
 
         <TreeView Grid.Row="1" Name="ProfileTree" Margin="10,5,10,0">
             <TreeView.Style>
                 <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
-                <Style.Triggers>
-                    <Trigger Property="HasItems" Value="False">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first profile</TextBlock>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
+                    <Style.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first profile</TextBlock>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </TreeView.Style>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="True"/>
-                    <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
+                    <Setter Property="IsExpanded" Value="True" />
+                    <EventSetter Event="MouseDoubleClick" Handler="EditProfile" />
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type viewModels:ProfileItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}" >
+                    <TextBlock Text="{Binding Title}">
                         <TextBlock.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Activate" Click="ActivateProfile"/>
+                                <MenuItem Header="Activate" Click="ActivateProfile" />
                                 <Separator />
                                 <MenuItem Header="Add child" Click="AddChildProfile" />
-                                <MenuItem Header="Copy" Click="CopyProfile"/>
+                                <MenuItem Header="Copy" Click="CopyProfile" />
                                 <Separator />
                                 <MenuItem Header="Edit" Click="EditProfile" />
                                 <MenuItem Header="Rename" Click="RenameProfile" />
@@ -93,7 +99,7 @@
 
         <StackPanel Grid.Row="2" DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="10,0">
             <Label>Active profile:</Label>
-            <Label Content="{Binding ActiveProfileBreadCrumbs}"/>
+            <Label Content="{Binding ActiveProfileBreadCrumbs}" />
         </StackPanel>
     </Grid>
 </Window>
