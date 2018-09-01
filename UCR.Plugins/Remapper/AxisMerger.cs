@@ -6,7 +6,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis merger")]
+    [Plugin("Axis Merger")]
     [PluginInput(DeviceBindingCategory.Range, "Axis high")]
     [PluginInput(DeviceBindingCategory.Range, "Axis low")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]

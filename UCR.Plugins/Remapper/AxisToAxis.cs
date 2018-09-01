@@ -6,7 +6,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to axis")]
+    [Plugin("Axis to Axis")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin

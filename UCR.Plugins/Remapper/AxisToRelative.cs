@@ -8,7 +8,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to axis (Relative)")]
+    [Plugin("Axis to Axis (Relative)")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToRelative : Plugin
