@@ -17,10 +17,27 @@ namespace HidWizards.UCR.Plugins.Remapper
         public bool Invert { get; set; }
 
         [PluginGui("Dead zone", RowOrder = 0, ColumnOrder = 1)]
-        public int DeadZone { get; set; }
+        //public int DeadZone { get; set; }
+        public int DeadZone
+        {
+            get => _deadZone;
+            set
+            {
+                _deadZone = value;
+                _deadzoneHelper.Percentage = _deadZone;
+            }
+        }
+        private int _deadZone;
+
 
         [PluginGui("Sensitivity", RowOrder = 0, ColumnOrder = 2)]
         public int Sensitivity { get; set; }
+
+        //[PluginGui("Min", RowOrder = 1, ColumnOrder = 0)]
+        //public int Min { get; set; }
+
+        //[PluginGui("Max", RowOrder = 1, ColumnOrder = 1)]
+        //public int Max { get; set; }
 
         [PluginGui("Min", RowOrder = 1, ColumnOrder = 0)]
         public int Min
@@ -49,6 +66,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private static Timer _absoluteModeTimer;
         private long _currentDelta;
         private float _scaleFactor;
+        private readonly DeadzoneHelper _deadzoneHelper = new DeadzoneHelper();
 
         public AxisToDelta()
         {
@@ -60,6 +78,12 @@ namespace HidWizards.UCR.Plugins.Remapper
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
 
+        //public override void OnPropertyChanged()
+        //{
+        //    base.OnPropertyChanged();
+        //    PrecalculateValues();
+        //}
+
         private void PrecalculateValues()
         {
             _scaleFactor = (float)(Max - (Min - 1)) / 32767;
@@ -68,8 +92,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void Update(params long[] values)
         {
             var value = values[0];
+            if (value != 0) value = _deadzoneHelper.ApplyRangeDeadZone(value);
             if (Invert) value *= -1;
-            if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
 
             if (value == 0)
             {
