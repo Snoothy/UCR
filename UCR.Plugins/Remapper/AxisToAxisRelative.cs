@@ -11,7 +11,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [Plugin("Axis to Axis (Relative)")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
-    public class AxisToRelative : Plugin
+    public class AxisToAxisRelative : Plugin
     {
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
@@ -41,7 +41,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private Thread _relativeThread;
 
-        public AxisToRelative()
+        public AxisToAxisRelative()
         {
             DeadZone = 0;
             Sensitivity = 100;
