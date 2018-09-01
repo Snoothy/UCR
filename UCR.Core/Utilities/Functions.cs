@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace HidWizards.UCR.Core.Utilities
@@ -23,9 +23,9 @@ namespace HidWizards.UCR.Core.Utilities
             // Map value to -1 .. 1
             double val11 = (((value - Constants.AxisMinValue) / AxisRange) * 2) - 1;
             // calculate (Sensitivity * Value) + ( (1-Sensitivity) * Value^3 )
-            double valout = (sens * val11) + ((1 - sens) * Math.Pow(val11, 3));
+            double valout = (sens * val11) + ((1 - sens) * Math.Pow( val11, 3 ));
             // Map value back to AxisRange
-            value = (long)Math.Round(((valout + 1) / 2d) * AxisRange + (1d * Constants.AxisMinValue));
+            value = (long) Math.Round( ((valout + 1) / 2d) * AxisRange + (1d * Constants.AxisMinValue) );
 
             return value;
         }
@@ -45,7 +45,7 @@ namespace HidWizards.UCR.Core.Utilities
             value = Constants.AxisMinValue + value * 2;
             value = invert ? value * -1 : value;
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
-            return value;
+            return value; 
         }
     }
 }
