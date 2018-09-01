@@ -20,6 +20,7 @@ namespace HidWizards.UCR.Core.Models
             {
                 if (value.Equals(PropertyInfo.GetValue(Plugin))) return;
                 PropertyInfo.SetValue(Plugin, Convert.ChangeType(value, PropertyInfo.PropertyType, CultureInfo.InvariantCulture));
+                Plugin.OnPropertyChanged();
                 Plugin.ContextChanged();
             }
         }
