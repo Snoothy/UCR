@@ -5,6 +5,22 @@ namespace HidWizards.UCR.Core.Utilities
 {
     public static class Functions
     {
+        public static long Invert(long value)
+        {
+            if (value == 0) return 0;
+            if (value >= Constants.AxisMaxValue)
+            {
+                return Constants.AxisMinValue;
+            }
+
+            if (value <= Constants.AxisMinValue)
+            {
+                return Constants.AxisMaxValue;
+            }
+
+            return value * -1;
+        }
+
         public static long ApplyRangeDeadZone(long value, int deadZonePercentage)
         {
             var gap = (deadZonePercentage / 100.0) * Constants.AxisMaxValue;
