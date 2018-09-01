@@ -40,7 +40,6 @@ namespace HidWizards.UCR.Plugins.Remapper
             Sensitivity = 1;
             Min = 1;
             Max = 20;
-            PrecalculateValues();
             _absoluteModeTimer = new Timer(10);
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
@@ -83,6 +82,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void OnActivate()
         {
             base.OnActivate();
+            PrecalculateValues();
             if (_currentDelta != 0)
             {
                 SetAbsoluteTimerState(true);
