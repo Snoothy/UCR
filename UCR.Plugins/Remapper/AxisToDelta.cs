@@ -17,51 +17,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         public bool Invert { get; set; }
 
         [PluginGui("Dead zone", RowOrder = 0, ColumnOrder = 1)]
-        //public int DeadZone { get; set; }
-        public int DeadZone
-        {
-            get => _deadZone;
-            set
-            {
-                _deadZone = value;
-                _deadzoneHelper.Percentage = _deadZone;
-            }
-        }
-        private int _deadZone;
+        public int DeadZone { get; set; }
 
 
         [PluginGui("Sensitivity", RowOrder = 0, ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
-        //[PluginGui("Min", RowOrder = 1, ColumnOrder = 0)]
-        //public int Min { get; set; }
-
-        //[PluginGui("Max", RowOrder = 1, ColumnOrder = 1)]
-        //public int Max { get; set; }
-
         [PluginGui("Min", RowOrder = 1, ColumnOrder = 0)]
-        public int Min
-        {
-            get => _min;
-            set
-            {
-                _min = value;
-                PrecalculateValues();
-            }
-        }
-        private int _min;
+        public int Min { get; set; }
 
         [PluginGui("Max", RowOrder = 1, ColumnOrder = 1)]
-        public int Max
-        {
-            get => _max;
-            set
-            {
-                _max = value;
-                PrecalculateValues();
-            }
-        }
-        private int _max;
+        public int Max { get; set; }
 
         private static Timer _absoluteModeTimer;
         private long _currentDelta;
@@ -74,19 +40,21 @@ namespace HidWizards.UCR.Plugins.Remapper
             Sensitivity = 1;
             Min = 1;
             Max = 20;
+            PrecalculateValues();
             _absoluteModeTimer = new Timer(10);
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
 
-        //public override void OnPropertyChanged()
-        //{
-        //    base.OnPropertyChanged();
-        //    PrecalculateValues();
-        //}
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            PrecalculateValues();
+        }
 
         private void PrecalculateValues()
         {
             _scaleFactor = (float)(Max - (Min - 1)) / 32767;
+            _deadzoneHelper.Percentage = DeadZone;
         }
 
         public override void Update(params long[] values)
