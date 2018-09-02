@@ -43,7 +43,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             _sens = _scaleFactor / 100d;
         }
 
-        public long ApplyRangeSensitivity(long value, int sensitivity, bool linear)
+        public long ApplyRangeSensitivity(long value)
         {
             //var sensitivityPercent = (sensitivity / 100.0);
             if (_isLinear) return (long)(value * _scaleFactor);
