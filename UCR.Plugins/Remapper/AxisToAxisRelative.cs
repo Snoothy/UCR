@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Threading;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -11,7 +13,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [Plugin("Axis to axis (Relative)")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
-    public class AxisToRelative : Plugin
+    public class AxisToAxisRelative : Plugin
     {
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
@@ -34,26 +36,57 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Relative Sensitivity", ColumnOrder = 2, RowOrder = 2)]
         public decimal RelativeSensitivity { get; set; }
 
+        [PluginGui("Use delta", ColumnOrder = 3, RowOrder = 2)]
+        public bool UseDelta { get; set; }
+
+
+        [PluginGui("Multiplier", ColumnOrder = 4, RowOrder = 2)]
+        public int Multiplier { get; set; }
+
+        private long _axisRest;
 
         private long _currentOutputValue;
         private long _currentInputValue;
-        private readonly object _threadLock = new object();
+        [NotNull] private readonly object _threadLock = new object();
 
-        private Thread _relativeThread;
+        [NotNull] private Thread _relativeThread;
 
-        public AxisToRelative()
+        public AxisToAxisRelative()
         {
             DeadZone = 0;
             Sensitivity = 100;
             RelativeContinue = true;
             RelativeSensitivity = 2;
+            UseDelta = true;
+            Multiplier = 20;
+            _axisRest = 0;
             _relativeThread = new Thread(RelativeThread);
         }
-
+        
         public override void Update(params long[] values)
         {
-            var value = values[0];
+            long value;
 
+            var raw = values[0];
+
+            // Use either raw input or calculated delta
+            if (UseDelta)
+            {
+                // delta
+                var delta = raw - _axisRest;
+                // Alter the response
+                delta = delta * Multiplier;
+
+                value = delta;
+                Debug.WriteLine($"Input Delta: {value}");
+            }
+            else
+            {
+                value = raw;
+                Debug.WriteLine($"Raw Input: {raw}");
+            }
+
+            // Transform the input as needed
             if (Invert) value *= -1;
             if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
             if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, Linear);
@@ -62,14 +95,18 @@ namespace HidWizards.UCR.Plugins.Remapper
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             _currentInputValue = value;
 
-            if (RelativeContinue)
-            {
-                SetRelativeThreadState(value != 0);
-            }
-            else
-            {
-                RelativeUpdate();
-            }
+                if (RelativeContinue)
+                {
+                    SetRelativeThreadState(value != 0);
+                }
+                else
+                {
+                    RelativeUpdate();
+                }
+                
+                Debug.WriteLine($"Relative Output: {value}");
+
+            _axisRest = raw;
         }
 
         public override void OnDeactivate()
@@ -118,6 +155,13 @@ namespace HidWizards.UCR.Plugins.Remapper
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             WriteOutput(0, value);
             _currentOutputValue = value;
+        }
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(_threadLock != null);
+            Contract.Invariant(_relativeThread != null);
         }
     }
 }
