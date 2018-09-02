@@ -21,6 +21,13 @@ namespace HidWizards.UCR.Core.Utilities
             return value * -1;
         }
 
+        public static long ClampAxisRange(long value)
+        {
+            if (value == 0) return value;
+            if (value <= Constants.AxisMinValue) return Constants.AxisMinValue;
+            return value >= Constants.AxisMaxValue ? Constants.AxisMaxValue : value;
+        }
+
         public static long ApplyRangeDeadZone(long value, int deadZonePercentage)
         {
             var gap = (deadZonePercentage / 100.0) * Constants.AxisMaxValue;
