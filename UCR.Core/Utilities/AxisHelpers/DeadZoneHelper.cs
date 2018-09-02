@@ -19,6 +19,11 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
         }
         private int _percentage;
 
+        public DeadZoneHelper()
+        {
+            PrecalculateValues();
+        }
+
         private void PrecalculateValues()
         {
             if (_percentage == 0)
