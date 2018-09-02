@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HidWizards.UCR.Core.Utilities
+namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 {
-    public class DeadzoneHelper
+    public class DeadZoneHelper
     {
         //private double gapPercent;
         private int _percentage;
