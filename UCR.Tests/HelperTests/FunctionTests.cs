@@ -14,8 +14,8 @@ namespace HidWizards.UCR.Tests.HelperTests
         [Test]
         public void InvertTest()
         {
-            Assert.AreEqual(Functions.Invert(0), 0);
-            Assert.AreEqual(Functions.Invert(Constants.AxisMaxValue), Constants.AxisMinValue);
+            Assert.AreEqual(0, Functions.Invert(0));
+            Assert.AreEqual(Constants.AxisMinValue, Functions.Invert(Constants.AxisMaxValue));
             Assert.AreEqual(Functions.Invert(Constants.AxisMinValue), Constants.AxisMaxValue);
             Assert.AreEqual(Functions.Invert(1), -1);
             Assert.AreEqual(Functions.Invert(-1), 1);
@@ -24,13 +24,13 @@ namespace HidWizards.UCR.Tests.HelperTests
         [Test]
         public void ClampTest()
         {
-            Assert.AreEqual(Functions.ClampAxisRange(Constants.AxisMinValue - 1), Constants.AxisMinValue);
-            Assert.AreEqual(Functions.ClampAxisRange(Constants.AxisMaxValue + 1), Constants.AxisMaxValue);
-            Assert.AreEqual(Functions.ClampAxisRange(Constants.AxisMaxValue), Constants.AxisMaxValue);
-            Assert.AreEqual(Functions.ClampAxisRange(Constants.AxisMinValue), Constants.AxisMinValue);
-            Assert.AreEqual(Functions.ClampAxisRange(0), 0);
-            Assert.AreEqual(Functions.ClampAxisRange(1), 1);
-            Assert.AreEqual(Functions.ClampAxisRange(-1), -1);
+            Assert.AreEqual(Constants.AxisMinValue, Functions.ClampAxisRange(Constants.AxisMinValue - 1));
+            Assert.AreEqual(Constants.AxisMaxValue, Functions.ClampAxisRange(Constants.AxisMaxValue + 1));
+            Assert.AreEqual(Constants.AxisMaxValue, Functions.ClampAxisRange(Constants.AxisMaxValue));
+            Assert.AreEqual(Constants.AxisMinValue, Functions.ClampAxisRange(Constants.AxisMinValue));
+            Assert.AreEqual(0, Functions.ClampAxisRange(0));
+            Assert.AreEqual(1, Functions.ClampAxisRange(1));
+            Assert.AreEqual(-1, Functions.ClampAxisRange(-1));
         }
     }
 }
