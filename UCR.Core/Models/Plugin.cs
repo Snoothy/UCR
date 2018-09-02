@@ -91,6 +91,11 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
+        public virtual void OnPropertyChanged()
+        {
+
+        }
+
         public virtual void Update(params long[] values)
         {
 

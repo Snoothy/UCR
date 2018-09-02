@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics;
 
 namespace HidWizards.UCR.Core.Utilities
 {
@@ -29,13 +30,6 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
-        public static long ApplyRelativeIncrement(long last, long prev, int sensitivity)
-        {
-            var sensitivityPercent = (sensitivity / 100.0);
-            last = (long)(last * sensitivityPercent);
-            return last + prev;
-        }
-
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
         {
             long value;
@@ -49,8 +43,9 @@ namespace HidWizards.UCR.Core.Utilities
             }
 
             value = Constants.AxisMinValue + value * 2;
-
-            return invert ? value * -1 : value;
+            value = invert ? value * -1 : value;
+            value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+            return value; 
         }
     }
 }
