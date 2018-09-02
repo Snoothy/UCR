@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics;
 
 namespace HidWizards.UCR.Core.Utilities
 {
@@ -16,7 +17,16 @@ namespace HidWizards.UCR.Core.Utilities
         {
             var sensitivityPercent = (sensitivity / 100.0);
             if (linear) return (long)(value * sensitivityPercent);
-            // TODO https://github.com/evilC/UCR/blob/master/Libraries/StickOps/StickOps.ahk#L60
+
+            var sens = sensitivityPercent / 100d;
+            double AxisRange = 1d * (Constants.AxisMaxValue - Constants.AxisMinValue);
+            // Map value to -1 .. 1
+            double val11 = (((value - Constants.AxisMinValue) / AxisRange) * 2) - 1;
+            // calculate (Sensitivity * Value) + ( (1-Sensitivity) * Value^3 )
+            double valout = (sens * val11) + ((1 - sens) * Math.Pow( val11, 3 ));
+            // Map value back to AxisRange
+            value = (long) Math.Round( ((valout + 1) / 2d) * AxisRange + (1d * Constants.AxisMinValue) );
+
             return value;
         }
 
@@ -31,10 +41,11 @@ namespace HidWizards.UCR.Core.Utilities
             {
                 value = axis < 0 ? axis * -1 : 0L;
             }
-            
+
             value = Constants.AxisMinValue + value * 2;
-            
-            return invert ? value * -1 : value; 
+            value = invert ? value * -1 : value;
+            value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+            return value; 
         }
     }
 }
