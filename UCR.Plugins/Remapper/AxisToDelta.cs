@@ -53,7 +53,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void PrecalculateValues()
         {
-            _scaleFactor = (float)(Max - (Min - 1)) / 32767;
+            _scaleFactor = (float)(Max - (Min - 1)) / 32769;
             _deadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
         }
