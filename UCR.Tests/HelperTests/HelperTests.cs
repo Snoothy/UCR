@@ -35,5 +35,18 @@ namespace HidWizards.UCR.Tests.HelperTests
             Assert.AreEqual(Constants.AxisMinValue, min);
             Assert.AreEqual(0, helper.ApplyRangeDeadZone(0));
         }
+
+        [Test]
+        public void SensitivityTest()
+        {
+            var helper = new SensitivityHelper();
+            Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeSensitivity(Constants.AxisMinValue));
+            Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeSensitivity(Constants.AxisMaxValue));
+            Assert.AreEqual(0, helper.ApplyRangeSensitivity(0));
+            helper.Percentage = 50;
+            Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeSensitivity(Constants.AxisMinValue));
+            Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeSensitivity(Constants.AxisMaxValue));
+            Assert.AreEqual(0, helper.ApplyRangeSensitivity(0));
+        }
     }
 }
