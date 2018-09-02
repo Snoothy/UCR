@@ -74,7 +74,7 @@ namespace HidWizards.UCR.Plugins.Remapper
                 var sign = Math.Sign(value);
                 
                 if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
-                value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+                value = Functions.ClampAxisRange(value);
                 _currentDelta = (long)(Min + (Math.Abs(value) * _scaleFactor)) * sign;
                 //Debug.WriteLine($"New Delta: {_currentDelta}");
                 SetAbsoluteTimerState(true);
