@@ -24,7 +24,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             if (_percentage == 0)
             {
                 _deadzoneCutoff = 0;
-                _scaleFactor = 100.0;
+                _scaleFactor = 1.0;
             }
             else
             {
