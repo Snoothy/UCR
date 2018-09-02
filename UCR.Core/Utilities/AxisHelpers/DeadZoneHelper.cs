@@ -43,7 +43,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
         public long ApplyRangeDeadZone(long value)
         {
             var absValue = Math.Abs(value);
-            if (absValue < _deadzoneCutoff)
+            if (absValue < Math.Round(_deadzoneCutoff))
             {
                 return 0;
             }
@@ -53,7 +53,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             var newValue = (long) Math.Round(adjustedValue * sign);
             if (newValue == -32769) newValue = -32768;
             //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
-            return (long)newValue;
+            return newValue;
         }
     }
 }
