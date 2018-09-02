@@ -29,8 +29,10 @@ namespace HidWizards.UCR.Tests.HelperTests
         {
             var helper = new DeadZoneHelper {Percentage = 50};
             // At 50% DZ, we should still be able to reach extremes
-            //Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeDeadZone(Constants.AxisMaxValue));
-            //Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeDeadZone(Constants.AxisMinValue));
+            var max = helper.ApplyRangeDeadZone(Constants.AxisMaxValue);
+            //Assert.AreEqual(Constants.AxisMaxValue, max);
+            var min = helper.ApplyRangeDeadZone(Constants.AxisMinValue);
+            Assert.AreEqual(Constants.AxisMinValue, min);
             Assert.AreEqual(0, helper.ApplyRangeDeadZone(0));
         }
     }

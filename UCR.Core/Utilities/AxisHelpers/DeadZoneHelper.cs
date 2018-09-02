@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 {
@@ -6,12 +7,13 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
     {
         //private double gapPercent;
         private double _scaleFactor;
-        private long _deadzoneCutoff;
+        private double _deadzoneCutoff;
         
         public int Percentage
         {
             get => _percentage;
             set
+                //TODO CHECK FOR NEG
             {
                 _percentage = value;
                 PrecalculateValues();
@@ -33,25 +35,45 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             }
             else
             {
+                /*
                 // work out how much we have to deform the input scale by the output scale
-                _scaleFactor = 100.0 / (100 - _percentage);
-                _deadzoneCutoff = (long)((_percentage / 100.0) * Constants.AxisMaxAbsValue);
+                _scaleFactor = 100.0 / (100 - 50);//_percentage);
+                _deadzoneCutoff = (long)(Math.Round((//_percentage
+                   50.0 / 100.0) * Constants.AxisMaxAbsValue));
+                   */
+                _deadzoneCutoff = (Constants.AxisMaxValue - (Constants.AxisMaxValue * (_percentage / 100.0)));
+                _scaleFactor = Math.Round(Constants.AxisMaxValue / _deadzoneCutoff);
             }
         }
 
         public long ApplyRangeDeadZone(long value)
         {
             var absValue = Math.Abs(value);
-            if (absValue <= _deadzoneCutoff)
+            if (absValue < _deadzoneCutoff)
             {
                 return 0;
             }
 
             var sign = Math.Sign(value);
-            var adjustedValue = (absValue - _deadzoneCutoff) * sign;
-            var newValue = (long)(adjustedValue * _scaleFactor);
+            var adjustedValue = (absValue - _deadzoneCutoff) * _scaleFactor;
+            var newValue = Math.Round(adjustedValue * (double)sign);
+            //var newValue = (long)Math.Round((adjustedValue * _scaleFactor));
+            if (newValue == -32769) newValue = -32768;
+            Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
+            return (long)newValue;
+
+
+            //var absValue = Math.Abs(value);
+            //if (absValue < _deadzoneCutoff)
+            //{
+            //    return 0;
+            //}
+
+            //var sign = Math.Sign(value);
+            //var adjustedValue = (absValue - _deadzoneCutoff) * sign;
+            //var newValue = (long)Math.Round((adjustedValue * _scaleFactor));
             //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
-            return newValue;
+            //return newValue;
         }
     }
 }
