@@ -52,8 +52,12 @@ namespace HidWizards.UCR.Tests.HelperTests
         [Test]
         public void CircularDeadZoneTest()
         {
-            Assert.AreEqual(new long[] {Constants.AxisMaxValue, 0}, Functions.CircularDeadZone(new long[] { Constants.AxisMaxValue, 0 }, 50));
-            Assert.AreEqual(new long[] {Constants.AxisMinValue, 0}, Functions.CircularDeadZone(new long[] { Constants.AxisMinValue, 0 }, 50));
+            var helper = new CircularDeadZoneHelper();
+            Assert.AreEqual(new long[] { Constants.AxisMaxValue, 0 }, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMaxValue, 0 }));
+            Assert.AreEqual(new long[] { Constants.AxisMinValue, 0 }, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMinValue, 0 }));
+            helper.Percentage = 50;
+            Assert.AreEqual(new long[] {Constants.AxisMaxValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMaxValue, 0 }));
+            Assert.AreEqual(new long[] {Constants.AxisMinValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMinValue, 0 }));
         }
     }
 }
