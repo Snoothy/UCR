@@ -35,12 +35,6 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             }
             else
             {
-                /*
-                // work out how much we have to deform the input scale by the output scale
-                _scaleFactor = 100.0 / (100 - 50);//_percentage);
-                _deadzoneCutoff = (long)(Math.Round((//_percentage
-                   50.0 / 100.0) * Constants.AxisMaxAbsValue));
-                   */
                 _deadzoneCutoff = (Constants.AxisMaxValue - (Constants.AxisMaxValue * (_percentage / 100.0)));
                 _scaleFactor = Math.Round(Constants.AxisMaxValue / _deadzoneCutoff);
             }
@@ -56,24 +50,10 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 
             var sign = Math.Sign(value);
             var adjustedValue = (absValue - _deadzoneCutoff) * _scaleFactor;
-            var newValue = Math.Round(adjustedValue * (double)sign);
-            //var newValue = (long)Math.Round((adjustedValue * _scaleFactor));
+            var newValue = (long) Math.Round(adjustedValue * sign);
             if (newValue == -32769) newValue = -32768;
-            Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
-            return (long)newValue;
-
-
-            //var absValue = Math.Abs(value);
-            //if (absValue < _deadzoneCutoff)
-            //{
-            //    return 0;
-            //}
-
-            //var sign = Math.Sign(value);
-            //var adjustedValue = (absValue - _deadzoneCutoff) * sign;
-            //var newValue = (long)Math.Round((adjustedValue * _scaleFactor));
             //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
-            //return newValue;
+            return (long)newValue;
         }
     }
 }
