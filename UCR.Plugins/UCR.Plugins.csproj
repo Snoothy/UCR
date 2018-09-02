@@ -48,10 +48,11 @@
   <ItemGroup>
     <Compile Include="Remapper\AxisMerger.cs" />
     <Compile Include="Remapper\AxisSplitter.cs" />
-    <Compile Include="Remapper\AxisToRelative.cs" />
+    <Compile Include="Remapper\AxisToAxisDelta.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
     <Compile Include="Remapper\AxisToDelta.cs" />
+    <Compile Include="Remapper\AxisToAxisRelative.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
     <Compile Include="Remapper\DeltaToAxis.cs" />

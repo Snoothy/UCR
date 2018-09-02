@@ -47,5 +47,31 @@ namespace HidWizards.UCR.Core.Utilities
             value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             return value; 
         }
+
+        public static long ApplyCurvedResponse(long value, double curve)
+        {
+            var curveSens = curve;
+            long output = 0;
+
+            // Normalize the output so it always fit in the axis range
+            var curveRatio = (Math.Pow(Constants.AxisMaxValue, curveSens)) / Constants.AxisMaxValue;
+
+            // Apply an exponential curve
+            if (value > 0)
+            {
+                output = ((long)((Math.Pow(value, curveSens)) / curveRatio));
+            }
+            // for negative value, we need to convert them in positive, then in negative again after the
+            // exponential calculation
+            else if (value < 0)
+            {
+                value = value * -1;
+                value = ((long)((Math.Pow(value, curveSens)) / curveRatio));
+                output = value * -1;
+            }
+
+            return output;
+        }
+
     }
 }
