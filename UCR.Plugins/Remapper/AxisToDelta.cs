@@ -63,6 +63,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             var value = values[0];
             if (value != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
             if (Invert) value = Functions.Invert(value);
+            if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
 
             if (value == 0)
             {
@@ -73,7 +74,6 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 var sign = Math.Sign(value);
                 
-                if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
                 value = Functions.ClampAxisRange(value);
                 _currentDelta = (long)(Min + (Math.Abs(value) * _scaleFactor)) * sign;
                 //Debug.WriteLine($"New Delta: {_currentDelta}");
