@@ -11,26 +11,26 @@ namespace HidWizards.UCR.Tests.HelperTests
     [TestFixture]
     public class FunctionTests
     {
-        [Test]
-        public void InvertTest()
+        [TestCase(0, ExpectedResult = 0, TestName = "Invert 0 Should be 0")]
+        [TestCase(Constants.AxisMaxValue, ExpectedResult = Constants.AxisMinValue, TestName = "Invert Max should be Min")]
+        [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMaxValue, TestName = "Invert of Min should be Max")]
+        [TestCase(1, ExpectedResult = -1, TestName = "Invert of 1 should be -1")]
+        [TestCase(-1, ExpectedResult = 1, TestName = "Invert of -1 should be 1")]
+        public long InvertTests(long inputValue)
         {
-            Assert.AreEqual(0, Functions.Invert(0));
-            Assert.AreEqual(Constants.AxisMinValue, Functions.Invert(Constants.AxisMaxValue));
-            Assert.AreEqual(Functions.Invert(Constants.AxisMinValue), Constants.AxisMaxValue);
-            Assert.AreEqual(Functions.Invert(1), -1);
-            Assert.AreEqual(Functions.Invert(-1), 1);
+            return Functions.Invert(inputValue);
         }
 
-        [Test]
-        public void ClampTest()
+        [TestCase(Constants.AxisMinValue - 1, ExpectedResult = Constants.AxisMinValue, TestName = "Greater than Max Clamp should return Max")]
+        [TestCase(Constants.AxisMaxValue + 1, ExpectedResult = Constants.AxisMaxValue, TestName = "Less than Min Clamp should return Min")]
+        [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMinValue, TestName = "Min Clamp should return Min")]
+        [TestCase(Constants.AxisMaxValue, ExpectedResult = Constants.AxisMaxValue, TestName = "Max Clamp should return Max")]
+        [TestCase(0, ExpectedResult = 0, TestName = "Clamping 0 should return 0")]
+        [TestCase(1, ExpectedResult = 1, TestName = "Clamping 1 should return 1")]
+        [TestCase(-1, ExpectedResult = -1, TestName = "Clamping -1 should return -1")]
+        public long ClampTests(long inputValue)
         {
-            Assert.AreEqual(Constants.AxisMinValue, Functions.ClampAxisRange(Constants.AxisMinValue - 1));
-            Assert.AreEqual(Constants.AxisMaxValue, Functions.ClampAxisRange(Constants.AxisMaxValue + 1));
-            Assert.AreEqual(Constants.AxisMaxValue, Functions.ClampAxisRange(Constants.AxisMaxValue));
-            Assert.AreEqual(Constants.AxisMinValue, Functions.ClampAxisRange(Constants.AxisMinValue));
-            Assert.AreEqual(0, Functions.ClampAxisRange(0));
-            Assert.AreEqual(1, Functions.ClampAxisRange(1));
-            Assert.AreEqual(-1, Functions.ClampAxisRange(-1));
+            return Functions.ClampAxisRange(inputValue);
         }
     }
 }
