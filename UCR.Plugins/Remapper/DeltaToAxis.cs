@@ -43,8 +43,8 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void AbsoluteModeTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            SetAbsoluteTimerState(false);
             WriteOutput(0, 0);
+            SetAbsoluteTimerState(false);
         }
 
         public override void Update(params long[] values)
