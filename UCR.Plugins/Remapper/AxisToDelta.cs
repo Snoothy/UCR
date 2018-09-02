@@ -60,7 +60,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             var value = values[0];
             if (value != 0) value = _deadzoneHelper.ApplyRangeDeadZone(value);
-            if (Invert) value *= -1;
+            if (Invert) value = Functions.Invert(value);
 
             if (value == 0)
             {
