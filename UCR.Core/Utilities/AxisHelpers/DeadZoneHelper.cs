@@ -5,7 +5,6 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
     public class DeadZoneHelper
     {
         //private double gapPercent;
-        private int _percentage;
         private double _scaleFactor;
         private long _deadzoneCutoff;
         
@@ -18,6 +17,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
                 PrecalculateValues();
             }
         }
+        private int _percentage;
 
         private void PrecalculateValues()
         {

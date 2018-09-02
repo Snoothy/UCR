@@ -5,6 +5,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
@@ -19,7 +20,6 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Dead zone", RowOrder = 0, ColumnOrder = 1)]
         public int DeadZone { get; set; }
 
-
         [PluginGui("Sensitivity", RowOrder = 0, ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
@@ -32,7 +32,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         private static Timer _absoluteModeTimer;
         private long _currentDelta;
         private float _scaleFactor;
-        private readonly DeadzoneHelper _deadzoneHelper = new DeadzoneHelper();
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public AxisToDelta()
         {
@@ -53,13 +54,14 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void PrecalculateValues()
         {
             _scaleFactor = (float)(Max - (Min - 1)) / 32767;
-            _deadzoneHelper.Percentage = DeadZone;
+            _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
         }
 
         public override void Update(params long[] values)
         {
             var value = values[0];
-            if (value != 0) value = _deadzoneHelper.ApplyRangeDeadZone(value);
+            if (value != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
             if (Invert) value = Functions.Invert(value);
 
             if (value == 0)
