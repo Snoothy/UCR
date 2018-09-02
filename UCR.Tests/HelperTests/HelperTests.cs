@@ -46,6 +46,9 @@ namespace HidWizards.UCR.Tests.HelperTests
             helper.Percentage = 50;
             Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeSensitivity(Constants.AxisMinValue));
             Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeSensitivity(Constants.AxisMaxValue));
+            helper.Percentage = 20;
+            Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeSensitivity(Constants.AxisMinValue));
+            Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeSensitivity(Constants.AxisMaxValue));
             Assert.AreEqual(0, helper.ApplyRangeSensitivity(0));
         }
 
@@ -56,6 +59,9 @@ namespace HidWizards.UCR.Tests.HelperTests
             Assert.AreEqual(new long[] { Constants.AxisMaxValue, 0 }, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMaxValue, 0 }));
             Assert.AreEqual(new long[] { Constants.AxisMinValue, 0 }, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMinValue, 0 }));
             helper.Percentage = 50;
+            Assert.AreEqual(new long[] {Constants.AxisMaxValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMaxValue, 0 }));
+            Assert.AreEqual(new long[] {Constants.AxisMinValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMinValue, 0 }));
+            helper.Percentage = 20;
             Assert.AreEqual(new long[] {Constants.AxisMaxValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMaxValue, 0 }));
             Assert.AreEqual(new long[] {Constants.AxisMinValue, 0}, helper.ApplyRangeDeadZone(new long[] { Constants.AxisMinValue, 0 }));
         }
