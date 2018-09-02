@@ -21,6 +21,30 @@ namespace HidWizards.UCR.Core.Utilities
             return value * -1;
         }
 
+        public static long[] CircularDeadZone(long[] values, double deadZone)
+        {
+            var x = values[0];
+            var y = values[1];
+            const double max = (double)Constants.AxisMaxValue;
+            var deadzoneRadius = (deadZone / 100d) * max;
+            var inputRadius = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            var inputAngle = Math.Atan2(x, y);
+            var scaleFactor = max / (max - deadzoneRadius);
+            if(inputRadius<deadzoneRadius){
+                return new long[]{ 0,0};
+            }
+            var adjustedRadius = inputRadius - deadzoneRadius;
+            var outputRadius = adjustedRadius * scaleFactor;
+
+            var outX = (long) (outputRadius * Math.Sin(inputAngle));
+            var outY = (long) (outputRadius * Math.Cos(inputAngle));
+            if (outX == -32769) outX = -32768;
+            if (outY == -32769) outY = -32768;
+
+            var output = new[] { outX, outY};
+            return output;
+        }
+
         public static long ClampAxisRange(long value)
         {
             if (value == 0) return value;

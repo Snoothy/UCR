@@ -48,5 +48,12 @@ namespace HidWizards.UCR.Tests.HelperTests
             Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeSensitivity(Constants.AxisMaxValue));
             Assert.AreEqual(0, helper.ApplyRangeSensitivity(0));
         }
+
+        [Test]
+        public void CircularDeadZoneTest()
+        {
+            Assert.AreEqual(new long[] {Constants.AxisMaxValue, 0}, Functions.CircularDeadZone(new long[] { Constants.AxisMaxValue, 0 }, 50));
+            Assert.AreEqual(new long[] {Constants.AxisMinValue, 0}, Functions.CircularDeadZone(new long[] { Constants.AxisMinValue, 0 }, 50));
+        }
     }
 }
