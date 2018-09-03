@@ -28,6 +28,7 @@ namespace HidWizards.UCR.Core.Utilities
             return value >= Constants.AxisMaxValue ? Constants.AxisMaxValue : value;
         }
 
+        [Obsolete("Deprecated, use DeadZoneHelper instead.")]
         public static long ApplyRangeDeadZone(long value, int deadZonePercentage)
         {
             var gap = (deadZonePercentage / 100.0) * Constants.AxisMaxValue;
@@ -36,6 +37,7 @@ namespace HidWizards.UCR.Core.Utilities
             return (long)(gapPercent * Constants.AxisMaxValue * Math.Sign(value));
         }
 
+        [Obsolete("Deprecated, use SensitivityHelper instead.")]
         public static long ApplyRangeSensitivity(long value, int sensitivity, bool linear)
         {
             var sensitivityPercent = (sensitivity / 100.0);
@@ -53,6 +55,7 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
+        //ToDo: Does not properly invert, may fail with -32768
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
         {
             long value;
