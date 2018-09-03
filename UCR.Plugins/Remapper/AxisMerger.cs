@@ -3,6 +3,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
@@ -23,6 +24,8 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         [PluginGui("Invert low", RowOrder = 2)]
         public bool InvertLow { get; set; }
+
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
 
         public AxisMerger()
         {
@@ -56,10 +59,16 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             if (DeadZone != 0)
             {
-                valueOutput = Functions.ApplyRangeDeadZone(valueOutput, DeadZone);
+                valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);
             }
             WriteOutput(0, valueOutput);
         }
+
+        private void Initialize()
+        {
+            _deadZoneHelper.Percentage = DeadZone;
+        }
+
 
         public enum AxisMergerMode
         {
@@ -67,5 +76,19 @@ namespace HidWizards.UCR.Plugins.Remapper
             Greatest,
             Sum
         }
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
     }
 }
