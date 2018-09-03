@@ -91,6 +91,19 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
+        public virtual void OnPropertyChanged()
+        {
+
+        }
+
+        /*
+         * Called before a plugin OnActivate and OnPropertyChanged to cache run-time values
+         */
+        public virtual void InitializeCacheValues()
+        {
+
+        }
+
         public virtual void Update(params long[] values)
         {
 
@@ -118,6 +131,11 @@ namespace HidWizards.UCR.Core.Models
         protected bool GetState(Guid stateGuid)
         {
             return Profile.GetRuntimeState(stateGuid);
+        }
+
+        protected long ReadOutput(int number)
+        {
+            return Outputs[number].CurrentValue;
         }
 
         #endregion

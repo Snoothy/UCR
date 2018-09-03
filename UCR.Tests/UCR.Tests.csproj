@@ -46,10 +46,15 @@
   <ItemGroup>
     <Compile Include="FactoryTests\DeviceFactoryTests.cs" />
     <Compile Include="Factory\DeviceFactory.cs" />
+    <Compile Include="UtilityTests\HelperTests\CircularDeadZoneHelperTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\DeadZoneHelperTests.cs" />
+    <Compile Include="UtilityTests\FunctionTests\FunctionTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\SensitivityHelperTests.cs" />
     <Compile Include="ModelTests\AttributeTests.cs" />
     <Compile Include="ModelTests\PersistenceTests.cs" />
     <Compile Include="ModelTests\ProfileTests.cs" />
     <Compile Include="ModelTests\ContextTests.cs" />
+    <Compile Include="ModelTests\SubscriptionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

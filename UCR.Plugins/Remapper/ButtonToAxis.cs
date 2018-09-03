@@ -5,7 +5,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Button to axis")]
+    [Plugin("Button to Axis")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonToAxis : Plugin
@@ -13,8 +13,12 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
 
-        [PluginGui("Range target", ColumnOrder = 1)]
+        [PluginGui("Absolute", ColumnOrder = 1)]
+        public bool Absolute { get; set; }
+
+        [PluginGui("Range target", ColumnOrder = 2)]
         public int Range { get; set; }
+
 
         public ButtonToAxis()
         {
@@ -23,8 +27,21 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void Update(params long[] values)
         {
-            if (Invert) values[0] = values[0] * - 1;
-            WriteOutput(0, values[0] * (long)(Constants.AxisMaxValue * ( Range / 100.0 )));
+            var value = values[0];
+
+            // ToDo: Review logic, move off into Utilities and unit test
+            if (Absolute)
+            {
+                value = (long)(Constants.AxisMinValue + value * Constants.AxisMaxValue * 2 * (Range / 100.0));
+                if (Invert) value = Functions.Invert(value);
+                WriteOutput(0, value);
+            }
+            else
+            {
+                var inverse = value == 0 ^ Invert;
+                WriteOutput(0, value * (long)((inverse ? Constants.AxisMinValue : Constants.AxisMaxValue) * (Range / 100.0)));
+            }
         }
+
     }
 }

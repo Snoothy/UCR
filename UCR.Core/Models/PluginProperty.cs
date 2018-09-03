@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Globalization;
 using System.Reflection;
 
 namespace HidWizards.UCR.Core.Models
@@ -17,7 +19,12 @@ namespace HidWizards.UCR.Core.Models
             set
             {
                 if (value.Equals(PropertyInfo.GetValue(Plugin))) return;
-                PropertyInfo.SetValue(Plugin, Convert.ChangeType(value, PropertyInfo.PropertyType));
+                PropertyInfo.SetValue(Plugin, Convert.ChangeType(value, PropertyInfo.PropertyType, CultureInfo.InvariantCulture));
+                if (Plugin.Profile.IsActive())
+                {
+                    Plugin.InitializeCacheValues();
+                    Plugin.OnPropertyChanged();
+                }
                 Plugin.ContextChanged();
             }
         }

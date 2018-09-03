@@ -1,7 +1,7 @@
 <img src="icon.png" align="right" />
 
 # Universal Control Remapper
-[![GitHub release](https://img.shields.io/badge/release-v0.3.1-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.3.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.4-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
+[![GitHub release](https://img.shields.io/badge/release-v0.4.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.4.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.7-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
 
 Universal Control Remapper is a complete rewrite of the original [UCR](https://github.com/evilC/UCR), created in collaboration with [evilC](https://github.com/evilC/).
 
@@ -71,7 +71,8 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 - Keyboard (using [interception](https://github.com/oblitum/Interception))
 - Mouse (using [interception](https://github.com/oblitum/Interception))
 
-
+## Build ##
+It is required to run the build script before building with Visual Studio. Run `.\build.ps1 InitProject` from powershell to initialize the required dependencies. All subsequent builds can be done from Visual Studio 2017
 
 ## License ##
 

@@ -3,10 +3,11 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis merger")]
+    [Plugin("Axis Merger")]
     [PluginInput(DeviceBindingCategory.Range, "Axis high")]
     [PluginInput(DeviceBindingCategory.Range, "Axis low")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
@@ -24,6 +25,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert low", RowOrder = 2)]
         public bool InvertLow { get; set; }
 
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+
         public AxisMerger()
         {
             DeadZone = 0;
@@ -35,8 +38,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             var valueLow = values[1];
             long valueOutput;
 
-            if (InvertHigh) valueHigh *= -1;
-            if (InvertLow) valueLow *= -1;
+            if (InvertHigh) valueHigh = Functions.Invert(valueHigh);
+            if (InvertLow) valueLow = Functions.Invert(valueLow);
 
             switch (Mode)
             {
@@ -56,10 +59,16 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             if (DeadZone != 0)
             {
-                valueOutput = Functions.ApplyRangeDeadZone(valueOutput, DeadZone);
+                valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);
             }
             WriteOutput(0, valueOutput);
         }
+
+        private void Initialize()
+        {
+            _deadZoneHelper.Percentage = DeadZone;
+        }
+
 
         public enum AxisMergerMode
         {
@@ -67,5 +76,19 @@ namespace HidWizards.UCR.Plugins.Remapper
             Greatest,
             Sum
         }
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            Initialize();
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
     }
 }

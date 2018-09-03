@@ -84,7 +84,11 @@
     <Compile Include="Models\Subscription\OutputSubscription.cs" />
     <Compile Include="Models\Subscription\PluginSubscription.cs" />
     <Compile Include="Models\Subscription\SubscriptionState.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\AxisHelpers\CircularDeadZoneHelper.cs" />
+    <Compile Include="Utilities\AxisHelpers\DeadZoneHelper.cs" />
+    <Compile Include="Utilities\AxisHelpers\SensitivityHelper.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Utilities\Functions.cs" />

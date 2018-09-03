@@ -13,7 +13,7 @@ namespace HidWizards.UCR.Core.Managers
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private SubscriptionState SubscriptionState { get; set; }
+        internal SubscriptionState SubscriptionState { get; set; }
         private readonly Context _context;
 
         public SubscriptionsManager(Context context)
@@ -49,17 +49,33 @@ namespace HidWizards.UCR.Core.Managers
             Logger.Debug("SubscriptionState successfully activated");
 
             if (!DeactivateProfile()) Logger.Error("Failed to deactivate previous profile successfully");
+            
+            FinalizeNewState(profile, state);
 
-            _context.IOController.SetProfileState(state.StateGuid, true);
+            return true;
+        }
 
-            SubscriptionState = state;
+        private void FinalizeNewState(Profile profile, SubscriptionState subscriptionState)
+        {
+            // Set new active profile
+            _context.IOController.SetProfileState(subscriptionState.StateGuid, true);
+            SubscriptionState = subscriptionState;
             _context.ActiveProfile = profile;
+
+            // Activate plugins
+            foreach (var mapping in subscriptionState.MappingSubscriptions)
+            {
+                foreach (var pluginSubscription in mapping.PluginSubscriptions)
+                {
+                    pluginSubscription.Plugin.InitializeCacheValues();
+                    pluginSubscription.Plugin.OnActivate();
+                }
+            }
+
             foreach (var action in _context.ActiveProfileCallbacks)
             {
                 action();
             }
-            
-            return true;
         }
 
         public bool DeactivateProfile()
@@ -160,11 +176,6 @@ namespace HidWizards.UCR.Core.Managers
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {
                     success &= SubscribeDeviceBindingInput(state, deviceBindingSubscription);
-                }
-
-                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
-                {
-                    pluginSubscription.Plugin.OnActivate();
                 }
             }
 
