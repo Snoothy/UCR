@@ -46,8 +46,10 @@
   <ItemGroup>
     <Compile Include="FactoryTests\DeviceFactoryTests.cs" />
     <Compile Include="Factory\DeviceFactory.cs" />
-    <Compile Include="UtilityTests\FunctionTests.cs" />
-    <Compile Include="UtilityTests\HelperTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\CircularDeadzonHelperTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\DeadZoneHelperTests.cs" />
+    <Compile Include="UtilityTests\FunctionTests\FunctionTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\SensitivityHelperHelperTests.cs" />
     <Compile Include="ModelTests\AttributeTests.cs" />
     <Compile Include="ModelTests\PersistenceTests.cs" />
     <Compile Include="ModelTests\ProfileTests.cs" />

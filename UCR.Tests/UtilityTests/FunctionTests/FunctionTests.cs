@@ -1,7 +1,7 @@
 ﻿using HidWizards.UCR.Core.Utilities;
 using NUnit.Framework;
 
-namespace HidWizards.UCR.Tests.UtilityTests
+namespace HidWizards.UCR.Tests.UtilityTests.FunctionTests
 {
     [TestFixture]
     public class FunctionTests
