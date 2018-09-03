@@ -30,10 +30,19 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
         [TestCase(-16384, 50, ExpectedResult = -1, TestName = "DeadZoneHelper (50): Half Negative deflection is outside DZ")]
         [TestCase(16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Positive deflection is inside DZ")]
         [TestCase(-16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Negative deflection is inside DZ")]
+        [TestCase(-0, 200, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Negative deflection is inside DZ")]
         public long DeadZoneHelperValueTests(long inputValue, int percentage)
         {
             var helper = new DeadZoneHelper { Percentage = percentage };
             return helper.ApplyRangeDeadZone(inputValue);
+        }
+
+        [TestCase(101, TestName = "DeadZoneHelper (101): Percentages over 100 should throw an exception")]
+        [TestCase(-1, TestName = "DeadZoneHelper (-1): Percentages below 0 should throw an exception")]
+        public void DeadZoneValidationTest(int percentage)
+        {
+            var helper = new DeadZoneHelper();
+            Assert.Throws<ArgumentOutOfRangeException>(() => helper.Percentage = percentage);
         }
     }
 }
