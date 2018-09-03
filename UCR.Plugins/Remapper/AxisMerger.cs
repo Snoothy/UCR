@@ -38,8 +38,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             var valueLow = values[1];
             long valueOutput;
 
-            if (InvertHigh) valueHigh *= -1;
-            if (InvertLow) valueLow *= -1;
+            if (InvertHigh) valueHigh = Functions.Invert(valueHigh);
+            if (InvertLow) valueLow = Functions.Invert(valueLow);
 
             switch (Mode)
             {

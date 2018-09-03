@@ -57,7 +57,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             var value = values[0];
 
-            if (Invert) value *= -1;
+            if (Invert) value = Functions.Invert(value);
             if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
             if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
 

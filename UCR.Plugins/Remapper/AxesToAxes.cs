@@ -19,10 +19,13 @@ namespace HidWizards.UCR.Plugins.Remapper
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
         private double _linearSenstitivityScaleFactor;
 
-        [PluginGui("Invert", ColumnOrder = 0)]
-        public bool Invert { get; set; }
+        [PluginGui("Invert X", ColumnOrder = 0)]
+        public bool InvertX { get; set; }
 
-        [PluginGui("Sensitivity", ColumnOrder = 1)]
+        [PluginGui("Invert Y", ColumnOrder = 1)]
+        public bool InvertY { get; set; }
+
+        [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
         [PluginGui("Linear", RowOrder = 0, ColumnOrder = 2)]
@@ -81,6 +84,9 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             outputValues[0] = Functions.ClampAxisRange(outputValues[0]);
             outputValues[1] = Functions.ClampAxisRange(outputValues[1]);
+
+            if (InvertX) outputValues[0] = Functions.Invert(outputValues[0]);
+            if (InvertY) outputValues[1] = Functions.Invert(outputValues[1]);
 
             WriteOutput(0, outputValues[0]);
             WriteOutput(1, outputValues[1]);
