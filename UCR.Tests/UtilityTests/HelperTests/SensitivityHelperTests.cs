@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
 {
     [TestFixture]
-    public class SensitivityHelperHelperTests
+    public class SensitivityHelperTests
     {
         [TestCase(Constants.AxisMaxValue, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (Init): Max returns Max")]
         [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (Init): Min returns Min")]
@@ -27,5 +27,18 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
             var helper = new SensitivityHelper {Percentage = percentage};
             return helper.ApplyRangeSensitivity(inputValue);
         }
+
+        [TestCase(Constants.AxisMaxValue, 100, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (100, Linear): Max returns Max")]
+        [TestCase(Constants.AxisMinValue, 100, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (100, Linear): Min returns Min")]
+        [TestCase(Constants.AxisMaxValue, 100, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (100, Linear): Max returns Max")]
+        [TestCase(Constants.AxisMinValue, 100, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (100, Linear): Min returns Min")]
+        [TestCase(Constants.AxisMaxValue, 200, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (200, Linear): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 200, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (200, Linear): Min returns Min")]
+        public long SensitivityHelperValueLinearTests(long inputValue, int percentage)
+        {
+            var helper = new SensitivityHelper { Percentage = percentage, IsLinear = true};
+            return helper.ApplyRangeSensitivity(inputValue);
+        }
+
     }
 }
