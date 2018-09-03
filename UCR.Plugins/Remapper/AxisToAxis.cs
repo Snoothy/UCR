@@ -3,6 +3,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
@@ -23,6 +24,9 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Sensitivity", ColumnOrder = 2)]
         public int Sensitivity { get; set; }
 
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
+
         public AxisToAxis()
         {
             DeadZone = 0;
@@ -33,10 +37,30 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             var value = values[0];
             if (Invert) value *= -1;
-            if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
-            if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, Linear);
-            value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+            if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
+            if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
             WriteOutput(0, value);
         }
+
+        private void Initialize()
+        {
+            _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
+            _sensitivityHelper.IsLinear = Linear;
+        }
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            Initialize();
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
     }
 }
