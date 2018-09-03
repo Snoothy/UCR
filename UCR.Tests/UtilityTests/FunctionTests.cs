@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HidWizards.UCR.Core.Utilities;
+﻿using HidWizards.UCR.Core.Utilities;
 using NUnit.Framework;
 
-namespace HidWizards.UCR.Tests.HelperTests
+namespace HidWizards.UCR.Tests.UtilityTests
 {
     [TestFixture]
     public class FunctionTests
