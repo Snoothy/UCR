@@ -3,6 +3,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
@@ -18,6 +19,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Dead zone", ColumnOrder = 1)]
         public int DeadZone { get; set; }
 
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+
         public AxisToButton()
         {
             DeadZone = 30;
@@ -26,8 +29,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void Update(params long[] values)
         {
             var value = values[0];
-            if (Invert) value *= -1;
-            value = Math.Sign(Functions.ApplyRangeDeadZone(value,DeadZone));
+            if (Invert) value = Functions.Invert(value);
+            value = Math.Sign(_deadZoneHelper.ApplyRangeDeadZone(value));
             switch (value)
             {
                 case 0:
@@ -44,5 +47,25 @@ namespace HidWizards.UCR.Plugins.Remapper
                     break;
             }
         }
+
+        private void Initialize()
+        {
+            _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            Initialize();
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
+
     }
 }
