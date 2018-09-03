@@ -113,7 +113,7 @@ namespace HidWizards.UCR.Tests.UtilityTests
         [TestCase(0, -16383, 50, ExpectedResult = new long[] { 0, 0 }, 
             TestName = "CircularDeadZoneHelper (50): Negative Y values below 16384 are inside DZ")]
 
-        [TestCase(-16383, -16383, 50, ExpectedResult = new long[] { 0, 0 }, 
+        [TestCase(0, -16383, 50, ExpectedResult = new long[] { 0, 0 }, 
             TestName = "CircularDeadZoneHelper (50): Negative Y values below 16384 are inside DZ")]
 
         public long[] CircularDeadZoneValueTests(long x, long y, int percentage)
