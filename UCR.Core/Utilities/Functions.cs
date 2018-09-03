@@ -50,15 +50,16 @@ namespace HidWizards.UCR.Core.Utilities
         public static long SplitAxis(long axis, bool positiveRange)
         {
             long value;
+            if (axis == 0) return Constants.AxisMinValue;
             if (positiveRange)
             {
-                if (axis < 0) return 0;
+                if (axis < 0) return Constants.AxisMinValue;
                 value = axis;
                 if (value == Constants.AxisMaxValue) value++;
             }
             else
             {
-                if (axis > 0) return 0;
+                if (axis > 0) return Constants.AxisMinValue;
                 value = axis * -1;
             }
 

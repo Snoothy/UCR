@@ -37,7 +37,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             var high = Functions.SplitAxis(value, true);
             var low = Functions.SplitAxis(value, false);
             if (InvertHigh) high = Functions.Invert(high);
-            if (InvertHigh) low = Functions.Invert(low);
+            if (InvertLow) low = Functions.Invert(low);
             WriteOutput(0, high);
             WriteOutput(1, low);
         }

@@ -32,6 +32,10 @@ namespace HidWizards.UCR.Tests.UtilityTests.FunctionTests
         [TestCase(0, true, ExpectedResult = Constants.AxisMinValue, TestName = "SplitAxis (High): 0 returns Min")]
         [TestCase(Constants.AxisMinValue, false, ExpectedResult = Constants.AxisMaxValue, TestName = "SplitAxis (Low): Min returns Max")]
         [TestCase(0, true, ExpectedResult = Constants.AxisMinValue, TestName = "SplitAxis (Low): 0 returns Min")]
+        [TestCase(Constants.AxisMinValue, true, ExpectedResult = Constants.AxisMinValue, TestName = "SplitAxis (High): Negative values return Min")]
+        [TestCase(Constants.AxisMaxValue, false, ExpectedResult = Constants.AxisMinValue, TestName = "SplitAxis (Low): Positive values return Min")]
+        [TestCase(1, true, ExpectedResult = -32766, TestName = "SplitAxis (High): 1 returns -32766")]
+        [TestCase(-1, false, ExpectedResult = -32766, TestName = "SplitAxis (Low): -1 returns -32766")]
         public long SplitTests(long inputValue, bool positiveRange)
         {
             return Functions.SplitAxis(inputValue, positiveRange);
