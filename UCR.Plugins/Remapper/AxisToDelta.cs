@@ -89,7 +89,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         #region Settings configuration
 
-        private void PrecalculateValues()
+        private void Initialize()
         {
             _scaleFactor = (float)(Max - (Min - 1)) / 32769;
             _deadZoneHelper.Percentage = DeadZone;
@@ -102,7 +102,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void OnActivate()
         {
             base.OnActivate();
-            PrecalculateValues();
+            Initialize();
             if (_currentDelta != 0)
             {
                 SetAbsoluteTimerState(true);
@@ -118,7 +118,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void OnPropertyChanged()
         {
             base.OnPropertyChanged();
-            PrecalculateValues();
+            Initialize();
         }
         #endregion
     }

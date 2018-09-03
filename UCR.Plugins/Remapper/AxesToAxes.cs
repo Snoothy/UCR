@@ -39,10 +39,10 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             DeadZone = 0;
             Sensitivity = 100;
-            PrecalculateValues();
+            Initialize();
         }
 
-        private void PrecalculateValues()
+        private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
             _circularDeadZoneHelper.Percentage = DeadZone;
@@ -90,13 +90,13 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void OnActivate()
         {
             base.OnActivate();
-            PrecalculateValues();
+            Initialize();
         }
 
         public override void OnPropertyChanged()
         {
             base.OnPropertyChanged();
-            PrecalculateValues();
+            Initialize();
         }
     }
 }
