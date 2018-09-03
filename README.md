@@ -1,13 +1,13 @@
 <img src="icon.png" align="right" />
 
 # Universal Control Remapper
-[![GitHub release](https://img.shields.io/badge/release-v0.3.1-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.3.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.4-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
+[![GitHub release](https://img.shields.io/badge/release-v0.4.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.4.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.5.7-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases)
 
 Universal Control Remapper is a complete rewrite of the original [UCR](https://github.com/evilC/UCR), created in collaboration with [evilC](https://github.com/evilC/).
 
 Universal Control Remapper is a Windows application which allows the end-user to remap any inputs from devices, such as keyboards, mice, joysticks, racing wheels, eye trackers, etc. to virtual output devices. Remapping is achieved by transforming inputs through plugins to a desired output device.
 
-
+<img src="Screenshot.png" align="center" />
 
 ## Table of Contents ##
 
