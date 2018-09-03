@@ -45,19 +45,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
 
-        public override void OnPropertyChanged()
-        {
-            base.OnPropertyChanged();
-            PrecalculateValues();
-        }
-
-        private void PrecalculateValues()
-        {
-            _scaleFactor = (float)(Max - (Min - 1)) / 32769;
-            _deadZoneHelper.Percentage = DeadZone;
-            _sensitivityHelper.Percentage = Sensitivity;
-        }
-
+        #region Input Processing
         public override void Update(params long[] values)
         {
             var value = values[0];
@@ -81,22 +69,6 @@ namespace HidWizards.UCR.Plugins.Remapper
             }
         }
 
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            PrecalculateValues();
-            if (_currentDelta != 0)
-            {
-                SetAbsoluteTimerState(true);
-            }
-        }
-
-        public override void OnDeactivate()
-        {
-            base.OnDeactivate();
-            SetAbsoluteTimerState(false);
-        }
-
         public void SetAbsoluteTimerState(bool state)
         {
             if (state && !_absoluteModeTimer.Enabled)
@@ -113,6 +85,41 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             WriteOutput(0, _currentDelta);
         }
+        #endregion
 
+        #region Settings configuration
+
+        private void PrecalculateValues()
+        {
+            _scaleFactor = (float)(Max - (Min - 1)) / 32769;
+            _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
+        }
+
+        #endregion
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            PrecalculateValues();
+            if (_currentDelta != 0)
+            {
+                SetAbsoluteTimerState(true);
+            }
+        }
+
+        public override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            SetAbsoluteTimerState(false);
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            PrecalculateValues();
+        }
+        #endregion
     }
 }
