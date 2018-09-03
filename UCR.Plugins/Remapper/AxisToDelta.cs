@@ -5,6 +5,7 @@ using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
@@ -23,32 +24,16 @@ namespace HidWizards.UCR.Plugins.Remapper
         public int Sensitivity { get; set; }
 
         [PluginGui("Min", RowOrder = 1, ColumnOrder = 0)]
-        public int Min
-        {
-            get => _min;
-            set
-            {
-                _min = value;
-                PrecalculateValues();
-            }
-        }
-        private int _min;
+        public int Min { get; set; }
 
         [PluginGui("Max", RowOrder = 1, ColumnOrder = 1)]
-        public int Max
-        {
-            get => _max;
-            set
-            {
-                _max = value;
-                PrecalculateValues();
-            }
-        }
-        private int _max;
+        public int Max { get; set; }
 
         private static Timer _absoluteModeTimer;
         private long _currentDelta;
         private float _scaleFactor;
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public AxisToDelta()
         {
@@ -60,16 +45,13 @@ namespace HidWizards.UCR.Plugins.Remapper
             _absoluteModeTimer.Elapsed += AbsoluteModeTimerElapsed;
         }
 
-        private void PrecalculateValues()
-        {
-            _scaleFactor = (float)(Max - (Min - 1)) / 32767;
-        }
-
+        #region Input Processing
         public override void Update(params long[] values)
         {
             var value = values[0];
-            if (Invert) value *= -1;
-            if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
+            if (value != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
+            if (Invert) value = Functions.Invert(value);
+            if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
 
             if (value == 0)
             {
@@ -80,27 +62,11 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 var sign = Math.Sign(value);
                 
-                if (Sensitivity != 100) value = Functions.ApplyRangeSensitivity(value, Sensitivity, false);
-                value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
+                value = Functions.ClampAxisRange(value);
                 _currentDelta = (long)(Min + (Math.Abs(value) * _scaleFactor)) * sign;
                 //Debug.WriteLine($"New Delta: {_currentDelta}");
                 SetAbsoluteTimerState(true);
             }
-        }
-
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            if (_currentDelta != 0)
-            {
-                SetAbsoluteTimerState(true);
-            }
-        }
-
-        public override void OnDeactivate()
-        {
-            base.OnDeactivate();
-            SetAbsoluteTimerState(false);
         }
 
         public void SetAbsoluteTimerState(bool state)
@@ -119,6 +85,41 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             WriteOutput(0, _currentDelta);
         }
+        #endregion
 
+        #region Settings configuration
+
+        private void Initialize()
+        {
+            _scaleFactor = (float)(Max - (Min - 1)) / 32769;
+            _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
+        }
+
+        #endregion
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            Initialize();
+            if (_currentDelta != 0)
+            {
+                SetAbsoluteTimerState(true);
+            }
+        }
+
+        public override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            SetAbsoluteTimerState(false);
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
     }
 }

@@ -14,12 +14,12 @@ namespace HidWizards.UCR.Tests.ModelTests
             var inputs = plugin.InputCategories;
             var outputs = plugin.OutputCategories;
 
-            Assert.AreEqual(inputs.Count, 1);
-            Assert.AreEqual(inputs[0].Category, DeviceBindingCategory.Momentary);
-            Assert.AreEqual(inputs[0].Name, "Button");
-            Assert.AreEqual(outputs.Count, 1);
-            Assert.AreEqual(outputs[0].Category, DeviceBindingCategory.Momentary);
-            Assert.AreEqual(outputs[0].Name, "Button");
+            Assert.That(inputs.Count, Is.EqualTo(1));
+            Assert.That(inputs[0].Category, Is.EqualTo(DeviceBindingCategory.Momentary));
+            Assert.That(inputs[0].Name, Is.EqualTo("Button"));
+            Assert.That(outputs.Count, Is.EqualTo(1));
+            Assert.That(outputs[0].Category, Is.EqualTo(DeviceBindingCategory.Momentary));
+            Assert.That(outputs[0].Name, Is.EqualTo("Button"));
         }
 
         [Test]

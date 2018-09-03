@@ -2,10 +2,11 @@
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis splitter")]
+    [Plugin("Axis Splitter")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis high")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis low")]
@@ -20,6 +21,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Dead zone")]
         public int DeadZone { get; set; }
 
+        private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+
         public AxisSplitter()
         {
             DeadZone = 0;
@@ -29,9 +32,33 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             var value = values[0];
 
-            if (DeadZone != 0) value = Functions.ApplyRangeDeadZone(value, DeadZone);
-            WriteOutput(0, Functions.HalfAxisToFullRange(value, true, InvertHigh));
-            WriteOutput(1, Functions.HalfAxisToFullRange(value, false, InvertLow));
+            if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
+
+            var high = Functions.SplitAxis(value, true);
+            var low = Functions.SplitAxis(value, false);
+            if (InvertHigh) high = Functions.Invert(high);
+            if (InvertLow) low = Functions.Invert(low);
+            WriteOutput(0, high);
+            WriteOutput(1, low);
         }
+
+        private void Initialize()
+        {
+            _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        #region Event Handling
+        public override void OnActivate()
+        {
+            base.OnActivate();
+            Initialize();
+        }
+
+        public override void OnPropertyChanged()
+        {
+            base.OnPropertyChanged();
+            Initialize();
+        }
+        #endregion
     }
 }
