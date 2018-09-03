@@ -67,6 +67,7 @@ namespace HidWizards.UCR.Core.Managers
             {
                 foreach (var pluginSubscription in mapping.PluginSubscriptions)
                 {
+                    pluginSubscription.Plugin.InitializeCacheValues();
                     pluginSubscription.Plugin.OnActivate();
                 }
             }

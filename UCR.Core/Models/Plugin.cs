@@ -96,6 +96,14 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
+        /*
+         * Called before a plugin OnActivate and OnPropertyChanged to cache run-time values
+         */
+        public virtual void InitializeCacheValues()
+        {
+
+        }
+
         public virtual void Update(params long[] values)
         {
 
