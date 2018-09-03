@@ -86,6 +86,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             WriteOutput(1, outputValues[1]);
         }
 
+        #region Event Handling
         public override void OnActivate()
         {
             base.OnActivate();
@@ -97,5 +98,6 @@ namespace HidWizards.UCR.Plugins.Remapper
             base.OnPropertyChanged();
             Initialize();
         }
+        #endregion
     }
 }
