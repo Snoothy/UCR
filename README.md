@@ -7,7 +7,7 @@ Universal Control Remapper is a complete rewrite of the original [UCR](https://g
 
 Universal Control Remapper is a Windows application which allows the end-user to remap any inputs from devices, such as keyboards, mice, joysticks, racing wheels, eye trackers, etc. to virtual output devices. Remapping is achieved by transforming inputs through plugins to a desired output device.
 
-
+<img src="Screenshot.png" align="center" />
 
 ## Table of Contents ##
 
