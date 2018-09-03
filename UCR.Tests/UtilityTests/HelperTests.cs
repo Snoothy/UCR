@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HidWizards.UCR.Core.Utilities;
+﻿using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Core.Utilities.AxisHelpers;
 using NUnit.Framework;
 
-namespace HidWizards.UCR.Tests.HelperTests
+namespace HidWizards.UCR.Tests.UtilityTests
 {
     [TestFixture]
     public class HelperTests
@@ -15,7 +10,7 @@ namespace HidWizards.UCR.Tests.HelperTests
         [Test]
         public void DeadZoneHelperInitTest()
         {
-            var helper = new DeadZoneHelper();
+            var helper = new DeadZoneHelper {Percentage = 20};
             // On initialize, the helper should work for DZ 0 without setting Percent
             Assert.AreEqual(Constants.AxisMaxValue, helper.ApplyRangeDeadZone(Constants.AxisMaxValue));
             Assert.AreEqual(Constants.AxisMinValue, helper.ApplyRangeDeadZone(Constants.AxisMinValue));
