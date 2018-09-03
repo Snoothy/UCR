@@ -32,5 +32,14 @@ namespace HidWizards.UCR.Tests.HelperTests
         {
             return Functions.ClampAxisRange(inputValue);
         }
+
+        [TestCase(Constants.AxisMaxValue, true, ExpectedResult = Constants.AxisMaxValue, TestName = "Split High - Max maps to Max")]
+        [TestCase(0, true, ExpectedResult = Constants.AxisMinValue, TestName = "Split High - 0 maps to Min")]
+        [TestCase(Constants.AxisMinValue, false, ExpectedResult = Constants.AxisMaxValue, TestName = "Split Low - Min maps to Max")]
+        [TestCase(0, true, ExpectedResult = Constants.AxisMinValue, TestName = "Split Low - 0 maps to Min")]
+        public long SplitTests(long value, bool positiveRange)
+        {
+            return Functions.SplitAxis(value, positiveRange);
+        }
     }
 }

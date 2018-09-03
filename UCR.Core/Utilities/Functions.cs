@@ -28,6 +28,31 @@ namespace HidWizards.UCR.Core.Utilities
             return value >= Constants.AxisMaxValue ? Constants.AxisMaxValue : value;
         }
 
+        public static long SplitAxis(long axis, bool positiveRange)
+        {
+            long value;
+            if (positiveRange)
+            {
+                if (axis < 0) return 0;
+                value = axis;
+                if (value == Constants.AxisMaxValue) value++;
+                //value = axis > 0L ? axis : 0L;
+            }
+            else
+            {
+                if (axis > 0) return 0;
+                value = axis * -1;
+                //value = axis < 0 ? axis * -1 : 0L;
+            }
+
+            value *= 2;
+            value += Constants.AxisMinValue;
+
+            if (value == 32768) value = 32767;
+
+            return value;
+        }
+
         [Obsolete("Deprecated, use DeadZoneHelper instead.")]
         public static long ApplyRangeDeadZone(long value, int deadZonePercentage)
         {
@@ -56,6 +81,7 @@ namespace HidWizards.UCR.Core.Utilities
         }
 
         //ToDo: Does not properly invert, may fail with -32768
+        [Obsolete("Deprecated, use SplitAxis instead.")]
         public static long HalfAxisToFullRange(long axis, bool positiveRange, bool invert)
         {
             long value;
