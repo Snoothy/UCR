@@ -7,20 +7,20 @@ namespace HidWizards.UCR.Tests.UtilityTests
     [TestFixture]
     public class HelperTests
     {
-        [TestCase(Constants.AxisMaxValue, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (Init): Max returns Max")]
-        [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (Init): Min returns Min")]
-        [TestCase(0, ExpectedResult = 0, TestName = "SensitivityHelper (Init): 0 returns 0")]
-        [TestCase(1, ExpectedResult = 1, TestName = "SensitivityHelper (Init): 1 returns 1")]
-        [TestCase(-1, ExpectedResult = -1, TestName = "SensitivityHelper (Init): -1 returns -1")]
+        [TestCase(Constants.AxisMaxValue, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (Init): Max returns Max")]
+        [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (Init): Min returns Min")]
+        [TestCase(0, ExpectedResult = 0, TestName = "DeadZoneHelper (Init): 0 returns 0")]
+        [TestCase(1, ExpectedResult = 1, TestName = "DeadZoneHelper (Init): 1 returns 1")]
+        [TestCase(-1, ExpectedResult = -1, TestName = "DeadZoneHelper (Init): -1 returns -1")]
         public long DeadZoneHelperInitTests(long inputValue)
         {
             var helper = new DeadZoneHelper();
             return helper.ApplyRangeDeadZone(inputValue);
         }
 
-        [TestCase(Constants.AxisMaxValue, 50, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (50): Max returns Max")]
-        [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (50): Min returns Min")]
-        [TestCase(0, 50, ExpectedResult = 0, TestName = "SensitivityHelper (50): 0 returns 0")]
+        [TestCase(Constants.AxisMaxValue, 50, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (50): Max returns Max")]
+        [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (50): Min returns Min")]
+        [TestCase(0, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): 0 returns 0")]
         public long DeadZoneHelperValueTests(long inputValue, int percentage)
         {
             var helper = new DeadZoneHelper {Percentage = percentage};
