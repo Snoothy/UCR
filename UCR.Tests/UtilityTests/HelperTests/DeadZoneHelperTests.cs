@@ -26,10 +26,10 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
         [TestCase(Constants.AxisMaxValue, 50, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (50): Max returns Max")]
         [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (50): Min returns Min")]
         [TestCase(0, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): 0 returns 0")]
-        [TestCase(16384, 50, ExpectedResult = 1, TestName = "DeadZoneHelper (50): Positive values above 16383 are outside DZ")]
-        [TestCase(-16384, 50, ExpectedResult = -1, TestName = "DeadZoneHelper (50): Negative values below 16383 are outside DZ")]
-        [TestCase(16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Positive values below 16384 are inside DZ")]
-        [TestCase(-16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Negative values below 16384 are inside DZ")]
+        [TestCase(16384, 50, ExpectedResult = 1, TestName = "DeadZoneHelper (50): Half Positive deflection is outside DZ")]
+        [TestCase(-16384, 50, ExpectedResult = -1, TestName = "DeadZoneHelper (50): Half Negative deflection is outside DZ")]
+        [TestCase(16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Positive deflection is inside DZ")]
+        [TestCase(-16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Negative deflection is inside DZ")]
         public long DeadZoneHelperValueTests(long inputValue, int percentage)
         {
             var helper = new DeadZoneHelper { Percentage = percentage };
