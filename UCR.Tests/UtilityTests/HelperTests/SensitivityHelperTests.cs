@@ -20,6 +20,8 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
         [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (50): Min returns Min")]
         [TestCase(Constants.AxisMaxValue, 20, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (20): Max returns Max")]
         [TestCase(Constants.AxisMinValue, 20, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (20): Min returns Min")]
+        [TestCase(Constants.AxisMaxValue, 200, ExpectedResult = Constants.AxisMaxValue, TestName = "SensitivityHelper (200): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 200, ExpectedResult = Constants.AxisMinValue, TestName = "SensitivityHelper (200): Min returns Min")]
         public long SensitivityHelperValueTests(long inputValue, int percentage)
         {
             var helper = new SensitivityHelper {Percentage = percentage};

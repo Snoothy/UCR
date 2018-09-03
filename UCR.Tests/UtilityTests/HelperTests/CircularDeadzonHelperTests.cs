@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
 {
     [TestFixture]
-    public class CircularDeadzonHelperTests
+    public class CircularDeadzoneHelperTests
     {
         [TestCase(Constants.AxisMaxValue, 0, ExpectedResult = new long[] { Constants.AxisMaxValue, 0 }, TestName = "CircularDeadZoneHelper (Init): Max returns Max")]
         [TestCase(Constants.AxisMinValue, 0, ExpectedResult = new long[] { Constants.AxisMinValue, 0 }, TestName = "CircularDeadZoneHelper (Init): Min returns Min")]
