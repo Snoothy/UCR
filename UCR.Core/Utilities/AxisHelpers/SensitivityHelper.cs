@@ -17,6 +17,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             get => _percentage;
             set
             {
+                // Do NOT throw if percentage is not in range 0..100, other values are valid!
                 _percentage = value;
                 PrecalculateValues();
             }

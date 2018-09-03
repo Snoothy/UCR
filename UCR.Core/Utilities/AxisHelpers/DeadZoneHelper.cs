@@ -13,8 +13,11 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
         {
             get => _percentage;
             set
-                //TODO CHECK FOR NEG
             {
+                if (Percentage < 0 || Percentage > 100)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
                 _percentage = value;
                 PrecalculateValues();
             }
