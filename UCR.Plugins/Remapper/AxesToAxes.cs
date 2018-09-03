@@ -39,7 +39,6 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             DeadZone = 0;
             Sensitivity = 100;
-            Initialize();
         }
 
         private void Initialize()
