@@ -9,10 +9,10 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to Axis (Relative)")]
+    [Plugin("Axis to Axis (Cumulative)")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
-    public class AxisToAxisRelative : Plugin
+    public class AxisToAxisCumulative : Plugin
     {
         [PluginGui("Invert", ColumnOrder = 0)]
         public bool Invert { get; set; }
@@ -44,7 +44,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private Thread _relativeThread;
 
-        public AxisToAxisRelative()
+        public AxisToAxisCumulative()
         {
             DeadZone = 0;
             Sensitivity = 100;
