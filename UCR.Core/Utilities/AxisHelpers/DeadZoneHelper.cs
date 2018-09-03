@@ -14,7 +14,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             get => _percentage;
             set
             {
-                if (Percentage < 0 || Percentage > 100)
+                if (value < 0 || value > 100)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
