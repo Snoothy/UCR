@@ -81,7 +81,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void OnActivate()
         {
             base.OnActivate();
-            _deadZoneHelper.Percentage = DeadZone;
+            Initialize();
         }
 
         public override void OnPropertyChanged()
