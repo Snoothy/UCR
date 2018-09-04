@@ -49,6 +49,7 @@
     <Compile Include="Remapper\AxisMerger.cs" />
     <Compile Include="Remapper\AxisSplitter.cs" />
     <Compile Include="Remapper\AxesToAxes.cs" />
+    <Compile Include="Remapper\AxisInitializer.cs" />
     <Compile Include="Remapper\AxisToAxisCumulative.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
