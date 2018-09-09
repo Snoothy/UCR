@@ -56,6 +56,7 @@
     <Compile Include="Remapper\AxisToDelta.cs" />
     <Compile Include="Remapper\ButtonsToAxis.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
+    <Compile Include="Remapper\ButtonToButtonsLongPress.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
     <Compile Include="Remapper\DeltaToAxis.cs" />
     <Compile Include="State\ButtonToState.cs" />
