@@ -9,6 +9,7 @@ namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Delta to Axis")]
     [PluginInput(DeviceBindingCategory.Delta, "Delta")]
+    [PluginInput(DeviceBindingCategory.Momentary, "Reset")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class DeltaToAxis : Plugin
     {
@@ -49,18 +50,27 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void Update(params long[] values)
         {
-            if (Math.Abs(values[0]) < Deadzone) return;
             long value;
-            if (AbsoluteMode)
+            if (values[1] == 1)
             {
-                value = (long)(values[0] * AbsoluteSensitivity);
-                SetAbsoluteTimerState(true);
+                // Reset button pressed
+                value = 0;
             }
             else
             {
-                value = _currentValue + (long)(values[0] * RelativeSensitivity);
+                // Normal operation
+                if (Math.Abs(values[0]) < Deadzone) return;
+                if (AbsoluteMode)
+                {
+                    value = (long)(values[0] * AbsoluteSensitivity);
+                    SetAbsoluteTimerState(true);
+                }
+                else
+                {
+                    value = _currentValue + (long)(values[0] * RelativeSensitivity);
+                }
+                value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             }
-            value = Math.Min(Math.Max(value, Constants.AxisMinValue), Constants.AxisMaxValue);
             _currentValue = value;
             WriteOutput(0, value);
         }
