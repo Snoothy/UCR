@@ -53,6 +53,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             long value;
             if (values[1] == 1)
             {
+                //ToDo: It is impossible to distinguish between release of Reset button, and axis input. Review.
                 // Reset button pressed
                 value = 0;
             }
