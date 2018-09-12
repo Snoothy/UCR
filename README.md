@@ -22,8 +22,8 @@ Universal Control Remapper is a Windows application which allows the end-user to
 
 ## Downloads ##
 
-The latest release of the Universal Control Remapper can be [downloaded from GitHub](https://github.com/snoothy/ucr/releases).
-
+The latest release of Universal Control Remapper can be [downloaded from GitHub](https://github.com/snoothy/ucr/releases).  
+Test builds, patches and updated components (New or enhanced plugins etc) are often posted to the UCR channel in the HidWizards Discord server linked below. If encoutering problems, it is often best to check this channel for pinned patches etc.
 
 
 ## Documentation ##
