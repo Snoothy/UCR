@@ -17,6 +17,11 @@ namespace HidWizards.UCR.Plugins.Remapper
         public AxisInitializer()
         {
         }
+        
+        public override void InitializeCacheValues()
+        {
+            Initialize();
+        }
 
         public override void Update(params long[] values)
         {
@@ -28,19 +33,5 @@ namespace HidWizards.UCR.Plugins.Remapper
             value = Functions.ClampAxisRange(value);
             WriteOutput(0, value);
         }
-
-        #region Event Handling
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            Initialize();
-        }
-
-        public override void OnPropertyChanged()
-        {
-            base.OnPropertyChanged();
-            Initialize();
-        }
-        #endregion
     }
 }

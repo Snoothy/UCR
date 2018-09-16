@@ -51,9 +51,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void Update(params long[] values)
         {
             long value;
-            if (values[1] == 1)
+            if (values[1] == 1 && ReadOutput(1) == 0)
             {
-                //ToDo: It is impossible to distinguish between release of Reset button, and axis input. Review.
                 // Reset button pressed
                 value = 0;
             }
@@ -95,7 +94,6 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void OnDeactivate()
         {
-            base.OnDeactivate();
             SetAbsoluteTimerState(false);
         }
     }

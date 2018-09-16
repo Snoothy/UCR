@@ -84,11 +84,9 @@ namespace HidWizards.UCR.Plugins.Remapper
                 _longPressTimer.Stop();
             }
         }
-
-
+        
         public override void OnDeactivate()
         {
-            base.OnDeactivate();
             SetLongPressTimerState(false);
         }
     }

@@ -69,7 +69,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             }
         }
 
-        public void SetAbsoluteTimerState(bool state)
+        private static void SetAbsoluteTimerState(bool state)
         {
             if (state && !_absoluteModeTimer.Enabled)
             {
@@ -101,7 +101,6 @@ namespace HidWizards.UCR.Plugins.Remapper
         #region Event Handling
         public override void OnActivate()
         {
-            base.OnActivate();
             Initialize();
             if (_currentDelta != 0)
             {
@@ -111,13 +110,11 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void OnDeactivate()
         {
-            base.OnDeactivate();
             SetAbsoluteTimerState(false);
         }
 
         public override void OnPropertyChanged()
         {
-            base.OnPropertyChanged();
             Initialize();
         }
         #endregion
