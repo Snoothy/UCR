@@ -8,6 +8,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR", "UCR\UCR.csproj", "{2F2E9A0C-C97C-4AC7-A598-03D334B2D827}"
 	ProjectSection(ProjectDependencies) = postProject
 		{35B5A93F-03EA-445F-BDF6-2B37C256578F} = {35B5A93F-03EA-445F-BDF6-2B37C256578F}
+		{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8} = {A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR.Tests", "UCR.Tests\UCR.Tests.csproj", "{F401B642-1E27-44C2-BFFA-5F3CFBFD14BD}"
@@ -15,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR.Core", "UCR.Core\UCR.Core.csproj", "{676D3228-C3F0-4BE7-8951-B83F7A16CEA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR.Plugins", "UCR.Plugins\UCR.Plugins.csproj", "{35B5A93F-03EA-445F-BDF6-2B37C256578F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCR.FileHandler", "UCR.FileHandler\UCR.FileHandler.csproj", "{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +43,10 @@ Global
 		{35B5A93F-03EA-445F-BDF6-2B37C256578F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35B5A93F-03EA-445F-BDF6-2B37C256578F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35B5A93F-03EA-445F-BDF6-2B37C256578F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1E895F4-C96A-4956-A58C-7D8F8E3D31B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

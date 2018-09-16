@@ -85,13 +85,11 @@ namespace HidWizards.UCR.Plugins.Remapper
         #region Event Handling
         public override void OnActivate()
         {
-            base.OnActivate();
             Initialize();
         }
 
         public override void OnPropertyChanged()
         {
-            base.OnPropertyChanged();
             Initialize();
         }
 

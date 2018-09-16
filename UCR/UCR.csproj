@@ -320,6 +320,10 @@
   </Target>
   <PropertyGroup>
     <PreBuildEvent>if exist "$(SolutionDir)dependencies\Providers"  xcopy /Y /S /i "$(SolutionDir)dependencies\Providers" "$(TargetDir)Providers"
+
 </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(SolutionDir)UCR.FileHandler\bin\$(ConfigurationName)\"  xcopy /Y /S /i "$(SolutionDir)UCR.FileHandler\bin\$(ConfigurationName)" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
