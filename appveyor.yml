@@ -1,0 +1,8 @@
+version: 0.4.{build}
+image: Visual Studio 2017
+install:
+- ps: .\build.ps1 InitProject
+build_script:
+- ps: .\build.ps1 -configuration release
+artifacts:
+- path: 'UCR\bin\Release\*'
