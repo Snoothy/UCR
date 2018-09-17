@@ -7,4 +7,4 @@ build_script:
 test_script:
 - ps: .\build.ps1 test -configuration release
 artifacts:
-- path: 'UCR\bin\Release\*'
+- path: 'UCR\bin\Release\**'
