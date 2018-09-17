@@ -26,10 +26,9 @@ class Build : NukeBuild
 
 
     Target Clean => _ => _
-        .OnlyWhen(() => false) // Disabled for safety.
         .Executes(() =>
         {
-            DeleteDirectories(GlobDirectories(SourceDirectory, "**/bin", "**/obj"));
+            DeleteDirectories(GlobDirectories(RootDirectory, "**/bin", "**/obj"));
             EnsureCleanDirectory(OutputDirectory);
         });
 
@@ -65,7 +64,11 @@ class Build : NukeBuild
         .DependsOn(Clean)
         .Executes(() =>
         {
-            MSBuild(s => DefaultMSBuildRestore);
+            NuGetTasks.NuGetRestore(s => s.SetTargetPath(SolutionFile));
+            MSBuild(s => s
+                .SetTargetPath(SolutionFile)
+                .SetTargets("Restore")
+            );
         });
 
     Target Compile => _ => _
