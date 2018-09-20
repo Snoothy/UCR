@@ -1,10 +1,10 @@
-version: 0.4.{build}
+version: 0.4.0-{branch}+{build}
 image: Visual Studio 2017
 install:
+- cmd: dotnet tool install --global dotnet-sonarscanner
 - ps: .\build.ps1 InitProject
 build_script:
-- ps: .\build.ps1 compile -configuration release
-test_script:
-- ps: .\build.ps1 test -configuration release
+- ps: .\build.ps1 clean -configuration Release
+- ps: .\build.ps1 compile -configuration Release -codeanalysis true
 artifacts:
-- path: 'UCR\bin\Release\**'
+- path: 'artifacts\*.zip'
