@@ -32,6 +32,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
+    string ChangeLogFile => RootDirectory / "CHANGELOG.md";
+
     string IoWrapper => "IOWrapper";
     AbsolutePath IoWrapperDirectory => RootDirectory / "submodules" / IoWrapper;
     AbsolutePath IoWrapperSolution => IoWrapperDirectory / (IoWrapper + ".sln");
@@ -120,7 +122,7 @@ class Build : NukeBuild
                 .SetTargetPath(SolutionFile)
                 .SetTargets("Rebuild")
                 .SetConfiguration(Configuration)
-                .SetVerbosity(MSBuildVerbosity.Minimal)
+                .SetVerbosity(MSBuildVerbosity.Normal)
                 // TODO This doesn't set all assembly versions
                 .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
                 .SetFileVersion(GitVersion.GetNormalizedFileVersion())
@@ -139,8 +141,8 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            EnsureExistingDirectory("Providers");
-            EnsureExistingDirectory("Plugins");
+            EnsureExistingDirectory(RootDirectory / "Providers");
+            EnsureExistingDirectory(RootDirectory / "Plugins");
             Nunit3(s => s
                 .AddInputFiles(GlobFiles(TestDirectory, $"**/bin/{Configuration}/UCR.Tests.dll").NotEmpty())
                 .EnableNoResults()
