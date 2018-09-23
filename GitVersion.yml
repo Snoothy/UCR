@@ -1,0 +1,11 @@
+assembly-versioning-scheme: MajorMinorPatchTag
+mode: ContinuousDelivery
+branches:
+  master:
+    mode: ContinuousDelivery
+    tag: alpha
+  dev(elop)?(ment)?$:
+    mode: ContinuousDelivery
+    tag: alpha-unstable
+ignore:
+  sha: []

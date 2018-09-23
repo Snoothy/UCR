@@ -22,8 +22,6 @@ namespace HidWizards.UCR.Views
 
         private string GetVersion()
         {
-            //return "v0.4.0";
-            // TODO
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 

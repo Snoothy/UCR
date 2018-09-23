@@ -201,3 +201,6 @@ obj
 
 # Sonarqube
 .sonarqube/
+
+# UCR
+context.xml

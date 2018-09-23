@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.RegularExpressions;
 using Nuke.Common;
 using Nuke.Common.BuildServers;
 using Nuke.Common.Git;
@@ -29,6 +30,7 @@ class Build : NukeBuild
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
+    [GitVersion] readonly GitVersion GitVersion;
 
     string IoWrapper => "IOWrapper";
     AbsolutePath IoWrapperDirectory => RootDirectory / "submodules" / IoWrapper;
@@ -95,15 +97,18 @@ class Build : NukeBuild
         .OnlyWhen(() => !string.IsNullOrEmpty(CodeAnalysis))
         .Executes(() =>
         {
-            DotNet($"sonarscanner begin /k:\"Snoothy_UCR\" /d:sonar.organization=\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:sonar.projectVersion=\"{GetFullSemanticVersion()}\"");
+            DotNet($"sonarscanner begin /k:\"Snoothy_UCR\" /d:sonar.organization=\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:\"{GetFullSemanticVersion()}\"");
         });
 
     Target Versioning => _ => _
         .Executes(() =>
         {
-            // TODO Update readme version
+            const string readmePath = "./README.md";
+            File.WriteAllText(readmePath, Regex.Replace(File.ReadAllText(readmePath), @"release-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", $"release-v{GitVersion.MajorMinorPatch}-blue.svg"));
+            File.WriteAllText(readmePath, Regex.Replace(File.ReadAllText(readmePath), @"releases/tag/v([0-9]+\.[0-9]+\.[0-9]+)", $"releases/tag/v{GitVersion.MajorMinorPatch}"));
 
-            // TODO Update appveyors version
+            const string appveyorConfigPath = "./appveyor.yml";
+            File.WriteAllText(appveyorConfigPath, Regex.Replace(File.ReadAllText(appveyorConfigPath), @"version: ([0-9]+\.[0-9]+\.[0-9]+)-", $"version: {GitVersion.MajorMinorPatch}-"));
         });
 
     Target Compile => _ => _
@@ -113,12 +118,12 @@ class Build : NukeBuild
         {
             MSBuild(s => s
                 .SetTargetPath(SolutionFile)
-                .SetConfiguration(Configuration)
                 .SetTargets("Rebuild")
+                .SetConfiguration(Configuration)
                 .SetVerbosity(MSBuildVerbosity.Minimal)
                 // TODO This doesn't set all assembly versions
-                .SetAssemblyVersion(GetCurrentVersion())
-                .SetFileVersion(GetCurrentVersion())
+                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
+                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
                 .SetInformationalVersion(GetFullSemanticVersion())
             );
         });
@@ -151,7 +156,7 @@ class Build : NukeBuild
             if (!Directory.Exists(ArtifactsDirectory)) Directory.CreateDirectory(ArtifactsDirectory);
             CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, FileExistsPolicy.Overwrite);
             
-            CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetSemanticVersion()}.zip");
+            CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
 
     Target Changelog => _ => _
@@ -172,8 +177,7 @@ class Build : NukeBuild
 
     private string GetCurrentVersion()
     {
-        // TODO GitVersion
-        return "0.4.0";
+        return GitVersion.MajorMinorPatch;
     }
 
     private string GetSemanticVersion()
@@ -183,8 +187,9 @@ class Build : NukeBuild
 
     private string GetFullSemanticVersion()
     {
-        string additionalVersion = "";
+        var additionalVersion = "";
         if (AppVeyor.Instance != null) additionalVersion = $"+{AppVeyor.Instance.BuildNumber}";
+
         return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}";
     }
 
