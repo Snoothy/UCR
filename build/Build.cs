@@ -118,6 +118,9 @@ class Build : NukeBuild
         .DependsOn(StartCodeAnalysis)
         .Executes(() =>
         {
+            EnsureExistingDirectory(RootDirectory / "Providers");
+            EnsureExistingDirectory(RootDirectory / "Plugins");
+
             MSBuild(s => s
                 .SetTargetPath(SolutionFile)
                 .SetTargets("Rebuild")
@@ -141,8 +144,6 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            EnsureExistingDirectory(RootDirectory / "Providers");
-            EnsureExistingDirectory(RootDirectory / "Plugins");
             Nunit3(s => s
                 .AddInputFiles(GlobFiles(TestDirectory, $"**/bin/{Configuration}/UCR.Tests.dll").NotEmpty())
                 .EnableNoResults()
