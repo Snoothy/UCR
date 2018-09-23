@@ -12,7 +12,7 @@ before_build:
 
 build_script:
 - ps: .\build.ps1 clean -configuration Release
-- ps: .\build.ps1 compile -configuration Release -codeanalysis true
+- ps: .\build.ps1 artifacts -configuration Release -codeanalysis true
 
 artifacts:
 - path: 'artifacts\*.zip'

@@ -57,6 +57,8 @@ class Build : NukeBuild
         {
             DeleteDirectories(GlobDirectories(RootDirectory, "**/bin", "**/obj"));
             EnsureCleanDirectory(OutputDirectory);
+            EnsureExistingDirectory(RootDirectory / "Providers");
+            EnsureExistingDirectory(RootDirectory / "Plugins");
         });
 
     Target RestoreSubmodules => _ => _
@@ -118,9 +120,6 @@ class Build : NukeBuild
         .DependsOn(StartCodeAnalysis)
         .Executes(() =>
         {
-            EnsureExistingDirectory(RootDirectory / "Providers");
-            EnsureExistingDirectory(RootDirectory / "Plugins");
-
             MSBuild(s => s
                 .SetTargetPath(SolutionFile)
                 .SetTargets("Rebuild")
