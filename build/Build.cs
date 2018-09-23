@@ -101,7 +101,16 @@ class Build : NukeBuild
         .OnlyWhen(() => !string.IsNullOrEmpty(CodeAnalysis))
         .Executes(() =>
         {
-            DotNet($"sonarscanner begin /k:\"Snoothy_UCR\" /d:sonar.organization=\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:\"{GetFullSemanticVersion()}\"");
+            var sonarScanner =
+                $"sonarscanner begin /k:\"Snoothy_UCR\" /d:sonar.organization=\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:\"{GetFullSemanticVersion()}\" ";
+            if (AppVeyor.Instance != null && AppVeyor.Instance.PullRequestNumber != 0)
+            {
+                DotNet(sonarScanner + $"/d:sonar.pullrequest.provider=GitHub /d:sonar.pullrequest.base=develop /d:sonar.pullrequest.github.repository=\"Snoothy/UCR\" /d:sonar.pullrequest.branch=\"{GitRepository.Branch}\" /d:sonar.pullrequest.key={AppVeyor.Instance.PullRequestNumber}");
+            }
+            else
+            {
+                DotNet(sonarScanner + $"/d:sonar.branch.name=\"{GitRepository.Branch}\" /d:sonar.branch.target=\"develop\"");
+            }
         });
 
     Target Versioning => _ => _
@@ -160,7 +169,7 @@ class Build : NukeBuild
             
             CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
-
+    
     Target Changelog => _ => _
         .DependsOn(Versioning)
         .Executes(() =>
@@ -177,17 +186,12 @@ class Build : NukeBuild
             // TODO
         });
 
-    private string GetCurrentVersion()
+    string GetCurrentVersion()
     {
         return GitVersion.MajorMinorPatch;
     }
 
-    private string GetSemanticVersion()
-    {
-        return $"v{GetCurrentVersion()}";
-    }
-
-    private string GetFullSemanticVersion()
+    string GetFullSemanticVersion()
     {
         var additionalVersion = "";
         if (AppVeyor.Instance != null) additionalVersion = $"+{AppVeyor.Instance.BuildNumber}";
