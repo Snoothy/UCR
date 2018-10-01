@@ -85,7 +85,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void SimulationTimerElapsed(object sender, ElapsedEventArgs e)
         {
             float acceleration = _targetValue - _dampedValue;
-            acceleration /= Weight;
+            acceleration /= (Weight / 10f);
             _velocity = _velocity + acceleration;
             _velocity *= 1 - (Damping / 100f);
 
