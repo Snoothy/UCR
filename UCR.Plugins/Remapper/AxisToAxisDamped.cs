@@ -86,7 +86,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             float acceleration = _targetValue - _dampedValue;
             acceleration /= Weight;
-            _velocity += acceleration;
+            _velocity = _velocity + acceleration;
             _velocity *= 1 - (Damping / 100f);
 
             _dampedValue += _velocity;
