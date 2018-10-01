@@ -52,6 +52,7 @@
     <Compile Include="Remapper\AxisInitializer.cs" />
     <Compile Include="Remapper\AxisToAxisCumulative.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
+    <Compile Include="Remapper\AxisToAxisDamped.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
     <Compile Include="Remapper\AxisToDelta.cs" />
     <Compile Include="Remapper\ButtonsToAxis.cs" />
