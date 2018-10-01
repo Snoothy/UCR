@@ -5,6 +5,7 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Core.Utilities.AxisHelpers;
+
 namespace HidWizards.UCR.Plugins.Remapper
 {
     [Plugin("Axis to Axis (Damped)")]
@@ -52,7 +53,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private float _targetValue;
         private float _velocity;
         private float _dampedValue;
-        private static Timer _simulationTimer;
+        private static Timer _simulationTimer = new Timer();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
@@ -63,9 +64,10 @@ namespace HidWizards.UCR.Plugins.Remapper
             FPS = 60;
             Weight = 5;
             Damping = 50;
+
             _velocity = 0;
             _dampedValue = 0;
-            _simulationTimer = new Timer((1d / FPS) * 1000);
+            _simulationTimer.Interval = (1d / FPS) * 1000;
             _simulationTimer.Elapsed += SimulationTimerElapsed;
             SetTimerState(true);
         }
@@ -76,6 +78,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             if (Invert) value = Functions.Invert(value);
             if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
             if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
+
             _targetValue = value;
         }
 
@@ -85,8 +88,10 @@ namespace HidWizards.UCR.Plugins.Remapper
             acceleration /= Weight;
             _velocity += acceleration;
             _velocity *= 1 - (Damping / 100f);
+
             _dampedValue += _velocity;
             _dampedValue = Math.Min(Math.Max(_dampedValue, Constants.AxisMinValue), Constants.AxisMaxValue);
+
             WriteOutput(0, (long)_dampedValue);
         }
 
@@ -104,7 +109,10 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void Initialize()
         {
+            _velocity = 0;
+            _dampedValue = 0;
             _simulationTimer.Interval = (1d / FPS) * 1000;
+
             _deadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
