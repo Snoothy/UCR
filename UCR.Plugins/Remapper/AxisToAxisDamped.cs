@@ -53,7 +53,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private float _targetValue;
         private float _velocity;
         private float _dampedValue;
-        private Timer _simulationTimer;
+        private readonly Timer _simulationTimer;
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
