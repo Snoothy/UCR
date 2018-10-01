@@ -44,7 +44,7 @@ Commit message are just as important as the code it describes as it describes wh
 
 ## Pull requests
 
-Create a new pull request targeting `UCR/develop` when your `branch` is ready to be added. The pull request title should describe your change and the description should describe what has changed and why it was changed.
+Create a new pull request targeting `UCR/develop` when your `branch` is ready to be added. The pull request title should describe your change and the description should describe what has changed and why it was changed. Reference any issues or related pull requests in the description, if any.
 
 Pull request are checked by quality gates which needs to be passed before it is considered for merge. The change must build on the continuous integration Appveyor and any issues found by SonarQube should be fixed. Any required change should be committed on your own branch until quality gates are passing.
 
