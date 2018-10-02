@@ -50,12 +50,10 @@
     <Compile Include="Remapper\AxisSplitter.cs" />
     <Compile Include="Remapper\AxesToAxes.cs" />
     <Compile Include="Remapper\AxisInitializer.cs" />
-    <Compile Include="Remapper\AxisToAxisCumulative.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
     <Compile Include="Remapper\ButtonsToAxis.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
-    <Compile Include="Remapper\ButtonToButtonsLongPress.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
     <Compile Include="State\ButtonToState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
