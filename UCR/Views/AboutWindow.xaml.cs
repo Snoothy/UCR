@@ -22,11 +22,10 @@ namespace HidWizards.UCR.Views
 
         private string GetVersion()
         {
-            return "v0.4.0";
-            // TODO
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return $"v{fvi.FileVersion}";
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            return fileVersionInfo.ProductVersion;
         }
     }
 }

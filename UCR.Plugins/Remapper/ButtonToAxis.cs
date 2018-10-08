@@ -10,13 +10,16 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonToAxis : Plugin
     {
-        [PluginGui("Invert", ColumnOrder = 0)]
+        [PluginGui("Invert Input", ColumnOrder = 0)]
+        public bool InvertInput { get; set; }
+
+        [PluginGui("Invert Output", ColumnOrder = 1)]
         public bool Invert { get; set; }
 
-        [PluginGui("Absolute", ColumnOrder = 1)]
+        [PluginGui("Absolute", ColumnOrder = 2)]
         public bool Absolute { get; set; }
 
-        [PluginGui("Range target", ColumnOrder = 2)]
+        [PluginGui("Range target", ColumnOrder = 3)]
         public int Range { get; set; }
 
 
@@ -28,6 +31,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         public override void Update(params long[] values)
         {
             var value = values[0];
+
+            if (InvertInput) value = 1 - value;
 
             // ToDo: Review logic, move off into Utilities and unit test
             if (Absolute)

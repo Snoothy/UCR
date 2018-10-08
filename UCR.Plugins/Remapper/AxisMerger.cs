@@ -27,9 +27,21 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
 
+        public enum AxisMergerMode
+        {
+            Average,
+            Greatest,
+            Sum
+        }
+
         public AxisMerger()
         {
             DeadZone = 0;
+        }
+
+        public override void InitializeCacheValues()
+        {
+            Initialize();
         }
 
         public override void Update(params long[] values)
@@ -63,32 +75,10 @@ namespace HidWizards.UCR.Plugins.Remapper
             }
             WriteOutput(0, valueOutput);
         }
-
+        
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
         }
-
-
-        public enum AxisMergerMode
-        {
-            Average,
-            Greatest,
-            Sum
-        }
-
-        #region Event Handling
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            Initialize();
-        }
-
-        public override void OnPropertyChanged()
-        {
-            base.OnPropertyChanged();
-            Initialize();
-        }
-        #endregion
     }
 }

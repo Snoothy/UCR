@@ -33,6 +33,11 @@ namespace HidWizards.UCR.Plugins.Remapper
             Sensitivity = 100;
         }
 
+        public override void InitializeCacheValues()
+        {
+            Initialize();
+        }
+
         public override void Update(params long[] values)
         {
             var value = values[0];
@@ -48,19 +53,5 @@ namespace HidWizards.UCR.Plugins.Remapper
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
         }
-
-        #region Event Handling
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            Initialize();
-        }
-
-        public override void OnPropertyChanged()
-        {
-            base.OnPropertyChanged();
-            Initialize();
-        }
-        #endregion
     }
 }

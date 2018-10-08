@@ -29,10 +29,12 @@ namespace HidWizards.UCR
             if (mutex.HasHandle && GetProcesses().Length <= 1)
             {
                 Logger.Info("Launching UCR");
-                new ResourceLoader().Load();
                 _hidGuardianClient = new HidGuardianClient();
                 _hidGuardianClient.WhitelistProcess();
-                context = Context.Load();
+
+                InitializeUcr();
+                CheckForBlockedDll();
+
                 context.ParseCommandLineArguments(e.Args);
                 var mw = new MainWindow(context);
                 mw.Show();
@@ -42,6 +44,42 @@ namespace HidWizards.UCR
                 SendArgs(string.Join(";", e.Args));
                 Current.Shutdown();
             }
+        }
+
+        private void InitializeUcr()
+        {
+            new ResourceLoader().Load();
+            context = Context.Load();
+        }
+
+        private void CheckForBlockedDll()
+        {
+            if (context.GetPlugins().Count != 0) return;
+
+            var result = MessageBox.Show("UCR has detected blocked files which are required, do you want to unblock blocked UCR files?", "Unblock files?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result != MessageBoxResult.Yes) return;
+
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "UCR_unblocker.exe",
+                    UseShellExecute = true,
+                    Arguments = Environment.CurrentDirectory,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+            process.WaitForExit(1000 * 60 * 5);
+
+            var exitCode = process.ExitCode;
+            if (exitCode != 0)
+            {
+                MessageBox.Show("UCR failed to unblock the required files", "Failed to unblock", MessageBoxButton.OK, MessageBoxImage.Error);
+                Current.Shutdown();
+            }
+
+            InitializeUcr();
         }
 
         private static Process[] GetProcesses()
