@@ -28,6 +28,11 @@ namespace HidWizards.UCR.Plugins.Remapper
             DeadZone = 0;
         }
 
+        public override void InitializeCacheValues()
+        {
+            Initialize();
+        }
+
         public override void Update(params long[] values)
         {
             var value = values[0];
@@ -46,19 +51,5 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             _deadZoneHelper.Percentage = DeadZone;
         }
-
-        #region Event Handling
-        public override void OnActivate()
-        {
-            base.OnActivate();
-            Initialize();
-        }
-
-        public override void OnPropertyChanged()
-        {
-            base.OnPropertyChanged();
-            Initialize();
-        }
-        #endregion
     }
 }

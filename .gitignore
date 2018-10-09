@@ -198,3 +198,9 @@ git_stats/*
 StyleCop.Cache
 bin
 obj
+
+# Sonarqube
+.sonarqube/
+
+# UCR
+context.xml
