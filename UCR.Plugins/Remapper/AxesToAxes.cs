@@ -17,6 +17,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
+		private readonly ThresholdHelper _thresholdHelper = new ThresholdHelper();
         private double _linearSenstitivityScaleFactor;
 
         [PluginGui("Invert X", ColumnOrder = 0)]
@@ -37,11 +38,14 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Circular", RowOrder = 1, ColumnOrder = 2)]
         public bool CircularDz { get; set; }
 
-
+		[PluginGui("Threshold", ColumnOrder = 4)]
+		public int Threshold { get; set; }
+		
         public AxesToAxes()
         {
             DeadZone = 0;
             Sensitivity = 100;
+			Threshold = 100;
         }
 
         public override void InitializeCacheValues()
@@ -55,6 +59,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             _circularDeadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _linearSenstitivityScaleFactor = ((double)Sensitivity / 100);
+			_thresholdHelper.Threshold = Threshold;
         }
 
         public override void Update(params long[] values)
@@ -86,6 +91,12 @@ namespace HidWizards.UCR.Plugins.Remapper
                     outputValues[1] = _sensitivityHelper.ApplyRangeSensitivity(outputValues[1]);
                 }
             }
+
+			if (Threshold != 100)
+			{
+				outputValues[0] = _thresholdHelper.LimitAxisRange(outputValues[0]);
+				outputValues[1] = _thresholdHelper.LimitAxisRange(outputValues[1]);
+			}
 
             outputValues[0] = Functions.ClampAxisRange(outputValues[0]);
             outputValues[1] = Functions.ClampAxisRange(outputValues[1]);

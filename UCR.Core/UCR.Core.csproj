@@ -93,6 +93,7 @@
     <Compile Include="Utilities\AxisHelpers\CircularDeadZoneHelper.cs" />
     <Compile Include="Utilities\AxisHelpers\DeadZoneHelper.cs" />
     <Compile Include="Utilities\AxisHelpers\SensitivityHelper.cs" />
+    <Compile Include="Utilities\AxisHelpers\ThresholdHelper.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Utilities\Functions.cs" />
