@@ -11,32 +11,44 @@ using Application = System.Windows.Application;
 
 namespace HidWizards.UCR
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    /// <inheritdoc />
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
     public partial class App : Application, IDisposable
     {
-        private Context context;
+        private Context _context;
         private HidGuardianClient _hidGuardianClient;
-        private SingleGlobalInstance mutex;
+        private SingleGlobalInstance _mutex;
+
+		/// <summary>
+		/// access the notify icon assembly
+		/// </summary>
+		private System.Windows.Forms.NotifyIcon _notify;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
+			// create the tray icon
+			this._notify = new System.Windows.Forms.NotifyIcon
+			{
+				Text = @"Universal Control Remapper", Icon = UCR.Properties.Resources.UCRicon, Visible = true
+			};
 
-            mutex = new SingleGlobalInstance(); 
-            if (mutex.HasHandle && GetProcesses().Length <= 1)
+			base.OnStartup(e);
+			AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
+
+            _mutex = new SingleGlobalInstance(); 
+            if (_mutex.HasHandle && GetProcesses().Length <= 1)
             {
-                Logger.Info("Launching UCR");
+                Logger.Info(@"Launching UCR");
                 _hidGuardianClient = new HidGuardianClient();
                 _hidGuardianClient.WhitelistProcess();
 
                 InitializeUcr();
                 CheckForBlockedDll();
 
-                context.ParseCommandLineArguments(e.Args);
-                var mw = new MainWindow(context);
+                _context.ParseCommandLineArguments(e.Args);
+                var mw = new MainWindow(_context);
                 mw.Show();
             }
             else
@@ -49,14 +61,14 @@ namespace HidWizards.UCR
         private void InitializeUcr()
         {
             new ResourceLoader().Load();
-            context = Context.Load();
+            _context = Context.Load();
         }
 
         private void CheckForBlockedDll()
         {
-            if (context.GetPlugins().Count != 0) return;
+            if (_context.GetPlugins().Count != 0) return;
 
-            var result = MessageBox.Show("UCR has detected blocked files which are required, do you want to unblock blocked UCR files?", "Unblock files?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show(@"UCR has detected blocked files which are required, do you want to unblock blocked UCR files?", "Unblock files?", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
 
             var process = new Process
@@ -75,7 +87,7 @@ namespace HidWizards.UCR
             var exitCode = process.ExitCode;
             if (exitCode != 0)
             {
-                MessageBox.Show("UCR failed to unblock the required files", "Failed to unblock", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(@"UCR failed to unblock the required files", "Failed to unblock", MessageBoxButton.OK, MessageBoxImage.Error);
                 Current.Shutdown();
             }
 
@@ -87,7 +99,7 @@ namespace HidWizards.UCR
             return Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
         }
 
-        private void SendArgs(string args)
+        private static void SendArgs(string args)
         {
             Logger.Info($"UCR is already running, sending args: {{{args}}}");
             // Find the window with the name of the main form
@@ -95,11 +107,11 @@ namespace HidWizards.UCR
             processes = processes.Where(p => p.Id != Process.GetCurrentProcess().Id).ToArray();
             if (processes.Length == 0) return;
 
-            IntPtr ptrCopyData = IntPtr.Zero;
+            var ptrCopyData = IntPtr.Zero;
             try
             {
                 // Create the data structure and fill with data
-                NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT
+                var copyData = new NativeMethods.COPYDATASTRUCT
                 {
                     dwData = new IntPtr(2),
                     cbData = args.Length + 1,
@@ -134,15 +146,19 @@ namespace HidWizards.UCR
 
         public void Dispose()
         {
-            mutex.Dispose();
-            context?.Dispose();
+            _mutex.Dispose();
+            _context?.Dispose();
             _hidGuardianClient?.Dispose();
+			GC.SuppressFinalize(this);
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)
         {
             Dispose();
-        }
+
+			// remove the tray icon
+			_notify?.Dispose();
+		}
 
         private static void AppDomain_CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {

@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Drawing;
+
 namespace HidWizards.UCR.Properties {
     using System;
     
@@ -57,6 +59,16 @@ namespace HidWizards.UCR.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static Icon UCRicon {
+            get {
+                object obj = ResourceManager.GetObject("UCRicon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
