@@ -38,7 +38,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 		{
 			var scaleRange = Threshold / 100d;
 			_axisMax = (Constants.AxisMaxValue * scaleRange);
-			_axisMin = Functions.Invert(_axisMax);
+			_axisMin = Functions.Invert((long) _axisMax);
 		}
 		
 		/// <summary>
