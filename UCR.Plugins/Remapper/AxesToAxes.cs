@@ -18,7 +18,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 		private readonly ThresholdHelper _thresholdHelper = new ThresholdHelper();
-        private double _linearSenstitivityScaleFactor;
+        private double _linearSensitivityScaleFactor;
 
         [PluginGui("Invert X", ColumnOrder = 0)]
         public bool InvertX { get; set; }
@@ -58,7 +58,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             _deadZoneHelper.Percentage = DeadZone;
             _circularDeadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
-            _linearSenstitivityScaleFactor = ((double)Sensitivity / 100);
+            _linearSensitivityScaleFactor = ((double)Sensitivity / 100);
 			_thresholdHelper.Threshold = Threshold;
         }
 
@@ -82,8 +82,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 if (Linear)
                 {
-                    outputValues[0] = (long)(outputValues[0] * _linearSenstitivityScaleFactor);
-                    outputValues[1] = (long)(outputValues[1] * _linearSenstitivityScaleFactor);
+                    outputValues[0] = (long)(outputValues[0] * _linearSensitivityScaleFactor);
+                    outputValues[1] = (long)(outputValues[1] * _linearSensitivityScaleFactor);
                 }
                 else
                 {
