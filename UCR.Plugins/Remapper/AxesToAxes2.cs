@@ -12,7 +12,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginInput(DeviceBindingCategory.Range, "Y Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "X Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Y Axis")]
-    public class AxesToAxes_2 : Plugin
+    public class AxesToAxes2 : Plugin
     {
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
@@ -38,7 +38,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public bool CircularDz { get; set; }
 
 
-        public AxesToAxes_2()
+        public AxesToAxes2()
         {
             DeadZone = 0;
             Sensitivity = 100;

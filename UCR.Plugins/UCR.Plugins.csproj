@@ -46,10 +46,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Remapper\AxesToAxes_3.cs" />
+    <Compile Include="Remapper\AxesToAxes3.cs" />
     <Compile Include="Remapper\AxisMerger.cs" />
     <Compile Include="Remapper\AxisSplitter.cs" />
-    <Compile Include="Remapper\AxesToAxes_2.cs" />
+    <Compile Include="Remapper\AxesToAxes2.cs" />
     <Compile Include="Remapper\AxisInitializer.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
