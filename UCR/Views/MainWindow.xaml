@@ -7,7 +7,7 @@
         xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
         mc:Ignorable="d"
         Title="Universal Control Remapper" Height="525" Width="350"
-        Closing="MainWindow_OnClosing">
+        Closing="MainWindow_OnClosing" ShowInTaskbar="False">
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
     </Window.CommandBindings>

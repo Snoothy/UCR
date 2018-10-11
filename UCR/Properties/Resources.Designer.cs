@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Drawing;
-
 namespace HidWizards.UCR.Properties {
     using System;
     
@@ -63,12 +61,22 @@ namespace HidWizards.UCR.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static Icon UCRicon {
+        internal static System.Drawing.Icon icon_x32 {
             get {
-                object obj = ResourceManager.GetObject("UCRicon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("icon_x32", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ucr {
+            get {
+                object obj = ResourceManager.GetObject("ucr", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

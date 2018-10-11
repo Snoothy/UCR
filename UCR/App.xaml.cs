@@ -31,8 +31,26 @@ namespace HidWizards.UCR
 			// create the tray icon
 			this._notify = new System.Windows.Forms.NotifyIcon
 			{
-				Text = @"Universal Control Remapper", Icon = UCR.Properties.Resources.UCRicon, Visible = true
+				Text = @"Universal Control Remapper", Icon = UCR.Properties.Resources.icon_x32, Visible = true
 			};
+
+			// show and hide on tray icon doubleclick
+			this._notify.DoubleClick +=
+				(object sender, EventArgs args) =>
+				{
+					if (MainWindow != null && MainWindow.WindowState != WindowState.Normal)
+					{
+						this.MainWindow.Show();
+						this.MainWindow.WindowState = WindowState.Normal;
+					}
+					else
+					{
+						var mainWindow = this.MainWindow;
+						if (mainWindow == null) return;
+						mainWindow.Hide();
+						mainWindow.WindowState = WindowState.Minimized;
+					}
+				};
 
 			base.OnStartup(e);
 			AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
