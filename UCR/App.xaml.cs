@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Forms;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.Views;
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace HidWizards.UCR
 {
@@ -26,10 +28,10 @@ namespace HidWizards.UCR
 		/// access the notify icon assembly
 		/// </summary>
 		private System.Windows.Forms.NotifyIcon _notify;
-		
-		public System.Windows.Forms.ContextMenu TrayContextMenu = new System.Windows.Forms.ContextMenu();
 
-        protected override void OnStartup(StartupEventArgs e)
+		private ContextMenu TrayContextMenu { get; } = new System.Windows.Forms.ContextMenu();
+
+		protected override void OnStartup(StartupEventArgs e)
         {
 			// create the tray icon
 			this._notify = new System.Windows.Forms.NotifyIcon
