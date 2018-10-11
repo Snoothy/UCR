@@ -21,10 +21,13 @@ namespace HidWizards.UCR
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance _mutex;
 
+		
 		/// <summary>
 		/// access the notify icon assembly
 		/// </summary>
 		private System.Windows.Forms.NotifyIcon _notify;
+		
+		public System.Windows.Forms.ContextMenu TrayContextMenu = new System.Windows.Forms.ContextMenu();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -52,6 +55,8 @@ namespace HidWizards.UCR
 					}
 				};
 
+			CreateMenuStructure();
+
 			base.OnStartup(e);
 			AppDomain.CurrentDomain.UnhandledException += AppDomain_CurrentDomain_UnhandledException;
 
@@ -75,6 +80,25 @@ namespace HidWizards.UCR
                 Current.Shutdown();
             }
         }
+
+		private void CreateMenuStructure()
+		{
+			// Show
+			var mnuShow = new System.Windows.Forms.MenuItem("Show UCR");
+			TrayContextMenu.MenuItems.Add(mnuShow);
+			_notify.ContextMenu = TrayContextMenu;
+			mnuShow.Visible = true;
+			// Hide
+			var mnuHide = new System.Windows.Forms.MenuItem("Hide UCR");
+			TrayContextMenu.MenuItems.Add(mnuHide);
+			_notify.ContextMenu = TrayContextMenu;
+			mnuHide.Visible = true;
+			// Exit
+			var mnuExit = new System.Windows.Forms.MenuItem("Exit");
+			TrayContextMenu.MenuItems.Add(mnuExit);
+			_notify.ContextMenu = TrayContextMenu;
+			mnuExit.Visible = true;
+		}
 
         private void InitializeUcr()
         {
@@ -174,7 +198,10 @@ namespace HidWizards.UCR
         {
             Dispose();
 
-			// remove the tray icon
+			// dispose the context menu
+			TrayContextMenu.Dispose();
+			
+			// dispose the tray icon
 			_notify?.Dispose();
 		}
 
