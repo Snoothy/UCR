@@ -88,19 +88,39 @@ namespace HidWizards.UCR
 			TrayContextMenu.MenuItems.Add(mnuShow);
 			_notify.ContextMenu = TrayContextMenu;
 			mnuShow.Visible = true;
+			mnuShow.Click += MnuShow_Click;
+
 			// Hide
 			var mnuHide = new System.Windows.Forms.MenuItem("Hide UCR");
 			TrayContextMenu.MenuItems.Add(mnuHide);
 			_notify.ContextMenu = TrayContextMenu;
 			mnuHide.Visible = true;
+			mnuHide.Click += MnuHide_Click;  
+
 			// Exit
 			var mnuExit = new System.Windows.Forms.MenuItem("Exit");
 			TrayContextMenu.MenuItems.Add(mnuExit);
 			_notify.ContextMenu = TrayContextMenu;
 			mnuExit.Visible = true;
+			mnuExit.Click += MnuExit_Click;
 		}
 
-        private void InitializeUcr()
+		private void MnuExit_Click(object sender, EventArgs e)
+		{
+			Current.Shutdown();
+		}
+
+		private void MnuHide_Click(object sender, EventArgs e)
+		{
+			this.MainWindow.Hide();
+		}
+
+		private void MnuShow_Click(object sender, EventArgs e)
+		{
+			this.MainWindow.Show();
+		}
+
+		private void InitializeUcr()
         {
             new ResourceLoader().Load();
             _context = Context.Load();
