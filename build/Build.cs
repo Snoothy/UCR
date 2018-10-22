@@ -205,7 +205,7 @@ class Build : NukeBuild
         var additionalVersion = "";
         if (AppVeyor.Instance != null) additionalVersion = $"+{AppVeyor.Instance.BuildNumber}";
 
-        return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}";
+        return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}".Replace('/', '.');
     }
 
 }
