@@ -74,7 +74,7 @@ namespace HidWizards.UCR.Views.ProfileViews
 
             if (!_profile.RemoveState(state))
             {
-                MessageBox.Show("The selected state cannot be removed from the profile", "Failed to remove state!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The selected state cannot be removed from the Profile", "Failed to remove state!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 

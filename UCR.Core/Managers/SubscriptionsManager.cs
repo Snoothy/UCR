@@ -58,7 +58,6 @@ namespace HidWizards.UCR.Core.Managers
         private void FinalizeNewState(Profile profile, SubscriptionState subscriptionState)
         {
             // Set new active profile
-            //_context.IOController.SetProfileState(subscriptionState.StateGuid, true);
             SubscriptionState = subscriptionState;
             _context.ActiveProfile = profile;
 
@@ -72,10 +71,7 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            foreach (var action in _context.ActiveProfileCallbacks)
-            {
-                action();
-            }
+            _context.OnActiveProfileChangedEvent(profile);
         }
 
         public bool DeactivateProfile()
@@ -106,14 +102,9 @@ namespace HidWizards.UCR.Core.Managers
                 success &= UnsubscribeOutput(state, deviceSubscription);
             }
 
-            //_context.IOController.SetProfileState(state.StateGuid, false);
-
             SubscriptionState = null;
             _context.ActiveProfile = null;
-            foreach (var action in _context.ActiveProfileCallbacks)
-            {
-                action();
-            }
+            _context.OnActiveProfileChangedEvent(null);
 
             return success;
         }

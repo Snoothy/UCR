@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
         xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
+        xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
         mc:Ignorable="d"
         Title="Universal Control Remapper" Height="525" Width="350"
         Closing="MainWindow_OnClosing">
@@ -46,7 +47,7 @@
             </MenuItem>
         </Menu>
 
-        <TreeView Grid.Row="1" Name="ProfileTree" Margin="10,5,10,0">
+        <TreeView Grid.Row="1" Name="ProfileTree" Margin="10,5,10,0" ItemsSource="{Binding ProfileList}">
             <TreeView.Style>
                 <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
                 <Style.Triggers>
@@ -55,7 +56,7 @@
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Grid>
-                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first profile</TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Go to "Profile > New" to add your first Profile</TextBlock>
                                     </Grid>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -71,7 +72,7 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type viewModels:ProfileItem}" ItemsSource="{Binding Items}">
+                <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
                     <TextBlock Text="{Binding Title}" >
                         <TextBlock.ContextMenu>
                             <ContextMenu>
@@ -92,7 +93,7 @@
         </TreeView>
 
         <StackPanel Grid.Row="2" DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="10,0">
-            <Label>Active profile:</Label>
+            <Label>Active Profile:</Label>
             <Label Content="{Binding ActiveProfileBreadCrumbs}"/>
         </StackPanel>
     </Grid>

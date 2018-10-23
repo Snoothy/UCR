@@ -204,3 +204,7 @@ obj
 
 # UCR
 context.xml
+
+# Rider
+*.iml
+.idea
