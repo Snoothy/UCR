@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.Core;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models;
 using Mono.Options;
@@ -38,9 +39,11 @@ namespace HidWizards.UCR.Core
         [XmlIgnore]
         public PluginsManager PluginManager { get; set; }
 
+        public delegate void ActiveProfileChanged(Profile profile);
+        public event ActiveProfileChanged ActiveProfileChangedEvent;
+        
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
-        internal readonly List<Action> ActiveProfileCallbacks = new List<Action>();
         private OptionSet options;
 
         public Context()
@@ -82,11 +85,6 @@ namespace HidWizards.UCR.Core
         public void ParseCommandLineArguments(IEnumerable<string> args)
         {
             options.Parse(args);
-        }
-
-        public void SetActiveProfileCallback(Action profileActivated)
-        {
-            ActiveProfileCallbacks.Add(profileActivated);
         }
 
         public List<Plugin> GetPlugins()
@@ -192,6 +190,11 @@ namespace HidWizards.UCR.Core
 
                 return (T)formatter.Deserialize(ms);
             }
+        }
+
+        public void OnActiveProfileChangedEvent(Profile profile)
+        {
+            ActiveProfileChangedEvent?.Invoke(profile);
         }
     }
 }

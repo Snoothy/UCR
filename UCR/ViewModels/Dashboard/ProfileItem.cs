@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.ViewModels
+namespace HidWizards.UCR.ViewModels.Dashboard
 {
     public class ProfileItem
     {
@@ -14,13 +14,13 @@ namespace HidWizards.UCR.ViewModels
 
         public string Title { get; set; }
         public Guid Id { get; set; }
-        public Profile profile { get; set; }
+        public Profile Profile { get; set; }
 
         public ObservableCollection<ProfileItem> Items { get; set; }
 
         public static ObservableCollection<ProfileItem> GetProfileTree(List<Profile> profiles)
         {
-            ObservableCollection<ProfileItem> profileItems = new ObservableCollection<ProfileItem>();
+            var profileItems = new ObservableCollection<ProfileItem>();
             if (profiles == null) return profileItems;
 
             foreach (var profile in profiles)
@@ -30,7 +30,7 @@ namespace HidWizards.UCR.ViewModels
                     Title = profile.Title,
                     Id = profile.Guid,
                     Items = GetProfileTree(profile.ChildProfiles),
-                    profile = profile
+                    Profile = profile
                 });
             }
             

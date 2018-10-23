@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Interception Provider: Should no longer crash on startup when there are multiple identical devices.
 - Interception Provider: Keyboard keys are no longer inverted (Press is now press, release is now release)  
 - Interception Provider: When both X and Y movement was received (ie diagonal movement), Interception would only process X and ignore Y.
+- Fixed the MVVM for the main window
 
 ### Removed
 - IOWrapper: All code from ProviderInterface that was not related to the interface itself was removed (ie Old helper libraries removed)
