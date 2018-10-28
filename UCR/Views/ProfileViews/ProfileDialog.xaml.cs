@@ -97,7 +97,7 @@ namespace UCR.Views.ProfileViews
             }
             else
             {
-                MessageBox.Show("Please fill out profile title", "Invalid input", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Please fill out Profile title", "Invalid input", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
     }

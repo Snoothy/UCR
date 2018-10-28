@@ -37,8 +37,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void ProfileContext()
         {
             var context = new Context();
-            context.ProfilesManager.AddProfile("Root profile");
-            context.Profiles[0].AddNewChildProfile("Child profile");
+            context.ProfilesManager.AddProfile("Root Profile");
+            context.Profiles[0].AddNewChildProfile("Child Profile");
             context.SaveContext();
 
             Assert.That(context.Profiles.Count, Is.EqualTo(1));
@@ -71,7 +71,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var context = new Context();
             var pluginTypes = new List<Type>();
             pluginTypes.Add(typeof(ButtonToButton));
-            context.ProfilesManager.AddProfile("Root profile");
+            context.ProfilesManager.AddProfile("Root Profile");
             var profile = context.Profiles[0];
             var mapping = profile.AddMapping("Jump");
             profile.AddPlugin(mapping, new ButtonToButton(), Guid.Empty);

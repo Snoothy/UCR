@@ -13,6 +13,7 @@ using ToolSettingsExtensions = Nuke.Common.Tooling.ToolSettingsExtensions;
 
 using static Nuke.Common.Tools.Git.GitTasks;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
+using static Nuke.Common.ChangeLog.ChangelogTasks;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -109,7 +110,14 @@ class Build : NukeBuild
             }
             else
             {
-                DotNet(sonarScanner + $"/d:sonar.branch.name=\"{GitRepository.Branch}\" /d:sonar.branch.target=\"develop\"");
+                if (GitRepository.Branch == "master")
+                {
+                    DotNet(sonarScanner + $"/d:sonar.branch.name=\"{GitRepository.Branch}\"");
+                }
+                else
+                {
+                    DotNet(sonarScanner + $"/d:sonar.branch.name=\"{GitRepository.Branch}\" /d:sonar.branch.target=\"develop\"");
+                }
             }
         });
 
@@ -175,6 +183,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             // TODO keep a change log update
+
         });
 
     Target Publish => _ => _
@@ -196,7 +205,7 @@ class Build : NukeBuild
         var additionalVersion = "";
         if (AppVeyor.Instance != null) additionalVersion = $"+{AppVeyor.Instance.BuildNumber}";
 
-        return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}";
+        return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}".Replace('/', '.');
     }
 
 }

@@ -5,6 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.5.2] - 2018-10-28
+### Fixed
+- Values other than 0 or 50 for DeadZone should now work properly - Maximum deflection should now be achievable again
+
+## [0.5.1] - 2018-10-28
+### Added
+- Interception Provider: Duplicate devices now have #2, #3 etc at end of name to differentiate them  
+- You no longer put a Provider into Bind Mode, you put a Device into Bind Mode (Bind Mode is still not implemented on the front end)  
+- "Provider Libraries" to simplify writing of new providers
+- Rewritten DirectInput and XInput providers using new Provider Libraries  
+- Unit tests for Provider Libraries
+
+### Fixed
+- Interception Provider: Should no longer crash on startup when there are multiple identical devices.
+- Interception Provider: Keyboard keys are no longer inverted (Press is now press, release is now release)  
+- Interception Provider: When both X and Y movement was received (ie diagonal movement), Interception would only process X and ignore Y.
+- Fixed the MVVM for the main window
+
+### Removed
+- IOWrapper: All code from ProviderInterface that was not related to the interface itself was removed (ie Old helper libraries removed)
 
 ## [0.5.0] - 2018-10-08
 ### Added

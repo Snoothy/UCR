@@ -17,7 +17,6 @@ namespace HidWizards.UCR.Tests.ModelTests
 
         private Context _context;
         private Profile _profile;
-        private Mapping _mapping;
         private string _profileName;
 
         [SetUp]

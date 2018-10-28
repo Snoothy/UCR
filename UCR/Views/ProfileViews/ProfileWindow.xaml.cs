@@ -36,7 +36,7 @@ namespace HidWizards.UCR.Views.ProfileViews
         {
             if (!Profile.ActivateProfile())
             {
-                MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 

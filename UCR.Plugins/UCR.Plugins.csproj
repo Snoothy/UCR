@@ -74,7 +74,7 @@
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(SolutionDir)UCR\bin\$(ConfigurationName)\Plugins\$(TargetName)" mkdir "$(SolutionDir)UCR\bin\$(ConfigurationName)\Plugins\$(TargetName)"
 copy "$(TargetPath)" "$(SolutionDir)UCR\bin\$(ConfigurationName)\Plugins\$(TargetName)\$(TargetName).dll"
-if $(ConfigurationName) == Debug copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)UCR\bin\$(ConfigurationName)\Plugins\$(TargetName)\$(TargetName).pdb</PostBuildEvent>
+if $(ConfigurationName) == Debug copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)UCR\bin\$(ConfigurationName)\Plugins\$(TargetName)\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

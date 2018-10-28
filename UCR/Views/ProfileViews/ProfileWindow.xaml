@@ -19,8 +19,8 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top">
             <MenuItem Header="_Profile">
-                <MenuItem Header="Activate profile" Click="ActivateProfile" />
-                <MenuItem Header="Deactivate profile" Click="DeactivateProfile" />
+                <MenuItem Header="Activate Profile" Click="ActivateProfile" />
+                <MenuItem Header="Deactivate Profile" Click="DeactivateProfile" />
                 <Separator/>
                 <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
                 <Separator/>

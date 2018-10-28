@@ -23,14 +23,37 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
             return helper.ApplyRangeDeadZone(inputValue);
         }
 
-        [TestCase(Constants.AxisMaxValue, 50, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (50): Max returns Max")]
-        [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (50): Min returns Min")]
         [TestCase(0, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): 0 returns 0")]
         [TestCase(16384, 50, ExpectedResult = 1, TestName = "DeadZoneHelper (50): Half Positive deflection is outside DZ")]
         [TestCase(-16384, 50, ExpectedResult = -1, TestName = "DeadZoneHelper (50): Half Negative deflection is outside DZ")]
         [TestCase(16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Positive deflection is inside DZ")]
         [TestCase(-16383, 50, ExpectedResult = 0, TestName = "DeadZoneHelper (50): Below Half Negative deflection is inside DZ")]
         public long DeadZoneHelperValueTests(long inputValue, int percentage)
+        {
+            var helper = new DeadZoneHelper { Percentage = percentage };
+            return helper.ApplyRangeDeadZone(inputValue);
+        }
+
+        [TestCase(Constants.AxisMaxValue, 10, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (10): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 20, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (20): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 30, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (30): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 40, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (40): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 50, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (50): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 60, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (60): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 70, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (70): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 80, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (80): Max returns Max")]
+        [TestCase(Constants.AxisMaxValue, 90, ExpectedResult = Constants.AxisMaxValue, TestName = "DeadZoneHelper (90): Max returns Max")]
+
+        [TestCase(Constants.AxisMinValue, 10, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (10): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 20, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (20): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 30, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (30): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 40, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (40): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 50, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (50): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 60, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (60): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 70, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (70): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 80, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (80): Min returns Min")]
+        [TestCase(Constants.AxisMinValue, 90, ExpectedResult = Constants.AxisMinValue, TestName = "DeadZoneHelper (90): Min returns Min")]
+        public long DeadZoneHelperMaxTests(long inputValue, int percentage)
         {
             var helper = new DeadZoneHelper { Percentage = percentage };
             return helper.ApplyRangeDeadZone(inputValue);

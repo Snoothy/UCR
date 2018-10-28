@@ -23,7 +23,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void Setup()
         {
             _context = new Context();
-            _context.ProfilesManager.AddProfile("Base profile");
+            _context.ProfilesManager.AddProfile("Base Profile");
             _profile = _context.Profiles[0];
             _mapping = _profile.AddMapping("Test mapping");
             _profileName = "Test";
@@ -57,7 +57,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         [Test]
         public void RenameProfile()
         {
-            var newName = "Renamed profile";
+            var newName = "Renamed Profile";
             Assert.That(_profile.Rename(newName), Is.True);
             Assert.That(_profile.Title, Is.EqualTo(newName));
             Assert.That(_context.IsNotSaved, Is.True);

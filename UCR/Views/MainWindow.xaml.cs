@@ -7,9 +7,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
+using HidWizards.UCR.ViewModels.Dashboard;
 using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
@@ -19,18 +21,15 @@ namespace HidWizards.UCR.Views
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private Context context;
-
-        public string ActiveProfileBreadCrumbs => context?.ActiveProfile != null ? context.ActiveProfile.ProfileBreadCrumbs() : "None";
+        private Context Context { get; set; }
 
         public MainWindow(Context context)
         {
-            DataContext = this;
-            this.context = context;
+            var dashboardViewModel = new DashboardViewModel(context);
+
+            DataContext = dashboardViewModel;
+            Context = context;
             InitializeComponent();
-            
-            context.SetActiveProfileCallback(ActiveProfileChanged);
-            ReloadProfileTree();
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace HidWizards.UCR.Views
             var pi = ProfileTree.SelectedItem as ProfileItem;
             if (pi == null)
             {
-                MessageBox.Show("Please select a profile", "No profile selected!",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Please select a Profile", "No Profile selected!",MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 profileItem = null;
                 return false;
             }
@@ -62,7 +61,7 @@ namespace HidWizards.UCR.Views
 
         private void ReloadProfileTree()
         {
-            var profileTree = ProfileItem.GetProfileTree(context.Profiles);
+            var profileTree = ProfileItem.GetProfileTree(Context.Profiles);
             ProfileTree.ItemsSource = profileTree;
         }
 
@@ -74,25 +73,25 @@ namespace HidWizards.UCR.Views
             var a = sender as ProfileItem;
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            if (!context.SubscriptionsManager.ActivateProfile(pi.profile))
+            if (!Context.SubscriptionsManager.ActivateProfile(pi.Profile))
             {
-                MessageBox.Show("The profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
-            if (context.ActiveProfile == null) return;
+            if (Context.ActiveProfile == null) return;
             
-            if (!context.SubscriptionsManager.DeactivateProfile())
+            if (!Context.SubscriptionsManager.DeactivateProfile())
             {
-                MessageBox.Show("The active profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
         private void AddProfile(object sender, RoutedEventArgs e)
         {
-            var w = new ProfileDialog(context, null);
+            var w = new ProfileDialog(Context, null);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
 
@@ -103,7 +102,7 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var w = new ProfileDialog(context, pi.profile);
+            var w = new ProfileDialog(Context, pi.Profile);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
 
@@ -121,7 +120,7 @@ namespace HidWizards.UCR.Views
             }
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var win = new ProfileWindow(context, pi.profile);
+            var win = new ProfileWindow(Context, pi.Profile);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
@@ -130,10 +129,10 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var w = new TextDialog("Rename profile", pi.profile.Title);
+            var w = new TextDialog("Rename Profile", pi.Profile.Title);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            pi.profile.Rename(w.TextResult);
+            pi.Profile.Rename(w.TextResult);
             ReloadProfileTree();
         }
 
@@ -141,10 +140,10 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var w = new TextDialog("Profile name", pi.profile.Title + " Copy");
+            var w = new TextDialog("Profile name", pi.Profile.Title + " Copy");
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            context.ProfilesManager.CopyProfile(pi.profile, w.TextResult);
+            Context.ProfilesManager.CopyProfile(pi.Profile, w.TextResult);
             ReloadProfileTree();
         }
 
@@ -152,9 +151,9 @@ namespace HidWizards.UCR.Views
         {
             ProfileItem pi;
             if (!GetSelectedItem(out pi)) return;
-            var result = MessageBox.Show("Are you sure you want to remove '" + pi.profile.Title +"'?", "Remove profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Are you sure you want to remove '" + pi.Profile.Title +"'?", "Remove Profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            pi.profile.Remove();
+            pi.Profile.Remove();
             ReloadProfileTree();
         }
 
@@ -162,14 +161,14 @@ namespace HidWizards.UCR.Views
 
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
-            var win = new DeviceListWindow(context);
+            var win = new DeviceListWindow(Context);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            if (context.IsNotSaved)
+            if (Context.IsNotSaved)
             {
                 var result = MessageBox.Show("Do you want to save before closing?", "Unsaved data", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                 switch (result)
@@ -179,7 +178,7 @@ namespace HidWizards.UCR.Views
                         e.Cancel = true;
                         return;
                     case MessageBoxResult.Yes:
-                        context.SaveContext();
+                        Context.SaveContext();
                         break;
                     case MessageBoxResult.No:
                         break;
@@ -187,12 +186,7 @@ namespace HidWizards.UCR.Views
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            context.Dispose();
-        }
-
-        private void ActiveProfileChanged()
-        {
-            OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
+            Context.Dispose();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -205,12 +199,12 @@ namespace HidWizards.UCR.Views
 
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            context.SaveContext();
+            Context.SaveContext();
         }
 
         private void Save_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = context.IsNotSaved;
+            e.CanExecute = Context.IsNotSaved;
         }
 
 
@@ -220,7 +214,7 @@ namespace HidWizards.UCR.Views
             
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
-            if (!string.IsNullOrEmpty(argsString)) context.ParseCommandLineArguments(argsString.Split(';'));
+            if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
             return IntPtr.Zero;
         }
 

@@ -4,10 +4,10 @@ branches:
   master:
     mode: ContinuousDelivery
     tag: alpha
-    increment: Minor
+    increment: none
   dev(elop)?(ment)?$:
     mode: ContinuousDelivery
-    tag: alpha-unstable
+    tag: alpha-rc
     increment: Patch
 ignore:
   sha: []

@@ -35,12 +35,12 @@ namespace HidWizards.UCR.Core.Models
             Guid = Guid.NewGuid();
         }
 
-        public Device(Guid guid = new Guid())
+        public Device(Guid guid)
         {
             Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
         }
 
-        public Device(Device device) : this((Guid) device.Guid)
+        public Device(Device device) : this(device.Guid)
         {
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;

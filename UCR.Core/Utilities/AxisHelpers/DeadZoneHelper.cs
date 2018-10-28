@@ -38,8 +38,8 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             }
             else
             {
-                _deadzoneCutoff = (Constants.AxisMaxValue - (Constants.AxisMaxValue * (_percentage / 100.0)));
-                _scaleFactor = Math.Round(Constants.AxisMaxValue / _deadzoneCutoff);
+                _deadzoneCutoff = Constants.AxisMaxValue * (_percentage * 0.01);
+                _scaleFactor = Constants.AxisMaxValue / (Constants.AxisMaxValue - _deadzoneCutoff);
             }
         }
 
@@ -54,7 +54,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             var sign = Math.Sign(value);
             var adjustedValue = (absValue - _deadzoneCutoff) * _scaleFactor;
             var newValue = (long) Math.Round(adjustedValue * sign);
-            if (newValue == -32769) newValue = -32768;
+            if (newValue < -32768) newValue = -32768;   // ToDo: Negative values can go up to -32777 (9 over), can this be improved?
             //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
             return newValue;
         }
