@@ -38,8 +38,8 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             }
             else
             {
-                _deadzoneCutoff = (Constants.AxisMaxValue - (Constants.AxisMaxValue * (_percentage / 100.0)));
-                _scaleFactor = Math.Round(Constants.AxisMaxValue / _deadzoneCutoff);
+                _deadzoneCutoff = Constants.AxisMaxValue * (_percentage * 0.01);
+                _scaleFactor = Constants.AxisMaxValue / (Constants.AxisMaxValue - _deadzoneCutoff);
             }
         }
 
