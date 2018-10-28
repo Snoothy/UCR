@@ -1,4 +1,4 @@
-version: 0.5.0-{branch}+{build}
+version: 0.5.2-{branch}+{build}
 image: Visual Studio 2017
 
 install:

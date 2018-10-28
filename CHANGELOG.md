@@ -3,11 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [RC 0.5.2] - 2018-10-28
+## [Unreleased]
+
+## [0.5.2] - 2018-10-28
 ### Fixed
 - Values other than 0 or 50 for DeadZone should now work properly - Maximum deflection should now be achievable again
 
-## [RC 0.5.1] - 2018-10-28
+## [0.5.1] - 2018-10-28
 ### Added
 - Interception Provider: Duplicate devices now have #2, #3 etc at end of name to differentiate them  
 - You no longer put a Provider into Bind Mode, you put a Device into Bind Mode (Bind Mode is still not implemented on the front end)  
