@@ -22,7 +22,7 @@ namespace HidWizards.UCR.Utilities
                 var folderName = path.Remove(0, path.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                 if (File.Exists(Path.Combine(path, folderName + ".dll")))
                 {
-                    catalog.Catalogs.Add(new DirectoryCatalog(path));
+                    catalog.Catalogs.Add(new DirectoryCatalog(path, folderName + ".dll"));
                 }
             }
 
