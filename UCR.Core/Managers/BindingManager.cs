@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Utilities;
 using NLog;
+using Logger = NLog.Logger;
 
 namespace HidWizards.UCR.Core.Managers
 {
@@ -68,11 +70,28 @@ namespace HidWizards.UCR.Core.Managers
         private void InputChanged(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, int value)
         {
             if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding.DeviceBindingCategory)) return;
+            if (!IsInputValid(bindingReport.Category, value)) return;
 
             var device = FindDevice(providerDescriptor, deviceDescriptor);
             _deviceBinding.SetDeviceGuid(device.Guid);
             _deviceBinding.SetKeyTypeValue((int)bindingReport.BindingDescriptor.Type, bindingReport.BindingDescriptor.Index, bindingReport.BindingDescriptor.SubIndex);
             EndBindMode();
+        }
+
+        private bool IsInputValid(BindingCategory bindingCategory, int value)
+        {
+            switch (DeviceBinding.MapCategory(bindingCategory))
+            {
+                case DeviceBindingCategory.Delta:
+                case DeviceBindingCategory.Event:
+                    return true;
+                case DeviceBindingCategory.Momentary:
+                    return value != 0;
+                case DeviceBindingCategory.Range:
+                    return Constants.AxisMaxValue * 0.2 < Math.Abs(value);
+                default:
+                    return false;
+            }
         }
 
         private Device FindDevice(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor)
