@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Utilities.Commands;
 using HidWizards.UCR.ViewModels;
@@ -16,15 +18,15 @@ namespace HidWizards.UCR.Views.Controls
     {
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
-
+        public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
+        
         /* DDL */
         private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
-
+        
         /* ContextMenu */
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
 
         private bool HasLoaded = false;
-        public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
 
         public DeviceBindingControl()
         {
@@ -45,20 +47,8 @@ namespace HidWizards.UCR.Views.Controls
         {
             LoadDeviceInputs();
             LoadContextMenu();
-            LoadBindingName();
         }
 
-        private void LoadBindingName()
-        {
-            if (DeviceBinding.IsBound)
-            {
-                BindButton.Content = DeviceBinding.BoundName();
-            }
-            else
-            {
-                BindButton.Content = "Click to Bind";
-            }
-        }
 
         private void LoadDeviceInputs()
         {
@@ -120,7 +110,6 @@ namespace HidWizards.UCR.Views.Controls
                     cmd = new RelayCommand(c =>
                     {
                         DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
-                        LoadBindingName();
                     });
                 }
                 var menu = new ContextMenuItem(deviceBindingNode.Title, BuildMenu(deviceBindingNode.ChildrenNodes), cmd);
@@ -157,15 +146,23 @@ namespace HidWizards.UCR.Views.Controls
             if (DeviceNumberBox.SelectedItem == null) return;
             DeviceBinding.SetDeviceGuid(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
             LoadContextMenu();
-            LoadBindingName();
         }
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            var contextMenu = button.ContextMenu;
-            contextMenu.PlacementTarget = button;
-            contextMenu.IsOpen = true;
+            if (DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input))
+            {
+                if (Category.HasValue) DeviceBinding.DeviceBindingCategory = Category.Value;
+                //BindButton.Content = "Press input device";
+                DeviceBinding.EnterBindMode();
+            }
+            else
+            {
+                var button = sender as Button;
+                var contextMenu = button.ContextMenu;
+                contextMenu.PlacementTarget = button;
+                contextMenu.IsOpen = true;
+            }
         }
     }
 }

@@ -11,6 +11,16 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public string DeviceBindingName { get; set; }
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
 
+        public string BindButtonText
+        {
+            get
+            {
+                if (DeviceBinding.IsInBindMode) return "Press input device";
+                if (DeviceBinding.IsBound) return DeviceBinding.BoundName();
+                return "Click to bind";
+            }
+        }
+
         private DeviceBinding _deviceBinding;
         public DeviceBinding DeviceBinding
         {
@@ -34,10 +44,17 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             }
         }
 
+        public DeviceBindingViewModel()
+        {
+        }
+
         private void DeviceBindingOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             var deviceBinding = (DeviceBinding) sender;
             CurrentValue = deviceBinding.CurrentValue;
+
+            if (propertyChangedEventArgs.PropertyName.Equals("IsBound")
+            || propertyChangedEventArgs.PropertyName.Equals("IsInBindMode")) OnPropertyChanged(nameof(BindButtonText));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

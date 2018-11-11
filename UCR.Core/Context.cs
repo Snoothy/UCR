@@ -26,18 +26,13 @@ namespace HidWizards.UCR.Core
         public List<DeviceGroup> OutputGroups { get; set; }
 
         /* Runtime */
-        [XmlIgnore]
-        public Profile ActiveProfile { get; set; }
-        [XmlIgnore]
-        public ProfilesManager ProfilesManager { get; set; }
-        [XmlIgnore]
-        public DevicesManager DevicesManager { get; set; }
-        [XmlIgnore]
-        public DeviceGroupsManager DeviceGroupsManager { get; set; }
-        [XmlIgnore]
-        public SubscriptionsManager SubscriptionsManager { get; set; }
-        [XmlIgnore]
-        public PluginsManager PluginManager { get; set; }
+        [XmlIgnore] public Profile ActiveProfile { get; set; }
+        [XmlIgnore] public ProfilesManager ProfilesManager { get; set; }
+        [XmlIgnore] public DevicesManager DevicesManager { get; set; }
+        [XmlIgnore] public DeviceGroupsManager DeviceGroupsManager { get; set; }
+        [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
+        [XmlIgnore] public PluginsManager PluginManager { get; set; }
+        [XmlIgnore] public BindingManager BindingManager { get; set; }
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
@@ -65,6 +60,7 @@ namespace HidWizards.UCR.Core
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
             PluginManager = new PluginsManager(PluginPath);
+            BindingManager = new BindingManager(this);
         }
 
         private void SetCommandLineOptions()
