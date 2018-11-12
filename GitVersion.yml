@@ -5,7 +5,7 @@ branches:
     mode: ContinuousDelivery
     tag: alpha
     increment: none
-  dev(elop)?(ment)?$:
+  develop:
     mode: ContinuousDelivery
     tag: alpha-rc
     increment: Patch
