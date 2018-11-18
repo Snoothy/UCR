@@ -45,7 +45,7 @@ namespace HidWizards.UCR.Core.Managers
 
             foreach (var device in _deviceList)
             {
-                _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
+                _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device), GetDeviceDescriptor(device));
             }
             _deviceList = new List<Device>();
         }
