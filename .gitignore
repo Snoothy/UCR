@@ -4,6 +4,9 @@
 # Visual Studio 2017 seems to add this folder
 .vs/
 
+# Visual Studio Code create this, and we don't want to track that
+.vscode/
+
 # User-specific files
 *.suo
 *.user
