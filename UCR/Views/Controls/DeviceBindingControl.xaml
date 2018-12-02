@@ -14,7 +14,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0" Width="230" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <ComboBox Grid.Row="0" Width="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             <Grid Grid.Row="1" Width="Auto" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

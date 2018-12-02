@@ -122,7 +122,8 @@ namespace HidWizards.UCR.Core.Managers
                 case DeviceBindingCategory.Momentary:
                     return value != 0;
                 case DeviceBindingCategory.Range:
-                    return Constants.AxisMaxValue * 0.2 < Math.Abs(value);
+                    return Constants.AxisMaxValue * 0.4 < Math.Abs(value)
+                        && Constants.AxisMaxValue * 0.6 > Math.Abs(value);
                 default:
                     return false;
             }
