@@ -19,6 +19,17 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public Visibility ShowPreview => DeviceBinding.IsInBindMode ? Visibility.Hidden : Visibility.Visible;
         public Visibility ShowBindMode => ShowPreview.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
 
+        private bool _bindingEnabled;
+        public bool BindingEnabled
+        {
+            get => _bindingEnabled;
+            set
+            {
+                _bindingEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string BindButtonText
         {
             get
@@ -67,9 +78,11 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         {
             DeviceBinding = deviceBinding;
             deviceBinding.Profile.Context.BindingManager.PropertyChanged += BindingManagerOnPropertyChanged;
+            deviceBinding.Profile.Context.SubscriptionsManager.PropertyChanged += SubscriptionsManagerOnPropertyChanged;
+            BindingEnabled = !DeviceBinding.Profile.Context.SubscriptionsManager.ProfileActive;
             LoadDeviceInputs();
         }
-
+        
         public void LoadDeviceInputs()
         {
             var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
@@ -131,6 +144,14 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         {
             var bindingManger = sender as BindingManager;
             BindModeProgress = (long)bindingManger.BindModeProgress;
+        }
+
+        private void SubscriptionsManagerOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName.Equals("ProfileActive"))
+            {
+                BindingEnabled = !DeviceBinding.Profile.Context.SubscriptionsManager.ProfileActive;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

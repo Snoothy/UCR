@@ -14,13 +14,21 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0" Width="230" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <ComboBox Grid.Row="0" Width="230" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             <Grid Grid.Row="1" Width="Auto" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" HorizontalAlignment="Stretch" Content="{Binding BindButtonText}" Name="BindButton" Margin="0,5" Click="BindButton_OnClick" MinWidth="175" Width="Auto">
+                <Button Grid.Column="0" 
+                        HorizontalAlignment="Stretch" 
+                        Content="{Binding BindButtonText}" 
+                        IsEnabled="{Binding BindingEnabled}"
+                        Name="BindButton" 
+                        Margin="0,5" 
+                        Click="BindButton_OnClick" 
+                        MinWidth="175" 
+                        Width="Auto">
                     <Button.ContextMenu>
                         <ContextMenu x:Name="Ddl">
                             <ContextMenu.ItemContainerStyle>
@@ -33,7 +41,7 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-                <Button Grid.Column="1" Content="▼" Name="BindMenuButton" Margin="0,5" Click="BindMenuButton_OnClick" Width="25"/>
+                <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0,5" Click="BindMenuButton_OnClick" Width="25"/>
             </Grid>
             <local:PreviewControl Grid.Row="2" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
             <GroupBox Header="Bind mode" Grid.Row="2" Visibility="{Binding ShowBindMode}">

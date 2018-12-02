@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using HidWizards.IOWrapper.DataTransferObjects;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Models.Subscription;
@@ -9,9 +12,20 @@ using Logger = NLog.Logger;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    public class SubscriptionsManager : IDisposable
+    public class SubscriptionsManager : IDisposable, INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private bool _profileActive;
+        public bool ProfileActive
+        {
+            get => _profileActive;
+            set
+            {
+                _profileActive = value;
+                OnPropertyChanged();
+            }
+        }
 
         internal SubscriptionState SubscriptionState { get; set; }
         private readonly Context _context;
@@ -72,6 +86,7 @@ namespace HidWizards.UCR.Core.Managers
             }
 
             _context.OnActiveProfileChangedEvent(profile);
+            ProfileActive = true;
         }
 
         public bool DeactivateProfile()
@@ -105,6 +120,7 @@ namespace HidWizards.UCR.Core.Managers
             SubscriptionState = null;
             _context.ActiveProfile = null;
             _context.OnActiveProfileChangedEvent(null);
+            ProfileActive = false;
 
             return success;
         }
@@ -282,6 +298,14 @@ namespace HidWizards.UCR.Core.Managers
             {
                 DeactivateProfile();
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
