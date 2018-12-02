@@ -114,6 +114,7 @@ namespace HidWizards.UCR.Views.Controls
         {
             if (DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input))
             {
+                if (DeviceBinding.IsInBindMode) return;
                 if (Category.HasValue) DeviceBinding.DeviceBindingCategory = Category.Value;
                 DeviceBinding.EnterBindMode();
             }

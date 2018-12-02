@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using HidWizards.UCR.Core.Annotations;
+using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
@@ -14,6 +16,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
         public ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
         public ComboBoxItemViewModel SelectedDevice { get; set; }
+        public Visibility ShowPreview => DeviceBinding.IsInBindMode ? Visibility.Hidden : Visibility.Visible;
+        public Visibility ShowBindMode => ShowPreview.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
 
         public string BindButtonText
         {
@@ -48,9 +52,21 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             }
         }
 
+        private long _bindModeProgress;
+        public long BindModeProgress
+        {
+            get => _bindModeProgress;
+            set
+            {
+                _bindModeProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DeviceBindingViewModel(DeviceBinding deviceBinding)
         {
             DeviceBinding = deviceBinding;
+            deviceBinding.Profile.Context.BindingManager.PropertyChanged += BindingManagerOnPropertyChanged;
             LoadDeviceInputs();
         }
 
@@ -100,6 +116,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                 || propertyChangedEventArgs.PropertyName.Equals("IsInBindMode"))
             {
                 OnPropertyChanged(nameof(BindButtonText));
+                OnPropertyChanged(nameof(ShowPreview));
+                OnPropertyChanged(nameof(ShowBindMode));
             }
 
             if (propertyChangedEventArgs.PropertyName.Equals("IsBound"))
@@ -107,6 +125,12 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                 SetSelectDevice();
                 OnPropertyChanged(nameof(SelectedDevice));
             }
+        }
+        
+        private void BindingManagerOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var bindingManger = sender as BindingManager;
+            BindModeProgress = (long)bindingManger.BindModeProgress;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Threading;
 using HidWizards.IOWrapper.DataTransferObjects;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
@@ -9,12 +13,27 @@ using Logger = NLog.Logger;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    public class BindingManager : IDisposable
+    public class BindingManager : IDisposable, INotifyPropertyChanged
     {
+        private double _bindModeProgress = 0;
+
+        public double BindModeProgress
+        {
+            get { return _bindModeProgress / BindModeTime * 100.0; }
+            set
+            {
+                _bindModeProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private static readonly double BindModeTime = 5000.0;
+        private static readonly int BindModeTick = 10;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
         private List<Device> _deviceList;
         private DeviceBinding _deviceBinding;
+        private static DispatcherTimer BindingTimer;
 
         public delegate void EndBindModeDelegate(DeviceBinding deviceBinding);
         public event EndBindModeDelegate EndBindModeHandler;
@@ -34,19 +53,35 @@ namespace HidWizards.UCR.Core.Managers
             {
                 _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
                 _deviceList.Add(device);
-            }    
+            }
+
+            BindingTimer = new DispatcherTimer();
+            BindingTimer.Tick += BindingTimerOnTick;
+            BindingTimer.Interval = new TimeSpan(0,0,0,0,BindModeTick);
+            BindModeProgress = BindModeTime;
+            BindingTimer.Start();
+        }
+
+        private void BindingTimerOnTick(object sender, EventArgs e)
+        {
+            BindModeProgress = _bindModeProgress - BindModeTick;
+            if (BindModeProgress <= 0.0) EndBindMode();
         }
 
         private void EndBindMode()
         {
             Logger.Debug($"End bind mode");
             EndBindModeHandler?.Invoke(_deviceBinding);
+            BindingTimer.Stop();
 
             foreach (var device in _deviceList)
             {
                 _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device), GetDeviceDescriptor(device));
             }
+
             _deviceList = new List<Device>();
+            BindingTimer.Stop();
+
         }
 
         private DeviceDescriptor GetDeviceDescriptor(Device device)
@@ -104,6 +139,14 @@ namespace HidWizards.UCR.Core.Managers
         public void Dispose()
         {
             EndBindMode();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

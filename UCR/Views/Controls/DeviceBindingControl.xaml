@@ -27,7 +27,10 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <local:PreviewControl Grid.Row="2" DataContext="{Binding}"/>
+            <local:PreviewControl Grid.Row="2" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
+            <GroupBox Header="Bind mode" Grid.Row="2" Visibility="{Binding ShowBindMode}">
+                <ProgressBar MinHeight="20" Margin="2" Value="{Binding BindModeProgress}"></ProgressBar>
+            </GroupBox>
         </Grid>
     </GroupBox>
 </UserControl>

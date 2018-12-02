@@ -60,6 +60,7 @@
       <HintPath>..\packages\Trinet.Core.IO.Ntfs.4.1.1\lib\net35\Trinet.Core.IO.Ntfs.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\PluginAttribute.cs" />
