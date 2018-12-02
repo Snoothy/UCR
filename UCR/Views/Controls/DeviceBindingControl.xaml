@@ -13,7 +13,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0" MinWidth="200" x:Name="DeviceNumberBox" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <ComboBox Grid.Row="0" MinWidth="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             <Button Grid.Row="1" Content="{Binding BindButtonText}" Name="BindButton" Margin="0,5" Click="BindButton_OnClick" MinWidth="200">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="Ddl">

@@ -138,9 +138,6 @@
     <Compile Include="Views\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\BindModeWindow.xaml.cs">
-      <DependentUpon>BindModeWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ProfileViews\DeviceGroupComboBoxItem.cs" />
     <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
@@ -214,10 +211,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HelpWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProfileViews\BindModeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

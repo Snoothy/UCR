@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Utilities.Commands;
@@ -19,9 +17,6 @@ namespace HidWizards.UCR.Views.Controls
         public static readonly DependencyProperty DeviceBindingProperty = DependencyProperty.Register("DeviceBinding", typeof(DeviceBinding), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBinding)));
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label", typeof(string), typeof(DeviceBindingControl), new PropertyMetadata(default(string)));
         public static readonly DependencyProperty CategoryProperty = DependencyProperty.Register("Category", typeof(DeviceBindingCategory?), typeof(DeviceBindingControl), new PropertyMetadata(default(DeviceBindingCategory?)));
-        
-        /* DDL */
-        private ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
         
         /* ContextMenu */
         private ObservableCollection<ContextMenuItem> BindMenu { get; set; }
@@ -45,40 +40,7 @@ namespace HidWizards.UCR.Views.Controls
 
         private void ReloadGui()
         {
-            LoadDeviceInputs();
             LoadContextMenu();
-        }
-
-
-        private void LoadDeviceInputs()
-        {
-            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
-            Devices = new ObservableCollection<ComboBoxItemViewModel>();
-            foreach (var device in devicelist)
-            {
-                Devices.Add(new ComboBoxItemViewModel(device.Title, device.Guid));
-            }
-
-            ComboBoxItemViewModel selectedDevice = null;
-            
-            foreach (var comboBoxItem in Devices)
-            {
-                if (comboBoxItem.Value == DeviceBinding.DeviceGuid)
-                {
-                    selectedDevice = comboBoxItem;
-                    break;
-                }
-            }
-
-            if (Devices.Count == 0) Devices.Add(new ComboBoxItemViewModel("No device group", Guid.Empty));
-            if (selectedDevice == null)
-            {
-                selectedDevice = Devices[0];
-                DeviceBinding.SetDeviceGuid(selectedDevice.Value);
-            }
-
-            DeviceNumberBox.ItemsSource = Devices;
-            DeviceNumberBox.SelectedItem = selectedDevice;
         }
 
         private void LoadContextMenu()
@@ -153,7 +115,6 @@ namespace HidWizards.UCR.Views.Controls
             if (DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input))
             {
                 if (Category.HasValue) DeviceBinding.DeviceBindingCategory = Category.Value;
-                //BindButton.Content = "Press input device";
                 DeviceBinding.EnterBindMode();
             }
             else
