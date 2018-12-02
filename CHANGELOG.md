@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added bind mode for inputs
 
 ### Changed
-  - Updated to IOWrapper v0.9.9
+  - Updated to IOWrapper v0.9.10
 
 ## [0.5.2] - 2018-10-28
 ### Fixed
