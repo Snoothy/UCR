@@ -120,11 +120,21 @@ namespace HidWizards.UCR.Views.Controls
             }
             else
             {
-                var button = sender as Button;
-                var contextMenu = button.ContextMenu;
-                contextMenu.PlacementTarget = button;
-                contextMenu.IsOpen = true;
+                OpenContextMenu();
             }
+        }
+
+        private void BindMenuButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenContextMenu();
+        }
+
+        private void OpenContextMenu()
+        {
+            if (DeviceBinding.IsInBindMode) return;
+            var contextMenu = BindButton.ContextMenu;
+            contextMenu.PlacementTarget = BindButton;
+            contextMenu.IsOpen = true;
         }
     }
 }

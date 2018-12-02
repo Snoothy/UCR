@@ -57,7 +57,7 @@ namespace HidWizards.UCR.Core.Managers
 
             BindingTimer = new DispatcherTimer();
             BindingTimer.Tick += BindingTimerOnTick;
-            BindingTimer.Interval = new TimeSpan(0,0,0,0,BindModeTick);
+            BindingTimer.Interval = TimeSpan.FromMilliseconds(BindModeTick);
             BindModeProgress = BindModeTime;
             BindingTimer.Start();
         }
