@@ -13,7 +13,7 @@ using Logger = NLog.Logger;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    public class BindingManager : IDisposable, INotifyPropertyChanged
+    public sealed class BindingManager : IDisposable, INotifyPropertyChanged
     {
         private double _bindModeProgress = 0;
 
@@ -154,7 +154,7 @@ namespace HidWizards.UCR.Core.Managers
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -12,7 +12,7 @@ using Logger = NLog.Logger;
 
 namespace HidWizards.UCR.Core.Managers
 {
-    public class SubscriptionsManager : IDisposable, INotifyPropertyChanged
+    public sealed class SubscriptionsManager : IDisposable, INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -303,7 +303,7 @@ namespace HidWizards.UCR.Core.Managers
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

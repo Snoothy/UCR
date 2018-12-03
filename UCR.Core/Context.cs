@@ -14,7 +14,7 @@ using NLog;
 
 namespace HidWizards.UCR.Core
 {
-    public class Context : IDisposable
+    public sealed class Context : IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string ContextName = "context.xml";
