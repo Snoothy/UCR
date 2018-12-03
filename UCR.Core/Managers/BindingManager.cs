@@ -33,7 +33,9 @@ namespace HidWizards.UCR.Core.Managers
         private readonly Context _context;
         private List<Device> _deviceList;
         private DeviceBinding _deviceBinding;
-        private static DispatcherTimer BindingTimer;
+        private DispatcherTimer BindingTimer;
+        private readonly object bindmodeLock = new object();
+        private bool bindmodeActive;
 
         public delegate void EndBindModeDelegate(DeviceBinding deviceBinding);
         public event EndBindModeDelegate EndBindModeHandler;
@@ -60,6 +62,7 @@ namespace HidWizards.UCR.Core.Managers
             BindingTimer.Interval = TimeSpan.FromMilliseconds(BindModeTick);
             BindModeProgress = BindModeTime;
             BindingTimer.Start();
+            bindmodeActive = true;
         }
 
         private void BindingTimerOnTick(object sender, EventArgs e)
@@ -70,18 +73,24 @@ namespace HidWizards.UCR.Core.Managers
 
         private void EndBindMode()
         {
-            Logger.Debug($"End bind mode");
-            EndBindModeHandler?.Invoke(_deviceBinding);
-            BindingTimer.Stop();
-
-            foreach (var device in _deviceList)
+            lock (bindmodeLock)
             {
-                _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device), GetDeviceDescriptor(device));
+                Logger.Debug($"End bind mode");
+                if (!bindmodeActive) return;
+
+                EndBindModeHandler?.Invoke(_deviceBinding);
+                BindingTimer.Stop();
+
+                foreach (var device in _deviceList)
+                {
+                    _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device),
+                        GetDeviceDescriptor(device));
+                }
+
+                _deviceList = new List<Device>();
+                BindingTimer.Stop();
+                bindmodeActive = false;
             }
-
-            _deviceList = new List<Device>();
-            BindingTimer.Stop();
-
         }
 
         private DeviceDescriptor GetDeviceDescriptor(Device device)
