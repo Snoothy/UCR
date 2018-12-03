@@ -107,7 +107,7 @@ namespace HidWizards.UCR.Core.Models
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
-            return GetBindingName(deviceBinding, DeviceBindingMenu) ?? "Unknown input";
+            return GetBindingName(deviceBinding, GetDeviceBindingMenu(deviceBinding.Profile.Context, deviceBinding.DeviceIoType)) ?? "Unknown input";
         }
 
         private static string GetBindingName(DeviceBinding deviceBinding, List<DeviceBindingNode> deviceBindingNodes)

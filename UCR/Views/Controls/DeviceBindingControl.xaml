@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
+             d:DesignHeight="200" d:DesignWidth="400"
              mc:Ignorable="d">
 
     <GroupBox x:Name="DeviceBindingLabel" Header="GroupBox" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -13,22 +14,39 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0" MinWidth="200" x:Name="DeviceNumberBox" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
-            <Button Grid.Row="1" Name="BindButton" Margin="0,5" Click="BindButton_OnClick" MinWidth="200">
-                Click to Bind
-                <Button.ContextMenu>
-                    <ContextMenu x:Name="Ddl">
-                        <ContextMenu.ItemContainerStyle>
-                            <Style TargetType="{x:Type MenuItem}">
-                                <Setter Property="MenuItem.Header" Value="{Binding Name}" />
-                                <Setter Property="MenuItem.ItemsSource" Value ="{Binding Children}" />
-                                <Setter Property="Command" Value="{Binding MenuCommand}"/>
-                            </Style>
-                        </ContextMenu.ItemContainerStyle>
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
-            <local:PreviewControl Grid.Row="2" DataContext="{Binding}"/>
+            <ComboBox Grid.Row="0" Width="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <Grid Grid.Row="1" Width="Auto" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" 
+                        HorizontalAlignment="Stretch" 
+                        Content="{Binding BindButtonText}" 
+                        IsEnabled="{Binding BindingEnabled}"
+                        Name="BindButton" 
+                        Margin="0,5" 
+                        Click="BindButton_OnClick" 
+                        MinWidth="175" 
+                        Width="Auto">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="Ddl">
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="MenuItem.Header" Value="{Binding Name}" />
+                                    <Setter Property="MenuItem.ItemsSource" Value ="{Binding Children}" />
+                                    <Setter Property="Command" Value="{Binding MenuCommand}"/>
+                                </Style>
+                            </ContextMenu.ItemContainerStyle>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0,5" Click="BindMenuButton_OnClick" Width="25"/>
+            </Grid>
+            <local:PreviewControl Grid.Row="2" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
+            <GroupBox Header="Bind mode" Grid.Row="2" Visibility="{Binding ShowBindMode}">
+                <ProgressBar MinHeight="20" Margin="2" Value="{Binding BindModeProgress}"></ProgressBar>
+            </GroupBox>
         </Grid>
     </GroupBox>
 </UserControl>

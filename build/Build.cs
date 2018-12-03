@@ -127,9 +127,6 @@ class Build : NukeBuild
             const string readmePath = "./README.md";
             File.WriteAllText(readmePath, Regex.Replace(File.ReadAllText(readmePath), @"release-v([0-9]+\.[0-9]+\.[0-9]+)-blue.svg", $"release-v{GitVersion.MajorMinorPatch}-blue.svg"));
             File.WriteAllText(readmePath, Regex.Replace(File.ReadAllText(readmePath), @"releases/tag/v([0-9]+\.[0-9]+\.[0-9]+)", $"releases/tag/v{GitVersion.MajorMinorPatch}"));
-
-            const string appveyorConfigPath = "./appveyor.yml";
-            File.WriteAllText(appveyorConfigPath, Regex.Replace(File.ReadAllText(appveyorConfigPath), @"version: ([0-9]+\.[0-9]+\.[0-9]+)-", $"version: {GitVersion.MajorMinorPatch}-"));
         });
 
     Target Compile => _ => _

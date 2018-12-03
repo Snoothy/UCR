@@ -42,9 +42,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             var plugin = Mapping.Plugins[0];
             for (var i = 0; i < plugin.InputCategories.Count; i++)
             {
-                DeviceBindings.Add(new DeviceBindingViewModel()
+                DeviceBindings.Add(new DeviceBindingViewModel(Mapping.DeviceBindings[i])
                 {
-                    DeviceBinding = Mapping.DeviceBindings[i],
                     DeviceBindingName = plugin.InputCategories[i].Name,
                     DeviceBindingCategory = plugin.InputCategories[i].Category
                 });

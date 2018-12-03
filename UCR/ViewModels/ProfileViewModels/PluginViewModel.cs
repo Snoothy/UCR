@@ -27,9 +27,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             DeviceBindings = new ObservableCollection<DeviceBindingViewModel>();
             for (var i = 0; i < Plugin.OutputCategories.Count; i++)
             {
-                DeviceBindings.Add(new DeviceBindingViewModel()
+                DeviceBindings.Add(new DeviceBindingViewModel(Plugin.Outputs[i])
                 {
-                    DeviceBinding = Plugin.Outputs[i],
                     DeviceBindingName = Plugin.OutputCategories[i].Name,
                     DeviceBindingCategory = Plugin.OutputCategories[i].Category
                 });

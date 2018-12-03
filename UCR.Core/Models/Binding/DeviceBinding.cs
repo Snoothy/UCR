@@ -18,7 +18,16 @@ namespace HidWizards.UCR.Core.Models.Binding
     public class DeviceBinding : INotifyPropertyChanged
     {
         /* Persistence */
-        public bool IsBound { get; set; }
+        private bool _isBound;
+        public bool IsBound
+        {
+            get => _isBound;
+            set
+            {
+                _isBound = value;
+                OnPropertyChanged();
+            }
+        }
         // Index in its device list
         public Guid DeviceGuid { get; set; }
         // Subscription key
@@ -35,6 +44,18 @@ namespace HidWizards.UCR.Core.Models.Binding
         public DeviceIoType DeviceIoType { get; set; }
         [XmlIgnore]
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
+
+        private bool _isInBindMode = false;
+        [XmlIgnore]
+        public bool IsInBindMode
+        {
+            get => _isInBindMode;
+            private set
+            {
+                _isInBindMode = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public delegate void ValueChanged(long value);
@@ -133,6 +154,20 @@ namespace HidWizards.UCR.Core.Models.Binding
         {
             CurrentValue = value;
             OutputSink?.Invoke(value);
+        }
+
+        public void EnterBindMode()
+        {
+            Profile.Context.BindingManager.BeginBindMode(this);
+            Profile.Context.BindingManager.EndBindModeHandler += OnEndBindModeHandler;
+            IsInBindMode = true;
+        }
+
+        private void OnEndBindModeHandler(DeviceBinding deviceBinding)
+        {
+            if (deviceBinding.Guid != Guid) return;
+            IsInBindMode = false;
+            Profile.Context.BindingManager.EndBindModeHandler -= OnEndBindModeHandler;
         }
 
         private void InputChanged(long value)
