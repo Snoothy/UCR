@@ -14,7 +14,7 @@ namespace HidWizards.UCR.Views.Controls
 
             if (element == null || !(item is DeviceBindingViewModel)) return null;
             var deviceBindingViewModel = (DeviceBindingViewModel) item;
-            
+
             switch (deviceBindingViewModel.DeviceBindingCategory)
             {
                 case DeviceBindingCategory.Event:

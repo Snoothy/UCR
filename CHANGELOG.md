@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added bind mode for inputs
+
+### Changed
+  - Updated to IOWrapper v0.9.11
+
 ## [0.5.2] - 2018-10-28
 ### Fixed
+
 - Values other than 0 or 50 for DeadZone should now work properly - Maximum deflection should now be achievable again
 
 ## [0.5.1] - 2018-10-28
