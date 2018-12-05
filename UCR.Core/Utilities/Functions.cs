@@ -71,5 +71,10 @@ namespace HidWizards.UCR.Core.Utilities
             return value;
         }
 
+
+        public static long GetRangeFromPercentage(long percentage)
+        {
+            return (long) (Constants.AxisMaxValue * (percentage / 100.0));
+        }
     }
 }

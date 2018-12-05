@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- `Button to Axis` parameters changed to two axis values and option for initialization
+
 ## [0.6.0] - 2018-12-03
 
 ### Added

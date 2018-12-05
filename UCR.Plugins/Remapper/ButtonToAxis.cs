@@ -10,42 +10,32 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonToAxis : Plugin
     {
-        [PluginGui("Invert Input", ColumnOrder = 0)]
-        public bool InvertInput { get; set; }
+        [PluginGui("Axis on release", RowOrder = 0)] 
+        public double Range { get; set; }
 
-        [PluginGui("Invert Output", ColumnOrder = 1)]
-        public bool Invert { get; set; }
+        [PluginGui("Initialize axis", RowOrder = 0, ColumnOrder = 1)]
+        public bool Initialize { get; set; }
 
-        [PluginGui("Absolute", ColumnOrder = 2)]
-        public bool Absolute { get; set; }
-
-        [PluginGui("Range target", ColumnOrder = 3)]
-        public int Range { get; set; }
-
+        [PluginGui("Axis when pressed", RowOrder = 1)]
+        public double RangePressed { get; set; }
 
         public ButtonToAxis()
         {
-            Range = 100;
+            Range = 0;
+            RangePressed = 100;
+        }
+
+        public override void OnActivate()
+        {
+            if (Initialize) WriteOutput(0, Functions.GetRangeFromPercentage((int)Range));
         }
 
         public override void Update(params long[] values)
         {
-            var value = values[0];
-
-            if (InvertInput) value = 1 - value;
-
-            // ToDo: Review logic, move off into Utilities and unit test
-            if (Absolute)
-            {
-                value = (long)(Constants.AxisMinValue + value * Constants.AxisMaxValue * 2 * (Range / 100.0));
-                if (Invert) value = Functions.Invert(value);
-                WriteOutput(0, value);
-            }
-            else
-            {
-                var inverse = value == 0 ^ Invert;
-                WriteOutput(0, value * (long)((inverse ? Constants.AxisMinValue : Constants.AxisMaxValue) * (Range / 100.0)));
-            }
+            WriteOutput(0,
+                values[0] == 0
+                    ? Functions.GetRangeFromPercentage((int)Range)
+                    : Functions.GetRangeFromPercentage((int)RangePressed));
         }
 
     }
