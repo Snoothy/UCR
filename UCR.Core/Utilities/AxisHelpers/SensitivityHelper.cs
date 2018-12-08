@@ -39,10 +39,10 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             _sens = _scaleFactor / 100d;
         }
 
-        public long ApplyRangeSensitivity(long value)
+        public short ApplyRangeSensitivity(short value)
         {
             //var sensitivityPercent = (sensitivity / 100.0);
-            if (IsLinear) return Functions.ClampAxisRange((long)Math.Round(value * _scaleFactor));
+            if (IsLinear) return (short) Functions.ClampAxisRange((int) Math.Round(value * _scaleFactor));
 
             //var sens = _scaleFactor / 100d;
             //double AxisRange = 1d * (Constants.AxisMaxValue - Constants.AxisMinValue);
@@ -51,7 +51,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             // calculate (Sensitivity * Value) + ( (1-Sensitivity) * Value^3 )
             double valout = (_sens * val11) + ((1d - _sens) * Math.Pow(val11, 3d));
             // Map value back to AxisRange
-            value = (long)Math.Round(((valout + 1d) / 2d) * _axisRange + (1d * Constants.AxisMinValue));
+            value = (short) Math.Round(((valout + 1d) / 2d) * _axisRange + (1d * Constants.AxisMinValue));
 
             return value;
         }

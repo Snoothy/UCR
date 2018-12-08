@@ -8,16 +8,16 @@ namespace HidWizards.UCR.Core.Models
     {
         private DeviceBinding.ValueChanged _mappingUpdate;
         private readonly int _index;
-        private readonly List<long> _cache;
+        private readonly List<short> _cache;
 
-        public CallbackMultiplexer(List<long> cache, int index, DeviceBinding.ValueChanged mappingUpdate)
+        public CallbackMultiplexer(List<short> cache, int index, DeviceBinding.ValueChanged mappingUpdate)
         {
             _mappingUpdate = mappingUpdate;
             _index = index;
             _cache = cache;
         }
 
-        public void Update(long value)
+        public void Update(short value)
         {
             _cache[_index] = value;
             _mappingUpdate(value);

@@ -104,7 +104,7 @@ namespace HidWizards.UCR.Core.Models
 
         }
 
-        public virtual void Update(params long[] values)
+        public virtual void Update(params short[] values)
         {
 
         }
@@ -118,7 +118,7 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin methods
 
-        protected void WriteOutput(int number, long value)
+        protected void WriteOutput(int number, short value)
         {
             Outputs[number].WriteOutput(value);
         }
