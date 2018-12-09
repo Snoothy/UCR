@@ -59,7 +59,7 @@ namespace HidWizards.UCR.Plugins.Remapper
                     valueOutput = (short) ((valueHigh + valueLow) / 2);
                     break;
                 case AxisMergerMode.Greatest:
-                    valueOutput = Math.Abs(valueHigh) > Math.Abs(valueLow) ? valueHigh : valueLow;
+                    valueOutput = (Math.Abs((int)valueHigh) > Math.Abs((int)valueLow)) ? valueHigh : valueLow;
                     break;
                 case AxisMergerMode.Sum:
                     valueOutput = (short) (valueHigh + valueLow);

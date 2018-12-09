@@ -121,6 +121,8 @@ namespace HidWizards.UCR.Core.Managers
             EndBindMode();
         }
 
+        // ToDo: This should take a short, not an int
+        // As it is currently an int holding a short, the Math.Abs statements are safe
         private bool IsInputValid(BindingCategory bindingCategory, int value)
         {
             switch (DeviceBinding.MapCategory(bindingCategory))
