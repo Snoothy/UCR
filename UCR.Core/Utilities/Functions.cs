@@ -71,6 +71,25 @@ namespace HidWizards.UCR.Core.Utilities
             return (short) value;
         }
 
+        /// <summary>
+        /// A Safe Abs, that widens
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int WideAbs(short value)
+        {
+            return Math.Abs((int)value);
+        }
+
+        /// <summary>
+        /// A Safe Abs, that does not widen
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static short SafeAbs(short value)
+        {
+            return value == short.MinValue ? short.MaxValue : Math.Abs(value);
+        }
 
         public static short GetRangeFromPercentage(short percentage)
         {
