@@ -11,6 +11,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
     public class DashboardViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public string Title => "Universal Control Remapper";
 
         public ObservableCollection<ProfileItem> ProfileList { get; set; }
         public string ActiveProfileBreadCrumbs => Context?.ActiveProfile != null ? Context.ActiveProfile.ProfileBreadCrumbs() : "None";

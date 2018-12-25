@@ -5,9 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-### Changed
+### Added
+- Material design
+- Quick access button to add new profile
 
+### Changed
 - `Button to Axis` parameters changed to two axis values and option for initialization
+- Redesigned main window
+- Show active profile in process bar
 
 ## [0.6.0] - 2018-12-03
 
