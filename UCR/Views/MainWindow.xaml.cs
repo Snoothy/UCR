@@ -22,10 +22,11 @@ namespace HidWizards.UCR.Views
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private Context Context { get; set; }
+        private DashboardViewModel dashboardViewModel;
 
         public MainWindow(Context context)
         {
-            var dashboardViewModel = new DashboardViewModel(context);
+            dashboardViewModel = new DashboardViewModel(context);
 
             DataContext = dashboardViewModel;
             Context = context;
@@ -248,6 +249,12 @@ namespace HidWizards.UCR.Views
             var win = new HelpWindow();
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
+        }
+
+        private void ProfileTree_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var treeView = sender as TreeView;
+            dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
         }
     }
 }
