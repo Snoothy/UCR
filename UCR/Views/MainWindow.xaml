@@ -14,7 +14,7 @@
         BorderBrush="{StaticResource PrimaryHueDarkBrush}"
         BorderThickness="1"
         Title="Universal Control Remapper" 
-        Height="600" MinHeight="400" Width="800" MinWidth="320"
+        Height="600" MinHeight="400" Width="800" MinWidth="600"
         Closing="MainWindow_OnClosing"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -48,34 +48,31 @@
                     <BlurEffect Radius="6"/>
                 </Border.Effect>
             </Border>
-                <Menu>
-                    <MenuItem Header="_File">
-                    <MenuItem Command="Save" />
+            <ToolBarTray>
+                <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
+                    <Button ToolTip="Save" Command="Save">
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                    </Button>
                     <Separator />
-                    <MenuItem Header="_Exit" Command="commands:MyCommands.ApplicationCloseCommand" />
-                </MenuItem>
-                <MenuItem Header="_Profile">
-                    <MenuItem Header="Activate" Click="ActivateProfile" />
-                    <MenuItem Header="Deactivate" Click="DeactivateProfile" />
+                    <Button IsEnabled="{Binding CanActivateProfile}" ToolTip="Activate profile" Click="ActivateProfile">
+                        <materialDesign:PackIcon Kind="Play"/>
+                    </Button>
+                    <Button IsEnabled="{Binding CanDeactivateProfile}" ToolTip="Stop active profile" Click="DeactivateProfile">
+                        <materialDesign:PackIcon Kind="Stop"/>
+                    </Button>
                     <Separator />
-                    <MenuItem Header="New" Click="AddProfile" />
-                    <MenuItem Header="Add child" Click="AddChildProfile" />
-                    <MenuItem Header="Copy" Click="CopyProfile"/>
+                    <Button ToolTip="Manage device groups" Click="ManageDeviceLists_OnClick">
+                        <materialDesign:PackIcon Kind="GoogleController"/>
+                    </Button>
                     <Separator />
-                    <MenuItem Header="Edit" Click="EditProfile" />
-                    <MenuItem Header="Rename" Click="RenameProfile" />
-                    <Separator />
-                    <MenuItem Header="Remove" Click="RemoveProfile" />
-                </MenuItem>
-                <MenuItem Header="_Devices">
-                    <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
-                </MenuItem>
-                <MenuItem Header="_Help">
-                    <MenuItem Header="Help" Click="Help_OnClick"/>
-                    <Separator />
-                    <MenuItem Header="About" Click="About_OnClick"/>
-                </MenuItem>
-            </Menu>
+                    <Button ToolTip="Help" Click="Help_OnClick">
+                        <materialDesign:PackIcon Kind="Help"/>
+                    </Button>
+                    <Button ToolTip="About" Click="About_OnClick">
+                        <materialDesign:PackIcon Kind="About"/>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
         </Grid>
         <Grid Grid.Row="2" Margin="8 8">
             <Grid.ColumnDefinitions>
@@ -100,11 +97,6 @@
                                     Style="{StaticResource MaterialDesignCardButton}"
                                     Click="AddProfile">
                                 <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Stop active profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Click="DeactivateProfile">
-                                <materialDesign:PackIcon Kind="Stop" Width="20" Height="20"/>
                             </Button>
                         </StackPanel>
                     </Grid>
@@ -160,21 +152,29 @@
 
             <Grid Grid.Column="1" Margin="8 0 0 0" Visibility="{Binding ProfileDetailsActive}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <materialDesign:Card Grid.Column="0" Background="{StaticResource PrimaryHueMidBrush}" Height="80">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="32"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Column="0"  Margin="8 5 4 3" Text="{Binding SelectedProfileItem.Title}" Style="{StaticResource MaterialDesignTitleTextBlock}" Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
-                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
+                        <StackPanel Grid.Column="0" Grid.Row="0" FlowDirection="LeftToRight" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0">
+                            <TextBlock Margin="8 5 4 3" Text="{Binding SelectedProfileItem.Title}" Style="{StaticResource MaterialDesignTitleTextBlock}" Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
+                            <Button ToolTip="Rename profile"
+                                    Style="{StaticResource MaterialDesignCardButton}"
+                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                    Click="RenameProfile">
+                                <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Grid.Row="0" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
                             <Button ToolTip="Delete profile"
                                     Style="{StaticResource MaterialDesignCardButton}"
                                     Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
@@ -192,12 +192,6 @@
                                     Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
                                     Click="AddChildProfile">
                                 <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Rename profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="RenameProfile">
-                                <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
                             </Button>
                             <Button ToolTip="Edit profile"
                                     Style="{StaticResource MaterialDesignCardButton}"

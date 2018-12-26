@@ -11,8 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 - `Button to Axis` parameters changed to two axis values and option for initialization
-- Redesigned main window
+- Redesigned main window dashboard
 - Show active profile in process bar
+- Replaced menu with toolbar in main window
 
 ## [0.6.0] - 2018-12-03
 

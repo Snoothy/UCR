@@ -14,6 +14,8 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         public event PropertyChangedEventHandler PropertyChanged;
         public string Title => "Universal Control Remapper";
         public Visibility ProfileDetailsActive => SelectedProfileItem != null ? Visibility.Visible : Visibility.Hidden;
+        public bool CanActivateProfile => SelectedProfileItem != null;
+        public bool CanDeactivateProfile => Context?.ActiveProfile != null;
 
         private ProfileItem _selectedProfileItem = null;
         public ProfileItem SelectedProfileItem
@@ -24,6 +26,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
                 _selectedProfileItem = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ProfileDetailsActive));
+                OnPropertyChanged(nameof(CanActivateProfile));
             }
         }
 
@@ -43,6 +46,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         private void OnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
+            OnPropertyChanged(nameof(CanDeactivateProfile));
         }
         
         [NotifyPropertyChangedInvocator]
