@@ -39,94 +39,119 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <controls:WindowBar Grid.Row="0"/>
-        <Menu Grid.Row="1" DockPanel.Dock="Top" Margin="4 0">
-            <MenuItem Header="_File">
-                <MenuItem Command="Save" />
-                <Separator />
-                <MenuItem Header="_Exit" Command="commands:MyCommands.ApplicationCloseCommand" />
-            </MenuItem>
-            <MenuItem Header="_Profile">
-                <MenuItem Header="Activate" Click="ActivateProfile" />
-                <MenuItem Header="Deactivate" Click="DeactivateProfile" />
-                <Separator />
-                <MenuItem Header="New" Click="AddProfile" />
-                <MenuItem Header="Add child" Click="AddChildProfile" />
-                <MenuItem Header="Copy" Click="CopyProfile"/>
-                <Separator />
-                <MenuItem Header="Edit" Click="EditProfile" />
-                <MenuItem Header="Rename" Click="RenameProfile" />
-                <Separator />
-                <MenuItem Header="Remove" Click="RemoveProfile" />
-            </MenuItem>
-            <MenuItem Header="_Devices">
-                <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
-            </MenuItem>
-            <MenuItem Header="_Help">
-                <MenuItem Header="Help" Click="Help_OnClick"/>
-                <Separator />
-                <MenuItem Header="About" Click="About_OnClick"/>
-            </MenuItem>
-        </Menu>
-        <Grid Grid.Row="2" Margin="4">
+        <Grid Grid.Row="1">
+            <Border Background="Transparent"
+                    BorderBrush="{DynamicResource MaterialDesignShadowBrush}"
+                    BorderThickness="0 0 0 1"
+                    CornerRadius="2">
+                <Border.Effect>
+                    <BlurEffect Radius="6"/>
+                </Border.Effect>
+            </Border>
+                <Menu>
+                    <MenuItem Header="_File">
+                    <MenuItem Command="Save" />
+                    <Separator />
+                    <MenuItem Header="_Exit" Command="commands:MyCommands.ApplicationCloseCommand" />
+                </MenuItem>
+                <MenuItem Header="_Profile">
+                    <MenuItem Header="Activate" Click="ActivateProfile" />
+                    <MenuItem Header="Deactivate" Click="DeactivateProfile" />
+                    <Separator />
+                    <MenuItem Header="New" Click="AddProfile" />
+                    <MenuItem Header="Add child" Click="AddChildProfile" />
+                    <MenuItem Header="Copy" Click="CopyProfile"/>
+                    <Separator />
+                    <MenuItem Header="Edit" Click="EditProfile" />
+                    <MenuItem Header="Rename" Click="RenameProfile" />
+                    <Separator />
+                    <MenuItem Header="Remove" Click="RemoveProfile" />
+                </MenuItem>
+                <MenuItem Header="_Devices">
+                    <MenuItem Header="Manage device groups" Click="ManageDeviceLists_OnClick" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="Help" Click="Help_OnClick"/>
+                    <Separator />
+                    <MenuItem Header="About" Click="About_OnClick"/>
+                </MenuItem>
+            </Menu>
+        </Grid>
+        <Grid Grid.Row="2" Margin="8 8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Grid.ZIndex="2" Grid.ColumnSpan="3"
-                    VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                    Margin="10"
-                    ToolTip="New profile"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                    Click="AddProfile">
-                <materialDesign:PackIcon Kind="AccountPlus" Height="16" Width="16"/>
-            </Button>
-            <TreeView Grid.Column="0" Grid.ColumnSpan="3" Grid.ZIndex="1" Name="ProfileTree" Margin="0" ItemsSource="{Binding ProfileList}">
-                <TreeView.Style>
-                    <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
-                        <Style.Triggers>
-                            <Trigger Property="HasItems" Value="False">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <TextBlock Margin="4">Click</TextBlock>
-                                                <materialDesign:PackIcon Kind="AccountPlus" Height="16" Width="16" Margin="4"/>
-                                                <TextBlock Margin="4">to add your first profile</TextBlock>
-                                            </StackPanel>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TreeView.Style>
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="True"/>
-                        <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
-                        <TextBlock Text="{Binding Title}" >
-                            <TextBlock.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Activate" Click="ActivateProfile"/>
-                                    <Separator />
-                                    <MenuItem Header="Add child" Click="AddChildProfile" />
-                                    <MenuItem Header="Copy" Click="CopyProfile"/>
-                                    <Separator />
-                                    <MenuItem Header="Edit" Click="EditProfile" />
-                                    <MenuItem Header="Rename" Click="RenameProfile" />
-                                    <Separator />
-                                    <MenuItem Header="Remove" Click="RemoveProfile" />
-                                </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+            <materialDesign:Card Grid.Column="0" Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}" Margin="0">
+                <Grid Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignTitleTextBlock}">Profiles</TextBlock>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
+                            <Button ToolTip="Add profile"
+                                    Style="{StaticResource MaterialDesignCardButton}"
+                                    Click="AddProfile">
+                                <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Separator Grid.Row="1" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
+                    <TreeView Grid.Row="2" Name="ProfileTree" Margin="4" ItemsSource="{Binding ProfileList}">
+                        <TreeView.Style>
+                            <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
+                                <Style.Triggers>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <TextBlock Margin="4">Click</TextBlock>
+                                                        <materialDesign:PackIcon Kind="AccountPlus" Height="16" Width="16" Margin="4"/>
+                                                        <TextBlock Margin="4">to add your first profile</TextBlock>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TreeView.Style>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded" Value="True"/>
+                                <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
+                                <TextBlock Text="{Binding Title}" Margin="4" >
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Activate" Click="ActivateProfile"/>
+                                            <Separator />
+                                            <MenuItem Header="Add child" Click="AddChildProfile" />
+                                            <MenuItem Header="Copy" Click="CopyProfile"/>
+                                            <Separator />
+                                            <MenuItem Header="Edit" Click="EditProfile" />
+                                            <MenuItem Header="Rename" Click="RenameProfile" />
+                                            <Separator />
+                                            <MenuItem Header="Remove" Click="RemoveProfile" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Grid>
+            </materialDesign:Card>
         </Grid>
     </Grid>
 </Window>

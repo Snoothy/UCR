@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="200" d:DesignWidth="400"
              mc:Ignorable="d">
 
@@ -45,7 +46,7 @@
             </Grid>
             <local:PreviewControl Grid.Row="2" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
             <GroupBox Header="Bind mode" Grid.Row="2" Visibility="{Binding ShowBindMode}">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding BindModeProgress}"></ProgressBar>
+                <ProgressBar MinHeight="20" Margin="2" Value="{Binding BindModeProgress}" materialDesign:TransitionAssist.DisableTransitions="True"/>
             </GroupBox>
         </Grid>
     </GroupBox>

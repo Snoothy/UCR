@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:preview="clr-namespace:HidWizards.UCR.Views.Controls.preview"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -14,12 +15,12 @@
 
         <DataTemplate x:Key="RangePreview">
             <GroupBox Header="Preview">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource RangeConverter}}"></ProgressBar>
+                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource RangeConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
             </GroupBox>
         </DataTemplate>
         <DataTemplate x:Key="MomentaryPreview">
             <GroupBox Header="Preview">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource MomentaryConverter}}"></ProgressBar>
+                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource MomentaryConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
             </GroupBox>
         </DataTemplate>
         <DataTemplate x:Key="EventPreview">
