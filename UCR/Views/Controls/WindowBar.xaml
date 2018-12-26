@@ -20,7 +20,7 @@
                 <TextBlock FontSize="13" Margin="4 8" Text="{Binding ActiveProfileBreadCrumbs}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Right" Height="auto" VerticalAlignment="Top" Width="auto">
-                <Button Style="{StaticResource MaterialDesignFlatBarButton}"
+                <Button Style="{StaticResource MaterialDesignFlatRedBarButton}"
                         Padding="12 0"
                         Click="Close_OnClick">
                     <materialDesign:PackIcon Kind="WindowClose" Height="16" Width="16"/>
@@ -33,7 +33,7 @@
                 <Button Style="{StaticResource MaterialDesignFlatBarButton}"
                         Padding="12 0"
                         Click="Minimize_OnClick">
-                    <materialDesign:PackIcon Kind="WindowMinimize" Margin="0 6 0 0" Height="16" Width="16" />
+                    <materialDesign:PackIcon Kind="WindowMinimize" Margin="0 8 0 0" Height="16" Width="16" />
                 </Button>
             </StackPanel>
         </Grid>   

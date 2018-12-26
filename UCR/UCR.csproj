@@ -98,6 +98,7 @@
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
     <Compile Include="Utilities\Validators\NumberBindingValidator.cs" />
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
+    <Compile Include="Utilities\WindowUtility.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />

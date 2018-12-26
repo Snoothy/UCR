@@ -249,10 +249,5 @@ namespace HidWizards.UCR.Views
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
-
-        private void Close_OnClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
     }
 }
