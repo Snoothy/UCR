@@ -7,6 +7,7 @@ namespace HidWizards.UCR.Views.Controls
     public partial class WindowBar : UserControl
     {
         private Window Window => Window.GetWindow(this);
+        private bool RestoreForDragMove { get; set; }
 
         public WindowBar()
         {
@@ -20,6 +21,9 @@ namespace HidWizards.UCR.Views.Controls
 
         private void Bar_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ClickCount == 2) return;
+
+            RestoreForDragMove = Window.WindowState == WindowState.Maximized;
             Window.DragMove();
         }
 
@@ -29,6 +33,11 @@ namespace HidWizards.UCR.Views.Controls
             {
                 ResizeWindow();
             }
+        }
+
+        private void Bar_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            RestoreForDragMove = false;
         }
 
         private void Resize_OnClick(object sender, RoutedEventArgs e)
@@ -46,6 +55,18 @@ namespace HidWizards.UCR.Views.Controls
         private void Minimize_OnClick(object sender, RoutedEventArgs e)
         {
             Window.WindowState = WindowState.Minimized;
+        }
+
+        private void Bar_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!RestoreForDragMove) return;
+            RestoreForDragMove = false;
+
+            var point = PointToScreen(e.MouseDevice.GetPosition(this));
+            Window.Left = point.X - (Window.RestoreBounds.Width * 0.5);
+            Window.Top = point.Y;
+            Window.WindowState = WindowState.Normal;
+            Window.DragMove();
         }
     }
 }
