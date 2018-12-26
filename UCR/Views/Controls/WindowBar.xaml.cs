@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace HidWizards.UCR.Views.Controls
 {
@@ -8,6 +10,7 @@ namespace HidWizards.UCR.Views.Controls
     {
         private Window Window => Window.GetWindow(this);
         private bool RestoreForDragMove { get; set; }
+
 
         public WindowBar()
         {
@@ -47,11 +50,18 @@ namespace HidWizards.UCR.Views.Controls
 
         private void ResizeWindow()
         {
-            Window.WindowState = Window.WindowState == WindowState.Maximized
-                ? WindowState.Normal
-                : WindowState.Maximized;
+            if (Window.WindowState == WindowState.Maximized)
+            {
+                Window.BorderThickness = new Thickness(1.0);
+                Window.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                Window.BorderThickness = new Thickness(8.0);
+                Window.WindowState = WindowState.Maximized;
+            }
         }
-
+        
         private void Minimize_OnClick(object sender, RoutedEventArgs e)
         {
             Window.WindowState = WindowState.Minimized;
@@ -65,7 +75,7 @@ namespace HidWizards.UCR.Views.Controls
             var point = PointToScreen(e.MouseDevice.GetPosition(this));
             Window.Left = point.X - (Window.RestoreBounds.Width * 0.5);
             Window.Top = point.Y;
-            Window.WindowState = WindowState.Normal;
+            ResizeWindow();
             Window.DragMove();
         }
     }

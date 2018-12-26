@@ -12,6 +12,24 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Amber.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Window}" >
+                <Setter Property="WindowChrome.WindowChrome">
+                    <Setter.Value>
+                        <WindowChrome
+                            CaptionHeight="0"
+                            CornerRadius="5"
+                            GlassFrameThickness="0"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="WindowState" Value="Maximized">
+                        <Setter Property="BorderThickness" Value="8" />
+                    </Trigger>
+                    <Trigger Property="WindowState" Value="Normal">
+                        <Setter Property="BorderThickness" Value="20" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <SolidColorBrush x:Key="Red" Color="#FFE81123"/>
             <Style x:Key="MaterialDesignFlatBarButton" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource MaterialDesignFlatButton}">
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkForegroundBrush}"/>

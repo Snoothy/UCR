@@ -3,20 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
         xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
         xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:views="clr-namespace:HidWizards.UCR.Views"
         mc:Ignorable="d"
         ResizeMode="CanResize" 
         BorderBrush="{StaticResource PrimaryHueDarkBrush}"
         BorderThickness="1"
         Title="Universal Control Remapper" 
         Height="600" MinHeight="400" Width="800" MinWidth="320"
-        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
-        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
         Closing="MainWindow_OnClosing"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -34,7 +32,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
     </Window.CommandBindings>
-    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+    <Grid Background="{x:Static SystemColors.ControlBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="32" />
             <RowDefinition Height="auto" />

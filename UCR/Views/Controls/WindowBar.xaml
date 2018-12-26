@@ -20,8 +20,10 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <Image Width="24" Height="24" Margin="4" Source="pack://application:,,,/Resources/UCR_24.png"/>
                 <TextBlock FontSize="13" Margin="4 8" Text="{Binding Title}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
-                <materialDesign:PackIcon Kind="Account" Height="16" Width="16" Margin="24 8 4 8" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
-                <TextBlock FontSize="13" Margin="4 8" Text="{Binding ActiveProfileBreadCrumbs}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                <StackPanel Orientation="Horizontal" ToolTip="The current active profile" Margin="20 4 4 4">
+                    <materialDesign:PackIcon Kind="Account" Height="16" Width="16" Margin="4" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                    <TextBlock FontSize="13" Margin="4" Text="{Binding ActiveProfileBreadCrumbs}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Right" Height="auto" VerticalAlignment="Top" Width="auto">
                 <Button Style="{StaticResource MaterialDesignFlatRedBarButton}"
