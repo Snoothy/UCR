@@ -37,7 +37,7 @@
                     <TextBlock Margin="4" Text="{Binding ProviderName}" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
                 </StackPanel>
             </DataTemplate>
-            <Style x:Key="EmptyDeviceTrigger" TargetType="{x:Type ListView}">
+            <Style x:Key="EmptyDeviceTrigger" TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
                 <Style.Triggers>
                     <Trigger  Property="HasItems" Value="False">
                         <Setter Property="Template">
@@ -59,7 +59,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
     </Window.CommandBindings>
-    <Grid Background="{x:Static SystemColors.ControlBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="32" />
             <RowDefinition Height="auto" />
@@ -128,9 +128,11 @@
                         </StackPanel>
                     </Grid>
                     <Separator Grid.Row="1" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                    <TreeView Grid.Row="2" Name="ProfileTree" Margin="4" ItemsSource="{Binding ProfileList}" SelectedItemChanged="ProfileTree_OnSelectedItemChanged">
+                    <TreeView Grid.Row="2" Name="ProfileTree" Margin="4"
+                              ItemsSource="{Binding ProfileList}" 
+                              SelectedItemChanged="ProfileTree_OnSelectedItemChanged">
                         <TreeView.Style>
-                            <Style TargetType="TreeView" BasedOn="{StaticResource {x:Type TreeView}}">
+                            <Style TargetType="TreeView" BasedOn="{StaticResource MaterialDesignTreeView}">
                                 <Style.Triggers>
                                     <Trigger Property="HasItems" Value="False">
                                         <Setter Property="Template">
@@ -149,7 +151,7 @@
                             </Style>
                         </TreeView.Style>
                         <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
+                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
                                 <Setter Property="IsExpanded" Value="True"/>
                                 <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
                             </Style>
@@ -263,8 +265,7 @@
                                     <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
                                               ItemsSource="{Binding InputDevices}" Grid.IsSharedSizeScope="True"
                                               ItemTemplate="{StaticResource DeviceTemplate}"
-                                              Style="{StaticResource EmptyDeviceTrigger}"
-                                              BorderThickness="0"/>
+                                              Style="{StaticResource EmptyDeviceTrigger}"/>
                                 </Grid>
                             </materialDesign:Card>
 
@@ -291,8 +292,7 @@
                                     <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
                                               ItemsSource="{Binding OutputDevices}" Grid.IsSharedSizeScope="True"
                                               ItemTemplate="{StaticResource DeviceTemplate}"
-                                              Style="{StaticResource EmptyDeviceTrigger}"
-                                              BorderThickness="0"/>
+                                              Style="{StaticResource EmptyDeviceTrigger}"/>
                                 </Grid>
                             </materialDesign:Card>
                         </Grid>
