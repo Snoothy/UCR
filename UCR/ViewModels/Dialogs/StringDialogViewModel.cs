@@ -1,4 +1,4 @@
-﻿namespace HidWizards.UCR.Views.Dialogs
+﻿namespace HidWizards.UCR.ViewModels.Dialogs
 {
     public class StringDialogViewModel
     {

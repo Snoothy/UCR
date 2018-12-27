@@ -92,6 +92,7 @@
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
+    <Compile Include="Utilities\Converter\InverseBooleanConverter.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
@@ -149,12 +150,16 @@
     <Compile Include="Views\Dialogs\BoolDialog.xaml.cs">
       <DependentUpon>BoolDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\NotEmptyValidationRule.cs" />
+    <Compile Include="ViewModels\Dialogs\DecisionDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\DecisionDialog.xaml.cs">
+      <DependentUpon>DecisionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\Validators\NotEmptyValidationRule.cs" />
     <Compile Include="Views\Dialogs\StringDialog.xaml.cs">
       <DependentUpon>StringDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Dialogs\BoolDialogViewModel.cs" />
-    <Compile Include="Views\Dialogs\StringDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\BoolDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\StringDialogViewModel.cs" />
     <Compile Include="Views\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
@@ -238,6 +243,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\BoolDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\DecisionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

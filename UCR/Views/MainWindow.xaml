@@ -3,13 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:commands="clr-namespace:HidWizards.UCR.Utilities.Commands"
         xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
-        xmlns:views="clr-namespace:HidWizards.UCR.Views"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:converter="clr-namespace:HidWizards.UCR.Utilities.Converter"
         mc:Ignorable="d"
         ResizeMode="CanResize" 
         BorderBrush="{StaticResource PrimaryHueDarkBrush}"
@@ -32,6 +31,7 @@
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
         <ResourceDictionary>
+            <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <DataTemplate x:Key="DeviceTemplate" DataType="{x:Type dashboard:DeviceItem}">
                 <StackPanel Margin="4">
                     <TextBlock Margin="4" Text="{Binding Title}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
@@ -76,7 +76,7 @@
                     <BlurEffect Radius="6"/>
                 </Border.Effect>
             </Border>
-            <ToolBarTray>
+            <ToolBarTray IsEnabled="{Binding Source={x:Reference DialogHostElement}, Path=IsOpen, Converter={StaticResource InverseBooleanConverter}}">
                 <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
                     <Button ToolTip="Save" Command="Save">
                         <materialDesign:PackIcon Kind="ContentSave"/>
@@ -102,7 +102,7 @@
                 </ToolBar>
             </ToolBarTray>
         </Grid>
-        <materialDesign:DialogHost Grid.Row="2" Identifier="RootDialog">
+        <materialDesign:DialogHost x:Name="DialogHostElement" Grid.Row="2" Identifier="RootDialog">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Margin="16">
                     <TextBlock>Add a new fruit.</TextBlock>

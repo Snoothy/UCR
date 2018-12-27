@@ -1,6 +1,6 @@
-﻿namespace HidWizards.UCR.Views.Dialogs
+﻿namespace HidWizards.UCR.ViewModels.Dialogs
 {
-    public class BoolDialogViewModel
+    public class DecisionDialogViewModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

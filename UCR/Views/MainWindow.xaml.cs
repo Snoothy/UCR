@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Media;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -25,11 +26,18 @@ namespace HidWizards.UCR.Views
     {
         private Context Context { get; set; }
         private DashboardViewModel dashboardViewModel;
+        private CloseState WindowCloseState { get; set; }
+
+        enum CloseState
+        {
+            None,
+            Closing,
+            ForceClose
+        }
 
         public MainWindow(Context context)
         {
             dashboardViewModel = new DashboardViewModel(context);
-
             DataContext = dashboardViewModel;
             Context = context;
             InitializeComponent();
@@ -162,28 +170,58 @@ namespace HidWizards.UCR.Views
             Dispatcher.BeginInvoke((Action) ShowAction);
         }
 
-        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
+            if (CloseState.ForceClose.Equals(WindowCloseState)) return;
+            if (CloseState.Closing.Equals(WindowCloseState))
+            {
+                if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
+                
+                e.Cancel = true;
+                SystemSounds.Exclamation.Play();
+                return;
+            }
+
+            WindowCloseState = CloseState.Closing;
+
             if (Context.IsNotSaved)
             {
-                var result = MessageBox.Show("Do you want to save before closing?", "Unsaved data", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                e.Cancel = true;
+
+                if (WindowState.Equals(WindowState.Minimized))
+                {
+                    WindowState = WindowState.Normal;
+                    SystemSounds.Exclamation.Play();
+                    DialogHostElement.Focus();
+                }
+
+                if (DialogHostElement.IsOpen)
+                {
+                    DialogHost.CloseDialogCommand.Execute(null, DialogHostElement);
+                }
+
+                var dialog = new DecisionDialog("Configuration has changed", "Do you want to save before closing?");
+                var result = (MessageBoxResult?)await DialogHost.Show(dialog, "RootDialog");
+                if (result == null) return;
+
                 switch (result)
                 {
                     case MessageBoxResult.None:
                     case MessageBoxResult.Cancel:
-                        e.Cancel = true;
+                        WindowCloseState = CloseState.None;
                         return;
                     case MessageBoxResult.OK:
                     case MessageBoxResult.Yes:
                         Context.SaveContext();
+                        WindowCloseState = CloseState.ForceClose;
+                        Close();
                         break;
                     case MessageBoxResult.No:
+                        WindowCloseState = CloseState.ForceClose;
+                        Close();
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
-            Context.Dispose();
         }
         
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)

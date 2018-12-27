@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using HidWizards.UCR.ViewModels.Dialogs;
 
 namespace HidWizards.UCR.Views.Dialogs
 {
