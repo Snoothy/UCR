@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Redesigned main window dashboard
 - Show active profile in process bar
 - Replaced menu with toolbar in main window
+- Replaced dialog windows with proper dialogs
 
 ## [0.6.0] - 2018-12-03
 

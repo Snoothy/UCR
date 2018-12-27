@@ -9,6 +9,7 @@
         xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:views="clr-namespace:HidWizards.UCR.Views"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         ResizeMode="CanResize" 
         BorderBrush="{StaticResource PrimaryHueDarkBrush}"
@@ -101,204 +102,233 @@
                 </ToolBar>
             </ToolBarTray>
         </Grid>
-        <Grid Grid.Row="2" Margin="8 8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <materialDesign:Card Grid.Column="0" Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}" Margin="0">
-                <Grid Height="Auto">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"  Margin="8 5 4 3" Style="{StaticResource MaterialDesignTitleTextBlock}">Profiles</TextBlock>
-                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
-                            <Button ToolTip="Add profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Click="AddProfile">
-                                <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                    <Separator Grid.Row="1" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                    <TreeView Grid.Row="2" Name="ProfileTree" Margin="4"
-                              ItemsSource="{Binding ProfileList}" 
-                              SelectedItemChanged="ProfileTree_OnSelectedItemChanged">
-                        <TreeView.Style>
-                            <Style TargetType="TreeView" BasedOn="{StaticResource MaterialDesignTreeView}">
-                                <Style.Triggers>
-                                    <Trigger Property="HasItems" Value="False">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate>
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                        <TextBlock Margin="4">Click</TextBlock>
-                                                        <materialDesign:PackIcon Kind="AccountPlus" Height="16" Width="16" Margin="4"/>
-                                                        <TextBlock Margin="4">to add your first profile</TextBlock>
-                                                    </StackPanel>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TreeView.Style>
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
-                                <Setter Property="IsExpanded" Value="True"/>
-                                <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
-                                <TextBlock Text="{Binding Title}" Margin="4" >
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Activate" Click="ActivateProfile"/>
-                                            <Separator />
-                                            <MenuItem Header="Add child" Click="AddChildProfile" />
-                                            <MenuItem Header="Copy" Click="CopyProfile"/>
-                                            <Separator />
-                                            <MenuItem Header="Edit" Click="EditProfile" />
-                                            <MenuItem Header="Rename" Click="RenameProfile" />
-                                            <Separator />
-                                            <MenuItem Header="Remove" Click="RemoveProfile" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
-                </Grid>
-            </materialDesign:Card>
-
-            <Grid Grid.Column="1" Margin="8 0 0 0" Visibility="{Binding ProfileDetailsActive}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <materialDesign:Card Grid.Column="0" Background="{StaticResource PrimaryHueMidBrush}" Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+        <materialDesign:DialogHost Grid.Row="2" Identifier="RootDialog">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16">
+                    <TextBlock>Add a new fruit.</TextBlock>
+                    <TextBox Margin="0 8 0 0" HorizontalAlignment="Stretch" x:Name="FruitTextBox" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                IsDefault="True"
+                                Margin="0 8 8 0"
+                                Command="materialDesign:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Button.CommandParameter>
+                            ACCEPT
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                IsCancel="True"
+                                Margin="0 8 8 0"
+                                Command="materialDesign:DialogHost.CloseDialogCommand">
+                            <Button.CommandParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </Button.CommandParameter>
+                            CANCEL
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        
+            <Grid Margin="8 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <materialDesign:Card Grid.Column="0" Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}" Margin="0">
+                    <Grid Height="Auto">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0" Grid.Row="0" FlowDirection="LeftToRight" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0">
-                            <TextBlock Margin="8 5 4 3" Text="{Binding SelectedProfileItem.Title}" Style="{StaticResource MaterialDesignTitleTextBlock}" Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
-                            <Button ToolTip="Rename profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="RenameProfile">
-                                <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
-                            <Button ToolTip="Activate profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="ActivateProfile">
-                                <materialDesign:PackIcon Kind="Play" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Edit profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="EditProfile">
-                                <materialDesign:PackIcon Kind="AccountEdit" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Add child profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="AddChildProfile">
-                                <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Copy profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="CopyProfile">
-                                <materialDesign:PackIcon Kind="AccountMultiplePlus" Width="20" Height="20"/>
-                            </Button>
-                            <Button ToolTip="Delete profile"
-                                    Style="{StaticResource MaterialDesignCardButton}"
-                                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                                    Click="RemoveProfile">
-                                <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>
-                            </Button>
-                        </StackPanel>
-                        <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignLightSeparator}" />
-                        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0 0 0 4">
+                        <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <materialDesign:Card MinHeight="200" Margin="8 4 4 4">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Input devices</TextBlock>
-                                    <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
-                                        <Button ToolTip="Add device"
-                                                Style="{StaticResource MaterialDesignCardButton}"
-                                                Click="ManageDeviceLists_OnClick">
-                                            <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
-                                        </Button>
-                                    </StackPanel>
-                                    <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                                    <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
-                                              ItemsSource="{Binding InputDevices}" Grid.IsSharedSizeScope="True"
-                                              ItemTemplate="{StaticResource DeviceTemplate}"
-                                              Style="{StaticResource EmptyDeviceTrigger}"/>
-                                </Grid>
-                            </materialDesign:Card>
-
-                            <materialDesign:Card Grid.Column="1" MinHeight="200" Margin="4 4 8 4">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Output devices</TextBlock>
-                                    <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
-                                        <Button ToolTip="Add device"
-                                                Style="{StaticResource MaterialDesignCardButton}"
-                                                Click="ManageDeviceLists_OnClick">
-                                            <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
-                                        </Button>
-                                    </StackPanel>
-                                    <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                                    <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
-                                              ItemsSource="{Binding OutputDevices}" Grid.IsSharedSizeScope="True"
-                                              ItemTemplate="{StaticResource DeviceTemplate}"
-                                              Style="{StaticResource EmptyDeviceTrigger}"/>
-                                </Grid>
-                            </materialDesign:Card>
+                            <TextBlock Grid.Column="0"  Margin="8 5 4 3" Style="{StaticResource MaterialDesignTitleTextBlock}">Profiles</TextBlock>
+                            <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
+                                <Button ToolTip="Add profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Click="AddProfile">
+                                    <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
+                                </Button>
+                            </StackPanel>
                         </Grid>
+                        <Separator Grid.Row="1" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
+                        <TreeView Grid.Row="2" Name="ProfileTree" Margin="4"
+                                  ItemsSource="{Binding ProfileList}" 
+                                  SelectedItemChanged="ProfileTree_OnSelectedItemChanged">
+                            <TreeView.Style>
+                                <Style TargetType="TreeView" BasedOn="{StaticResource MaterialDesignTreeView}">
+                                    <Style.Triggers>
+                                        <Trigger Property="HasItems" Value="False">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <TextBlock Margin="4">Click</TextBlock>
+                                                            <materialDesign:PackIcon Kind="AccountPlus" Height="16" Width="16" Margin="4"/>
+                                                            <TextBlock Margin="4">to add your first profile</TextBlock>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TreeView.Style>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="True"/>
+                                    <EventSetter Event="MouseDoubleClick" Handler="EditProfile"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
+                                    <TextBlock Text="{Binding Title}" Margin="4" >
+                                        <TextBlock.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Activate" Click="ActivateProfile"/>
+                                                <Separator />
+                                                <MenuItem Header="Add child" Click="AddChildProfile" />
+                                                <MenuItem Header="Copy" Click="CopyProfile"/>
+                                                <Separator />
+                                                <MenuItem Header="Edit" Click="EditProfile" />
+                                                <MenuItem Header="Rename" Click="RenameProfile" />
+                                                <Separator />
+                                                <MenuItem Header="Remove" Click="RemoveProfile" />
+                                            </ContextMenu>
+                                        </TextBlock.ContextMenu>
+                                    </TextBlock>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
                     </Grid>
                 </materialDesign:Card>
+
+                <Grid Grid.Column="1" Margin="8 0 0 0" Visibility="{Binding ProfileDetailsActive}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <materialDesign:Card Grid.Column="0" Background="{StaticResource PrimaryHueMidBrush}" Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Column="0" Grid.Row="0" FlowDirection="LeftToRight" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0">
+                                <TextBlock Margin="8 5 4 3" Text="{Binding SelectedProfileItem.Title}" Style="{StaticResource MaterialDesignTitleTextBlock}" Foreground="{StaticResource PrimaryHueMidForegroundBrush}"/>
+                                <Button ToolTip="Rename profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="RenameProfile">
+                                    <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0 8 0">
+                                <Button ToolTip="Activate profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="ActivateProfile">
+                                    <materialDesign:PackIcon Kind="Play" Width="20" Height="20"/>
+                                </Button>
+                                <Button ToolTip="Edit profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="EditProfile">
+                                    <materialDesign:PackIcon Kind="AccountEdit" Width="20" Height="20"/>
+                                </Button>
+                                <Button ToolTip="Add child profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="AddChildProfile">
+                                    <materialDesign:PackIcon Kind="AccountPlus" Width="20" Height="20"/>
+                                </Button>
+                                <Button ToolTip="Copy profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="CopyProfile">
+                                    <materialDesign:PackIcon Kind="AccountMultiplePlus" Width="20" Height="20"/>
+                                </Button>
+                                <Button ToolTip="Delete profile"
+                                        Style="{StaticResource MaterialDesignCardButton}"
+                                        Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                        Click="RemoveProfile">
+                                    <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>
+                                </Button>
+                            </StackPanel>
+                            <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0 8 4" Height="4"  Style="{StaticResource MaterialDesignLightSeparator}" />
+                            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0 0 0 4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:Card MinHeight="200" Margin="8 4 4 4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Input devices</TextBlock>
+                                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
+                                            <Button ToolTip="Add device"
+                                                    Style="{StaticResource MaterialDesignCardButton}"
+                                                    Click="ManageDeviceLists_OnClick">
+                                                <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                            </Button>
+                                        </StackPanel>
+                                        <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
+                                        <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
+                                                  ItemsSource="{Binding InputDevices}" Grid.IsSharedSizeScope="True"
+                                                  ItemTemplate="{StaticResource DeviceTemplate}"
+                                                  Style="{StaticResource EmptyDeviceTrigger}"/>
+                                    </Grid>
+                                </materialDesign:Card>
+
+                                <materialDesign:Card Grid.Column="1" MinHeight="200" Margin="4 4 8 4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Output devices</TextBlock>
+                                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
+                                            <Button ToolTip="Add device"
+                                                    Style="{StaticResource MaterialDesignCardButton}"
+                                                    Click="ManageDeviceLists_OnClick">
+                                                <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                            </Button>
+                                        </StackPanel>
+                                        <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
+                                        <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
+                                                  ItemsSource="{Binding OutputDevices}" Grid.IsSharedSizeScope="True"
+                                                  ItemTemplate="{StaticResource DeviceTemplate}"
+                                                  Style="{StaticResource EmptyDeviceTrigger}"/>
+                                    </Grid>
+                                </materialDesign:Card>
+                            </Grid>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
             </Grid>
-        </Grid>
+        </materialDesign:DialogHost>
     </Grid>
 </Window>

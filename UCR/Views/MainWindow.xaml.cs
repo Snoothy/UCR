@@ -12,6 +12,8 @@ using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.Dashboard;
+using HidWizards.UCR.Views.Dialogs;
+using MaterialDesignThemes.Wpf;
 using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
@@ -60,6 +62,7 @@ namespace HidWizards.UCR.Views
             return true;
         }
 
+        // TODO Deprecated, replace with property notifications
         private void ReloadProfileTree()
         {
             var profileTree = ProfileItem.GetProfileTree(Context.Profiles);
@@ -71,11 +74,10 @@ namespace HidWizards.UCR.Views
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
         {
-            var a = sender as ProfileItem;
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            if (!Context.SubscriptionsManager.ActivateProfile(pi.Profile))
+            if (!GetSelectedItem(out var profileItem)) return;
+            if (!Context.SubscriptionsManager.ActivateProfile(profileItem.Profile))
             {
+                // TODO Move to dialog
                 MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
@@ -86,6 +88,7 @@ namespace HidWizards.UCR.Views
             
             if (!Context.SubscriptionsManager.DeactivateProfile())
             {
+                // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
@@ -101,9 +104,8 @@ namespace HidWizards.UCR.Views
 
         private void AddChildProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            var w = new ProfileDialog(Context, pi.Profile);
+            if (!GetSelectedItem(out var profileItem)) return;
+            var w = new ProfileDialog(Context, profileItem.Profile);
             w.ShowDialog();
             if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
 
@@ -112,49 +114,43 @@ namespace HidWizards.UCR.Views
 
         private void EditProfile(object sender, RoutedEventArgs e)
         {
-            if (sender is TreeViewItem)
-            {
-                if (!((TreeViewItem)sender).IsSelected)
-                {
-                    return;
-                }
-            }
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            var win = new ProfileWindow(Context, pi.Profile);
+            if (!GetSelectedItem(out var profileItem)) return;
+            var win = new ProfileWindow(Context, profileItem.Profile);
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
         }
 
-        private void RenameProfile(object sender, RoutedEventArgs e)
+        private async void RenameProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            var w = new TextDialog("Rename Profile", pi.Profile.Title);
-            w.ShowDialog();
-            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            pi.Profile.Rename(w.TextResult);
+            if (!GetSelectedItem(out var profileItem)) return;
+            var dialog = new SimpleDialog("Rename profile", "Profile name", profileItem.Profile.Title);
+
+            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.Value) return;
+
+            profileItem.Profile.Rename(dialog.Value);
             ReloadProfileTree();
         }
 
-        private void CopyProfile(object sender, RoutedEventArgs e)
+        private async void CopyProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            var w = new TextDialog("Profile name", pi.Profile.Title + " Copy");
-            w.ShowDialog();
-            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
-            Context.ProfilesManager.CopyProfile(pi.Profile, w.TextResult);
+            if (!GetSelectedItem(out var profileItem)) return;
+            var dialog = new SimpleDialog("Copy profile", "Profile name", profileItem.Profile.Title + " Copy");
+
+            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.Value) return;
+
+            Context.ProfilesManager.CopyProfile(profileItem.Profile, dialog.Value);
             ReloadProfileTree();
         }
 
+        // TODO Dialog
         private void RemoveProfile(object sender, RoutedEventArgs e)
         {
-            ProfileItem pi;
-            if (!GetSelectedItem(out pi)) return;
-            var result = MessageBox.Show("Are you sure you want to remove '" + pi.Profile.Title +"'?", "Remove Profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (!GetSelectedItem(out var profileItem)) return;
+            var result = MessageBox.Show("Are you sure you want to remove '" + profileItem.Profile.Title +"'?", "Remove Profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
-            pi.Profile.Remove();
+            profileItem.Profile.Remove();
             ReloadProfileTree();
         }
 
@@ -162,9 +158,10 @@ namespace HidWizards.UCR.Views
 
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
+
             var win = new DeviceListWindow(Context);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
+            void ShowAction() => win.Show();
+            Dispatcher.BeginInvoke((Action) ShowAction);
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
