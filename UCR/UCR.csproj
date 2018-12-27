@@ -146,10 +146,14 @@
       <DependentUpon>DeviceListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DeviceViewModels\DeviceListWindowViewModel.cs" />
+    <Compile Include="Views\Dialogs\BoolDialog.xaml.cs">
+      <DependentUpon>BoolDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\NotEmptyValidationRule.cs" />
     <Compile Include="Views\Dialogs\StringDialog.xaml.cs">
       <DependentUpon>StringDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\BoolDialogViewModel.cs" />
     <Compile Include="Views\Dialogs\StringDialogViewModel.cs" />
     <Compile Include="Views\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
@@ -230,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DeviceViews\DeviceListWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\BoolDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

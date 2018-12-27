@@ -21,7 +21,7 @@ using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 namespace HidWizards.UCR.Views
 {
 
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
         private Context Context { get; set; }
         private DashboardViewModel dashboardViewModel;
@@ -124,7 +124,6 @@ namespace HidWizards.UCR.Views
         {
             if (!GetSelectedItem(out var profileItem)) return;
             var dialog = new SimpleDialog("Rename profile", "Profile name", profileItem.Profile.Title);
-
             var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.Value) return;
 
@@ -136,7 +135,6 @@ namespace HidWizards.UCR.Views
         {
             if (!GetSelectedItem(out var profileItem)) return;
             var dialog = new SimpleDialog("Copy profile", "Profile name", profileItem.Profile.Title + " Copy");
-
             var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.Value) return;
 
@@ -144,12 +142,13 @@ namespace HidWizards.UCR.Views
             ReloadProfileTree();
         }
 
-        // TODO Dialog
-        private void RemoveProfile(object sender, RoutedEventArgs e)
+        private async void RemoveProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
-            var result = MessageBox.Show("Are you sure you want to remove '" + profileItem.Profile.Title +"'?", "Remove Profile", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result != MessageBoxResult.Yes) return;
+            var dialog = new BoolDialog("Remove profile","Are you sure you want to remove: " + profileItem.Profile.Title + "?");
+            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.Value) return;
+
             profileItem.Profile.Remove();
             ReloadProfileTree();
         }
@@ -158,7 +157,6 @@ namespace HidWizards.UCR.Views
 
         private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
         {
-
             var win = new DeviceListWindow(Context);
             void ShowAction() => win.Show();
             Dispatcher.BeginInvoke((Action) ShowAction);
@@ -175,6 +173,7 @@ namespace HidWizards.UCR.Views
                     case MessageBoxResult.Cancel:
                         e.Cancel = true;
                         return;
+                    case MessageBoxResult.OK:
                     case MessageBoxResult.Yes:
                         Context.SaveContext();
                         break;
@@ -186,15 +185,7 @@ namespace HidWizards.UCR.Views
             }
             Context.Dispose();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Context.SaveContext();
@@ -204,7 +195,6 @@ namespace HidWizards.UCR.Views
         {
             e.CanExecute = Context.IsNotSaved;
         }
-
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {

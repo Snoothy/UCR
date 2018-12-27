@@ -13,7 +13,6 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding Title}" Style="{DynamicResource MaterialDesignSubheadingTextBlock}"/>
         <TextBox x:Name="TextValue" wpf:HintAssist.Hint="{Binding Hint}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
@@ -27,7 +26,7 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="3"
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2"
                     Margin="0 16 0 0">
             <Button IsDefault="True" 
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
