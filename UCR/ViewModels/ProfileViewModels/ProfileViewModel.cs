@@ -1,12 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
-    public class ProfileViewModel
+    public class ProfileViewModel : INotifyPropertyChanged
     {
         public Profile Profile { get; }
+        public bool CanActivateProfile => Profile.Context.ActiveProfile != Profile;
+        public bool CanDeactivateProfile => Profile.Context.ActiveProfile != null;
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
         public ObservableCollection<ComboBoxItemViewModel> StatesList { get; set; }
         public MappingViewModel SelectedMapping { get; set; }
@@ -19,8 +24,15 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public ProfileViewModel(Profile profile)
         {
             Profile = profile;
+            profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
             PopulateMappingsList(profile);
             PopulateStatesComboBox();
+        }
+
+        private void ContextOnActiveProfileChangedEvent(Profile profile)
+        {
+            OnPropertyChanged(nameof(CanActivateProfile));
+            OnPropertyChanged(nameof(CanDeactivateProfile));
         }
 
         private void PopulateStatesComboBox()
@@ -68,6 +80,14 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             }
 
             if (Profile.RemoveMapping(mappingViewModel.Mapping)) MappingsList.Remove(mappingViewModel);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

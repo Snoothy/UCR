@@ -30,6 +30,16 @@ namespace HidWizards.UCR.Views.ProfileViews
             Loaded += Window_Loaded;
         }
 
+        private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Context.SaveContext();
+        }
+
+        private void Save_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Context.IsNotSaved;
+        }
+
         #region Profile
 
         private void ActivateProfile(object sender, RoutedEventArgs e)
@@ -91,10 +101,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             var plugin = ((ComboBoxItemViewModel)PluginsComboBox.SelectedItem)?.Value;
             if (plugin == null) return;
 
-            var comboBoxItem = StatesComboBox.SelectedItem as ComboBoxItemViewModel;
-            var state = comboBoxItem?.Value as State;
-
-            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin), state?.Guid);
+            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin), null);
 
             if (ProfileViewModel.SelectedMapping.Plugins.Count == 1)
             {

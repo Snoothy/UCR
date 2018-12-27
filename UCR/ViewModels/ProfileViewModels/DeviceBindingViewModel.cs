@@ -112,7 +112,10 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             if (selectedDevice == null)
             {
                 selectedDevice = Devices[0];
-                DeviceBinding.SetDeviceGuid(selectedDevice.Value);
+                
+                // TODO Does bind mode work without this?
+                // This incorrectly declares context as changed
+                //DeviceBinding.SetDeviceGuid(selectedDevice.Value);
             }
 
             SelectedDevice = selectedDevice;

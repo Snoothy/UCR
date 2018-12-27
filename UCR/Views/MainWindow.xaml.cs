@@ -1,17 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Media;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
-using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.Properties;
 using HidWizards.UCR.Utilities;
-using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
 using MaterialDesignThemes.Wpf;
@@ -25,7 +21,7 @@ namespace HidWizards.UCR.Views
     public partial class MainWindow : Window
     {
         private Context Context { get; set; }
-        private DashboardViewModel dashboardViewModel;
+        private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
 
         enum CloseState
@@ -37,8 +33,8 @@ namespace HidWizards.UCR.Views
 
         public MainWindow(Context context)
         {
-            dashboardViewModel = new DashboardViewModel(context);
-            DataContext = dashboardViewModel;
+            _dashboardViewModel = new DashboardViewModel(context);
+            DataContext = _dashboardViewModel;
             Context = context;
             InitializeComponent();
         }
@@ -124,8 +120,8 @@ namespace HidWizards.UCR.Views
         {
             if (!GetSelectedItem(out var profileItem)) return;
             var win = new ProfileWindow(Context, profileItem.Profile);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
+            void ShowAction() => win.Show();
+            Dispatcher.BeginInvoke((Action) ShowAction);
         }
 
         private async void RenameProfile(object sender, RoutedEventArgs e)
@@ -192,12 +188,12 @@ namespace HidWizards.UCR.Views
                 {
                     WindowState = WindowState.Normal;
                     SystemSounds.Exclamation.Play();
-                    DialogHostElement.Focus();
+                    RootDialog.Focus();
                 }
 
-                if (DialogHostElement.IsOpen)
+                if (RootDialog.IsOpen)
                 {
-                    DialogHost.CloseDialogCommand.Execute(null, DialogHostElement);
+                    DialogHost.CloseDialogCommand.Execute(null, RootDialog);
                 }
 
                 var dialog = new DecisionDialog("Configuration has changed", "Do you want to save before closing?");
@@ -262,6 +258,7 @@ namespace HidWizards.UCR.Views
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
 
+        // TODO Move to dialog
         private void About_OnClick(object sender, RoutedEventArgs e)
         {
             var win = new AboutWindow();
@@ -269,6 +266,7 @@ namespace HidWizards.UCR.Views
             Dispatcher.BeginInvoke(showAction);
         }
 
+        // TODO Move to dialog
         private void Help_OnClick(object sender, RoutedEventArgs e)
         {
             var win = new HelpWindow();
@@ -279,7 +277,7 @@ namespace HidWizards.UCR.Views
         private void ProfileTree_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var treeView = sender as TreeView;
-            dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+            _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
         }
     }
 }

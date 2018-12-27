@@ -8,13 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - Material design
 - Quick access button to add new profile
+- Profile overview in the main window
+- Added save button to profile window
 
 ### Changed
 - `Button to Axis` parameters changed to two axis values and option for initialization
 - Redesigned main window dashboard
+- Redesigned profile window
 - Show active profile in process bar
 - Replaced menu with toolbar in main window
 - Replaced dialog windows with proper dialogs
+- Replaced menu with toolbar in profile window
+
+### Removed
+- Removed states
 
 ## [0.6.0] - 2018-12-03
 
