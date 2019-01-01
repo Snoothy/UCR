@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Views.Dialogs;
+using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
@@ -13,7 +15,6 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public bool CanActivateProfile => Profile.Context.ActiveProfile != Profile;
         public bool CanDeactivateProfile => Profile.Context.ActiveProfile != null;
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
-        public ObservableCollection<ComboBoxItemViewModel> StatesList { get; set; }
         public MappingViewModel SelectedMapping { get; set; }
 
         public ProfileViewModel()
@@ -26,24 +27,12 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             Profile = profile;
             profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
             PopulateMappingsList(profile);
-            PopulateStatesComboBox();
         }
 
         private void ContextOnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(CanActivateProfile));
             OnPropertyChanged(nameof(CanDeactivateProfile));
-        }
-
-        private void PopulateStatesComboBox()
-        {
-            var states = Profile.AllStates;
-            StatesList = new ObservableCollection<ComboBoxItemViewModel>();
-            foreach (var state in states)
-            {
-                StatesList.Add(new ComboBoxItemViewModel(state.Title, state));
-            }
-
         }
 
         private void PopulateMappingsList(Profile profile)
@@ -69,14 +58,13 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             return mappingViewModel;
         }
 
-        public void RemoveMapping(MappingViewModel mappingViewModel)
+        public async void RemoveMapping(MappingViewModel mappingViewModel)
         {
             if (mappingViewModel.Mapping.DeviceBindings.Count > 0)
             {
-                var result =
-                    MessageBox.Show("Are you sure you want to remove '" + mappingViewModel.Mapping.Title + "'?",
-                        "Remove mapping?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result != MessageBoxResult.Yes) return;
+                var dialog = new BoolDialog("Remove mapping", "Are you sure you want to remove the mapping: " + mappingViewModel.Mapping.Title + "?");
+                var result = (bool?)await DialogHost.Show(dialog, "ProfileDialog");
+                if (result == null || !result.Value) return;
             }
 
             if (Profile.RemoveMapping(mappingViewModel.Mapping)) MappingsList.Remove(mappingViewModel);

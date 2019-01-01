@@ -14,24 +14,16 @@
         <preview:MomentaryConverter x:Key="MomentaryConverter"/>
 
         <DataTemplate x:Key="RangePreview">
-            <GroupBox Header="Preview">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource RangeConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
-            </GroupBox>
+            <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource RangeConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
         </DataTemplate>
         <DataTemplate x:Key="MomentaryPreview">
-            <GroupBox Header="Preview">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource MomentaryConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
-            </GroupBox>
+            <ProgressBar MinHeight="20" Margin="2" Value="{Binding CurrentValue, Converter={StaticResource MomentaryConverter}}" materialDesign:TransitionAssist.DisableTransitions="True"/>
         </DataTemplate>
         <DataTemplate x:Key="EventPreview">
-            <GroupBox Header="Preview">
-                <TextBlock Text="{Binding CurrentValue}"/>
-            </GroupBox>
+            <TextBlock Text="{Binding CurrentValue}"/>
         </DataTemplate>
         <DataTemplate x:Key="DeltaPreview">
-            <GroupBox Header="Preview">
-                <TextBlock Text="{Binding CurrentValue}"/>
-            </GroupBox>
+            <TextBlock Text="{Binding CurrentValue}"/>
         </DataTemplate>
     </UserControl.Resources>
     <Grid>

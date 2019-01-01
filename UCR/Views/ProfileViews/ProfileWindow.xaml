@@ -34,7 +34,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
     </Window.CommandBindings>
-    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -53,7 +53,7 @@
                     <BlurEffect Radius="6"/>
                 </Border.Effect>
             </Border>
-            <ToolBarTray IsEnabled="{Binding Source={x:Reference RootDialog}, Path=IsOpen, Converter={StaticResource InverseBooleanConverter}}">
+            <ToolBarTray Style="{DynamicResource MaterialDesignToolBarTray}" IsEnabled="{Binding Source={x:Reference RootDialog}, Path=IsOpen, Converter={StaticResource InverseBooleanConverter}}">
                 <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
                     <Button ToolTip="Save" Command="Save">
                         <materialDesign:PackIcon Kind="ContentSave"/>
@@ -77,110 +77,86 @@
         </Grid>
 
         <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="ProfileDialog">
-            <Grid Background="{x:Static SystemColors.ControlBrush}" Margin="5">
+            <Grid Margin="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="18*"/>
-                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Header="Mappings" Grid.Row="0" Grid.Column="0" Padding="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                        <GroupBox Header="Mapping">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                    <GroupBox Header="Mapping">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                                <Button Padding="5,2,5,2" Margin="5" Click="AddMapping_OnClick">Add</Button>
-                                <TextBox Grid.Column="1" Margin="0,5,5,5" x:Name="MappingNameField" KeyDown="MappingNameField_OnKeyDown"></TextBox>
-                            </Grid>
-                        </GroupBox>
+                            <Button Padding="5,2,5,2" Margin="5" Click="AddMapping_OnClick">Add</Button>
+                            <TextBox Grid.Column="1" Margin="0,5,5,5" x:Name="MappingNameField" KeyDown="MappingNameField_OnKeyDown"></TextBox>
+                        </Grid>
+                    </GroupBox>
 
-                        <ListBox Grid.Row="1" Grid.Column="0" Margin="0,10,0,0" x:Name="MappingsListBox"  ItemsSource="{Binding MappingsList}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                             VirtualizingPanel.ScrollUnit='Pixel'
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             SelectionChanged="MappingsListBox_OnSelectionChanged">
-                            <ListBox.Resources>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                </Style>
-                            </ListBox.Resources>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:MappingControl/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Plugin" Margin="5" Padding="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                <GroupBox Grid.Row="0" Grid.Column="1" Header="Current mapping">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                            <Button Padding="5,0,5,0" Click="AddPlugin_OnClick">Add</Button>
+                            <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
+                        </Grid>
+                    </GroupBox>
 
-                        <GroupBox Header="Plugin" Margin="5" Padding="5">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                    <ListBox Grid.Row="2" Grid.Column="0" Margin="0,10,0,0" x:Name="MappingsListBox"  ItemsSource="{Binding MappingsList}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
+                         VirtualizingPanel.IsVirtualizingWhenGrouping='True'
+                         VirtualizingPanel.ScrollUnit='Pixel'
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.Resources>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Style.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                </Style.Resources>
+                            </Style>
+                        </ListBox.Resources>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <controls:MappingControl/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
 
-                                    <Button Padding="5,0,5,0" Click="AddPlugin_OnClick">Add</Button>
-                                    <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
-                                </Grid>
-                            </GroupBox>
-
-
-                        <ListBox Grid.Row="1" x:Name="PluginsListBox"  ItemsSource="{Binding SelectedMapping.Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                             VirtualizingPanel.ScrollUnit='Pixel'
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="PluginsListBox_OnSelectionChanged">
-                            <ListBox.Resources>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                </Style>
-                            </ListBox.Resources>
-                            <ListBox.Style>
-                                <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-                                    <Style.Triggers>
-                                        <Trigger Property="HasItems" Value="False">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate>
-                                                        <Grid>
-                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Add an output plugin</TextBlock>
-                                                        </Grid>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListBox.Style>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate >
-                                    <controls:PluginControl />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </GroupBox>
+                <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding MappingsList}" Margin="0 -8 -8 -8"
+                              VirtualizingPanel.ScrollUnit='Pixel'
+                              HorizontalContentAlignment="Stretch">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:MappingCardControl/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </materialDesign:DialogHost>
     </Grid>

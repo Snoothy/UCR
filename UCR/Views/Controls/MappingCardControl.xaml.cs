@@ -4,19 +4,17 @@ using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.Controls
 {
-    public partial class MappingControl : UserControl
+    public partial class MappingCardControl : UserControl
     {
-        public MappingControl()
+        public MappingCardControl()
         {
             InitializeComponent();
         }
 
         private void Remove_OnClick(object sender, RoutedEventArgs e)
         {
-            var button = ((Button)sender);
-            var mappingViewModel = button.DataContext as MappingViewModel;
-            mappingViewModel.Remove();
+            var mappingViewModel = DataContext as MappingViewModel;
+            mappingViewModel?.Remove();
         }
-
     }
 }

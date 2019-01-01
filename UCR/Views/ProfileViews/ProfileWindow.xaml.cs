@@ -107,19 +107,9 @@ namespace HidWizards.UCR.Views.ProfileViews
             {
                 PopulatePluginsComboBox();
             }
-
-            PluginsListBox.Items.Refresh();
-            PluginsListBox.SelectedIndex = PluginsListBox.Items.Count - 1;
-            PluginsListBox.ScrollIntoView(PluginsListBox.SelectedItem);
         }
 
         #endregion
-
-        private void Close_OnClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if (ProfileViewModel.MappingsList.Count > 0)
@@ -135,39 +125,12 @@ namespace HidWizards.UCR.Views.ProfileViews
             Dispatcher.BeginInvoke(showAction);
         }
 
-        private void MappingsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var listBox = sender as ListBox;
-            var mappingViewModel = listBox.SelectedItem as MappingViewModel;
-            if (mappingViewModel == null) return;
-            ProfileViewModel.SelectedMapping = mappingViewModel;
-
-            PopulatePluginsComboBox();
-            PluginsListBox.ItemsSource = ProfileViewModel.SelectedMapping.Plugins;
-            PluginsListBox.Items.Refresh();
-        }
-
-        private void PluginsListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (PluginsListBox.Items.Count == 0)
-            {
-                PopulatePluginsComboBox();
-            }
-        }
-
         private void MappingNameField_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 AddMappingFromText();
             }
-        }
-
-        private void ManageStates_OnClick(object sender, RoutedEventArgs e)
-        {
-            var win = new ProfileStateWindow(Context, Profile);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
         }
     }
 }

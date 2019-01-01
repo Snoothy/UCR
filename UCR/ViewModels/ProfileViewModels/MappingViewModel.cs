@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Views.Dialogs;
+using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {

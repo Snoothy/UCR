@@ -119,6 +119,9 @@
     <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
       <DependentUpon>DeviceListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\MappingCardControl.xaml.cs">
+      <DependentUpon>MappingCardControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\MappingControl.xaml.cs">
       <DependentUpon>MappingControl.xaml</DependentUpon>
     </Compile>
@@ -211,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\DeviceListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\MappingCardControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

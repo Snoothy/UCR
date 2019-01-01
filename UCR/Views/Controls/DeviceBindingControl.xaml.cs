@@ -33,7 +33,6 @@ namespace HidWizards.UCR.Views.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (DeviceBinding == null) return; // TODO Error logging
-            DeviceBindingLabel.Header = Label;
             ReloadGui();
             HasLoaded = true;
         }

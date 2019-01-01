@@ -5,49 +5,77 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DesignHeight="200" d:DesignWidth="400"
+             d:DesignHeight="400" d:DesignWidth="500"
              mc:Ignorable="d">
-
-    <GroupBox x:Name="DeviceBindingLabel" Header="GroupBox" HorizontalAlignment="Left" VerticalAlignment="Top">
-        <Grid Margin="5">
+    <Grid Margin="0 0 0 4">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                            <Setter Property="Margin" Value="50"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ComboBox Grid.Row="0" Width="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
-            <Grid Grid.Row="1" Width="Auto" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0 8 4 8" Text="{Binding DeviceBindingName}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+                <Separator Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
+            </Grid>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Device"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Width="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+
+            <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
+            <Grid Grid.Row="3" Grid.Column="1" Width="Auto" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" 
-                        HorizontalAlignment="Stretch" 
-                        Content="{Binding BindButtonText}" 
-                        IsEnabled="{Binding BindingEnabled}"
-                        Name="BindButton" 
-                        Margin="0,5" 
-                        Click="BindButton_OnClick" 
-                        MinWidth="175" 
-                        Width="Auto">
+                    HorizontalAlignment="Stretch" 
+                    Content="{Binding BindButtonText}" 
+                    IsEnabled="{Binding BindingEnabled}"
+                    Name="BindButton" 
+                    Margin="0" 
+                    Click="BindButton_OnClick" 
+                    MinWidth="175" 
+                    Width="Auto">
                     <Button.ContextMenu>
                         <ContextMenu x:Name="Ddl">
                             <ContextMenu.ItemContainerStyle>
                                 <Style TargetType="{x:Type MenuItem}">
-                                    <Setter Property="MenuItem.Header" Value="{Binding Name}" />
-                                    <Setter Property="MenuItem.ItemsSource" Value ="{Binding Children}" />
+                                    <Setter Property="Header" Value="{Binding Name}" />
+                                    <Setter Property="ItemsSource" Value ="{Binding Children}" />
                                     <Setter Property="Command" Value="{Binding MenuCommand}"/>
                                 </Style>
                             </ContextMenu.ItemContainerStyle>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-                <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0,5" Click="BindMenuButton_OnClick" Width="25"/>
+                <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0" Click="BindMenuButton_OnClick" Width="25"/>
             </Grid>
-            <local:PreviewControl Grid.Row="2" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
-            <GroupBox Header="Bind mode" Grid.Row="2" Visibility="{Binding ShowBindMode}">
-                <ProgressBar MinHeight="20" Margin="2" Value="{Binding BindModeProgress}" materialDesign:TransitionAssist.DisableTransitions="True"/>
-            </GroupBox>
+
+            <Separator Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
+
+            <TextBlock Grid.Row="5" Grid.Column="0" Margin="0 4" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Preview"/>
+            <local:PreviewControl Grid.Row="5" Grid.Column="1" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
+            <ProgressBar Grid.Row="5" Grid.Column="1" MinHeight="20" Visibility="{Binding ShowBindMode}" Value="{Binding BindModeProgress}" materialDesign:TransitionAssist.DisableTransitions="True"/>
         </Grid>
-    </GroupBox>
 </UserControl>

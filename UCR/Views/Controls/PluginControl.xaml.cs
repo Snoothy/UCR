@@ -16,8 +16,7 @@ namespace HidWizards.UCR.Views.Controls
 
         private void RemovePlugin_OnClick(object sender, RoutedEventArgs e)
         {
-            var button = ((Button)sender);
-            var plugin = button.DataContext as PluginViewModel;
+            var plugin = DataContext as PluginViewModel;
             plugin?.Remove();
         }
 

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Managers;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
@@ -13,6 +14,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
     public class DeviceBindingViewModel : INotifyPropertyChanged
     {
         public string DeviceBindingName { get; set; }
+        public string IoTypeName => DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input) ? "Input" : "Output";
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
         public ObservableCollection<ComboBoxItemViewModel> Devices { get; set; }
         public ComboBoxItemViewModel SelectedDevice { get; set; }
