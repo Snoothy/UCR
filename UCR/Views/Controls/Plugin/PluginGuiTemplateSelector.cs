@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.Views.Controls
+namespace HidWizards.UCR.Views.Controls.Plugin
 {
     public class PluginGuiTemplateSelector : DataTemplateSelector
     {

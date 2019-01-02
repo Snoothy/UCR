@@ -10,7 +10,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     public class ButtonToButton : Plugin
     {
 
-        [PluginGui("Invert", ColumnOrder = 0, RowOrder = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
         public override void Update(params long[] values)

@@ -8,6 +8,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public MappingViewModel MappingViewModel { get; }
         public Plugin Plugin { get; set; }
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
+        public ObservableCollection<PluginPropertyGroupViewModel> PluginPropertyGroups { get; set; }
 
         public PluginViewModel(MappingViewModel mappingViewModel, Plugin plugin)
         {
@@ -15,6 +16,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             Plugin = plugin;
 
             PopulateDeviceBindingsViewModels();
+            PopulatePluginProperties();
         }
 
         public void Remove()
@@ -32,6 +34,17 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                     DeviceBindingName = Plugin.OutputCategories[i].Name,
                     DeviceBindingCategory = Plugin.OutputCategories[i].Category
                 });
+            }
+        }
+
+        private void PopulatePluginProperties()
+        {
+            PluginPropertyGroups = new ObservableCollection<PluginPropertyGroupViewModel>();
+            foreach (var pluginPropertyGroup in Plugin.PluginPropertyGroups)
+            {
+                if (pluginPropertyGroup.PluginProperties.Count == 0) continue;
+
+                PluginPropertyGroups.Add(new PluginPropertyGroupViewModel(pluginPropertyGroup));
             }
         }
     }

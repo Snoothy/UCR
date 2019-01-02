@@ -11,7 +11,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonsToAxis : Plugin
     {
-        [PluginGui("Invert", ColumnOrder = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
         public override void Update(params long[] values)

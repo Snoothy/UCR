@@ -19,7 +19,7 @@ namespace HidWizards.UCR.Core.Models
         internal Profile Profile { get; set; }
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
-        private List<List<PluginProperty>> _guiMatrix;
+        private List<PluginPropertyGroup> _pluginPropertyGroups;
 
         #region Properties
         
@@ -46,13 +46,13 @@ namespace HidWizards.UCR.Core.Models
         }
 
         [XmlIgnore]
-        public List<List<PluginProperty>> GuiMatrix
+        public List<PluginPropertyGroup> PluginPropertyGroups
         {
             get
             {
-                if (_guiMatrix != null) return _guiMatrix;
-                _guiMatrix = GetGuiMatrix();
-                return _guiMatrix;
+                if (_pluginPropertyGroups != null) return _pluginPropertyGroups;
+                _pluginPropertyGroups = GetGuiMatrix();
+                return _pluginPropertyGroups;
             }
         }
 
@@ -237,32 +237,56 @@ namespace HidWizards.UCR.Core.Models
                 select new { Property = p, Attribute = attr.First() as PluginGuiAttribute };
 
 
-            return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.RowOrder, prop.Attribute.ColumnOrder)).ToList();
+            return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.Order, prop.Attribute.Group)).ToList();
         }
 
-        public List<List<PluginProperty>> GetGuiMatrix()
+        private List<string> GetPluginGroups()
         {
-            var result = new List<List<PluginProperty>>();
-            var currentRow = new List<PluginProperty>();
-            result.Add(currentRow);
+            return GetType().GetCustomAttributes(typeof(PluginGroupAttribute), true).ToList()
+                .Select(a => ((PluginGroupAttribute) a).GroupName).Distinct().ToList();
+        }
 
+        private List<string> GetPluginOutputGroups()
+        {
+            return GetType().GetCustomAttributes(typeof(PluginOutput), true).ToList()
+                .Select(a => ((PluginOutput)a).GroupName).Distinct().ToList();
+        }
+
+        public List<PluginPropertyGroup> GetGuiMatrix()
+        {
+            var result = new List<PluginPropertyGroup>();
+            
             var guiProperties = GetGuiProperties();
             guiProperties.Sort();
 
-            foreach (var pluginProperty in guiProperties)
+            foreach (var groupName in GetPluginGroups())
             {
-                if (currentRow.Count != 0 && currentRow[0].RowOrder != pluginProperty.RowOrder)
+                if (groupName == null)
                 {
-                    currentRow = new List<PluginProperty>();
-                    result.Add(currentRow);
+                    var ungroupedProperties = guiProperties.FindAll(p => p.Group == null);
+                    result.Add(new PluginPropertyGroup()
+                    {
+                        GroupName = "Settings",
+                        GroupType = PluginPropertyGroup.GroupTypes.Settings,
+                        PluginProperties = ungroupedProperties
+                    });
+                    continue;
                 }
 
-                currentRow.Add(pluginProperty);
+                var properties = guiProperties.FindAll(p => p.Group.Equals(groupName));
+                result.Add(new PluginPropertyGroup()
+                {
+                    GroupName = groupName,
+                    GroupType = GetPluginOutputGroups().Contains(groupName) 
+                        ? PluginPropertyGroup.GroupTypes.Output 
+                        : PluginPropertyGroup.GroupTypes.Settings,
+                    PluginProperties = properties
+                });
             }
 
-            foreach (var pluginPropertiesRow in result)
+            foreach (var pluginGroup in result)
             {
-                pluginPropertiesRow.Sort((x, y) => x.ColumnOrder.CompareTo(y.ColumnOrder));
+                pluginGroup.PluginProperties.Sort((x, y) => x.Order.CompareTo(y.Order));
             }
 
             return result;

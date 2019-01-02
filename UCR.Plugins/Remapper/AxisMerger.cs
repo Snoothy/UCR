@@ -13,16 +13,16 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisMerger : Plugin
     {
-        [PluginGui("Dead zone", ColumnOrder = 1)]
+        [PluginGui("Dead zone", Order = 3)]
         public int DeadZone { get; set; }
 
-        [PluginGui("Mode", ColumnOrder = 0)]
+        [PluginGui("Mode", Order = 0)]
         public AxisMergerMode Mode { get; set; }
 
-        [PluginGui("Invert high", RowOrder = 1)]
+        [PluginGui("Invert high", Order = 1)]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", RowOrder = 2)]
+        [PluginGui("Invert low", Order = 2)]
         public bool InvertLow { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

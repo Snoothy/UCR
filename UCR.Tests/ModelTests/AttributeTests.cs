@@ -28,7 +28,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var plugin = new ButtonToButton();
 
             var guiMatrix = plugin.GetGuiMatrix();
-            var invertProperty = guiMatrix[0][0];
+            var invertProperty = guiMatrix[0].PluginProperties[0];
 
             Assert.AreEqual(invertProperty.Name, "Invert");
         }

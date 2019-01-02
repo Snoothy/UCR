@@ -5,7 +5,7 @@ namespace HidWizards.UCR.Core.Attributes
 {
     public class PluginOutput : PluginIoAttribute
     {
-        public PluginOutput(DeviceBindingCategory deviceBindingCategory, string name) : base(DeviceIoType.Output, deviceBindingCategory, name)
+        public PluginOutput(DeviceBindingCategory deviceBindingCategory, string name, string groupName = null) : base(DeviceIoType.Output, deviceBindingCategory, name, groupName)
         {
         }
     }

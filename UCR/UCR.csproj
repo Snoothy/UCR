@@ -107,6 +107,7 @@
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
@@ -125,12 +126,18 @@
     <Compile Include="Views\Controls\MappingControl.xaml.cs">
       <DependentUpon>MappingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginControl.xaml.cs">
+    <Compile Include="Views\Controls\Plugin\PluginControl.xaml.cs">
       <DependentUpon>PluginControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Plugin\PluginGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Plugin\PluginPropertyControl.xaml.cs">
+      <DependentUpon>PluginPropertyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Plugin\PluginPropertyListControl.xaml.cs">
+      <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\PreviewControlTemplateSelector.cs" />
-    <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Plugin\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
     <Compile Include="Views\Controls\EnumControl.xaml.cs">
       <DependentUpon>EnumControl.xaml</DependentUpon>
@@ -225,13 +232,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Controls\PluginControl.xaml">
+    <Page Include="Views\Controls\Plugin\PluginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\EnumControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\Plugin\PluginPropertyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Plugin\PluginPropertyListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\PreviewControl.xaml">
       <SubType>Designer</SubType>

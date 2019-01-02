@@ -10,10 +10,10 @@ namespace HidWizards.UCR.Plugins.State
     public class ButtonToState : Plugin
     {
 
-        [PluginGui("Invert", ColumnOrder = 1, RowOrder = 0)]
+        [PluginGui("Invert", Order = 1)]
         public bool Invert { get; set; }
 
-        [PluginGui("State", ColumnOrder = 0, RowOrder = 0)]
+        [PluginGui("State", Order = 0)]
         public Guid StateGuid { get; set; }
 
         public override void Update(params long[] values)
