@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Views.Dialogs;
@@ -15,7 +14,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public bool CanActivateProfile => Profile.Context.ActiveProfile != Profile;
         public bool CanDeactivateProfile => Profile.Context.ActiveProfile != null;
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
-        public MappingViewModel SelectedMapping { get; set; }
+        public PluginToolboxViewModel PluginToolbox { get; set; }
+        
 
         public ProfileViewModel()
         {
@@ -27,6 +27,9 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             Profile = profile;
             profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
             PopulateMappingsList(profile);
+            var pluginList = profile.Context.GetPlugins();
+            pluginList.Sort();
+            PluginToolbox = new PluginToolboxViewModel(pluginList);
         }
 
         private void ContextOnActiveProfileChangedEvent(Profile profile)
@@ -42,8 +45,6 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 AddMapping(profileMapping);
             }
-
-            if (MappingsList.Count > 0) SelectedMapping = MappingsList[0];
         }
 
         public MappingViewModel AddMapping(string title)

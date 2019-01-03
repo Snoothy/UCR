@@ -19,7 +19,7 @@
     <GroupBox Width="auto"
               Header="{Binding Mapping.FullTitle}"
               Style="{StaticResource MaterialDesignCardGreyGroupBox}"
-              Margin="4">
+              Margin="4 6 4 6">
         <GroupBox.HeaderTemplate>
             <DataTemplate>
                 <Grid>
@@ -35,7 +35,7 @@
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button ToolTip="Remove mapping"
-                                Style="{StaticResource MaterialDesignCardButton}"
+                                Style="{StaticResource MaterialDesignGroupBoxButton}"
                                 Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
                                 Click="Remove_OnClick">
                             <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>

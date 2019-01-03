@@ -107,8 +107,10 @@
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginPropertyViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginToolboxViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
@@ -123,9 +125,6 @@
     </Compile>
     <Compile Include="Views\Controls\MappingCardControl.xaml.cs">
       <DependentUpon>MappingCardControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\MappingControl.xaml.cs">
-      <DependentUpon>MappingControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\Plugin\PluginControl.xaml.cs">
       <DependentUpon>PluginControl.xaml</DependentUpon>
@@ -222,10 +221,6 @@
     <Page Include="Views\Controls\MappingCardControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\MappingControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\Plugin\PluginControl.xaml">
       <SubType>Designer</SubType>

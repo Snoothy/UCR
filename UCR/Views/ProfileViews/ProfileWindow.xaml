@@ -80,74 +80,61 @@
 
         <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="ProfileDialog">
             <Grid Margin="8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="0" Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="Mapping">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                                <TextBlock Margin="0"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                           Text="Plugins" />
 
-                            <Button Padding="5,2,5,2" Margin="5" Click="AddMapping_OnClick">Add</Button>
-                            <TextBox Grid.Column="1" Margin="0,5,5,5" x:Name="MappingNameField" KeyDown="MappingNameField_OnKeyDown"></TextBox>
-                        </Grid>
-                    </GroupBox>
-
-                    <GroupBox Grid.Row="1" Header="Plugin" Margin="5" Padding="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Button Padding="5,0,5,0" Click="AddPlugin_OnClick">Add</Button>
-                            <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
-                        </Grid>
-                    </GroupBox>
-
-                    <ListBox Grid.Row="2" Grid.Column="0" Margin="0,10,0,0" x:Name="MappingsListBox"  ItemsSource="{Binding MappingsList}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                         VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                         VirtualizingPanel.ScrollUnit='Pixel'
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.Resources>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                <Style.Resources>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                                </Style.Resources>
-                            </Style>
-                        </ListBox.Resources>
-                        <ListBox.ItemTemplate>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <ItemsControl ItemsSource="{Binding PluginToolbox.PluginList}">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <controls:MappingControl/>
+                                <StackPanel>
+                                    <Separator Visibility="{Binding SeparatorVisibility}" Style="{StaticResource MaterialDesignSeparator}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Margin="0 8" Text="{Binding Name}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                        <StackPanel Grid.Column="1">
+                                            <Button HorizontalAlignment="Right" ToolTip="Add mapping"
+                                                    Style="{StaticResource MaterialDesignCardButton}"
+                                                    Click="AddMapping_OnClick">
+                                                <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
 
-                <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding MappingsList}" Margin="0 -8 -8 -8"
-                              VirtualizingPanel.ScrollUnit='Pixel'
-                              HorizontalContentAlignment="Stretch">
+                <ListView Grid.Row="0" Grid.Column="1" 
+                          x:Name="MappingListView"
+                          ItemsSource="{Binding MappingsList}" 
+                          Margin="0 -8 -8 -8"
+                          VirtualizingPanel.ScrollUnit='Pixel'
+                          HorizontalContentAlignment="Stretch">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="Focusable" Value="False"/>

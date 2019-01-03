@@ -160,21 +160,7 @@
                             </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate DataType="{x:Type dashboard:ProfileItem}" ItemsSource="{Binding Items}">
-                                    <TextBlock Text="{Binding Title}" Margin="4" >
-                                        <TextBlock.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Activate" Click="ActivateProfile"/>
-                                                <Separator />
-                                                <MenuItem Header="Add child" Click="AddChildProfile" />
-                                                <MenuItem Header="Copy" Click="CopyProfile"/>
-                                                <Separator />
-                                                <MenuItem Header="Edit" Click="EditProfile" />
-                                                <MenuItem Header="Rename" Click="RenameProfile" />
-                                                <Separator />
-                                                <MenuItem Header="Remove" Click="RemoveProfile" />
-                                            </ContextMenu>
-                                        </TextBlock.ContextMenu>
-                                    </TextBlock>
+                                    <TextBlock Text="{Binding Title}" Margin="4"/>
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>

@@ -37,6 +37,12 @@
                 <Setter Property="Margin" Value="4"/>
                 <Setter Property="Padding" Value="0"/>
             </Style>
+            <Style x:Key="MaterialDesignGroupBoxButton" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource MaterialDesignToolButton}">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Margin" Value="4 2"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style>
             <Style x:Key="MaterialDesignFlatBarButton" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource MaterialDesignFlatButton}">
                 <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkForegroundBrush}"/>
                 <Setter Property="Template">

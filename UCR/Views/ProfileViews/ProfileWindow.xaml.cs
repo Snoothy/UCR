@@ -8,6 +8,8 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
+using HidWizards.UCR.Views.Dialogs;
+using MaterialDesignThemes.Wpf;
 using UCR.Views.ProfileViews;
 
 namespace HidWizards.UCR.Views.ProfileViews
@@ -27,8 +29,6 @@ namespace HidWizards.UCR.Views.ProfileViews
             InitializeComponent();
             Title = "Edit " + profile.Title;
             DataContext = ProfileViewModel;
-
-            Loaded += Window_Loaded;
         }
 
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -58,67 +58,6 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         #endregion
 
-        #region Mappings
-
-        private void AddMapping_OnClick(object sender, RoutedEventArgs e)
-        {
-            AddMappingFromText();
-        }
-
-        private void AddMappingFromText()
-        {
-            var title = MappingNameField.Text;
-            if (string.IsNullOrEmpty(title))
-            {
-                MessageBox.Show("Please write a title to add a new mapping", "No title!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
-
-            ProfileViewModel.AddMapping(title);
-            MappingNameField.Text = "";
-            MappingsListBox.SelectedIndex = MappingsListBox.Items.Count - 1;
-            MappingsListBox.ScrollIntoView(MappingsListBox.SelectedItem);
-            MappingNameField.Focus();
-        }
-
-        #endregion
-
-        #region Plugin
-
-        private void PopulatePluginsComboBox()
-        {
-            var pluginlist = ProfileViewModel.SelectedMapping.Mapping.GetPluginList();
-            var plugins = new ObservableCollection<ComboBoxItemViewModel>();
-            foreach (var plugin in pluginlist)
-            {
-                plugins.Add(new ComboBoxItemViewModel(plugin.PluginName, plugin));
-            }
-            PluginsComboBox.ItemsSource = plugins;
-            PluginsComboBox.SelectedIndex = 0;
-        }
-
-        private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
-        {
-            var plugin = ((ComboBoxItemViewModel)PluginsComboBox.SelectedItem)?.Value;
-            if (plugin == null) return;
-
-            ProfileViewModel.SelectedMapping.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(plugin), null);
-
-            if (ProfileViewModel.SelectedMapping.Plugins.Count == 1)
-            {
-                PopulatePluginsComboBox();
-            }
-        }
-
-        #endregion
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (ProfileViewModel.MappingsList.Count > 0)
-            {
-                MappingsListBox.SelectedItem = ProfileViewModel.MappingsList[0];
-            }
-        }
-
         private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
         {
             var win = new ProfileDeviceGroupWindow(Context, Profile);
@@ -126,12 +65,22 @@ namespace HidWizards.UCR.Views.ProfileViews
             Dispatcher.BeginInvoke(showAction);
         }
 
-        private void MappingNameField_OnKeyDown(object sender, KeyEventArgs e)
+        private async void AddMapping_OnClick(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (sender is Button button)
             {
-                AddMappingFromText();
+                if (button.DataContext is PluginItemViewModel pluginItem)
+                {
+                    var dialog = new SimpleDialog("Create mapping for: " + pluginItem.Name, "Mapping name", "");
+                    var result = (bool?)await DialogHost.Show(dialog, "ProfileDialog");
+                    if (result == null || !result.Value) return;
+
+                    var mappingViewModel = ProfileViewModel.AddMapping(dialog.Value);
+                    mappingViewModel.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(pluginItem.Plugin), null);
+                    MappingListView.ScrollIntoView(MappingListView.Items[MappingListView.Items.Count - 1]);
+                }
             }
+            
         }
     }
 }

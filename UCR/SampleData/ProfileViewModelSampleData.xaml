@@ -18,15 +18,4 @@
             </models:Mapping>
         </profileViewModels:MappingViewModel>
     </profileViewModels:ProfileViewModel.MappingsList>
-    
-    <profileViewModels:ProfileViewModel.SelectedMapping>
-        <profileViewModels:MappingViewModel>
-            <models:Mapping>
-                <models:Mapping.Title>Mappine three</models:Mapping.Title>
-                <models:Mapping.Plugins>
-
-                </models:Mapping.Plugins>
-            </models:Mapping>
-        </profileViewModels:MappingViewModel>
-    </profileViewModels:ProfileViewModel.SelectedMapping>
 </profileViewModels:ProfileViewModel>
