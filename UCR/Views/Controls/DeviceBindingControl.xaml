@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:plugin="clr-namespace:HidWizards.UCR.Views.Controls.Plugin"
-             d:DesignHeight="400" d:DesignWidth="500"
+             d:DesignHeight="400" d:DesignWidth="800"
              mc:Ignorable="d">
     <Grid Margin="0 0 0 4">
         <Grid.RowDefinitions>
@@ -31,12 +31,12 @@
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
             <ComboBox Width="200" Margin="0 0 16 0" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
-            <Grid Grid.Row="3" Grid.Column="1" Width="Auto" >
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" 
+                <Button Grid.Column="0" 
                     HorizontalAlignment="Stretch" 
                     Content="{Binding BindButtonText}" 
                     IsEnabled="{Binding BindingEnabled}"
@@ -47,11 +47,12 @@
                     Width="Auto"
                     materialDesign:ButtonProgressAssist.Value="{Binding PreviewValue}"
                     materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ShowButtonPreview}"
-                    materialDesign:TransitionAssist.DisableTransitions="True">
-                <Button.ContextMenu>
-                    <ContextMenu x:Name="Ddl">
+                    materialDesign:TransitionAssist.DisableTransitions="True"
+                    materialDesign:ShadowAssist.ShadowEdges="Left, Top, Bottom">
+                    <Button.ContextMenu>
+                    <ContextMenu x:Name="Ddl" Style="{StaticResource MaterialDesignContextMenu}">
                         <ContextMenu.ItemContainerStyle>
-                            <Style TargetType="{x:Type MenuItem}">
+                            <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}">
                                 <Setter Property="Header" Value="{Binding Name}" />
                                 <Setter Property="ItemsSource" Value ="{Binding Children}" />
                                 <Setter Property="Command" Value="{Binding MenuCommand}"/>
@@ -60,7 +61,13 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0" Click="BindMenuButton_OnClick" Width="25"/>
+                <Button Grid.Column="1" IsEnabled="{Binding BindingEnabled}" Margin="0" Click="BindMenuButton_OnClick" 
+                        Width="40" 
+                        Padding="0"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        materialDesign:ShadowAssist.ShadowEdges="Top, Right, Bottom">
+                    <materialDesign:PackIcon Visibility="Visible" Kind="DotsVertical" materialDesign:ColorZoneAssist.Mode="Standard" Width="20" Height="20"/>
+                </Button>
         </Grid>
         </StackPanel>
 
