@@ -15,7 +15,7 @@ namespace HidWizards.UCR.Core.Models
 
         /* Runtime */
         private Profile Profile { get; set; }
-        private List<long> InputCache { get; set; }
+        private List<short> InputCache { get; set; }
         private List<CallbackMultiplexer> Multiplexer { get; set; }
 
         [XmlIgnore]
@@ -54,8 +54,8 @@ namespace HidWizards.UCR.Core.Models
 
         internal void PrepareMapping()
         {
-            InputCache = new List<long>();
-            DeviceBindings.ForEach(_ => InputCache.Add(0L));
+            InputCache = new List<short>();
+            DeviceBindings.ForEach(_ => InputCache.Add(0));
             Multiplexer = new List<CallbackMultiplexer>();
             for (var i = 0; i < DeviceBindings.Count; i++)
             {
@@ -87,7 +87,7 @@ namespace HidWizards.UCR.Core.Models
             return null;
         }
         
-        public void Update(long value)
+        public void Update(short value)
         {
             foreach (var plugin in Plugins)
             {

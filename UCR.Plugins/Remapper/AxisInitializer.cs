@@ -23,15 +23,15 @@ namespace HidWizards.UCR.Plugins.Remapper
             Initialize();
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
         }
 
         private void Initialize()
         {
-            var value = (long)((Percentage / 100) * Constants.AxisMaxAbsValue);
+            var value = (int)((Percentage / 100) * Constants.AxisMaxAbsValue);
             value = Functions.ClampAxisRange(value);
-            WriteOutput(0, value);
+            WriteOutput(0, (short) value);
         }
     }
 }

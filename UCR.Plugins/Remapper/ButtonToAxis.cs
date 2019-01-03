@@ -27,15 +27,15 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void OnActivate()
         {
-            if (Initialize) WriteOutput(0, Functions.GetRangeFromPercentage((int)Range));
+            if (Initialize) WriteOutput(0, Functions.GetRangeFromPercentage((short)Range));
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
             WriteOutput(0,
                 values[0] == 0
-                    ? Functions.GetRangeFromPercentage((int)Range)
-                    : Functions.GetRangeFromPercentage((int)RangePressed));
+                    ? Functions.GetRangeFromPercentage((short)Range)
+                    : Functions.GetRangeFromPercentage((short)RangePressed));
         }
 
     }
