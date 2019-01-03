@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.7.0] - 2019-01-03
+
+### Changed
+
+- `Button to Axis` parameters changed to two axis values and option for initialization
+- Plugin updates are now of type short instead of long. Some operations are performed using int, to avoid wrap-around or crashes.
+- Subscription and Bind Mode callbacks are now executed as Tasks and are an Action<short> rather than dynamic
+- Default blocking to true while UCR GUI does not support selecting block
+
 ## [0.6.0] - 2018-12-03
 
 ### Added

@@ -58,12 +58,12 @@ namespace HidWizards.UCR.Core.Models.Binding
         }
 
 
-        public delegate void ValueChanged(long value);
+        public delegate void ValueChanged(short value);
         
-        private ValueChanged _callback;
+        private Action<short> _callback;
 
         [XmlIgnore]
-        public ValueChanged Callback
+        public Action<short> Callback
         {
             get => InputChanged;
             set
@@ -75,9 +75,9 @@ namespace HidWizards.UCR.Core.Models.Binding
         [XmlIgnore]
         public ValueChanged OutputSink { get; set; }
 
-        private long _currentValue;
+        private short _currentValue;
         [XmlIgnore]
-        public long CurrentValue
+        public short CurrentValue
         {
             get => _currentValue;
             set
@@ -92,7 +92,7 @@ namespace HidWizards.UCR.Core.Models.Binding
             Guid = Guid.NewGuid();
         }
 
-        public DeviceBinding(ValueChanged callback, Profile profile, DeviceIoType deviceIoType)
+        public DeviceBinding(Action<short> callback, Profile profile, DeviceIoType deviceIoType)
         {
             Callback = callback;
             Profile = profile;
@@ -150,7 +150,7 @@ namespace HidWizards.UCR.Core.Models.Binding
             }
         }
 
-        public void WriteOutput(long value)
+        public void WriteOutput(short value)
         {
             CurrentValue = value;
             OutputSink?.Invoke(value);
@@ -170,7 +170,7 @@ namespace HidWizards.UCR.Core.Models.Binding
             Profile.Context.BindingManager.EndBindModeHandler -= OnEndBindModeHandler;
         }
 
-        private void InputChanged(long value)
+        private void InputChanged(short value)
         {
             CurrentValue = value;
             _callback(value);

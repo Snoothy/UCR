@@ -110,7 +110,7 @@ namespace HidWizards.UCR.Core.Managers
             };
         }
 
-        private void InputChanged(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, int value)
+        private void InputChanged(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor, BindingReport bindingReport, short value)
         {
             if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding.DeviceBindingCategory)) return;
             if (!IsInputValid(bindingReport.Category, value)) return;
@@ -121,7 +121,7 @@ namespace HidWizards.UCR.Core.Managers
             EndBindMode();
         }
 
-        private bool IsInputValid(BindingCategory bindingCategory, int value)
+        private bool IsInputValid(BindingCategory bindingCategory, short value)
         {
             switch (DeviceBinding.MapCategory(bindingCategory))
             {
@@ -131,8 +131,9 @@ namespace HidWizards.UCR.Core.Managers
                 case DeviceBindingCategory.Momentary:
                     return value != 0;
                 case DeviceBindingCategory.Range:
-                    return Constants.AxisMaxValue * 0.4 < Math.Abs(value)
-                        && Constants.AxisMaxValue * 0.6 > Math.Abs(value);
+                    var wideVal = Functions.WideAbs(value);
+                    return Constants.AxisMaxValue * 0.4 < wideVal
+                        && Constants.AxisMaxValue * 0.6 > wideVal;
                 default:
                     return false;
             }

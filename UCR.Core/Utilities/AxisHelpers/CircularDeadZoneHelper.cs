@@ -43,7 +43,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             }
         }
 
-        public long[] ApplyRangeDeadZone(long[] values)
+        public short[] ApplyRangeDeadZone(short[] values)
         {
             var x = values[0];
             var y = values[1];
@@ -52,17 +52,17 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             var inputAngle = Math.Atan2(x, y);
             if (inputRadius < _deadzoneRadius)
             {
-                return new long[] { 0, 0 };
+                return new short[] { 0, 0 };
             }
             var adjustedRadius = inputRadius - _deadzoneRadius;
             var outputRadius = adjustedRadius * _scaleFactor;
 
-            var outX = (long)(outputRadius * Math.Sin(inputAngle));
-            var outY = (long)(outputRadius * Math.Cos(inputAngle));
+            var outX = (int)(outputRadius * Math.Sin(inputAngle));
+            var outY = (int)(outputRadius * Math.Cos(inputAngle));
             if (outX == -32769) outX = -32768;
             if (outY == -32769) outY = -32768;
 
-            var output = new[] { outX, outY };
+            var output = new[] { (short)outX, (short)outY };
             return output;
 
         }

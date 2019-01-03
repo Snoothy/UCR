@@ -44,11 +44,11 @@ namespace HidWizards.UCR.Plugins.Remapper
             Initialize();
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
             var valueHigh = values[0];
             var valueLow = values[1];
-            long valueOutput;
+            short valueOutput;
 
             if (InvertHigh) valueHigh = Functions.Invert(valueHigh);
             if (InvertLow) valueLow = Functions.Invert(valueLow);
@@ -56,16 +56,16 @@ namespace HidWizards.UCR.Plugins.Remapper
             switch (Mode)
             {
                 case AxisMergerMode.Average:
-                    valueOutput = (valueHigh + valueLow) / 2L;
+                    valueOutput = (short) ((valueHigh + valueLow) / 2);
                     break;
                 case AxisMergerMode.Greatest:
-                    valueOutput = Math.Abs(valueHigh) > Math.Abs(valueLow) ? valueHigh : valueLow;
+                    valueOutput = (Functions.SafeAbs(valueHigh) > Functions.SafeAbs(valueLow)) ? valueHigh : valueLow;
                     break;
                 case AxisMergerMode.Sum:
-                    valueOutput = valueHigh + valueLow;
+                    valueOutput = (short) (valueHigh + valueLow);
                     break;
                 default:
-                    valueOutput = 0L;
+                    valueOutput = 0;
                     break;
             }
 

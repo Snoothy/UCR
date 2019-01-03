@@ -33,7 +33,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             Initialize();
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
             var value = values[0];
 
