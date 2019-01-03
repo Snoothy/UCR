@@ -119,6 +119,9 @@ namespace HidWizards.UCR.Views
         private void EditProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
+            var senderItem = (sender as TreeViewItem)?.DataContext as ProfileItem;
+            if (!profileItem.Id.Equals(senderItem?.Id)) return;
+
             var win = new ProfileWindow(Context, profileItem.Profile);
             void ShowAction() => win.Show();
             Dispatcher.BeginInvoke((Action) ShowAction);
