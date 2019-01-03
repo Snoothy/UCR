@@ -42,7 +42,7 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
         public short ApplyRangeSensitivity(short value)
         {
             //var sensitivityPercent = (sensitivity / 100.0);
-            if (IsLinear) return (short) Functions.ClampAxisRange((int) Math.Round(value * _scaleFactor));
+            if (IsLinear) return Functions.ClampAxisRange((int) Math.Round(value * _scaleFactor));
 
             //var sens = _scaleFactor / 100d;
             //double AxisRange = 1d * (Constants.AxisMaxValue - Constants.AxisMinValue);
