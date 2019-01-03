@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
@@ -7,7 +8,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
     {
         public string GroupName => _pluginPropertyGroup.GroupName;
         public List<PluginPropertyViewModel> PluginProperties { get; set; }
-    
+        public Visibility ShowPropertyList => PluginProperties != null && PluginProperties.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
         private readonly PluginPropertyGroup _pluginPropertyGroup;
         
 

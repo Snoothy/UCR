@@ -14,6 +14,7 @@ namespace HidWizards.UCR.Views.ProfileViews
 {
     public partial class ProfileWindow : Window
     {
+        public Guid ProfileGuid => Profile.Guid;
         private Context Context { get; }
         private Profile Profile { get; }
         private ProfileViewModel ProfileViewModel { get; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Media;
 using System.Runtime.InteropServices;
@@ -23,6 +24,7 @@ namespace HidWizards.UCR.Views
         private Context Context { get; set; }
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
+        private Dictionary<Guid, ProfileWindow> ProfileWindows;
 
         enum CloseState
         {
@@ -36,6 +38,7 @@ namespace HidWizards.UCR.Views
             _dashboardViewModel = new DashboardViewModel(context);
             DataContext = _dashboardViewModel;
             Context = context;
+            ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             InitializeComponent();
         }
 
@@ -126,9 +129,30 @@ namespace HidWizards.UCR.Views
                 if (!profileItem.Id.Equals(senderItem?.Id)) return;
             }
 
-            var win = new ProfileWindow(Context, profileItem.Profile);
-            void ShowAction() => win.Show();
+            if (ProfileWindows.TryGetValue(profileItem.Profile.Guid, out var profileWindow))
+            {
+                void FocusAction() => profileWindow.Focus();
+                Dispatcher.BeginInvoke((Action) FocusAction);
+                return;
+            }
+            
+            void ShowAction()
+            {
+                var win = new ProfileWindow(Context, profileItem.Profile);
+                ProfileWindows.Add(win.ProfileGuid, win);
+                win.Show();
+                win.Closed += OnProfileWindowClosed;
+            }
+
             Dispatcher.BeginInvoke((Action)ShowAction);
+        }
+
+        private void OnProfileWindowClosed(object sender, EventArgs e)
+        {
+            if (sender is ProfileWindow window)
+            {
+                ProfileWindows.Remove(window.ProfileGuid);
+            }
         }
 
         private async void RenameProfile(object sender, RoutedEventArgs e)
