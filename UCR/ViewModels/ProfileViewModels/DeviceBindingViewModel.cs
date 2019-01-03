@@ -8,6 +8,7 @@ using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
@@ -22,6 +23,31 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public Visibility ShowBindMode => ShowPreview.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
         public Visibility ShowPropertyList => PluginPropertyGroup == null ? Visibility.Collapsed : Visibility.Visible;
         public PluginPropertyGroupViewModel PluginPropertyGroup { get; set; }
+        public long PreviewValue => GetPreviewValue();
+        public bool ShowButtonPreview => DeviceBinding.IsInBindMode || DeviceBinding.Profile.IsActive();
+
+        private long GetPreviewValue()
+        {
+            if (DeviceBinding.IsInBindMode)
+            {
+                return BindModeProgress;
+            } else if (DeviceBinding.Profile.IsActive())
+            {
+                switch (DeviceBindingCategory)
+                {
+                    case DeviceBindingCategory.Momentary:
+                        return 100 * CurrentValue;
+                    case DeviceBindingCategory.Range:
+                        return (long) (50.0 + ((double) CurrentValue / Constants.AxisMaxValue) * 50);
+                    case DeviceBindingCategory.Event:
+                    case DeviceBindingCategory.Delta:
+                    default:
+                        return 0;
+                }
+            }
+
+            return 0;
+        }
 
         private bool _bindingEnabled;
         public bool BindingEnabled
@@ -31,6 +57,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 _bindingEnabled = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviewValue));
+                OnPropertyChanged(nameof(ShowButtonPreview));
             }
         }
 
@@ -64,6 +92,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 _currentValue = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviewValue));
             }
         }
 
@@ -75,6 +104,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 _bindModeProgress = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviewValue));
+                OnPropertyChanged(nameof(ShowButtonPreview));
             }
         }
 

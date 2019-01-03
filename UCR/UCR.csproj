@@ -137,17 +137,11 @@
     <Compile Include="Views\Controls\Plugin\PluginPropertyListControl.xaml.cs">
       <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PreviewControlTemplateSelector.cs" />
     <Compile Include="Views\Controls\Plugin\PluginViewTemplateSelector.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
     <Compile Include="Views\Controls\EnumControl.xaml.cs">
       <DependentUpon>EnumControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PreviewControl.xaml.cs">
-      <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\preview\MomentaryConverter.cs" />
-    <Compile Include="Views\Controls\preview\RangeConverter.cs" />
     <Compile Include="Views\Controls\StateControl.xaml.cs">
       <DependentUpon>StateControl.xaml</DependentUpon>
     </Compile>
@@ -246,10 +240,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Plugin\PluginPropertyListControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\PreviewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,18 +10,14 @@
              mc:Ignorable="d">
     <Grid Margin="0 0 0 4">
         <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
@@ -31,26 +27,27 @@
             <TextBlock Grid.Column="0" Margin="0 8 4 8" Text="{Binding DeviceBindingName}" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
             <Separator Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
         </Grid>
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Device"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" Width="200" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
-
-        <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
-
-        <TextBlock Grid.Row="3" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
-        <Grid Grid.Row="3" Grid.Column="1" Width="Auto" >
+        
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+            <ComboBox Width="200" Margin="0 0 16 0" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <Grid Grid.Row="3" Grid.Column="1" Width="Auto" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" 
-                HorizontalAlignment="Stretch" 
-                Content="{Binding BindButtonText}" 
-                IsEnabled="{Binding BindingEnabled}"
-                Name="BindButton" 
-                Margin="0" 
-                Click="BindButton_OnClick" 
-                MinWidth="175" 
-                Width="Auto">
+                    HorizontalAlignment="Stretch" 
+                    Content="{Binding BindButtonText}" 
+                    IsEnabled="{Binding BindingEnabled}"
+                    Name="BindButton" 
+                    Margin="0" 
+                    Click="BindButton_OnClick" 
+                    MinWidth="175" 
+                    Width="Auto"
+                    materialDesign:ButtonProgressAssist.Value="{Binding PreviewValue}"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding ShowButtonPreview}"
+                    materialDesign:TransitionAssist.DisableTransitions="True">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="Ddl">
                         <ContextMenu.ItemContainerStyle>
@@ -65,14 +62,9 @@
             </Button>
             <Button Grid.Column="1" Content="▼" IsEnabled="{Binding BindingEnabled}" Margin="0" Click="BindMenuButton_OnClick" Width="25"/>
         </Grid>
+        </StackPanel>
 
-        <Separator Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
-
-        <TextBlock Grid.Row="5" Grid.Column="0" Margin="0 4" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Preview"/>
-        <local:PreviewControl Grid.Row="5" Grid.Column="1" DataContext="{Binding}" Visibility="{Binding ShowPreview}"/>
-        <ProgressBar Grid.Row="5" Grid.Column="1" MinHeight="20" Visibility="{Binding ShowBindMode}" Value="{Binding BindModeProgress}" materialDesign:TransitionAssist.DisableTransitions="True"/>
-
-        <Separator Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" Visibility="{Binding ShowPropertyList}"/>
-        <plugin:PluginPropertyListControl DataContext="{Binding PluginPropertyGroup}" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding ShowPropertyList}"/>
+        <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" Visibility="{Binding ShowPropertyList}"/>
+        <plugin:PluginPropertyListControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding PluginPropertyGroup}" Visibility="{Binding ShowPropertyList}"/>
     </Grid>
 </UserControl>
