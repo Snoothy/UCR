@@ -20,6 +20,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public ComboBoxItemViewModel SelectedDevice { get; set; }
         public Visibility ShowPreview => DeviceBinding.IsInBindMode ? Visibility.Hidden : Visibility.Visible;
         public Visibility ShowBindMode => ShowPreview.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
+        public Visibility ShowPropertyList => PluginPropertyGroup == null ? Visibility.Collapsed : Visibility.Visible;
+        public PluginPropertyGroupViewModel PluginPropertyGroup { get; set; }
 
         private bool _bindingEnabled;
         public bool BindingEnabled
@@ -82,6 +84,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             deviceBinding.Profile.Context.BindingManager.PropertyChanged += BindingManagerOnPropertyChanged;
             deviceBinding.Profile.Context.SubscriptionsManager.PropertyChanged += SubscriptionsManagerOnPropertyChanged;
             BindingEnabled = !DeviceBinding.Profile.Context.SubscriptionsManager.ProfileActive;
+
             LoadDeviceInputs();
         }
         

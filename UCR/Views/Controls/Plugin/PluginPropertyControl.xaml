@@ -17,6 +17,6 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Text="{Binding Name}" Margin="0 8" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
         <ContentPresenter Content="{Binding PropertyContent, ElementName=PluginPropertyControlName}" Grid.Row="0" Grid.Column="1"/>
-        <Separator Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
+        <Separator Visibility="{Binding SeparatorVisibility}" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignSeparator}" />
     </Grid>
 </UserControl>

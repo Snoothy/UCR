@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.ViewModels.ProfileViewModels;
 
 namespace HidWizards.UCR.Views.Controls.Plugin
 {
@@ -11,8 +12,8 @@ namespace HidWizards.UCR.Views.Controls.Plugin
         {
             var element = container as FrameworkElement;
 
-            if (element == null || !(item is PluginProperty)) return null;
-            var pluginProperty = (PluginProperty) item;
+            if (element == null || !(item is PluginPropertyViewModel)) return null;
+            var pluginProperty = ((PluginPropertyViewModel) item).PluginProperty;
 
             switch (Type.GetTypeCode(pluginProperty.PropertyInfo.PropertyType))
             {

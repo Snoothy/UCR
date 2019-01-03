@@ -32,9 +32,16 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                 DeviceBindings.Add(new DeviceBindingViewModel(Plugin.Outputs[i])
                 {
                     DeviceBindingName = Plugin.OutputCategories[i].Name,
-                    DeviceBindingCategory = Plugin.OutputCategories[i].Category
+                    DeviceBindingCategory = Plugin.OutputCategories[i].Category,
+                    PluginPropertyGroup = GetPluginPropertyGroupForOutput(Plugin.OutputCategories[i].GroupName)
                 });
             }
+        }
+
+        private PluginPropertyGroupViewModel GetPluginPropertyGroupForOutput(string groupName)
+        {
+            if (groupName == null) return null;
+            return new PluginPropertyGroupViewModel(Plugin.GetGuiMatrix().Find(p => p.GroupName.Equals(groupName)));
         }
 
         private void PopulatePluginProperties()
@@ -42,7 +49,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             PluginPropertyGroups = new ObservableCollection<PluginPropertyGroupViewModel>();
             foreach (var pluginPropertyGroup in Plugin.PluginPropertyGroups)
             {
-                if (pluginPropertyGroup.PluginProperties.Count == 0) continue;
+                if (pluginPropertyGroup.PluginProperties.Count == 0 || pluginPropertyGroup.GroupType.Equals(PluginPropertyGroup.GroupTypes.Output)) continue;
 
                 PluginPropertyGroups.Add(new PluginPropertyGroupViewModel(pluginPropertyGroup));
             }

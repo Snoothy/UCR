@@ -61,7 +61,7 @@ namespace HidWizards.UCR.Core.Models
 
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
-
+        
         public string StateTitle
         {
             get => Profile.GetStateTitle(State);
@@ -73,6 +73,7 @@ namespace HidWizards.UCR.Core.Models
         {
             public string Name;
             public DeviceBindingCategory Category;
+            public string GroupName;
         }
 
         protected Plugin()
@@ -225,7 +226,8 @@ namespace HidWizards.UCR.Core.Models
             return attributes.Where(a => a.DeviceIoType == deviceIoType).Select(a => new IODefinition()
             {
                 Category = a.DeviceBindingCategory,
-                Name = a.Name
+                Name = a.Name,
+                GroupName = a.GroupName
             }).ToList();
         }
 
@@ -273,7 +275,7 @@ namespace HidWizards.UCR.Core.Models
                     continue;
                 }
 
-                var properties = guiProperties.FindAll(p => p.Group.Equals(groupName));
+                var properties = guiProperties.FindAll(p => groupName.Equals(p.Group));
                 result.Add(new PluginPropertyGroup()
                 {
                     GroupName = groupName,
