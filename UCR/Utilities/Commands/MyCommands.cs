@@ -31,7 +31,7 @@ namespace HidWizards.UCR.Utilities.Commands
 
         public void Execute(object parameter)
         {
-            Application.Current.MainWindow.Close();
+            (Application.Current.MainWindow as UCR.Views.MainWindow).Shutdown();
         }
     }
 }
