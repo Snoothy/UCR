@@ -23,6 +23,8 @@ namespace HidWizards.UCR.Views
     {
         private Context Context { get; set; }
 
+        private TrayMenu TrayMenu;
+
         public MainWindow(Context context)
         {
             var dashboardViewModel = new DashboardViewModel(context);
@@ -30,6 +32,8 @@ namespace HidWizards.UCR.Views
             DataContext = dashboardViewModel;
             Context = context;
             InitializeComponent();
+
+            TrayMenu = new TrayMenu(this);
         }
 
         /// <summary>
@@ -168,6 +172,13 @@ namespace HidWizards.UCR.Views
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
+            e.Cancel = true;
+            this.Hide();
+            TrayMenu.ShowBalloonTip();
+        }
+
+        public void Shutdown()
+        {
             if (Context.IsNotSaved)
             {
                 var result = MessageBox.Show("Do you want to save before closing?", "Unsaved data", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
@@ -175,7 +186,6 @@ namespace HidWizards.UCR.Views
                 {
                     case MessageBoxResult.None:
                     case MessageBoxResult.Cancel:
-                        e.Cancel = true;
                         return;
                     case MessageBoxResult.Yes:
                         Context.SaveContext();
@@ -186,7 +196,10 @@ namespace HidWizards.UCR.Views
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             Context.Dispose();
+            TrayMenu.ClearTrayIcon();
+            Application.Current.Shutdown();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
