@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -248,6 +248,66 @@ namespace HidWizards.UCR.Views
             var win = new HelpWindow();
             Action showAction = () => win.Show();
             Dispatcher.BeginInvoke(showAction);
+        }
+    }
+
+    class TrayMenu
+    {
+        private readonly System.Windows.Forms.NotifyIcon TrayIcon;
+        private readonly System.Windows.Forms.ContextMenuStrip TrayIconMenu;
+        private readonly System.Windows.Forms.ToolStripMenuItem CloseMenuItem;
+
+        private readonly MainWindow MainWindow;
+
+        public TrayMenu(MainWindow mainWindow)
+        {
+            this.MainWindow = mainWindow;
+
+            TrayIcon = new System.Windows.Forms.NotifyIcon();
+            TrayIconMenu = new System.Windows.Forms.ContextMenuStrip();
+            CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+
+            InitializeComponents();
+        }
+
+        public void ShowBalloonTip()
+        {
+            TrayIcon.BalloonTipTitle = "UCR";
+            TrayIcon.BalloonTipText = "Minimized to tray";
+            TrayIcon.ShowBalloonTip(3000);
+        }
+
+        public void ClearTrayIcon()
+        {
+            TrayIcon.Visible = false;
+        }
+
+        private void InitializeComponents()
+        {
+            TrayIcon.Icon = Properties.Resources.UCR;
+            TrayIcon.Text = "UCR";
+            TrayIcon.Visible = true;
+            TrayIcon.MouseClick += TrayIcon_OnClick;
+            TrayIcon.ContextMenuStrip = TrayIconMenu;
+
+            CloseMenuItem.Name = "CloseMenuItem";
+            CloseMenuItem.Text = "Exit";
+            CloseMenuItem.Click += CloseMenuItem_Click;
+
+            TrayIconMenu.Name = "TrayIconMenu";
+            TrayIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { CloseMenuItem });
+            TrayIconMenu.SuspendLayout();
+            TrayIconMenu.ResumeLayout(false);
+        }
+
+        private void CloseMenuItem_Click(object sender, EventArgs e)
+        {
+            MainWindow.Shutdown();
+        }
+
+        private void TrayIcon_OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left) MainWindow.Show();
         }
     }
 }
