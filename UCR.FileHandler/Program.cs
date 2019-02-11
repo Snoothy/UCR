@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.IO;
 using HidWizards.UCR.Utilities;
 
 namespace UCR.FileHandler
