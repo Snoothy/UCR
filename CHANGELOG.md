@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- UCR Unblocker now uses the current directory as default
+
 ## [0.7.0] - 2019-01-03
 
 ### Changed
