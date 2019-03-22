@@ -58,7 +58,10 @@ namespace HidWizards.UCR.Core.Models
 
         [XmlIgnore]
         public string PluginName => State.Equals(Guid.Empty) ? GetPluginAttribute().Name : $"{GetPluginAttribute().Name} - State: {StateTitle}";
-
+        [XmlIgnore]
+        public string Description => GetPluginAttribute().Description;
+        [XmlIgnore]
+        public string Group => GetPluginAttribute().Group;
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
         
@@ -227,7 +230,7 @@ namespace HidWizards.UCR.Core.Models
             {
                 Category = a.DeviceBindingCategory,
                 Name = a.Name,
-                GroupName = a.GroupName
+                GroupName = a.Group
             }).ToList();
         }
 
@@ -245,13 +248,13 @@ namespace HidWizards.UCR.Core.Models
         private List<string> GetPluginGroups()
         {
             return GetType().GetCustomAttributes(typeof(PluginGroupAttribute), true).ToList()
-                .Select(a => ((PluginGroupAttribute) a).GroupName).Distinct().ToList();
+                .Select(a => ((PluginGroupAttribute) a).Group).Distinct().ToList();
         }
 
         private List<string> GetPluginOutputGroups()
         {
             return GetType().GetCustomAttributes(typeof(PluginOutput), true).ToList()
-                .Select(a => ((PluginOutput)a).GroupName).Distinct().ToList();
+                .Select(a => ((PluginOutput)a).Group).Distinct().ToList();
         }
 
         public List<PluginPropertyGroup> GetGuiMatrix()

@@ -18,4 +18,10 @@
             </models:Mapping>
         </profileViewModels:MappingViewModel>
     </profileViewModels:ProfileViewModel.MappingsList>
+
+    <profileViewModels:PluginToolboxViewModel>
+        <profileViewModels:PluginToolboxViewModel.PluginGroupList>
+            
+        </profileViewModels:PluginToolboxViewModel.PluginGroupList>
+    </profileViewModels:PluginToolboxViewModel>
 </profileViewModels:ProfileViewModel>

@@ -7,13 +7,13 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axes to Axes")]
+    [Plugin("Axes to Axes", Group = "Axis", Description = "Map from joystick to joystick")]
     [PluginInput(DeviceBindingCategory.Range, "X Axis")]
     [PluginInput(DeviceBindingCategory.Range, "Y Axis")]
-    [PluginOutput(DeviceBindingCategory.Range, "X Axis", "X axis")]
-    [PluginOutput(DeviceBindingCategory.Range, "Y Axis", "Y axis")]
-    [PluginSettingsGroup("Sensitivity", "Sensitivity")]
-    [PluginSettingsGroup("Dead zone", "Dead zone")]
+    [PluginOutput(DeviceBindingCategory.Range, "X Axis", Group = "X axis")]
+    [PluginOutput(DeviceBindingCategory.Range, "Y Axis", Group = "Y axis")]
+    [PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
+    [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxesToAxes : Plugin
     {
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();

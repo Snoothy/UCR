@@ -2,23 +2,17 @@
 
 namespace HidWizards.UCR.Core.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public class PluginAttribute : Attribute
     {
-        private string _name;
-        private bool _disabled;
+        public string Name { get; }
+        public string Description { get; set; }
+        public string Group { get; set; }
+        public bool Disabled { get; set; }
 
         public PluginAttribute(string name)
         {
-            _name = name;
-            _disabled = false;
-        }
-
-        public virtual string Name => _name;
-
-        public virtual bool Disabled
-        {
-            get => _disabled;
-            set => _disabled = value;
+            Name = name;
         }
     }
 }

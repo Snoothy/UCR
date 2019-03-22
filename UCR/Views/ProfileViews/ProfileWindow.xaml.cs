@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.ViewModels;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 using HidWizards.UCR.Views.Dialogs;
 using MaterialDesignThemes.Wpf;

@@ -7,7 +7,7 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to Axis")]
+    [Plugin("Axis to Axis", Group = "Axis", Description = "Map from one axis to another")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin

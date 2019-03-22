@@ -6,7 +6,7 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis Splitter")]
+    [Plugin("Axis Splitter", Group = "Axis", Description = "Split one axis into two new axes")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis high")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis low")]

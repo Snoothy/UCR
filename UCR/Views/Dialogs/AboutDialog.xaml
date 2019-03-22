@@ -1,17 +1,22 @@
-﻿<Window x:Class="HidWizards.UCR.Views.AboutWindow"
+﻿<UserControl x:Class="HidWizards.UCR.Views.Dialogs.AboutDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HidWizards.UCR.Views"
+        xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="About" Height="250" Width="500">
+        Height="350" Width="500">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <StackPanel>
+        <TextBlock Text="About" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="0 0 0 8"/>
+        <StackPanel Grid.Row="1">
             <TextBlock Margin="0,0,0,5">Universal Control Remapper is created by HidWizards: <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/evilC">evilC</Hyperlink> and <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/Snoothy">Snoothy</Hyperlink></TextBlock>
             <TextBlock Margin="0,0,0,5" Name="VersionTextBlock"/>
 
@@ -19,7 +24,7 @@
 
             <TextBlock Margin="0,5,0,5">License</TextBlock>
         </StackPanel>
-        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black">
+        <Border Grid.Row="2" BorderThickness="1" BorderBrush="Black">
             <ScrollViewer>
             <TextBlock Padding="2" TextWrapping="Wrap" Background="White">
                 MIT License
@@ -49,5 +54,14 @@
                 SOFTWARE.</TextBlock>
             </ScrollViewer>
         </Border>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="3">
+            <Button IsCancel="True" Margin="8 4 0 0" Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+                    Content="CLOSE">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
     </Grid>
-</Window>
+</UserControl>

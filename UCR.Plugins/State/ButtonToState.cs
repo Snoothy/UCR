@@ -5,7 +5,7 @@ using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Plugins.State
 {
-    [Plugin("Button to state")]
+    [Plugin("Button to state", Disabled = true)]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]
     public class ButtonToState : Plugin
     {

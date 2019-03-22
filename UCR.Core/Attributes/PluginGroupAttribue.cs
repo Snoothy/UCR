@@ -5,13 +5,10 @@ namespace HidWizards.UCR.Core.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class PluginGroupAttribute : Attribute
     {
-        private string _groupName;
+        public string Group { get; set; }
 
-        public PluginGroupAttribute(string groupName)
+        public PluginGroupAttribute()
         {
-            _groupName = groupName;
         }
-
-        public virtual string GroupName => _groupName;
     }
 }

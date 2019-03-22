@@ -1,13 +1,14 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace HidWizards.UCR.Views
 {
     /// <summary>
     /// Interaction logic for HelpWindow.xaml
     /// </summary>
-    public partial class HelpWindow : Window
+    public partial class HelpDialog : UserControl
     {
-        public HelpWindow()
+        public HelpDialog()
         {
             InitializeComponent();
         }

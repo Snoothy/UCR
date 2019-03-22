@@ -6,17 +6,24 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
     public class PluginToolboxViewModel
     {
-        public ObservableCollection<PluginItemViewModel> PluginList { get; set; }
+        public Dictionary<string, PluginGroupViewModel> PluginGroupList { get; set; }
 
         public PluginToolboxViewModel(List<Plugin> pluginList)
         {
-            PluginList = new ObservableCollection<PluginItemViewModel>();
+            PluginGroupList = new Dictionary<string, PluginGroupViewModel>();
             foreach (var plugin in pluginList)
             {
-                PluginList.Add(new PluginItemViewModel(plugin));
+                var groupName = plugin.Group ?? "Ungrouped";
+                if (!PluginGroupList.ContainsKey(groupName)) PluginGroupList.Add(groupName, new PluginGroupViewModel(groupName));
+                if (!PluginGroupList.TryGetValue(groupName, out var group)) continue;
+                group.Plugins.Add(new PluginItemViewModel(plugin));
             }
 
-            if (pluginList.Count > 0) PluginList[0].FirstElement = true;
+            foreach (var pluginGroup in PluginGroupList.Values)
+            {
+                if (pluginGroup.Plugins.Count > 0) pluginGroup.Plugins[0].FirstElement = true;
+            }
+            
         }
     }
 }

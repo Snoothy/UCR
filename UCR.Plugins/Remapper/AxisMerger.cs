@@ -7,7 +7,7 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis Merger")]
+    [Plugin("Axis Merger", Group = "Axis", Description = "Merge two axes into one output axis")]
     [PluginInput(DeviceBindingCategory.Range, "Axis high")]
     [PluginInput(DeviceBindingCategory.Range, "Axis low")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]

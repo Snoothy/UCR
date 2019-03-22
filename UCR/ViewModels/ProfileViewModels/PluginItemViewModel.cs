@@ -6,6 +6,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
     public class PluginItemViewModel
     {
         public string Name => Plugin.PluginName;
+        public string Description => Plugin.Description;
         public Visibility SeparatorVisibility => FirstElement ? Visibility.Collapsed : Visibility.Visible;
         public bool FirstElement { get; set; }
 

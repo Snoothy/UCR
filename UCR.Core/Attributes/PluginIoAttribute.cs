@@ -7,21 +7,15 @@ namespace HidWizards.UCR.Core.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class PluginIoAttribute : PluginGroupAttribute
     {
-        private DeviceIoType _deviceIoType;
-        private DeviceBindingCategory _deviceBindingCategory;
-        private string _name;
+        public virtual DeviceIoType DeviceIoType { get; }
+        public virtual DeviceBindingCategory DeviceBindingCategory { get; }
+        public virtual string Name { get; }
 
-        public PluginIoAttribute(DeviceIoType deviceIoType, DeviceBindingCategory deviceBindingCategory, string name, string groupName) : base(groupName)
+        public PluginIoAttribute(DeviceIoType deviceIoType, DeviceBindingCategory deviceBindingCategory, string name)
         {
-            _deviceIoType = deviceIoType;
-            _deviceBindingCategory = deviceBindingCategory;
-            _name = name;
+            DeviceIoType = deviceIoType;
+            DeviceBindingCategory = deviceBindingCategory;
+            Name = name;
         }
-
-        public virtual DeviceIoType DeviceIoType => _deviceIoType;
-
-        public virtual DeviceBindingCategory DeviceBindingCategory => _deviceBindingCategory;
-
-        public virtual string Name => _name;
     }
 }

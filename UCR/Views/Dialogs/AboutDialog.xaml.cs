@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace HidWizards.UCR.Views
+namespace HidWizards.UCR.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for About.xaml
     /// </summary>
-    public partial class AboutWindow : Window
+    public partial class AboutDialog : UserControl
     {
-        public AboutWindow()
+        public AboutDialog()
         {
             InitializeComponent();
             VersionTextBlock.Inlines.Add(new Bold(new Run($"Version: {GetVersion()}")));
