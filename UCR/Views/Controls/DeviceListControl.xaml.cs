@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.ViewModels.DeviceViewModels;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Views.Dialogs;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 

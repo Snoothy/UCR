@@ -181,7 +181,7 @@
     <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
       <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TextDialog.xaml.cs">
+    <Compile Include="Views\Dialogs\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -283,7 +283,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TextDialog.xaml">
+    <Page Include="Views\Dialogs\TextDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

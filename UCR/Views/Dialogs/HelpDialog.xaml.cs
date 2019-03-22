@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
-namespace HidWizards.UCR.Views
+namespace HidWizards.UCR.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for HelpWindow.xaml
