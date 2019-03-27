@@ -208,3 +208,6 @@ context.xml
 # Rider
 *.iml
 .idea
+
+# Readthedocs
+docs/_build
