@@ -65,7 +65,7 @@ namespace HidWizards.UCR
                 {
                     FileName = "UCR_unblocker.exe",
                     UseShellExecute = true,
-                    Arguments = Environment.CurrentDirectory,
+                    Arguments = $"\"{Environment.CurrentDirectory}\"",
                     CreateNoWindow = true
                 }
             };
