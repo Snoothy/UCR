@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - UCR Unblocker now uses the current directory as default
 
+### Fixed
+
+- Sum Mode in Axis Merger plugin no longer overflows
+
 ## [0.7.0] - 2019-01-03
 
 ### Changed
@@ -18,8 +22,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Subscription and Bind Mode callbacks are now executed as Tasks and are an Action<short> rather than dynamic
 - Default blocking to true while UCR GUI does not support selecting block
 
-### Fixed
-- Sum Mode in Axis Merger plugin no longer overflows
 
 ## [0.6.0] - 2018-12-03
 
