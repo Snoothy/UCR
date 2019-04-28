@@ -14,9 +14,9 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
-            long value;
+            short value;
 
             if (values[0] == 1 && values[1] == 1)
             {

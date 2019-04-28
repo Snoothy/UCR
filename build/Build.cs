@@ -103,7 +103,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var sonarScanner =
-                $"sonarscanner begin /k:\"Snoothy_UCR\" /d:sonar.organization=\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:\"{GetFullSemanticVersion()}\" ";
+                $"sonarscanner begin /k:\"Snoothy_UCR\" /o:\"snoothy-github\" /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\" /v:\"{GetFullSemanticVersion()}\" ";
             if (AppVeyor.Instance != null && AppVeyor.Instance.PullRequestNumber != 0)
             {
                 DotNet(sonarScanner + $"/d:sonar.pullrequest.provider=GitHub /d:sonar.pullrequest.base=develop /d:sonar.pullrequest.github.repository=\"Snoothy/UCR\" /d:sonar.pullrequest.branch=\"{GitRepository.Branch}\" /d:sonar.pullrequest.key={AppVeyor.Instance.PullRequestNumber}");

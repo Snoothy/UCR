@@ -11,7 +11,7 @@ namespace HidWizards.UCR.Tests.UtilityTests.FunctionTests
         [TestCase(Constants.AxisMinValue, ExpectedResult = Constants.AxisMaxValue, TestName = "Invert: Min returns Max")]
         [TestCase(1, ExpectedResult = -1, TestName = "Invert: 1 returns -1")]
         [TestCase(-1, ExpectedResult = 1, TestName = "Invert: -1 returns 1")]
-        public long InvertTests(long inputValue)
+        public short InvertTests(short inputValue)
         {
             return Functions.Invert(inputValue);
         }
@@ -23,7 +23,7 @@ namespace HidWizards.UCR.Tests.UtilityTests.FunctionTests
         [TestCase(0, ExpectedResult = 0, TestName = "ClampAxisRange: 0 returns 0")]
         [TestCase(1, ExpectedResult = 1, TestName = "ClampAxisRange: 1 returns 1")]
         [TestCase(-1, ExpectedResult = -1, TestName = "ClampAxisRange: -1 returns -1")]
-        public long ClampTests(long inputValue)
+        public short ClampTests(int inputValue)
         {
             return Functions.ClampAxisRange(inputValue);
         }
@@ -36,7 +36,7 @@ namespace HidWizards.UCR.Tests.UtilityTests.FunctionTests
         [TestCase(Constants.AxisMaxValue, false, ExpectedResult = Constants.AxisMinValue, TestName = "SplitAxis (Low): Positive values return Min")]
         [TestCase(1, true, ExpectedResult = -32766, TestName = "SplitAxis (High): 1 returns -32766")]
         [TestCase(-1, false, ExpectedResult = -32766, TestName = "SplitAxis (Low): -1 returns -32766")]
-        public long SplitTests(long inputValue, bool positiveRange)
+        public long SplitTests(short inputValue, bool positiveRange)
         {
             return Functions.SplitAxis(inputValue, positiveRange);
         }

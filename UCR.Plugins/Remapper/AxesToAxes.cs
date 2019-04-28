@@ -59,9 +59,9 @@ namespace HidWizards.UCR.Plugins.Remapper
             _linearSensitivityScaleFactor = ((double)Sensitivity / 100);
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
-            var outputValues = new long[] {values[0], values[1]};
+            var outputValues = new short[] {values[0], values[1]};
             if (DeadZone != 0)
             {
                 if (CircularDz)
@@ -79,8 +79,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 if (Linear)
                 {
-                    outputValues[0] = (long)(outputValues[0] * _linearSensitivityScaleFactor);
-                    outputValues[1] = (long)(outputValues[1] * _linearSensitivityScaleFactor);
+                    outputValues[0] = (short) (outputValues[0] * _linearSensitivityScaleFactor);
+                    outputValues[1] = (short) (outputValues[1] * _linearSensitivityScaleFactor);
                 }
                 else
                 {

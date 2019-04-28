@@ -20,7 +20,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
         }
 
 
-        private void WriteOutput(long value)
+        private void WriteOutput(short value)
         {
             DeviceBinding.Profile.Context.IOController.SetOutputstate(SubscriptionsManager.GetOutputSubscriptionRequest(SubscriptionStateGuid, DeviceSubscription), SubscriptionsManager.GetBindingDescriptor(DeviceBinding), (int)value);
         }

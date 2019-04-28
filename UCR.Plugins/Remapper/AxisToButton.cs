@@ -31,12 +31,11 @@ namespace HidWizards.UCR.Plugins.Remapper
             Initialize();
         }
 
-        public override void Update(params long[] values)
+        public override void Update(params short[] values)
         {
             var value = values[0];
             if (Invert) value = Functions.Invert(value);
-            value = Math.Sign(_deadZoneHelper.ApplyRangeDeadZone(value));
-            switch (value)
+            switch (Math.Sign(_deadZoneHelper.ApplyRangeDeadZone(value)))
             {
                 case 0:
                     WriteOutput(0, 0);
