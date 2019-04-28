@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Width="auto"
-              Header="{Binding Mapping.FullTitle}"
+              Header="{Binding MappingTitle}"
               Style="{StaticResource MaterialDesignCardGreyGroupBox}"
               Margin="4 6 4 6">
         <GroupBox.HeaderTemplate>
@@ -27,13 +27,15 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBlock Margin="0"
-                            VerticalAlignment="Center"
-                            Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-                            Text="{Binding}" />
+                    <TextBlock Margin="0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" />
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button ToolTip="Rename mapping"
+                                Style="{StaticResource MaterialDesignCardButton}"
+                                Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                Click="Rename_OnClick">
+                            <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
+                        </Button>
                         <Button ToolTip="Remove mapping"
                                 Style="{StaticResource MaterialDesignGroupBoxButton}"
                                 Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
@@ -46,7 +48,6 @@
         </GroupBox.HeaderTemplate>
         <StackPanel>
             <StackPanel>
-                <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}">Inputs</TextBlock>
                 <ItemsControl ItemsSource="{Binding DeviceBindings}"
                           HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>

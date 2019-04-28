@@ -41,6 +41,12 @@ namespace HidWizards.UCR.Core.Models
             Title = title;
         }
 
+        public void Rename(string title)
+        {
+            Title = title;
+            Profile.Context.ContextChanged();
+        }
+
         internal bool IsBound()
         {
             if (DeviceBindings.Count == 0) return false;
@@ -167,5 +173,6 @@ namespace HidWizards.UCR.Core.Models
                 DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
             }
         }
+
     }
 }

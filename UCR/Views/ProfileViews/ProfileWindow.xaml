@@ -78,7 +78,7 @@
             </ToolBarTray>
         </Grid>
 
-        <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="ProfileDialog">
+        <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="{Binding ProfileDialogIdentifier}">
             <Grid Margin="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>

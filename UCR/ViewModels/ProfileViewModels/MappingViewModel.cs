@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Views.Dialogs;
 using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
-    public class MappingViewModel
+    public class MappingViewModel : INotifyPropertyChanged
     {
+        public string MappingTitle => Mapping.FullTitle;
         public ProfileViewModel ProfileViewModel { get; }
         public Mapping Mapping { get; set; }
         public ObservableCollection<PluginViewModel> Plugins { get; set; }
@@ -67,6 +71,24 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             {
                 Plugins.Add(new PluginViewModel(this, mappingPlugin));
             }
+        }
+
+        public async void Rename()
+        {
+            var dialog = new SimpleDialog("Rename mapping", "Mapping name", Mapping.Title);
+            var result = (bool?)await DialogHost.Show(dialog, ProfileViewModel.ProfileDialogIdentifier);
+            if (result == null || !result.Value) return;
+
+            Mapping.Rename(dialog.Value);
+            OnPropertyChanged(nameof(MappingTitle));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

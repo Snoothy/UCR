@@ -64,20 +64,17 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         private async void AddMapping_OnClick(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button)
-            {
-                if (button.DataContext is PluginItemViewModel pluginItem)
-                {
-                    var dialog = new SimpleDialog("Create mapping for: " + pluginItem.Name, "Mapping name", "");
-                    var result = (bool?)await DialogHost.Show(dialog, "ProfileDialog");
-                    if (result == null || !result.Value) return;
+            if (!(sender is Button button)) return;
+            if (!(button.DataContext is PluginItemViewModel pluginItem)) return;
 
-                    var mappingViewModel = ProfileViewModel.AddMapping(dialog.Value);
-                    mappingViewModel.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(pluginItem.Plugin), null);
-                    MappingListView.ScrollIntoView(MappingListView.Items[MappingListView.Items.Count - 1]);
-                }
-            }
-            
+            var dialog = new SimpleDialog("Create mapping for: " + pluginItem.Name, "Mapping name", "");
+            var result = (bool?)await DialogHost.Show(dialog, ProfileViewModel.ProfileDialogIdentifier);
+            if (result == null || !result.Value) return;
+
+            var mappingViewModel = ProfileViewModel.AddMapping(dialog.Value);
+            mappingViewModel.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(pluginItem.Plugin), null);
+            MappingListView.ScrollIntoView(MappingListView.Items[MappingListView.Items.Count - 1]);
+
         }
     }
 }

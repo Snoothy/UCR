@@ -16,5 +16,11 @@ namespace HidWizards.UCR.Views.Controls
             var mappingViewModel = DataContext as MappingViewModel;
             mappingViewModel?.Remove();
         }
+
+        private void Rename_OnClick(object sender, RoutedEventArgs e)
+        {
+            var mappingViewModel = DataContext as MappingViewModel;
+            mappingViewModel?.Rename();
+        }
     }
 }

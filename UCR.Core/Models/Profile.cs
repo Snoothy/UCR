@@ -47,7 +47,7 @@ namespace HidWizards.UCR.Core.Models
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
         internal ConcurrentDictionary<Guid, bool> StateDictionary { get; set; }
-
+        
         #region Constructors
 
         public Profile()

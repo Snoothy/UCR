@@ -15,7 +15,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public bool CanDeactivateProfile => Profile.Context.ActiveProfile != null;
         public ObservableCollection<MappingViewModel> MappingsList { get; set; }
         public PluginToolboxViewModel PluginToolbox { get; set; }
-        
+        public string ProfileDialogIdentifier => $"ProfileDialog-{Profile.Guid}";
 
         public ProfileViewModel()
         {
@@ -64,7 +64,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             if (mappingViewModel.Mapping.DeviceBindings.Count > 0)
             {
                 var dialog = new BoolDialog("Remove mapping", "Are you sure you want to remove the mapping: " + mappingViewModel.Mapping.Title + "?");
-                var result = (bool?)await DialogHost.Show(dialog, "ProfileDialog");
+                var result = (bool?)await DialogHost.Show(dialog, ProfileDialogIdentifier);
                 if (result == null || !result.Value) return;
             }
 
