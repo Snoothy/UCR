@@ -67,6 +67,7 @@ class Build : NukeBuild
         {
             Git("submodule init");
             Git("submodule update");
+
             NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
         });
 
@@ -88,8 +89,6 @@ class Build : NukeBuild
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            DeleteDirectory(IoWrapperDirectory / "Artifacts");
-            EnsureDirectory(IoWrapperDirectory / "Artifacts");
             CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", Solution.Directory / "dependencies", DirectoryExistsPolicy.Merge);
         });
 
