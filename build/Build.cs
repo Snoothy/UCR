@@ -67,7 +67,7 @@ class Build : NukeBuild
         {
             Git("submodule init");
             Git("submodule update");
-            NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
+            //NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
         });
 
     Target CompileSubmodules => _ => _
