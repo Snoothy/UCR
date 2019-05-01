@@ -1,15 +1,16 @@
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
 using Nuke.Common.BuildServers;
 using Nuke.Common.Git;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NuGet;
-using Nuke.Common.Tools.Nunit;
+using Nuke.Common.Tools.NUnit;
 using Nuke.Common.Tools.GitVersion;
-using Nuke.Core.Tooling;
-using ToolSettingsExtensions = Nuke.Common.Tooling.ToolSettingsExtensions;
+using Nuke.Common.Tooling;
 
 using static Nuke.Common.Tools.Git.GitTasks;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
@@ -19,14 +20,15 @@ using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.GitVersion.GitVersionTasks;
-using static Nuke.Common.Tools.Nunit.NunitTasks;
-using static Nuke.Compression.CompressionTasks;
+using static Nuke.Common.Tools.NUnit.NUnitTasks;
+using static Nuke.Common.IO.CompressionTasks;
 
 
 class Build : NukeBuild
 {
     public static int Main () => Execute<Build>(x => x.Test);
 
+    [Parameter] string Configuration { get; } = IsLocalBuild ? "Debug" : "Release";
     [Parameter] string CodeAnalysis;
 
     [Solution] readonly Solution Solution;
@@ -40,11 +42,7 @@ class Build : NukeBuild
     AbsolutePath IoWrapperSolution => IoWrapperDirectory / (IoWrapper + ".sln");
     AbsolutePath UcrOutputDirectory => RootDirectory / "UCR" / "bin" / Configuration;
     AbsolutePath TestDirectory => RootDirectory / "UCR.Tests";
-
-    MSBuildSettings DefaultIoWrapperMSBuild => ToolSettingsExtensions
-        .SetWorkingDirectory(DefaultMSBuildCompile, IoWrapperDirectory)
-        .SetSolutionFile(IoWrapperSolution)
-        .SetVerbosity(MSBuildVerbosity.Quiet);
+    AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
 
     Target CleanArtifacts => _ => _
         .Executes(() =>
@@ -56,8 +54,10 @@ class Build : NukeBuild
         .DependsOn(CleanArtifacts)
         .Executes(() =>
         {
-            DeleteDirectories(GlobDirectories(RootDirectory, "**/bin", "**/obj"));
-            EnsureCleanDirectory(OutputDirectory);
+            var outputDirectories = GlobDirectories(RootDirectory, "**/bin", "**/obj").ToList();
+            outputDirectories.RemoveAll(s => s.StartsWith(RootDirectory / "build"));
+            outputDirectories.ForEach(DeleteDirectory);
+
             EnsureExistingDirectory(RootDirectory / "Providers");
             EnsureExistingDirectory(RootDirectory / "Plugins");
         });
@@ -67,6 +67,7 @@ class Build : NukeBuild
         {
             Git("submodule init");
             Git("submodule update");
+
             NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
         });
 
@@ -74,9 +75,12 @@ class Build : NukeBuild
         .DependsOn(RestoreSubmodules)
         .Executes(() =>
         {
-            MSBuild(s => DefaultIoWrapperMSBuild
-                .SetTargets("Restore","Rebuild")
-                .SetConfiguration(Configuration)
+            MSBuild(s => s
+                    .SetWorkingDirectory(IoWrapperDirectory)
+                    .SetSolutionFile(IoWrapperSolution)
+                    .SetVerbosity(MSBuildVerbosity.Quiet)
+                    .SetTargets("Restore","Rebuild")
+                    .SetConfiguration(Configuration)
             );
         });
 
@@ -85,21 +89,21 @@ class Build : NukeBuild
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", SolutionDirectory / "dependencies", FileExistsPolicy.Overwrite);
+            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", Solution.Directory / "dependencies", DirectoryExistsPolicy.Merge);
         });
 
     Target Restore => _ => _
         .Executes(() =>
         {
-            NuGetTasks.NuGetRestore(s => s.SetTargetPath(SolutionFile));
+            NuGetTasks.NuGetRestore(s => s.SetTargetPath(Solution));
             MSBuild(s => s
-                .SetTargetPath(SolutionFile)
+                .SetTargetPath(Solution)
                 .SetTargets("Restore")
             );
         });
 
     Target StartCodeAnalysis => _ => _
-        .OnlyWhen(() => !string.IsNullOrEmpty(CodeAnalysis))
+        .OnlyWhenStatic(() => !string.IsNullOrEmpty(CodeAnalysis))
         .Executes(() =>
         {
             var sonarScanner =
@@ -135,7 +139,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             MSBuild(s => s
-                .SetTargetPath(SolutionFile)
+                .SetTargetPath(Solution)
                 .SetTargets("Rebuild")
                 .SetConfiguration(Configuration)
                 .SetVerbosity(MSBuildVerbosity.Normal)
@@ -146,8 +150,8 @@ class Build : NukeBuild
             );
         });
 
-    Target EndCodeAnalysis => _ => _
-    .OnlyWhen(() => !string.IsNullOrEmpty(CodeAnalysis))
+    Target EndCodeAnalysis => _ => _ 
+    .OnlyWhenStatic(() => !string.IsNullOrEmpty(CodeAnalysis))
     .Executes(() =>
     {
         DotNet($"sonarscanner end /d:sonar.login=\"cad188647aee521b62439577ebe235d6a61e750c\"");
@@ -157,7 +161,7 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            Nunit3(s => s
+            NUnit3(s => s
                 .AddInputFiles(GlobFiles(TestDirectory, $"**/bin/{Configuration}/UCR.Tests.dll").NotEmpty())
                 .EnableNoResults()
             );
@@ -169,8 +173,8 @@ class Build : NukeBuild
         .DependsOn(Test)
         .Executes(() =>
         {
-            if (!Directory.Exists(ArtifactsDirectory)) Directory.CreateDirectory(ArtifactsDirectory);
-            CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, FileExistsPolicy.Overwrite);
+            EnsureDirectory(ArtifactsDirectory);
+            CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, DirectoryExistsPolicy.Merge);
             
             CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
@@ -205,4 +209,8 @@ class Build : NukeBuild
         return $"v{GetCurrentVersion()}-{GitRepository.Branch}{additionalVersion}".Replace('/', '.');
     }
 
+    void EnsureDirectory(AbsolutePath path)
+    {
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+    }
 }
