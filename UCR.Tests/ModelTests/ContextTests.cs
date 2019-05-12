@@ -24,7 +24,8 @@ namespace HidWizards.UCR.Tests.ModelTests
             var context = new Context();
             Assert.That(context.Profiles.Count, Is.EqualTo(0));
             var profileName = "Test";
-            context.ProfilesManager.AddProfile(profileName);
+            var profile = context.ProfilesManager.CreateProfile(profileName, null, null);
+            context.ProfilesManager.AddProfile(profile);
             Assert.That(context.Profiles.Count, Is.EqualTo(1));
             Assert.That(context.Profiles[0].Title, Is.EqualTo(profileName));
             Assert.That(context.Profiles[0].Guid, Is.Not.EqualTo(Guid.Empty));

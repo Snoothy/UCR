@@ -24,7 +24,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             _context = new Context();
             _profileName = "Test";
-            _context.ProfilesManager.AddProfile(_profileName);
+            var profile = _context.ProfilesManager.CreateProfile(_profileName, null, null);
+            _context.ProfilesManager.AddProfile(profile);
             _profile = _context.Profiles[0];
         }
 

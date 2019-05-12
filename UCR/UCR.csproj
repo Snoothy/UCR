@@ -182,9 +182,6 @@
     <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\ProfileDialog.xaml.cs">
-      <DependentUpon>ProfileDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml.cs">
       <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
     </Compile>
@@ -289,10 +286,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProfileViews\PluginDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ProfileViews\ProfileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

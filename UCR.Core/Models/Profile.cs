@@ -84,21 +84,17 @@ namespace HidWizards.UCR.Core.Models
 
         #region Actions
 
-        public static Profile CreateProfile(Context context, string title, Profile parent = null)
+        public static Profile CreateProfile(Context context, string title, List<Device> inputDevices,
+            List<Device> outputDevices, Profile parent = null)
         {
             var profile = new Profile(context, parent)
             {
-                Title = title
+                Title = title,
+                InputDevices = inputDevices,
+                OutputDevices = outputDevices
             };
 
             return profile;
-        }
-
-        public void AddNewChildProfile(string title)
-        {
-            if (ChildProfiles == null) ChildProfiles = new List<Profile>();
-            ChildProfiles.Add(CreateProfile(Context, title, this));
-            Context.ContextChanged();
         }
 
         public void AddChildProfile(Profile profile)
@@ -198,7 +194,8 @@ namespace HidWizards.UCR.Core.Models
 
         public List<Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            return GetDeviceGroup(deviceIoType)?.Devices ?? new List<Device>();
+            // TODO Merge with parents devices
+            return deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
         }
 
         public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType)

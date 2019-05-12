@@ -7,6 +7,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
+             xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignData Source=/SampleData/CreateProfileDialogSampleData.xaml}"
@@ -34,7 +35,7 @@
                  Margin="0 6 0 0"
                  FontSize="18" Grid.Row="1">
                 <TextBox.Text>
-                    <Binding Path="Value" UpdateSourceTrigger="PropertyChanged">
+                    <Binding Path="ProfileName" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
                         </Binding.ValidationRules>
@@ -45,12 +46,9 @@
                     Margin="0 16 0 0">
                 <Button IsDefault="True" 
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}" 
-                    Content="CREATE">
-                    <Button.CommandParameter>
-                        <system:Boolean>True</system:Boolean>
-                    </Button.CommandParameter>
+                    Content="CREATE" CommandParameter="{Binding ViewModel}">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Source={x:Reference TextValue}, Path=Text}" Value="">
                                     <Setter Property="IsEnabled" Value="False" />
@@ -63,7 +61,7 @@
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
                     Content="CANCEL">
                     <Button.CommandParameter>
-                        <system:Boolean>False</system:Boolean>
+                        <dashboard:CreateProfileDialogViewModel/>
                     </Button.CommandParameter>
                 </Button>
             </StackPanel>

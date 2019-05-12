@@ -23,7 +23,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void Setup()
         {
             _context = new Context();
-            _context.ProfilesManager.AddProfile("Base Profile");
+            var profile = _context.ProfilesManager.CreateProfile("Base Profile", null, null);
+            _context.ProfilesManager.AddProfile(profile);
             _profile = _context.Profiles[0];
             _mapping = _profile.AddMapping("Test mapping");
             _profileName = "Test";
@@ -33,7 +34,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void AddChildProfile()
         {
             Assert.That(_profile.ChildProfiles.Count, Is.EqualTo(0));
-            _profile.AddNewChildProfile(_profileName);
+            var childProfile = _context.ProfilesManager.CreateProfile(_profileName, null, null);
+            _profile.AddChildProfile(childProfile);
             Assert.That(_profile.ChildProfiles.Count, Is.EqualTo(1));
             Assert.That(_profile.ChildProfiles[0].Title, Is.EqualTo(_profileName));
             Assert.That(_profile.ChildProfiles[0].ParentProfile, Is.EqualTo(_profile));
@@ -46,7 +48,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void RemoveChildProfile()
         {
             Assert.That(_profile.ChildProfiles.Count, Is.EqualTo(0));
-            _profile.AddNewChildProfile(_profileName);
+            var childProfile = _context.ProfilesManager.CreateProfile(_profileName, null, null);
+            _profile.AddChildProfile(childProfile);
             Assert.That(_profile.ChildProfiles.Count, Is.EqualTo(1));
             Assert.That(_profile.ChildProfiles[0].Title, Is.EqualTo(_profileName));
             _profile.ChildProfiles[0].Remove();
@@ -132,7 +135,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             var profileManager = new ProfilesManager(_context, _context.Profiles);
             var parentProfile = _context.Profiles[0];
-            parentProfile.AddNewChildProfile("Child");
+            var childProfile = _context.ProfilesManager.CreateProfile("Child", null, null);
+            parentProfile.AddChildProfile(childProfile);
             var profile = parentProfile.ChildProfiles[0];
             profileManager.CopyProfile(profile, "Copy");
             var newProfile = parentProfile.ChildProfiles[1];

@@ -54,7 +54,15 @@ namespace HidWizards.UCR.Core
             InputGroups = new List<DeviceGroup>();
             OutputGroups = new List<DeviceGroup>();
 
-            IOController = new IOController();
+            try
+            {
+                IOController = new IOController();
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Logger.Error("IOWrapper provider directory not found", e);
+            }
+            
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);

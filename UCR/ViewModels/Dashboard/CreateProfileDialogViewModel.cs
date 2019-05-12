@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HidWizards.UCR.Core.Managers;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels.Controls;
@@ -15,10 +16,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
     {
 
         public string Title { get; set; }
-
+        public string ProfileName { get; set; }
         public DeviceSelectControlViewModel InputControl { get; set; }
         public DeviceSelectControlViewModel OutputControl { get; set; }
-        
+        public CreateProfileDialogViewModel ViewModel => this;
+
         public CreateProfileDialogViewModel()
         {
         }
@@ -26,7 +28,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         public CreateProfileDialogViewModel(string title, DevicesManager devicesManager)
         {
             Title = title;
-
+            
             var inputDevices = GetDeviceList(devicesManager.GetAvailableDeviceList(DeviceIoType.Input));
             var outputDevices = GetDeviceList(devicesManager.GetAvailableDeviceList(DeviceIoType.Output));
 
@@ -49,6 +51,16 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             if (result.Count > 0) result[0].FirstElement = true;
 
             return result;
+        }
+
+        public List<Device> GetInputDevices()
+        {
+            return InputControl.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
+        }
+
+        public List<Device> GetOutputDevices()
+        {
+            return OutputControl.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
         }
     }
 }

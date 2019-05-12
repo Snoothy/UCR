@@ -103,19 +103,25 @@ namespace HidWizards.UCR.Views
         private async void AddProfile(object sender, RoutedEventArgs e)
         {
             var dialog = new CreateProfileDialog("Create profile", Context.DevicesManager);
-            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
-            if (result == null || !result.Value) return;
+            var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            Context.ProfilesManager.AddProfile(profile);
 
             // TODO Open new profile
             ReloadProfileTree();
         }
 
-        private void AddChildProfile(object sender, RoutedEventArgs e)
+        private async void AddChildProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
-            var w = new ProfileDialog(Context, profileItem.Profile);
-            w.ShowDialog();
-            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            var dialog = new CreateProfileDialog("Create child profile", Context.DevicesManager);
+            var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            Context.ProfilesManager.AddProfile(profile, profileItem.Profile);
 
             ReloadProfileTree();
         }

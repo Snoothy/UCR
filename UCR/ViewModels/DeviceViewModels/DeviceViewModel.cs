@@ -21,7 +21,7 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
         public Visibility SeparatorVisibility => FirstElement ? Visibility.Collapsed : Visibility.Visible;
         public bool FirstElement { get; set; }
 
-        private Device _device;
+        public Device Device { get; }
 
         public DeviceViewModel()
         {
@@ -29,7 +29,7 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
 
         public DeviceViewModel(Device device)
         {
-            _device = device;
+            Device = device;
             Title = device.Title;
             ProviderName = device.ProviderName;
         }

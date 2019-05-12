@@ -112,7 +112,8 @@
                                     <StackPanel>
                                         <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0"
                                               Background="Transparent"
-                                              HorizontalAlignment="Stretch">
+                                              HorizontalAlignment="Stretch"
+                                              IsExpanded="True">
                                             <Expander.Header>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
