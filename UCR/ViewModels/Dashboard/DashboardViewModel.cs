@@ -63,11 +63,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
             foreach (var inputDevice in GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input))
             {
-                InputDevices.Add(new DeviceItem(inputDevice));
+                InputDevices.Add(new DeviceItem(inputDevice, SelectedProfileItem.Profile));
             }
             foreach (var outputDevice in GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output))
             {
-                OutputDevices.Add(new DeviceItem(outputDevice));
+                OutputDevices.Add(new DeviceItem(outputDevice, SelectedProfileItem.Profile));
             }
 
             OnPropertyChanged(nameof(InputDevices));

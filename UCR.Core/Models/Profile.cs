@@ -173,7 +173,9 @@ namespace HidWizards.UCR.Core.Models
             var result = new List<Device>();
             if (ParentProfile != null) result.AddRange(ParentProfile.GetDeviceList(deviceIoType));
 
-            result.AddRange(deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices);
+            var devices = deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
+            devices.ForEach(d => d.Profile = this);
+            result.AddRange(devices);
 
             return result;
         }
