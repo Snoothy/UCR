@@ -81,11 +81,12 @@
         <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="{Binding ProfileDialogIdentifier}">
             <Grid Margin="8">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="178*"/>
+                    <ColumnDefinition Width="147*"/>
+                    <ColumnDefinition Width="649*"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}">
+                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Grid.ColumnSpan="2">
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
@@ -104,61 +105,62 @@
                             </Grid>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
-                    <ItemsControl ItemsSource="{Binding PluginToolbox.PluginGroupList.Values}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0"
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="-9">
+                        <ItemsControl ItemsSource="{Binding PluginToolbox.PluginGroupList.Values}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0"
                                               Background="Transparent"
                                               HorizontalAlignment="Stretch">
-                                        <Expander.Header>
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 4 4 4" Text="{Binding Group}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
-                                                <Separator Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
-                                            </Grid>
-                                        </Expander.Header>
+                                            <Expander.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 4 4 4" Text="{Binding Group}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+                                                    <Separator Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
+                                                </Grid>
+                                            </Expander.Header>
 
-                                        <ItemsControl ItemsSource="{Binding Plugins}" Margin="0 0 0 8">    
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel>
-                                                        <Separator Visibility="{Binding SeparatorVisibility}" Style="{StaticResource MaterialDesignSeparator}"/>
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <StackPanel Grid.Column="0" Margin="0 8">
-                                                                <TextBlock Text="{Binding Name}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                                <TextBlock Text="{Binding Description}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
-                                                            </StackPanel>
-                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                                <Button HorizontalAlignment="Right" ToolTip="Add mapping"
-                                                                        Style="{StaticResource MaterialDesignCardButton}"
-                                                                        Click="AddMapping_OnClick">
-                                                                    <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </Expander>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                            <ItemsControl ItemsSource="{Binding Plugins}" Margin="16 0 8 0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <StackPanel Grid.Column="0" Margin="0 16" VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Name}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                                                    <TextBlock Text="{Binding Description}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                                </StackPanel>
+                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                    <Button HorizontalAlignment="Right" ToolTip="Add mapping"
+                                                                            Style="{StaticResource MaterialDesignCardButton}"
+                                                                            Click="AddMapping_OnClick">
+                                                                        <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                                                    </Button>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Expander>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </GroupBox>
 
-                <ListView Grid.Row="0" Grid.Column="1" 
+                <ListView Grid.Row="0" Grid.Column="2" 
                           x:Name="MappingListView"
                           ItemsSource="{Binding MappingsList}" 
                           Margin="0 -8 -8 -8"

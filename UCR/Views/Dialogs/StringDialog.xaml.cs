@@ -4,12 +4,12 @@ using HidWizards.UCR.ViewModels.Dialogs;
 
 namespace HidWizards.UCR.Views.Dialogs
 {
-    public partial class SimpleDialog : UserControl
+    public partial class StringDialog : UserControl
     {
         public string Value => ViewModel.Value;
         private StringDialogViewModel ViewModel { get; set; }
 
-        public SimpleDialog(string title, string hint, string value)
+        public StringDialog(string title, string hint, string value)
         {
             ViewModel = new StringDialogViewModel()
             {

@@ -102,9 +102,12 @@
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
+    <Compile Include="ViewModels\Controls\DeviceSelectControlViewModel.cs" />
+    <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
+    <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
@@ -121,6 +124,9 @@
     </Compile>
     <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
       <DependentUpon>DeviceListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DeviceSelectControl.xaml.cs">
+      <DependentUpon>DeviceSelectControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\MappingCardControl.xaml.cs">
       <DependentUpon>MappingCardControl.xaml</DependentUpon>
@@ -161,6 +167,9 @@
       <DependentUpon>DecisionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\Validators\NotEmptyValidationRule.cs" />
+    <Compile Include="Views\Dialogs\CreateProfileDialog.xaml.cs">
+      <DependentUpon>CreateProfileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\StringDialog.xaml.cs">
       <DependentUpon>StringDialog.xaml</DependentUpon>
     </Compile>
@@ -208,11 +217,18 @@
     <DesignData Include="SampleData\DashboardSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
+    <Page Include="SampleData\CreateProfileDialogSampleData.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\DeviceListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DeviceSelectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -259,6 +275,10 @@
     <Page Include="Views\Dialogs\DecisionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\CreateProfileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\StringDialog.xaml">
       <SubType>Designer</SubType>

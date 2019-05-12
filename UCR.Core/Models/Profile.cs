@@ -18,6 +18,10 @@ namespace HidWizards.UCR.Core.Models
         public List<Profile> ChildProfiles { get; set; }
         public List<State> States { get; set; }
         public List<Mapping> Mappings { get; set; }
+
+        public List<Device> InputDevices { get; set; }
+        public List<Device> OutputDevices { get; set; }
+
         public Guid InputDeviceGroupGuid { get; set; }
         public Guid OutputDeviceGroupGuid { get; set; }
 
@@ -67,6 +71,8 @@ namespace HidWizards.UCR.Core.Models
             ChildProfiles = new List<Profile>();
             States = new List<State>();
             Mappings = new List<Mapping>();
+            InputDevices = new List<Device>();
+            OutputDevices = new List<Device>();
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)

@@ -1,0 +1,17 @@
+﻿<dashboard:CreateProfileDialogViewModel xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
+                             xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
+                             xmlns:profileViewModels="clr-namespace:HidWizards.UCR.ViewModels.ProfileViewModels"
+                             xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
+                             xmlns:deviceViewModels="clr-namespace:HidWizards.UCR.ViewModels.DeviceViewModels"
+                             xmlns:controls="clr-namespace:HidWizards.UCR.ViewModels.Controls">
+    <dashboard:CreateProfileDialogViewModel.InputControl>
+        <controls:DeviceSelectControlViewModel>
+            <controls:DeviceSelectControlViewModel.Devices>
+                <deviceViewModels:DeviceViewModel Title="Xbox controller 1" ProviderName="DX provider"/>
+                <deviceViewModels:DeviceViewModel Title="Xbox controller 2" ProviderName="DX provider"/>
+                <deviceViewModels:DeviceViewModel Title="Some custom controller (Extra buttons)" ProviderName="DX provider"/>
+            </controls:DeviceSelectControlViewModel.Devices>
+        </controls:DeviceSelectControlViewModel>
+    </dashboard:CreateProfileDialogViewModel.InputControl>
+
+</dashboard:CreateProfileDialogViewModel>

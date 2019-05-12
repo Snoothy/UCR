@@ -75,7 +75,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
         public async void Rename()
         {
-            var dialog = new SimpleDialog("Rename mapping", "Mapping name", Mapping.Title);
+            var dialog = new StringDialog("Rename mapping", "Mapping name", Mapping.Title);
             var result = (bool?)await DialogHost.Show(dialog, ProfileViewModel.ProfileDialogIdentifier);
             if (result == null || !result.Value) return;
 

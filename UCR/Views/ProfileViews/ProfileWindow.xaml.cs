@@ -7,7 +7,6 @@ using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels.ProfileViewModels;
 using HidWizards.UCR.Views.Dialogs;
 using MaterialDesignThemes.Wpf;
-using UCR.Views.ProfileViews;
 
 namespace HidWizards.UCR.Views.ProfileViews
 {
@@ -67,7 +66,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PluginItemViewModel pluginItem)) return;
 
-            var dialog = new SimpleDialog("Create mapping for: " + pluginItem.Name, "Mapping name", "");
+            var dialog = new StringDialog("Create mapping for: " + pluginItem.Name, "Mapping name", "");
             var result = (bool?)await DialogHost.Show(dialog, ProfileViewModel.ProfileDialogIdentifier);
             if (result == null || !result.Value) return;
 

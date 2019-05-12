@@ -5,9 +5,8 @@ using System.Windows.Controls;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.ViewModels;
-using HidWizards.UCR.Views.ProfileViews;
 
-namespace UCR.Views.ProfileViews
+namespace HidWizards.UCR.Views.ProfileViews
 {
     /// <summary>
     /// Interaction logic for ProfileDeviceGroupWindow.xaml

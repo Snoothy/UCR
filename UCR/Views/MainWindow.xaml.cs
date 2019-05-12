@@ -11,8 +11,8 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
+using HidWizards.UCR.Views.ProfileViews;
 using MaterialDesignThemes.Wpf;
-using UCR.Views.ProfileViews;
 using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
@@ -100,12 +100,13 @@ namespace HidWizards.UCR.Views
             }
         }
 
-        private void AddProfile(object sender, RoutedEventArgs e)
+        private async void AddProfile(object sender, RoutedEventArgs e)
         {
-            var w = new ProfileDialog(Context, null);
-            w.ShowDialog();
-            if (!w.DialogResult.HasValue || !w.DialogResult.Value) return;
+            var dialog = new CreateProfileDialog("Create profile", Context.DevicesManager);
+            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.Value) return;
 
+            // TODO Open new profile
             ReloadProfileTree();
         }
 
@@ -158,7 +159,7 @@ namespace HidWizards.UCR.Views
         private async void RenameProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
-            var dialog = new SimpleDialog("Rename profile", "Profile name", profileItem.Profile.Title);
+            var dialog = new StringDialog("Rename profile", "Profile name", profileItem.Profile.Title);
             var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.Value) return;
 
@@ -169,7 +170,7 @@ namespace HidWizards.UCR.Views
         private async void CopyProfile(object sender, RoutedEventArgs e)
         {
             if (!GetSelectedItem(out var profileItem)) return;
-            var dialog = new SimpleDialog("Copy profile", "Profile name", profileItem.Profile.Title + " Copy");
+            var dialog = new StringDialog("Copy profile", "Profile name", profileItem.Profile.Title + " Copy");
             var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.Value) return;
 
