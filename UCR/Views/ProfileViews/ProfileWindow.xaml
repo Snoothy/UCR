@@ -140,7 +140,8 @@
                                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                     <Button HorizontalAlignment="Right" ToolTip="Add mapping"
                                                                             Style="{StaticResource MaterialDesignCardButton}"
-                                                                            Click="AddMapping_OnClick">
+                                                                            Click="AddMapping_OnClick"
+                                                                            IsEnabled="{Binding IsEnabled}">
                                                                         <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
                                                                     </Button>
                                                                 </StackPanel>
@@ -168,6 +169,25 @@
                             <Setter Property="Focusable" Value="False"/>
                         </Style>
                     </ListView.ItemContainerStyle>
+                    <ListView.Style>
+                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}">
+                            <Style.Triggers>
+                                <Trigger Property="HasItems" Value="False">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Margin="4">Click the</TextBlock>
+                                                    <materialDesign:PackIcon Kind="Plus" Height="16" Width="16" Margin="4"/>
+                                                    <TextBlock Margin="4">next to a Plugin to add your first mapping</TextBlock>
+                                                </StackPanel>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Style>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <controls:MappingCardControl/>

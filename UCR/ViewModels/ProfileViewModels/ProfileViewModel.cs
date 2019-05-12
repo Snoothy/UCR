@@ -29,7 +29,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             PopulateMappingsList(profile);
             var pluginList = profile.Context.GetPlugins();
             pluginList.Sort();
-            PluginToolbox = new PluginToolboxViewModel(pluginList);
+            PluginToolbox = new PluginToolboxViewModel(profile, pluginList);
         }
 
         private void ContextOnActiveProfileChangedEvent(Profile profile)
