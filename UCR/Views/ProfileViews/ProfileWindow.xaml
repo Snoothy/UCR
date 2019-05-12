@@ -70,10 +70,6 @@
                     <Button IsEnabled="{Binding CanDeactivateProfile}" ToolTip="Stop active profile" Click="DeactivateProfile">
                         <materialDesign:PackIcon Kind="Stop"/>
                     </Button>
-                    <Separator />
-                    <Button ToolTip="Manage device groups" Click="ManageDeviceGroups_OnClick">
-                        <materialDesign:PackIcon Kind="GoogleController"/>
-                    </Button>
                 </ToolBar>
             </ToolBarTray>
         </Grid>

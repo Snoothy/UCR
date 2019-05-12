@@ -73,7 +73,6 @@
     <Compile Include="Managers\BindingManager.cs" />
     <Compile Include="Managers\SubscriptionsManager.cs" />
     <Compile Include="Models\Binding\DeviceBindingNode.cs" />
-    <Compile Include="Managers\DeviceGroupsManager.cs" />
     <Compile Include="Managers\DevicesManager.cs" />
     <Compile Include="Managers\ProfilesManager.cs" />
     <Compile Include="Models\CallbackMultiplexer.cs" />

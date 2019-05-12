@@ -81,42 +81,6 @@ namespace HidWizards.UCR.Tests.ModelTests
         }
 
         [Test]
-        public void GetDevice()
-        {
-            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
-            var deviceList = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
-            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = deviceList;
-            var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
-            {
-                IsBound = true,
-                DeviceGuid = deviceList[0].Guid
-            };
-
-            Assert.That(_profile.GetDevice(deviceBinding), Is.Null);
-            
-            Assert.That(guid, Is.Not.EqualTo(Guid.Empty));
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, guid);
-            Assert.That(_context.IsNotSaved, Is.True);
-            Assert.That(_profile.GetDevice(deviceBinding), Is.Not.Null);
-            Assert.That(_profile.GetDevice(deviceBinding).Guid, Is.EqualTo(_profile.GetDeviceList(deviceBinding)[0].Guid));
-        }
-
-        [Test]
-        public void GetDeviceList()
-        {
-            var deviceBinding = new DeviceBinding(null, null, DeviceIoType.Input)
-            {
-                IsBound = true
-            };
-            Assert.That(_profile.GetDeviceList(deviceBinding), Is.Empty);
-            var guid = _context.DeviceGroupsManager.AddDeviceGroup("Test joysticks", DeviceIoType.Input);
-            _profile.SetDeviceGroup(deviceBinding.DeviceIoType, guid);
-            Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Null.And.Empty);
-            _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, guid).Devices = DeviceFactory.CreateDeviceList("Dummy", "Provider", 1);
-            Assert.That(_profile.GetDeviceList(deviceBinding), Is.Not.Empty);
-        }
-
-        [Test]
         public void CopyProfile()
         {
             var profileManager = new ProfilesManager(_context, _context.Profiles);

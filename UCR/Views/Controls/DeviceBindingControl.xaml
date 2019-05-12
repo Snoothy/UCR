@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:plugin="clr-namespace:HidWizards.UCR.Views.Controls.Plugin"
              d:DesignHeight="400" d:DesignWidth="800"
@@ -30,7 +29,7 @@
         
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="0 8 0 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-            <ComboBox Width="200" Margin="0 0 16 0" x:Name="DeviceNumberBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <ComboBox Width="200" Margin="0 0 16 0" x:Name="DeviceSelectionBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

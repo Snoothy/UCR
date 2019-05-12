@@ -89,10 +89,6 @@
                         <materialDesign:PackIcon Kind="Stop"/>
                     </Button>
                     <Separator />
-                    <Button ToolTip="Manage device groups" Click="ManageDeviceLists_OnClick">
-                        <materialDesign:PackIcon Kind="GoogleController"/>
-                    </Button>
-                    <Separator />
                     <Button ToolTip="Help" Click="Help_OnClick">
                         <materialDesign:PackIcon Kind="Help"/>
                     </Button>
@@ -245,7 +241,7 @@
                                         <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
                                             <Button ToolTip="Add device"
                                                     Style="{StaticResource MaterialDesignCardButton}"
-                                                    Click="ManageDeviceLists_OnClick">
+                                                    Click="AddInputDevice_OnClick">
                                                 <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
                                             </Button>
                                         </StackPanel>
@@ -272,7 +268,7 @@
                                         <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
                                             <Button ToolTip="Add device"
                                                     Style="{StaticResource MaterialDesignCardButton}"
-                                                    Click="ManageDeviceLists_OnClick">
+                                                    Click="AddOutputDevice_OnClick">
                                                 <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
                                             </Button>
                                         </StackPanel>

@@ -11,9 +11,7 @@ using HidWizards.UCR.Core;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
-using HidWizards.UCR.Views.ProfileViews;
 using MaterialDesignThemes.Wpf;
-using DeviceListWindow = HidWizards.UCR.Views.DeviceViews.DeviceListWindow;
 using ProfileWindow = HidWizards.UCR.Views.ProfileViews.ProfileWindow;
 
 namespace HidWizards.UCR.Views
@@ -197,13 +195,6 @@ namespace HidWizards.UCR.Views
 
         #endregion Profile Actions
 
-        private void ManageDeviceLists_OnClick(object sender, RoutedEventArgs e)
-        {
-            var win = new DeviceListWindow(Context);
-            void ShowAction() => win.Show();
-            Dispatcher.BeginInvoke((Action) ShowAction);
-        }
-
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
@@ -312,6 +303,16 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void AddInputDevice_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddOutputDevice_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

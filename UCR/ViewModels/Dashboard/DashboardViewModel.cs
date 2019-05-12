@@ -76,7 +76,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private List<Device> GetDevices(Profile profile, DeviceIoType deviceIoType)
         {
-            return SelectedProfileItem.Profile.GetDeviceList(new DeviceBinding() {DeviceIoType = deviceIoType });
+            return SelectedProfileItem.Profile.GetDeviceList(deviceIoType);
         }
 
         private void OnActiveProfileChangedEvent(Profile profile)

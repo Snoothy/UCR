@@ -106,7 +106,6 @@
     <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
-    <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
@@ -121,9 +120,6 @@
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
-      <DependentUpon>DeviceListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\DeviceSelectControl.xaml.cs">
       <DependentUpon>DeviceSelectControl.xaml</DependentUpon>
@@ -142,7 +138,6 @@
       <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\Plugin\PluginViewTemplateSelector.cs" />
-    <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
     <Compile Include="Views\Controls\EnumControl.xaml.cs">
       <DependentUpon>EnumControl.xaml</DependentUpon>
     </Compile>
@@ -152,10 +147,6 @@
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DeviceViews\DeviceListWindow.xaml.cs">
-      <DependentUpon>DeviceListWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\DeviceViewModels\DeviceListWindowViewModel.cs" />
     <Compile Include="Views\Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -178,12 +169,8 @@
     <Compile Include="Views\Dialogs\HelpDialog.xaml.cs">
       <DependentUpon>HelpDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\DeviceGroupComboBoxItem.cs" />
     <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml.cs">
-      <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
       <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
@@ -202,9 +189,6 @@
     <Compile Include="Views\ProfileViews\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
-    <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
     <DesignData Include="SampleData\ProfileViewModelSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
@@ -218,10 +202,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\DeviceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -257,10 +237,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DeviceViews\DeviceListWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -288,10 +264,6 @@
     <Page Include="Views\ProfileViews\PluginDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProfileViews\ProfileStateWindow.xaml">
       <SubType>Designer</SubType>

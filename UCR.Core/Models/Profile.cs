@@ -22,9 +22,6 @@ namespace HidWizards.UCR.Core.Models
         public List<Device> InputDevices { get; set; }
         public List<Device> OutputDevices { get; set; }
 
-        public Guid InputDeviceGroupGuid { get; set; }
-        public Guid OutputDeviceGroupGuid { get; set; }
-
         /* Property helpers */
         [XmlIgnore]
         public List<State> AllStates
@@ -126,22 +123,6 @@ namespace HidWizards.UCR.Core.Models
             Context.ContextChanged();
         }
 
-        public void SetDeviceGroup(DeviceIoType ioType, Guid deviceGroupGuid)
-        {
-            switch (ioType)
-            {
-                case DeviceIoType.Input:
-                    InputDeviceGroupGuid = deviceGroupGuid;
-                    break;
-                case DeviceIoType.Output:
-                    OutputDeviceGroupGuid = deviceGroupGuid;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(ioType), ioType, null);
-            }
-            Context.ContextChanged();
-        }
-
         public bool ActivateProfile()
         {
             return Context.SubscriptionsManager.ActivateProfile(this);
@@ -181,40 +162,20 @@ namespace HidWizards.UCR.Core.Models
 
         #region Device
 
-        public Device GetDevice(DeviceBinding deviceBinding)
+        public Device GetDevice(DeviceIoType deviceIoType, Guid deviceGuid)
         {
-            var deviceList = GetDeviceList(deviceBinding);
-            return deviceList.FirstOrDefault(d => d.Guid == deviceBinding.DeviceGuid);
-        }
-
-        public List<Device> GetDeviceList(DeviceBinding deviceBinding)
-        {
-            return GetDeviceList(deviceBinding.DeviceIoType);
+            var deviceList = GetDeviceList(deviceIoType);
+            return deviceList.FirstOrDefault(d => d.Guid == deviceGuid);
         }
 
         public List<Device> GetDeviceList(DeviceIoType deviceIoType)
         {
-            // TODO Merge with parents devices
-            return deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
-        }
+            var result = new List<Device>();
+            if (ParentProfile != null) result.AddRange(ParentProfile.GetDeviceList(deviceIoType));
 
-        public DeviceGroup GetDeviceGroup(DeviceIoType deviceIoType)
-        {
-            var deviceGroupGuid = GetDeviceGroupGuid(deviceIoType);
-            if (deviceGroupGuid.Equals(Guid.Empty))
-            {
-                return ParentProfile?.GetDeviceGroup(deviceIoType);
-            }
-            return Context.DeviceGroupsManager.GetDeviceGroup(deviceIoType, deviceGroupGuid);
-        }
+            result.AddRange(deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices);
 
-        public string GetInheritedDeviceGroupName(DeviceIoType deviceIoType)
-        {
-            var parentDeviceGroupName = "None";
-            var parentDeviceGroup = ParentProfile?.GetDeviceGroup(deviceIoType);
-            if (parentDeviceGroup != null) parentDeviceGroupName = parentDeviceGroup.Title;
-            if (ParentProfile != null) parentDeviceGroupName += " (Inherited)";
-            return parentDeviceGroupName;
+            return result;
         }
 
         #endregion
@@ -301,19 +262,6 @@ namespace HidWizards.UCR.Core.Models
         public bool IsActive()
         {
             return Context.SubscriptionsManager.GetActiveProfile() != null && Context.SubscriptionsManager.GetActiveProfile().Guid == Guid;
-        }
-
-        private Guid GetDeviceGroupGuid(DeviceIoType deviceIoType)
-        {
-            switch (deviceIoType)
-            {
-                case DeviceIoType.Input:
-                    return InputDeviceGroupGuid;
-                case DeviceIoType.Output:
-                    return OutputDeviceGroupGuid;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(deviceIoType), deviceIoType, null);
-            }
         }
 
         #endregion

@@ -54,13 +54,6 @@ namespace HidWizards.UCR.Views.ProfileViews
 
         #endregion
 
-        private void ManageDeviceGroups_OnClick(object sender, RoutedEventArgs e)
-        {
-            var win = new ProfileDeviceGroupWindow(Context, Profile);
-            Action showAction = () => win.Show();
-            Dispatcher.BeginInvoke(showAction);
-        }
-
         private async void AddMapping_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button button)) return;

@@ -125,48 +125,5 @@ namespace HidWizards.UCR.Tests.ModelTests
             deviceBinding.KeySubValue = value;
         }
 
-        [Test]
-        public void DeviceListContext()
-        {
-            var context = new Context();
-            var joystickGuid = context.DeviceGroupsManager.AddDeviceGroup("Joystick 1", DeviceIoType.Input);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 2", DeviceIoType.Input);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 3", DeviceIoType.Input);
-            context.DeviceGroupsManager.AddDeviceGroup("Joystick 4", DeviceIoType.Input);
-            var keyboardGuid = context.DeviceGroupsManager.AddDeviceGroup("Keyboard", DeviceIoType.Output);
-
-            var joystickDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Input, joystickGuid);
-            joystickDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Gamepad", "Gamepad provider", 4);
-            var keyboardDeviceGroup = context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Output, keyboardGuid);
-            keyboardDeviceGroup.Devices = DeviceFactory.CreateDeviceList("Keyboard", "interception", 1);
-
-            context.SaveContext();
-
-            for (var i = 0; i < _saveReloadTimes; i++)
-            {
-                var newcontext = Context.Load();
-
-                Assert.That(newcontext.InputGroups.Count, Is.EqualTo(context.InputGroups.Count));
-                Assert.That(newcontext.OutputGroups.Count, Is.EqualTo(context.OutputGroups.Count));
-
-                for (var j = 0; j < context.InputGroups.Count; j++)
-                {
-                    Assert.That(newcontext.InputGroups[j].Guid, Is.EqualTo(context.InputGroups[j].Guid));
-                    Assert.That(newcontext.InputGroups[j].Title, Is.EqualTo(context.InputGroups[j].Title));
-
-                    for (var k = 0; k < context.InputGroups[j].Devices.Count; k++)
-                    {
-                        Assert.That(newcontext.InputGroups[j].Devices[k].Title,
-                            Is.EqualTo(context.InputGroups[j].Devices[k].Title));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].DeviceHandle,
-                            Is.EqualTo(context.InputGroups[j].Devices[k].DeviceHandle));
-                        Assert.That(newcontext.InputGroups[j].Devices[k].ProviderName,
-                            Is.EqualTo(context.InputGroups[j].Devices[k].ProviderName));
-                    }
-                }
-
-                newcontext.SaveContext();
-            }
-        }
     }
 }

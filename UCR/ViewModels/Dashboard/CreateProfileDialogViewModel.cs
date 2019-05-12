@@ -55,12 +55,17 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         public List<Device> GetInputDevices()
         {
-            return InputControl.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
+            return GetDevicesFromViewModel(InputControl);
         }
 
         public List<Device> GetOutputDevices()
         {
-            return OutputControl.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
+            return GetDevicesFromViewModel(OutputControl);
+        }
+
+        private List<Device> GetDevicesFromViewModel(DeviceSelectControlViewModel viewModel)
+        {
+            return viewModel.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
         }
     }
 }

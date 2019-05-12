@@ -51,7 +51,7 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (_deviceList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
-            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding))
+            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding.DeviceIoType))
             {
                 _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
                 _deviceList.Add(device);

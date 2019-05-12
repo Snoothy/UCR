@@ -29,7 +29,6 @@ namespace HidWizards.UCR.Core
         [XmlIgnore] public Profile ActiveProfile { get; set; }
         [XmlIgnore] public ProfilesManager ProfilesManager { get; set; }
         [XmlIgnore] public DevicesManager DevicesManager { get; set; }
-        [XmlIgnore] public DeviceGroupsManager DeviceGroupsManager { get; set; }
         [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore] public PluginsManager PluginManager { get; set; }
         [XmlIgnore] public BindingManager BindingManager { get; set; }
@@ -65,7 +64,6 @@ namespace HidWizards.UCR.Core
             
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
-            DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
             PluginManager = new PluginsManager(PluginPath);
             BindingManager = new BindingManager(this);

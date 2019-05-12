@@ -121,7 +121,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         
         public void LoadDeviceInputs()
         {
-            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding);
+            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding.DeviceIoType);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
             foreach (var device in devicelist)
             {
