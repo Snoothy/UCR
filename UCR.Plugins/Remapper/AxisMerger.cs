@@ -22,10 +22,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert high", RowOrder = 1)]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", RowOrder = 2)]
+        [PluginGui("Invert low", RowOrder = 1, ColumnOrder = 2)]
         public bool InvertLow { get; set; }
 
+        [PluginGui("Linear", RowOrder = 2, ColumnOrder = 1)]
+        public bool Linear { get; set; }
+
+        [PluginGui("Sensitivity", RowOrder = 2, ColumnOrder = 2)]
+        public int Sensitivity { get; set; }
+
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public enum AxisMergerMode
         {
@@ -37,6 +44,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public AxisMerger()
         {
             DeadZone = 0;
+            Sensitivity = 100;
         }
 
         public override void InitializeCacheValues()
@@ -73,12 +81,17 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);
             }
+
+            if (Sensitivity != 100) valueOutput = _sensitivityHelper.ApplyRangeSensitivity(valueOutput);
+
             WriteOutput(0, valueOutput);
         }
         
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
+            _sensitivityHelper.IsLinear = Linear;
         }
     }
 }
