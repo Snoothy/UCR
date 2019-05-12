@@ -180,6 +180,17 @@ namespace HidWizards.UCR.Core.Models
             return result;
         }
 
+        public bool RemoveDevice(Device device)
+        {
+            return InputDevices.Remove(device) || OutputDevices.Remove(device);
+        }
+
+
+        public bool CanRemoveDevice(Device device)
+        {
+            return InputDevices.Contains(device) || OutputDevices.Contains(device);
+
+        }
         #endregion
 
         #region Plugin

@@ -226,59 +226,8 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <materialDesign:Card MinHeight="200" Margin="8 4 4 4">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Input devices</TextBlock>
-                                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
-                                            <Button ToolTip="Add device"
-                                                    Style="{StaticResource MaterialDesignCardButton}"
-                                                    Click="AddInputDevice_OnClick">
-                                                <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
-                                            </Button>
-                                        </StackPanel>
-                                        <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                                        <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
-                                                  ItemsSource="{Binding InputDevices}" Grid.IsSharedSizeScope="True"
-                                                  ItemTemplate="{StaticResource DeviceTemplate}"
-                                                  Style="{StaticResource EmptyDeviceTrigger}"/>
-                                    </Grid>
-                                </materialDesign:Card>
-
-                                <materialDesign:Card Grid.Column="1" MinHeight="200" Margin="4 4 8 4">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Column="0"  Margin="8 9 4 3" Style="{StaticResource MaterialDesignSubheadingTextBlock}">Output devices</TextBlock>
-                                        <StackPanel Grid.Column="1" FlowDirection="RightToLeft" HorizontalAlignment="Right" Orientation="Horizontal" Margin="4 0">
-                                            <Button ToolTip="Add device"
-                                                    Style="{StaticResource MaterialDesignCardButton}"
-                                                    Click="AddOutputDevice_OnClick">
-                                                <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
-                                            </Button>
-                                        </StackPanel>
-                                        <Separator Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0" Height="4"  Style="{StaticResource MaterialDesignDarkSeparator}" />
-                                        <ListView Grid.Row="2" Grid.ColumnSpan="2" Margin="8 4 8 8"
-                                                  ItemsSource="{Binding OutputDevices}" Grid.IsSharedSizeScope="True"
-                                                  ItemTemplate="{StaticResource DeviceTemplate}"
-                                                  Style="{StaticResource EmptyDeviceTrigger}"/>
-                                    </Grid>
-                                </materialDesign:Card>
+                                <controls:ProfileDeviceListControl Title="Input devices" MinHeight="200" Margin="8 4 4 4" DataContext="{Binding InputDeviceViewModel}"/>
+                                <controls:ProfileDeviceListControl Title="Output devices" Grid.Column="1" MinHeight="200" Margin="4 4 8 4" DataContext="{Binding OutputDeviceViewModel}"/>
                             </Grid>
                         </Grid>
                     </materialDesign:Card>

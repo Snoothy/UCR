@@ -18,8 +18,8 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         public Visibility ProfileDetailsActive => SelectedProfileItem != null ? Visibility.Visible : Visibility.Hidden;
         public bool CanActivateProfile => SelectedProfileItem != null;
         public bool CanDeactivateProfile => Context?.ActiveProfile != null;
-        public ObservableCollection<DeviceItem> InputDevices { get; set; }
-        public ObservableCollection<DeviceItem> OutputDevices { get; set; }
+        public ProfileDeviceListViewModel InputDeviceViewModel { get; set; }
+        public ProfileDeviceListViewModel OutputDeviceViewModel { get; set; }
 
         private ProfileItem _selectedProfileItem = null;
         public ProfileItem SelectedProfileItem
@@ -57,21 +57,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private void BuildDeviceLists()
         {
-            InputDevices = new ObservableCollection<DeviceItem>();
-            OutputDevices = new ObservableCollection<DeviceItem>();
-            if (SelectedProfileItem == null) return;
+            InputDeviceViewModel = new ProfileDeviceListViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input));
+            OutputDeviceViewModel = new ProfileDeviceListViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output));
 
-            foreach (var inputDevice in GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input))
-            {
-                InputDevices.Add(new DeviceItem(inputDevice, SelectedProfileItem.Profile));
-            }
-            foreach (var outputDevice in GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output))
-            {
-                OutputDevices.Add(new DeviceItem(outputDevice, SelectedProfileItem.Profile));
-            }
-
-            OnPropertyChanged(nameof(InputDevices));
-            OnPropertyChanged(nameof(OutputDevices));
+            OnPropertyChanged(nameof(InputDeviceViewModel));
+            OnPropertyChanged(nameof(OutputDeviceViewModel));
         }
 
         private List<Device> GetDevices(Profile profile, DeviceIoType deviceIoType)

@@ -7,7 +7,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         public string Title => Device.GetFullTitleForProfile(Profile);
         public string ProviderName => Device.ProviderName;
 
-        private Device Device { get; set; }
+        public Device Device { get; set; }
         private Profile Profile { get; set; }
 
         public DeviceItem(Device device, Profile profile)

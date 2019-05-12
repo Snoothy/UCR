@@ -106,6 +106,7 @@
     <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
+    <Compile Include="ViewModels\Dashboard\ProfileDeviceListViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
@@ -140,6 +141,9 @@
     <Compile Include="Views\Controls\Plugin\PluginViewTemplateSelector.cs" />
     <Compile Include="Views\Controls\EnumControl.xaml.cs">
       <DependentUpon>EnumControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
+      <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\StateControl.xaml.cs">
       <DependentUpon>StateControl.xaml</DependentUpon>
@@ -226,6 +230,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Plugin\PluginPropertyListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\ProfileDeviceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
