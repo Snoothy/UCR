@@ -187,5 +187,23 @@ namespace HidWizards.UCR.Core.Models
         {
             return $"Device:{{{Title}}} Provider:{{{ProviderName}}} Handle:{{{DeviceHandle}}} Num:{{{DeviceNumber}}}";
         }
+
+        public override bool Equals(Object other)
+        {
+            if ((other == null) || GetType() != other.GetType()) return false;
+            var otherDevice = other as Device;
+            return string.Equals(ProviderName, otherDevice.ProviderName) && string.Equals(DeviceHandle, otherDevice.DeviceHandle) && DeviceNumber == otherDevice.DeviceNumber;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (ProviderName != null ? ProviderName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (DeviceHandle != null ? DeviceHandle.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ DeviceNumber;
+                return hashCode;
+            }
+        }
     }
 }

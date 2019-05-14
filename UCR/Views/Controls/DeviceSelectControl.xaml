@@ -26,7 +26,7 @@
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4 0 0 0">
                                     <CheckBox Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding Checked}"/>
                                 </StackPanel>
-                                <materialDesign:Ripple Grid.ColumnSpan="2" Feedback="{DynamicResource MaterialDesignFlatButtonRipple}" ToolTip="{Binding Title}"/>
+                                <materialDesign:Ripple Grid.Column="0" Grid.ColumnSpan="2" Feedback="{DynamicResource MaterialDesignFlatButtonRipple}" ToolTip="{Binding Title}"/>
                             </Grid>
                         </StackPanel>
                     </DataTemplate>

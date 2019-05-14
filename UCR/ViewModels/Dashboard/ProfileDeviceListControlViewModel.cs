@@ -13,7 +13,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.ViewModels.Dashboard
 {
-    public class ProfileDeviceListViewModel : INotifyPropertyChanged
+    public class ProfileDeviceListControlViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<DeviceItem> Devices { get; set; }
         public bool IsRemoveEnabled => CanRemoveDevice(SelectedDevice);
@@ -30,10 +30,16 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         }
 
         private Profile _profile;
+        private DeviceIoType _deviceIoType;
 
-        public ProfileDeviceListViewModel(Profile profile, List<Device> devices)
+        public ProfileDeviceListControlViewModel()
+        {
+        }
+
+        public ProfileDeviceListControlViewModel(Profile profile, List<Device> devices, DeviceIoType deviceIoType)
         {
             _profile = profile;
+            _deviceIoType = deviceIoType;
             Devices = new ObservableCollection<DeviceItem>();
             foreach (var device in devices)
             {
@@ -63,6 +69,21 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
             _profile.RemoveDevice(deviceItem.Device);
             Devices.Remove(deviceItem);
+            OnPropertyChanged(nameof(Devices));
+        }
+
+        public async void AddDevices()
+        {
+            var deviceList = _profile.GetMissingDeviceList(_deviceIoType);
+            var dialog = new AddDevicesDialog(deviceList, _deviceIoType);
+            var result = (AddDevicesDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
+            if (result?.Devices == null) return;
+
+            _profile.AddDevices(result.Devices.GetSelectedDevices().Select(d => d.Device).ToList(), _deviceIoType);
+            foreach (var deviceViewModel in result.Devices.GetSelectedDevices())
+            {
+                Devices.Add(new DeviceItem(deviceViewModel.Device, _profile));
+            }
             OnPropertyChanged(nameof(Devices));
         }
     }

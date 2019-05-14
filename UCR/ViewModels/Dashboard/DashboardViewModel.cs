@@ -18,8 +18,8 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         public Visibility ProfileDetailsActive => SelectedProfileItem != null ? Visibility.Visible : Visibility.Hidden;
         public bool CanActivateProfile => SelectedProfileItem != null;
         public bool CanDeactivateProfile => Context?.ActiveProfile != null;
-        public ProfileDeviceListViewModel InputDeviceViewModel { get; set; }
-        public ProfileDeviceListViewModel OutputDeviceViewModel { get; set; }
+        public ProfileDeviceListControlViewModel InputDeviceControlViewModel { get; set; }
+        public ProfileDeviceListControlViewModel OutputDeviceControlViewModel { get; set; }
 
         private ProfileItem _selectedProfileItem = null;
         public ProfileItem SelectedProfileItem
@@ -57,11 +57,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private void BuildDeviceLists()
         {
-            InputDeviceViewModel = new ProfileDeviceListViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input));
-            OutputDeviceViewModel = new ProfileDeviceListViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output));
+            InputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input), DeviceIoType.Input);
+            OutputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output), DeviceIoType.Output);
 
-            OnPropertyChanged(nameof(InputDeviceViewModel));
-            OnPropertyChanged(nameof(OutputDeviceViewModel));
+            OnPropertyChanged(nameof(InputDeviceControlViewModel));
+            OnPropertyChanged(nameof(OutputDeviceControlViewModel));
         }
 
         private List<Device> GetDevices(Profile profile, DeviceIoType deviceIoType)

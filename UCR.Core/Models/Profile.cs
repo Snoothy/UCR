@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models.Binding;
 using NLog;
 
 namespace HidWizards.UCR.Core.Models
 {
-    public class Profile
+    public class Profile : INotifyPropertyChanged
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -180,9 +183,42 @@ namespace HidWizards.UCR.Core.Models
             return result;
         }
 
+        public List<Device> GetMissingDeviceList(DeviceIoType deviceIoType)
+        {
+            var availableDeviceGroupList = Context.DevicesManager.GetAvailableDeviceList(deviceIoType);
+            var availableDeviceList = new List<Device>();
+            var profileDeviceList = GetDeviceList(deviceIoType);
+
+            foreach (var deviceGroup in availableDeviceGroupList)
+            {
+                availableDeviceList.AddRange(deviceGroup.Devices);
+            }
+
+            foreach (var device in profileDeviceList)
+            {
+                availableDeviceList.RemoveAll(d => d.Equals(device));
+            }
+
+            return availableDeviceList;
+        }
+
+        public void AddDevices(List<Device> devices, DeviceIoType deviceIoType)
+        {
+            devices.ForEach(d => d.Profile = this);
+            var deviceList = deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
+            deviceList.AddRange(devices);
+            OnPropertyChanged(deviceIoType == DeviceIoType.Input ? nameof(InputDevices) : nameof(OutputDevices));
+        }
+
         public bool RemoveDevice(Device device)
         {
-            return InputDevices.Remove(device) || OutputDevices.Remove(device);
+            var success = InputDevices.Remove(device) || OutputDevices.Remove(device);
+            if (success)
+            {
+                OnPropertyChanged(nameof(InputDevices));
+                OnPropertyChanged(nameof(OutputDevices));
+            }
+            return success;
         }
 
 
@@ -293,6 +329,14 @@ namespace HidWizards.UCR.Core.Models
             {
                 mapping.PostLoad(context, this);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

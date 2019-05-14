@@ -226,8 +226,8 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <controls:ProfileDeviceListControl Title="Input devices" MinHeight="200" Margin="8 4 4 4" DataContext="{Binding InputDeviceViewModel}"/>
-                                <controls:ProfileDeviceListControl Title="Output devices" Grid.Column="1" MinHeight="200" Margin="4 4 8 4" DataContext="{Binding OutputDeviceViewModel}"/>
+                                <controls:ProfileDeviceListControl Title="Input devices" MinHeight="200" Margin="8 4 4 4" DataContext="{Binding InputDeviceControlViewModel}"/>
+                                <controls:ProfileDeviceListControl Title="Output devices" Grid.Column="1" MinHeight="200" Margin="4 4 8 4" DataContext="{Binding OutputDeviceControlViewModel}"/>
                             </Grid>
                         </Grid>
                     </materialDesign:Card>
