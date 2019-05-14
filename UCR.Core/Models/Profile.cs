@@ -208,6 +208,7 @@ namespace HidWizards.UCR.Core.Models
             var deviceList = deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
             deviceList.AddRange(devices);
             OnPropertyChanged(deviceIoType == DeviceIoType.Input ? nameof(InputDevices) : nameof(OutputDevices));
+            Context.ContextChanged();
         }
 
         public bool RemoveDevice(Device device)
@@ -217,7 +218,9 @@ namespace HidWizards.UCR.Core.Models
             {
                 OnPropertyChanged(nameof(InputDevices));
                 OnPropertyChanged(nameof(OutputDevices));
+                Context.ContextChanged();
             }
+
             return success;
         }
 
