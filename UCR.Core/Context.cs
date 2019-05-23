@@ -22,8 +22,6 @@ namespace HidWizards.UCR.Core
 
         /* Persistence */
         public List<Profile> Profiles { get; set; }
-        public List<DeviceGroup> InputGroups { get; set; }
-        public List<DeviceGroup> OutputGroups { get; set; }
 
         /* Runtime */
         [XmlIgnore] public Profile ActiveProfile { get; set; }
@@ -50,8 +48,6 @@ namespace HidWizards.UCR.Core
         {
             IsNotSaved = false;
             Profiles = new List<Profile>();
-            InputGroups = new List<DeviceGroup>();
-            OutputGroups = new List<DeviceGroup>();
 
             try
             {

@@ -27,8 +27,6 @@ namespace HidWizards.UCR.Tests.ModelTests
                 Assert.That(newcontext.IsNotSaved, Is.False);
                 Assert.That(newcontext.ActiveProfile, Is.Null);
                 Assert.That(newcontext.Profiles, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.InputGroups, Is.Not.Null.And.Empty);
-                Assert.That(newcontext.OutputGroups, Is.Not.Null.And.Empty);
                 newcontext.SaveContext();
             }
         }

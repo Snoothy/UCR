@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Media;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
@@ -101,14 +104,14 @@ namespace HidWizards.UCR.Views
         private async void AddProfile(object sender, RoutedEventArgs e)
         {
             var dialog = new CreateProfileDialog("Create profile", Context.DevicesManager);
-            var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
+            var result = (CreateProfileDialogViewModel) await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
             var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
             Context.ProfilesManager.AddProfile(profile);
 
-            // TODO Open new profile
             ReloadProfileTree();
+            OpenProfileWindow(profile);
         }
 
         private async void AddChildProfile(object sender, RoutedEventArgs e)
@@ -122,6 +125,7 @@ namespace HidWizards.UCR.Views
             Context.ProfilesManager.AddProfile(profile, profileItem.Profile);
 
             ReloadProfileTree();
+            OpenProfileWindow(profile);
         }
 
         private void EditProfile(object sender, RoutedEventArgs e)
@@ -141,12 +145,20 @@ namespace HidWizards.UCR.Views
                 return;
             }
             
+            OpenProfileWindow(profileItem.Profile);
+        }
+
+        private void OpenProfileWindow(Profile profile)
+        {
             void ShowAction()
             {
-                var win = new ProfileWindow(Context, profileItem.Profile);
+                var win = new ProfileWindow(Context, profile);
                 ProfileWindows.Add(win.ProfileGuid, win);
-                win.Show();
                 win.Closed += OnProfileWindowClosed;
+                win.Focus();
+                win.Show();
+                var restoreFocusDialogClose = RootDialog.GetType().GetField("_restoreFocusDialogClose", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                restoreFocusDialogClose?.SetValue(RootDialog, null);
             }
 
             Dispatcher.BeginInvoke((Action)ShowAction);
@@ -303,16 +315,6 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
-        }
-
-        private void AddInputDevice_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void AddOutputDevice_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
     }
 }

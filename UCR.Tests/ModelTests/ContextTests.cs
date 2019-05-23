@@ -13,8 +13,6 @@ namespace HidWizards.UCR.Tests.ModelTests
             var context = new Context();
             Assert.That(context, Is.Not.Null);
             Assert.That(context.Profiles, Is.Not.Null);
-            Assert.That(context.InputGroups, Is.Not.Null);
-            Assert.That(context.OutputGroups, Is.Not.Null);
             Assert.That(context.IsNotSaved, Is.False);
         }
 

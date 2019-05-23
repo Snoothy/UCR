@@ -177,9 +177,6 @@
     <Compile Include="Views\Dialogs\HelpDialog.xaml.cs">
       <DependentUpon>HelpDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
-      <DependentUpon>PluginDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
       <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
     </Compile>
@@ -276,10 +273,6 @@
     <Page Include="Views\Dialogs\HelpDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProfileViews\PluginDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ProfileViews\ProfileStateWindow.xaml">
       <SubType>Designer</SubType>
