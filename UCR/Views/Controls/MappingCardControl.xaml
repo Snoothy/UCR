@@ -7,6 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:plugin="clr-namespace:HidWizards.UCR.Views.Controls.Plugin"
              mc:Ignorable="d" 
+             UseLayoutRounding="True"
              d:DataContext="{d:DesignData Source=/SampleData/MappingControlSampleData.xaml}"
              d:DesignHeight="1450" d:DesignWidth="600">
     <UserControl.Resources>
@@ -19,7 +20,8 @@
     <GroupBox Width="auto"
               Header="{Binding MappingTitle}"
               Style="{StaticResource MaterialDesignCardGreyGroupBox}"
-              Margin="4 6 4 6">
+              Margin="4 6 4 6"
+              Background="LightGray">
         <GroupBox.HeaderTemplate>
             <DataTemplate>
                 <Grid>
@@ -47,7 +49,7 @@
             </DataTemplate>
         </GroupBox.HeaderTemplate>
         <StackPanel>
-            <StackPanel>
+            <materialDesign:Card Padding="8">
                 <ItemsControl ItemsSource="{Binding DeviceBindings}"
                           HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
@@ -56,24 +58,21 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+            </materialDesign:Card>
 
-                <Separator Margin="-10 4" Style="{StaticResource MaterialDesignSeparator}"/>
-
-                <ItemsControl ItemsSource="{Binding Plugins}"
-                              VerticalAlignment="Stretch">
-                    <ItemsControl.Resources>
-                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ItemsControl.Resources>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate >
-                            <plugin:PluginControl />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-
+            <ItemsControl ItemsSource="{Binding Plugins}" VerticalAlignment="Stretch">
+                <ItemsControl.Resources>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate >
+                        <plugin:PluginControl Margin="0 8 0 0" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
+
     </GroupBox>
 </UserControl>

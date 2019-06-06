@@ -12,7 +12,7 @@
     <GroupBox Width="auto"
               Header="{Binding Plugin.PluginName}"
               Style="{StaticResource MaterialDesignCardGroupBox}"
-              Margin="4 0"
+              Margin="0"
               materialDesign:ColorZoneAssist.Mode="Standard">
         <GroupBox.HeaderTemplate>
             <DataTemplate>

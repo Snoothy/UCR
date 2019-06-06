@@ -21,7 +21,8 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        UseLayoutRounding="True">
     <WindowChrome.WindowChrome>
         <WindowChrome
             CaptionHeight="0"
