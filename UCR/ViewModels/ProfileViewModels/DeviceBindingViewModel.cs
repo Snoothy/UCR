@@ -26,6 +26,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public long PreviewValue => GetPreviewValue();
         public bool ShowButtonPreview => DeviceBinding.IsInBindMode || DeviceBinding.Profile.IsActive();
 
+        private bool GuiInvalidated { get; set; }
+
         private long GetPreviewValue()
         {
             if (DeviceBinding.IsInBindMode)
@@ -90,9 +92,10 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             get => _currentValue;
             set
             {
+                if (_currentValue == value) return;
                 _currentValue = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PreviewValue));
+                GuiInvalidated = true;
+                OnPropertyChanged(nameof(ShowButtonPreview));
             }
         }
 
@@ -157,6 +160,13 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             SelectedDevice = selectedDevice;
         }
 
+        public void CurrentValueChanged()
+        {
+            if (!GuiInvalidated) return;
+            OnPropertyChanged(nameof(CurrentValue));
+            OnPropertyChanged(nameof(PreviewValue));
+        }
+
         private void DeviceBindingOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             var deviceBinding = (DeviceBinding) sender;
@@ -167,6 +177,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             if (propertyChangedEventArgs.PropertyName.Equals("IsBound")
                 || propertyChangedEventArgs.PropertyName.Equals("IsInBindMode"))
             {
+                BindModeProgress = 0;
                 OnPropertyChanged(nameof(BindButtonText));
                 OnPropertyChanged(nameof(ShowPreview));
                 OnPropertyChanged(nameof(ShowBindMode));
