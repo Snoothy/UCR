@@ -25,7 +25,7 @@
                     <plugin:PluginPropertyControl.PropertyContent>
                         <TextBox Width="50" PreviewTextInput="NumberValidationTextBox">
                             <TextBox.Text>
-                                <Binding Path="Property">
+                                <Binding Path="Property" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
                                         <validators:NumberBindingValidator/>
                                     </Binding.ValidationRules>
@@ -40,7 +40,7 @@
                     <plugin:PluginPropertyControl.PropertyContent>
                         <TextBox Width="50" PreviewTextInput="DecimalValidationTextBox">
                             <TextBox.Text>
-                                <Binding Path="Property">
+                                <Binding Path="Property" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
                                         <validators:DecimalBindingValidator/>
                                     </Binding.ValidationRules>
@@ -53,7 +53,7 @@
             <DataTemplate x:Key="StringTemplate">
                 <plugin:PluginPropertyControl>
                     <plugin:PluginPropertyControl.PropertyContent>
-                        <TextBox Width="100" Text="{Binding Property, Mode=TwoWay}"/>
+                        <TextBox Width="100" Text="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </plugin:PluginPropertyControl.PropertyContent>
                 </plugin:PluginPropertyControl>
             </DataTemplate>
