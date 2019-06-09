@@ -136,7 +136,7 @@
                                                                 </Grid.ColumnDefinitions>
                                                                 <StackPanel Grid.Column="0" Margin="0 16" VerticalAlignment="Center">
                                                                     <TextBlock Text="{Binding Name}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                                    <TextBlock Text="{Binding Description}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                                                                 </StackPanel>
                                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                     <Button HorizontalAlignment="Right" ToolTip="Add mapping"
