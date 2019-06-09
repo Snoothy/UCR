@@ -6,7 +6,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
     public class PluginPropertyGroupViewModel
     {
-        public string GroupName => _pluginPropertyGroup.GroupName;
+        public string GroupName => _pluginPropertyGroup.Title;
         public List<PluginPropertyViewModel> PluginProperties { get; set; }
         public Visibility ShowPropertyList => PluginProperties != null && PluginProperties.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 

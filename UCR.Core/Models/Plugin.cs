@@ -245,10 +245,10 @@ namespace HidWizards.UCR.Core.Models
             return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.Order, prop.Attribute.Group)).ToList();
         }
 
-        private List<string> GetPluginGroups()
+        private List<PluginGroupAttribute> GetPluginGroups()
         {
             return GetType().GetCustomAttributes(typeof(PluginGroupAttribute), true).ToList()
-                .Select(a => ((PluginGroupAttribute) a).Group).Distinct().ToList();
+                .Select(a => ((PluginGroupAttribute) a)).ToList();
         }
 
         private List<string> GetPluginOutputGroups()
@@ -264,25 +264,27 @@ namespace HidWizards.UCR.Core.Models
             var guiProperties = GetGuiProperties();
             guiProperties.Sort();
 
-            foreach (var groupName in GetPluginGroups())
-            {
-                if (groupName == null)
-                {
-                    var ungroupedProperties = guiProperties.FindAll(p => p.Group == null);
-                    result.Add(new PluginPropertyGroup()
-                    {
-                        GroupName = "Settings",
-                        GroupType = PluginPropertyGroup.GroupTypes.Settings,
-                        PluginProperties = ungroupedProperties
-                    });
-                    continue;
-                }
-
-                var properties = guiProperties.FindAll(p => groupName.Equals(p.Group));
+            var ungroupedProperties = guiProperties.FindAll(p => p.Group == null);
+            if (ungroupedProperties.Count > 0) { 
                 result.Add(new PluginPropertyGroup()
                 {
-                    GroupName = groupName,
-                    GroupType = GetPluginOutputGroups().Contains(groupName) 
+                    Title = "Settings",
+                    GroupName = "Settings",
+                    GroupType = PluginPropertyGroup.GroupTypes.Settings,
+                    PluginProperties = ungroupedProperties
+                });
+            }
+
+            foreach (var group in GetPluginGroups())
+            {
+                if (group.Group == null) continue;
+
+                var properties = guiProperties.FindAll(p => group.Group.Equals(p.Group));
+                result.Add(new PluginPropertyGroup()
+                {
+                    Title = group.Name,
+                    GroupName = group.Group,
+                    GroupType = GetPluginOutputGroups().Contains(group.Group) 
                         ? PluginPropertyGroup.GroupTypes.Output 
                         : PluginPropertyGroup.GroupTypes.Settings,
                     PluginProperties = properties

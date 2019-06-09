@@ -9,7 +9,7 @@ namespace HidWizards.UCR.Core.Attributes
     {
         public virtual DeviceIoType DeviceIoType { get; }
         public virtual DeviceBindingCategory DeviceBindingCategory { get; }
-        public virtual string Name { get; }
+        public override string Name { get; set; }
 
         public PluginIoAttribute(DeviceIoType deviceIoType, DeviceBindingCategory deviceBindingCategory, string name)
         {

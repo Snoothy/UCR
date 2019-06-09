@@ -10,6 +10,6 @@ namespace HidWizards.UCR.Core.Attributes
             Name = name;
         }
 
-        public virtual string Name { get; }
+        public override string Name { get; set; }
     }
 }
