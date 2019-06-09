@@ -49,7 +49,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (nameof(SelectedProfileItem).Equals(e.PropertyName))
+            if (nameof(SelectedProfileItem).Equals(e.PropertyName) && SelectedProfileItem != null)
             {
                 BuildDeviceLists();
             }
