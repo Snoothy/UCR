@@ -18,7 +18,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         {
             MappingViewModel = mappingViewModel;
             Plugin = plugin;
-            plugin.Profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
+            mappingViewModel.ProfileViewModel.Profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
             mappingViewModel.Plugins.CollectionChanged += Plugins_CollectionChanged;
             PopulateDeviceBindingsViewModels();
             PopulatePluginProperties();

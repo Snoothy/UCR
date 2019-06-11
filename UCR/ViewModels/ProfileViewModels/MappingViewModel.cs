@@ -40,9 +40,10 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
         public void AddPlugin(Plugin plugin)
         {
-            if (!Mapping.AddPlugin(plugin)) return;
+            var newPlugin = ProfileViewModel.Profile.Context.PluginManager.GetNewPlugin(plugin);
+            if (!Mapping.AddPlugin(newPlugin)) return;
 
-            Plugins.Add(new PluginViewModel(this, plugin));
+            Plugins.Add(new PluginViewModel(this, newPlugin));
             if (Plugins.Count != 1) return;
             
             PopulateDeviceBindingsViewModels();
