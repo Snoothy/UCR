@@ -111,6 +111,7 @@
     <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\AddMappingPluginDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="ViewModels\ProfileViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
     </Compile>
@@ -146,9 +148,6 @@
     <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
       <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\StateControl.xaml.cs">
-      <DependentUpon>StateControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
     </Compile>
@@ -157,6 +156,9 @@
     </Compile>
     <Compile Include="Views\Dialogs\AddDevicesDialog.xaml.cs">
       <DependentUpon>AddDevicesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\AddMappingPluginDialog.xaml.cs">
+      <DependentUpon>AddMappingPluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\BoolDialog.xaml.cs">
       <DependentUpon>BoolDialog.xaml</DependentUpon>
@@ -176,9 +178,6 @@
     <Compile Include="ViewModels\Dialogs\StringDialogViewModel.cs" />
     <Compile Include="Views\Dialogs\HelpDialog.xaml.cs">
       <DependentUpon>HelpDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
-      <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
@@ -238,10 +237,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\StateControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -251,6 +246,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AddDevicesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\AddMappingPluginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -271,10 +270,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\HelpDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ProfileViews\ProfileStateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

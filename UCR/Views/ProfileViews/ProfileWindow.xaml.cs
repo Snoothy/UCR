@@ -118,7 +118,7 @@ namespace HidWizards.UCR.Views.ProfileViews
             if (result == null || !result.Value) return;
 
             var mappingViewModel = ProfileViewModel.AddMapping(dialog.Value);
-            mappingViewModel.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(pluginItem.Plugin), null);
+            mappingViewModel.AddPlugin(Profile.Context.PluginManager.GetNewPlugin(pluginItem.Plugin));
             MappingListView.ScrollIntoView(MappingListView.Items[MappingListView.Items.Count - 1]);
 
         }

@@ -31,9 +31,9 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             ProfileViewModel.RemoveMapping(this);
         }
 
-        public void AddPlugin(Plugin plugin, Guid? state)
+        public void AddPlugin(Plugin plugin)
         {
-            if (!Mapping.AddPlugin(plugin, state)) return;
+            if (!Mapping.AddPlugin(plugin)) return;
 
             Plugins.Add(new PluginViewModel(this, plugin));
             if (Plugins.Count != 1) return;
@@ -81,6 +81,15 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
             Mapping.Rename(dialog.Value);
             OnPropertyChanged(nameof(MappingTitle));
+        }
+
+        public async void AddPlugin()
+        {
+            var dialog = new AddMappingPluginDialog(this);
+            var result = (AddMappingPluginDialogViewModel)await DialogHost.Show(dialog, ProfileViewModel.ProfileDialogIdentifier);
+            if (result?.SelectedPlugin == null) return;
+
+            AddPlugin(result.SelectedPlugin.Plugin);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

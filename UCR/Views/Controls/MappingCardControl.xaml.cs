@@ -22,5 +22,11 @@ namespace HidWizards.UCR.Views.Controls
             var mappingViewModel = DataContext as MappingViewModel;
             mappingViewModel?.Rename();
         }
+
+        private void AddPlugin_OnClick(object sender, RoutedEventArgs e)
+        {
+            var mappingViewModel = DataContext as MappingViewModel;
+            mappingViewModel?.AddPlugin();
+        }
     }
 }

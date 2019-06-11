@@ -19,30 +19,10 @@ namespace HidWizards.UCR.Core.Models
         public string Title { get; set; }
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
-        public List<State> States { get; set; }
         public List<Mapping> Mappings { get; set; }
 
         public List<Device> InputDevices { get; set; }
         public List<Device> OutputDevices { get; set; }
-
-        /* Property helpers */
-        [XmlIgnore]
-        public List<State> AllStates
-        {
-            get
-            {
-                var list = new List<State>
-                {
-                    new State
-                    {
-                        Guid = Guid.Empty,
-                        Title = "Default"
-                    }
-                };
-                list.AddRange(States);
-                return list;
-            }
-        }
 
 
         /* Runtime */
@@ -69,7 +49,6 @@ namespace HidWizards.UCR.Core.Models
         {
             Guid = Guid.NewGuid();
             ChildProfiles = new List<Profile>();
-            States = new List<State>();
             Mappings = new List<Mapping>();
             InputDevices = new List<Device>();
             OutputDevices = new List<Device>();
@@ -139,7 +118,6 @@ namespace HidWizards.UCR.Core.Models
         internal void PrepareProfile()
         {
             StateDictionary = new ConcurrentDictionary<Guid, bool>();
-            States.ForEach(s => StateDictionary.TryAdd(s.Guid, false));
         }
 
         #endregion
@@ -234,15 +212,14 @@ namespace HidWizards.UCR.Core.Models
 
         #region Plugin
 
-        public bool AddNewPlugin(Mapping mapping, Plugin plugin, Guid? state = null)
+        public bool AddNewPlugin(Mapping mapping, Plugin plugin)
         {
-            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()), state);
+            return AddPlugin(mapping, (Plugin)Activator.CreateInstance(plugin.GetType()));
         }
 
-        public bool AddPlugin(Mapping mapping, Plugin plugin, Guid? state = null)
+        public bool AddPlugin(Mapping mapping, Plugin plugin)
         {
             if (!Mappings.Contains(mapping)) return false;
-            plugin.State = state ?? Guid.Empty;
             plugin.Profile = this;
             mapping.Plugins.Add(plugin);
             Context.ContextChanged();
@@ -255,47 +232,6 @@ namespace HidWizards.UCR.Core.Models
             mapping.Plugins.Remove(plugin);
             Context.ContextChanged();
             return true;
-        }
-
-        #endregion
-
-        #region State
-
-        public State AddState(string title)
-        {
-            if (States.Find(s => s.Title == title) != null) return null;
-            var newState = new State(title);
-            States.Add(newState);
-            Context.ContextChanged();
-            return newState;
-        }
-
-        public bool RemoveState(State state)
-        {
-            var success = States.Remove(state);
-            // TODO remove all plugins with state
-
-            Context.ContextChanged();
-            return success;
-        }
-
-        public string GetStateTitle(Guid stateGuid)
-        {
-            var state = States.Find(s => s.Guid == stateGuid);
-            return state == null ? "" : state.Title;
-        }
-
-        public void SetRuntimeState(Guid stateGuid, bool newState)
-        {
-            if (StateDictionary.TryGetValue(stateGuid, out var currentState))
-            {
-                StateDictionary.TryUpdate(stateGuid, newState, currentState);
-            }
-        }
-
-        public bool GetRuntimeState(Guid stateGuid)
-        {
-            return StateDictionary.TryGetValue(stateGuid, out var currentState) && currentState;
         }
 
         #endregion

@@ -97,10 +97,8 @@ namespace HidWizards.UCR.Core.Models
         {
             foreach (var plugin in Plugins)
             {
-                if (plugin.State == Guid.Empty || Profile.GetRuntimeState(plugin.State))
-                {
-                    plugin.Update(InputCache.ToArray());
-                }
+                // TODO Surround with Filter check or do pre plugin update
+                plugin.Update(InputCache.ToArray());
             }
         }
 
@@ -117,7 +115,7 @@ namespace HidWizards.UCR.Core.Models
             return plugins;
         }
 
-        public bool AddPlugin(Plugin plugin, Guid? state)
+        public bool AddPlugin(Plugin plugin)
         {
             if (Plugins.Count == 0)
             {
@@ -128,7 +126,6 @@ namespace HidWizards.UCR.Core.Models
             }
             
             plugin.SetProfile(Profile);
-            if (state != null) plugin.State = state.Value;
             Plugins.Add(plugin);
 
             Profile.Context.ContextChanged();

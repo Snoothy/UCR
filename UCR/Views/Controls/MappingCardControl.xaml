@@ -38,6 +38,12 @@
                                 Click="Rename_OnClick">
                             <materialDesign:PackIcon Kind="Edit" Width="20" Height="20"/>
                         </Button>
+                        <Button ToolTip="Add plugin to mapping"
+                                Style="{StaticResource MaterialDesignCardButton}"
+                                Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                                Click="AddPlugin_OnClick">
+                            <materialDesign:PackIcon Kind="LibraryAdd" Width="20" Height="20"/>
+                        </Button>
                         <Button ToolTip="Remove mapping"
                                 Style="{StaticResource MaterialDesignGroupBoxButton}"
                                 Foreground="{StaticResource PrimaryHueMidForegroundBrush}"

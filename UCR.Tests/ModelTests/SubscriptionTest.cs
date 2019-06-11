@@ -44,7 +44,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             var mapping = _profile.AddMapping("Button");
             var plugin = new ButtonToButton();
-            mapping.AddPlugin(plugin, null);
+            mapping.AddPlugin(plugin);
 
             Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
 

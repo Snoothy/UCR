@@ -85,7 +85,6 @@
     <Compile Include="Models\PluginProperty.cs" />
     <Compile Include="Models\PluginPropertyGroup.cs" />
     <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\State.cs" />
     <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
     <Compile Include="Models\Subscription\MappingSubscription.cs" />

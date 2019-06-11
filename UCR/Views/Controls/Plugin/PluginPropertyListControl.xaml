@@ -58,13 +58,6 @@
                     </plugin:PluginPropertyControl.PropertyContent>
                 </plugin:PluginPropertyControl>
             </DataTemplate>
-            <DataTemplate x:Key="StateTemplate">
-                <plugin:PluginPropertyControl>
-                    <plugin:PluginPropertyControl.PropertyContent>
-                        <local:StateControl PluginProperty="{Binding PluginProperty}"/>
-                    </plugin:PluginPropertyControl.PropertyContent>
-                </plugin:PluginPropertyControl>
-            </DataTemplate>
             <DataTemplate x:Key="EnumTemplate">
                 <plugin:PluginPropertyControl>
                     <plugin:PluginPropertyControl.PropertyContent>
