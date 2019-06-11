@@ -16,14 +16,21 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public Mapping Mapping { get; set; }
         public ObservableCollection<PluginViewModel> Plugins { get; set; }
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
+        public bool ButtonsEnabled => !ProfileViewModel.Profile.IsActive();
 
         public MappingViewModel(ProfileViewModel profileViewModel, Mapping mapping)
         {
             ProfileViewModel = profileViewModel;
             Mapping = mapping;
+            profileViewModel.Profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
             DeviceBindings = new ObservableCollection<DeviceBindingViewModel>();
             PopulateDeviceBindingsViewModels();
             PopulatePlugins(mapping);
+        }
+
+        private void ContextOnActiveProfileChangedEvent(Profile profile)
+        {
+            OnPropertyChanged(nameof(ButtonsEnabled));
         }
 
         public void Remove()

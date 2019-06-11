@@ -1,22 +1,37 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
-    public class PluginViewModel
+    public class PluginViewModel : INotifyPropertyChanged
     {
         public MappingViewModel MappingViewModel { get; }
         public Plugin Plugin { get; set; }
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
         public ObservableCollection<PluginPropertyGroupViewModel> PluginPropertyGroups { get; set; }
+        public bool CanRemove => !MappingViewModel.ProfileViewModel.Profile.IsActive() && MappingViewModel.Plugins.Count > 1;
 
         public PluginViewModel(MappingViewModel mappingViewModel, Plugin plugin)
         {
             MappingViewModel = mappingViewModel;
             Plugin = plugin;
-
+            plugin.Profile.Context.ActiveProfileChangedEvent += ContextOnActiveProfileChangedEvent;
+            mappingViewModel.Plugins.CollectionChanged += Plugins_CollectionChanged;
             PopulateDeviceBindingsViewModels();
             PopulatePluginProperties();
+        }
+
+        private void Plugins_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(CanRemove));
+        }
+
+        private void ContextOnActiveProfileChangedEvent(Profile profile)
+        {
+            OnPropertyChanged(nameof(CanRemove));
         }
 
         public void Remove()
@@ -53,6 +68,14 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
                 PluginPropertyGroups.Add(new PluginPropertyGroupViewModel(pluginPropertyGroup));
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

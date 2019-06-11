@@ -9,14 +9,13 @@ using HidWizards.UCR.Core.Annotations;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
-    public class AddMappingPluginDialogViewModel :INotifyPropertyChanged
+    public class AddMappingPluginDialogViewModel : INotifyPropertyChanged
     {
         public string Title => $"Add plugin to mapping: {MappingViewModel?.MappingTitle}";
         public AddMappingPluginDialogViewModel ViewModel { get; set; }
         private MappingViewModel MappingViewModel { get; }
 
         public List<SimplePluginViewModel> Plugins { get; set; }
-
         public SimplePluginViewModel SelectedPlugin { get; set; }
         public bool InputValid => SelectedPlugin != null;
 

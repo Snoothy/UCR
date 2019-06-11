@@ -10,7 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="500"
              x:Name="PluginViewName">
     <GroupBox Width="auto"
-              Header="{Binding Plugin.PluginName}"
+              Header="{Binding}"
               Style="{StaticResource MaterialDesignCardGroupBox}"
               Margin="0"
               materialDesign:ColorZoneAssist.Mode="Standard">
@@ -24,12 +24,13 @@
                     <TextBlock Margin="0"
                                VerticalAlignment="Center"
                                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-                               Text="{Binding}" />
+                               Text="{Binding Plugin.PluginName}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button ToolTip="Remove plugin"
                                 materialDesign:ColorZoneAssist.Mode="Standard"
                                 Style="{StaticResource MaterialDesignCardButton}"
-                                Click="RemovePlugin_OnClick">
+                                Click="RemovePlugin_OnClick"
+                                IsEnabled="{Binding CanRemove}">
                             <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>
                         </Button>
                     </StackPanel>

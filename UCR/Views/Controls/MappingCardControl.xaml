@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Width="auto"
-              Header="{Binding MappingTitle}"
+              Header="{Binding}"
               Style="{StaticResource MaterialDesignCardGreyGroupBox}"
               Margin="4 6 4 6"
               Background="LightGray">
@@ -29,9 +29,9 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Margin="0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" />
+                    <TextBlock Margin="0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding MappingTitle}" />
 
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding ButtonsEnabled}">
                         <Button ToolTip="Rename mapping"
                                 Style="{StaticResource MaterialDesignCardButton}"
                                 Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
