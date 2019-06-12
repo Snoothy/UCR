@@ -107,10 +107,12 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0"
-                                              Background="Transparent"
-                                              HorizontalAlignment="Stretch"
-                                              IsExpanded="True">
+                                        <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0" 
+                                                  ExpandDirection="Down"
+                                                  materialDesign:ExpanderAssist.DownHeaderPadding="16,8,16,0"
+                                                  Background="Transparent"
+                                                  HorizontalAlignment="Stretch"
+                                                  IsExpanded="True">
                                             <Expander.Header>
                                                 <Grid>
                                                     <Grid.RowDefinitions>
@@ -120,7 +122,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 4 4 4" Text="{Binding Group}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 4 8 4" Text="{Binding Group}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
                                                     <Separator Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
                                                 </Grid>
                                             </Expander.Header>
