@@ -29,8 +29,8 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             }
         }
 
-        private Profile _profile;
-        private DeviceIoType _deviceIoType;
+        private readonly Profile _profile;
+        private readonly DeviceIoType _deviceIoType;
 
         public ProfileDeviceListControlViewModel()
         {

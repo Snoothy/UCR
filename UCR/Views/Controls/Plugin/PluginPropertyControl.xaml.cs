@@ -26,7 +26,7 @@ namespace HidWizards.UCR.Views.Controls.Plugin
 
         public object PropertyContent
         {
-            get { return (object) GetValue(PropertyContentProperty); }
+            get { return GetValue(PropertyContentProperty); }
             set { SetValue(PropertyContentProperty, value); }
         }
     }

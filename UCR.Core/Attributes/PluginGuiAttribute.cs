@@ -5,7 +5,7 @@ namespace HidWizards.UCR.Core.Attributes
     [AttributeUsage(AttributeTargets.Property)]
     public class PluginGuiAttribute : Attribute
     {
-        private string _name;
+        private readonly string _name;
         private int _order;
         private string _group;
 
