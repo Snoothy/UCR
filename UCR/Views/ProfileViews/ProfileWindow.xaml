@@ -4,150 +4,200 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converter="clr-namespace:HidWizards.UCR.Utilities.Converter"
         mc:Ignorable="d"
         x:Name="ProfileWindowName"
         d:DataContext="{d:DesignData Source=/SampleData/ProfileViewModelSampleData.xaml}"
-        Title="{Binding Title}" Height="800" Width="1000">
-    <Grid Background="{x:Static SystemColors.ControlBrush}" >
+        Title="{Binding Title}" 
+        Height="800" Width="1000"
+        MinHeight="600" MinWidth="800"
+        ResizeMode="CanResize" 
+        BorderBrush="{StaticResource PrimaryHueDarkBrush}"
+        BorderThickness="1"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        UseLayoutRounding="True">
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="5"
+            GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <ResourceDictionary>
+            <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" Executed="Save_OnExecuted" CanExecute="Save_OnCanExecute" />
+    </Window.CommandBindings>
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Menu Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top">
-            <MenuItem Header="_Profile">
-                <MenuItem Header="Activate Profile" Click="ActivateProfile" />
-                <MenuItem Header="Deactivate Profile" Click="DeactivateProfile" />
-                <Separator/>
-                <MenuItem Header="Manage device groups" Click="ManageDeviceGroups_OnClick" />
-                <Separator/>
-                <MenuItem Header="Close" Click="Close_OnClick"/>
-            </MenuItem>
-            <MenuItem Header="_States">
-                <MenuItem Header="Manage states" Click="ManageStates_OnClick" />
-            </MenuItem>
-        </Menu>
+        <controls:WindowBar Grid.Row="0"/>
+        <Grid Grid.Row="1">
+            <Border Background="Transparent"
+                    BorderBrush="{DynamicResource MaterialDesignShadowBrush}"
+                    BorderThickness="0 0 0 1"
+                    CornerRadius="2">
+                <Border.Effect>
+                    <BlurEffect Radius="6"/>
+                </Border.Effect>
+            </Border>
+            <ToolBarTray Style="{DynamicResource MaterialDesignToolBarTray}" IsEnabled="{Binding Source={x:Reference RootDialog}, Path=IsOpen, Converter={StaticResource InverseBooleanConverter}}">
+                <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
+                    <Button ToolTip="Save" Command="Save">
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                    </Button>
+                    <Separator />
+                    <Button IsEnabled="{Binding CanActivateProfile}" ToolTip="Activate profile" Click="ActivateProfile">
+                        <StackPanel>
+                            <materialDesign:PackIcon Kind="Play"/>
+                            <materialDesign:PackIcon Kind="Replay" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding CanDeactivateProfile}" ToolTip="Stop active profile" Click="DeactivateProfile">
+                        <materialDesign:PackIcon Kind="Stop"/>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+        </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}" Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="40*"/>
-            </Grid.ColumnDefinitions>
+        <materialDesign:DialogHost x:Name="RootDialog" Grid.Row="2" Identifier="{Binding ProfileDialogIdentifier}">
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="178*"/>
+                    <ColumnDefinition Width="147*"/>
+                    <ColumnDefinition Width="649*"/>
+                </Grid.ColumnDefinitions>
 
-            <GroupBox Header="Mappings" Grid.Row="0" Grid.Column="0" Padding="5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <GroupBox Header="Mapping">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Button Padding="5,2,5,2" Margin="5" Click="AddMapping_OnClick">Add</Button>
-                            <TextBox Grid.Column="1" Margin="0,5,5,5" x:Name="MappingNameField" KeyDown="MappingNameField_OnKeyDown"></TextBox>
-                        </Grid>
-                    </GroupBox>
-
-                    <ListBox Grid.Row="1" Grid.Column="0" Margin="0,10,0,0" x:Name="MappingsListBox"  ItemsSource="{Binding MappingsList}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                             VirtualizingPanel.ScrollUnit='Pixel'
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             SelectionChanged="MappingsListBox_OnSelectionChanged">
-                        <ListBox.Resources>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListBox.Resources>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <controls:MappingControl/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Grid.Row="0" Grid.Column="1" Header="Current mapping">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid Grid.Row="0" Margin="0,0,0,5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <GroupBox Grid.Column="0" Header="Plugin" Margin="5" Padding="5">
+                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Grid.ColumnSpan="2">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Button Padding="5,0,5,0" Click="AddPlugin_OnClick">Add</Button>
-                                <ComboBox Grid.Column="1" Name="PluginsComboBox" Margin="5,0,0,0" ></ComboBox>
+                                <TextBlock Margin="0"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                           Text="Plugins" />
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                </StackPanel>
                             </Grid>
-                        </GroupBox>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="-9">
+                        <ItemsControl ItemsSource="{Binding PluginToolbox.PluginGroupList.Values}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Expander Style="{StaticResource MaterialDesignExpander}" Padding="0" 
+                                                  ExpandDirection="Down"
+                                                  materialDesign:ExpanderAssist.DownHeaderPadding="16,8,16,0"
+                                                  Background="Transparent"
+                                                  HorizontalAlignment="Stretch"
+                                                  IsExpanded="True">
+                                            <Expander.Header>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0 4 8 4" Text="{Binding Group}" Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+                                                    <Separator Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignSeparator}" />
+                                                </Grid>
+                                            </Expander.Header>
 
-                        <GroupBox Grid.Column="1" Header="State" Margin="0,5,0,5">
-                            <ComboBox x:Name="StatesComboBox" Text="Default" Margin="5" ItemsSource="{Binding StatesList}" SelectedIndex="0"/>
-                        </GroupBox>
-                    </Grid>
+                                            <ItemsControl ItemsSource="{Binding Plugins}" Margin="16 0 8 0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <StackPanel Grid.Column="0" Margin="0 16" VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Name}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                                </StackPanel>
+                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                    <Button HorizontalAlignment="Right" ToolTip="Add mapping"
+                                                                            Style="{StaticResource MaterialDesignCardButton}"
+                                                                            Click="AddMapping_OnClick"
+                                                                            IsEnabled="{Binding IsEnabled}">
+                                                                        <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                                                    </Button>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Expander>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </GroupBox>
 
-                    <ListBox Grid.Row="1" x:Name="PluginsListBox"  ItemsSource="{Binding SelectedMapping.Plugins}" VirtualizingPanel.IsVirtualizing='True' VerticalAlignment="Stretch"
-                             VirtualizingPanel.IsVirtualizingWhenGrouping='True'
-                             VirtualizingPanel.ScrollUnit='Pixel'
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="PluginsListBox_OnSelectionChanged">
-                        <ListBox.Resources>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListBox.Resources>
-                        <ListBox.Style>
-                            <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-                                <Style.Triggers>
-                                    <Trigger Property="HasItems" Value="False">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate>
-                                                    <Grid>
-                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Add an output plugin</TextBlock>
-                                                    </Grid>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.Style>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate >
-                                <controls:PluginControl />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </GroupBox>
-        </Grid>
+                <ListView Grid.Row="0" Grid.Column="2" 
+                          x:Name="MappingListView"
+                          ItemsSource="{Binding MappingsList}" 
+                          Margin="0 -8 -8 -8"
+                          VirtualizingPanel.ScrollUnit='Pixel'
+                          HorizontalContentAlignment="Stretch">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.Style>
+                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}">
+                            <Style.Triggers>
+                                <Trigger Property="HasItems" Value="False">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Margin="4">Click the</TextBlock>
+                                                    <materialDesign:PackIcon Kind="Plus" Height="16" Width="16" Margin="4"/>
+                                                    <TextBlock Margin="4">next to a Plugin to add your first mapping</TextBlock>
+                                                </StackPanel>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Style>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:MappingCardControl/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </materialDesign:DialogHost>
     </Grid>
 </Window>

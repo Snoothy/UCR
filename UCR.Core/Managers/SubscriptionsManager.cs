@@ -139,23 +139,9 @@ namespace HidWizards.UCR.Core.Managers
 
             // Output devices
             var profileOutputDevices = new List<DeviceSubscription>();
-            var outputDeviceGroup = _context.DeviceGroupsManager.GetDeviceGroup(DeviceIoType.Output, profile.OutputDeviceGroupGuid);
-            foreach (var device in outputDeviceGroup.Devices)
+            foreach (var device in profile.OutputDevices)
             {
                 profileOutputDevices.Add(state.AddOutputDevice(device, profile));
-            }
-
-            // Devices are inherited, load them for the subscription model
-            if (outputDeviceGroup.Devices.Count == 0)
-            {
-                var deviceGroup = profile.GetDeviceGroup(DeviceIoType.Output);
-                if (deviceGroup != null)
-                {
-                    foreach (var device in deviceGroup.Devices)
-                    {
-                        profileOutputDevices.Add(state.AddOutputDevice(device, profile));
-                    }
-                }
             }
 
             state.AddMappings(profile, profileOutputDevices);

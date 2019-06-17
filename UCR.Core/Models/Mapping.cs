@@ -41,6 +41,12 @@ namespace HidWizards.UCR.Core.Models
             Title = title;
         }
 
+        public void Rename(string title)
+        {
+            Title = title;
+            Profile.Context.ContextChanged();
+        }
+
         internal bool IsBound()
         {
             if (DeviceBindings.Count == 0) return false;
@@ -91,10 +97,8 @@ namespace HidWizards.UCR.Core.Models
         {
             foreach (var plugin in Plugins)
             {
-                if (plugin.State == Guid.Empty || Profile.GetRuntimeState(plugin.State))
-                {
-                    plugin.Update(InputCache.ToArray());
-                }
+                // TODO Surround with Filter check or do pre plugin update
+                plugin.Update(InputCache.ToArray());
             }
         }
 
@@ -111,7 +115,7 @@ namespace HidWizards.UCR.Core.Models
             return plugins;
         }
 
-        public bool AddPlugin(Plugin plugin, Guid? state)
+        public bool AddPlugin(Plugin plugin)
         {
             if (Plugins.Count == 0)
             {
@@ -120,9 +124,8 @@ namespace HidWizards.UCR.Core.Models
                     DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
                 }
             }
-            
+
             plugin.SetProfile(Profile);
-            if (state != null) plugin.State = state.Value;
             Plugins.Add(plugin);
 
             Profile.Context.ContextChanged();
@@ -167,5 +170,6 @@ namespace HidWizards.UCR.Core.Models
                 DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
             }
         }
+
     }
 }

@@ -1,12 +1,14 @@
 ﻿<profileViewModels:MappingViewModel xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
                 xmlns:binding="clr-namespace:HidWizards.UCR.Core.Models.Binding;assembly=UCR.Core"
                 xmlns:profileViewModels="clr-namespace:HidWizards.UCR.ViewModels.ProfileViewModels">
+    <profileViewModels:MappingViewModel.DeviceBindings>
+        <profileViewModels:DeviceBindingViewModel DeviceBindingName="Button"/>
+        <profileViewModels:DeviceBindingViewModel DeviceBindingName="Axis"/>
+    </profileViewModels:MappingViewModel.DeviceBindings>
     <profileViewModels:MappingViewModel.Mapping>
         <models:Mapping>
-            <models:Mapping.Title>Test title</models:Mapping.Title>
+            <models:Mapping.Title>Mapping Test title</models:Mapping.Title>
             <models:Mapping.DeviceBindings>
-                <binding:DeviceBinding/>
-                <binding:DeviceBinding/>
                 <binding:DeviceBinding/>
             </models:Mapping.DeviceBindings>
         </models:Mapping>

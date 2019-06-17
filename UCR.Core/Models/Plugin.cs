@@ -12,14 +12,13 @@ namespace HidWizards.UCR.Core.Models
     public abstract class Plugin : IComparable<Plugin>
     {
         /* Persistence */
-        public Guid State { get; set; }
         public List<DeviceBinding> Outputs { get; }
         
         /* Runtime */
         internal Profile Profile { get; set; }
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
-        private List<List<PluginProperty>> _guiMatrix;
+        private List<PluginPropertyGroup> _pluginPropertyGroups;
 
         #region Properties
         
@@ -46,26 +45,24 @@ namespace HidWizards.UCR.Core.Models
         }
 
         [XmlIgnore]
-        public List<List<PluginProperty>> GuiMatrix
+        public List<PluginPropertyGroup> PluginPropertyGroups
         {
             get
             {
-                if (_guiMatrix != null) return _guiMatrix;
-                _guiMatrix = GetGuiMatrix();
-                return _guiMatrix;
+                if (_pluginPropertyGroups != null) return _pluginPropertyGroups;
+                _pluginPropertyGroups = GetGuiMatrix();
+                return _pluginPropertyGroups;
             }
         }
 
         [XmlIgnore]
-        public string PluginName => State.Equals(Guid.Empty) ? GetPluginAttribute().Name : $"{GetPluginAttribute().Name} - State: {StateTitle}";
-
+        public string PluginName =>  GetPluginAttribute().Name;
+        [XmlIgnore]
+        public string Description => GetPluginAttribute().Description;
+        [XmlIgnore]
+        public string Group => GetPluginAttribute().Group;
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
-
-        public string StateTitle
-        {
-            get => Profile.GetStateTitle(State);
-        }
 
         #endregion
 
@@ -73,6 +70,7 @@ namespace HidWizards.UCR.Core.Models
         {
             public string Name;
             public DeviceBindingCategory Category;
+            public string GroupName;
         }
 
         protected Plugin()
@@ -121,16 +119,6 @@ namespace HidWizards.UCR.Core.Models
         protected void WriteOutput(int number, short value)
         {
             Outputs[number].WriteOutput(value);
-        }
-
-        protected void SetState(Guid stateGuid, bool newState)
-        {
-            Profile.SetRuntimeState(stateGuid, newState);
-        }
-
-        protected bool GetState(Guid stateGuid)
-        {
-            return Profile.GetRuntimeState(stateGuid);
         }
 
         protected long ReadOutput(int number)
@@ -225,7 +213,8 @@ namespace HidWizards.UCR.Core.Models
             return attributes.Where(a => a.DeviceIoType == deviceIoType).Select(a => new IODefinition()
             {
                 Category = a.DeviceBindingCategory,
-                Name = a.Name
+                Name = a.Name,
+                GroupName = a.Group
             }).ToList();
         }
 
@@ -237,32 +226,58 @@ namespace HidWizards.UCR.Core.Models
                 select new { Property = p, Attribute = attr.First() as PluginGuiAttribute };
 
 
-            return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.RowOrder, prop.Attribute.ColumnOrder)).ToList();
+            return properties.Select(prop => new PluginProperty(this, prop.Property, prop.Attribute.Name, prop.Attribute.Order, prop.Attribute.Group)).ToList();
         }
 
-        public List<List<PluginProperty>> GetGuiMatrix()
+        private List<PluginGroupAttribute> GetPluginGroups()
         {
-            var result = new List<List<PluginProperty>>();
-            var currentRow = new List<PluginProperty>();
-            result.Add(currentRow);
+            return GetType().GetCustomAttributes(typeof(PluginGroupAttribute), true).ToList()
+                .Select(a => ((PluginGroupAttribute) a)).ToList();
+        }
 
+        private List<string> GetPluginOutputGroups()
+        {
+            return GetType().GetCustomAttributes(typeof(PluginOutput), true).ToList()
+                .Select(a => ((PluginOutput)a).Group).Distinct().ToList();
+        }
+
+        public List<PluginPropertyGroup> GetGuiMatrix()
+        {
+            var result = new List<PluginPropertyGroup>();
+            
             var guiProperties = GetGuiProperties();
             guiProperties.Sort();
 
-            foreach (var pluginProperty in guiProperties)
-            {
-                if (currentRow.Count != 0 && currentRow[0].RowOrder != pluginProperty.RowOrder)
+            var ungroupedProperties = guiProperties.FindAll(p => p.Group == null);
+            if (ungroupedProperties.Count > 0) { 
+                result.Add(new PluginPropertyGroup()
                 {
-                    currentRow = new List<PluginProperty>();
-                    result.Add(currentRow);
-                }
-
-                currentRow.Add(pluginProperty);
+                    Title = "Settings",
+                    GroupName = "Settings",
+                    GroupType = PluginPropertyGroup.GroupTypes.Settings,
+                    PluginProperties = ungroupedProperties
+                });
             }
 
-            foreach (var pluginPropertiesRow in result)
+            foreach (var group in GetPluginGroups())
             {
-                pluginPropertiesRow.Sort((x, y) => x.ColumnOrder.CompareTo(y.ColumnOrder));
+                if (group.Group == null) continue;
+
+                var properties = guiProperties.FindAll(p => group.Group.Equals(p.Group));
+                result.Add(new PluginPropertyGroup()
+                {
+                    Title = group.Name,
+                    GroupName = group.Group,
+                    GroupType = GetPluginOutputGroups().Contains(group.Group) 
+                        ? PluginPropertyGroup.GroupTypes.Output 
+                        : PluginPropertyGroup.GroupTypes.Settings,
+                    PluginProperties = properties
+                });
+            }
+
+            foreach (var pluginGroup in result)
+            {
+                pluginGroup.PluginProperties.Sort((x, y) => x.Order.CompareTo(y.Order));
             }
 
             return result;

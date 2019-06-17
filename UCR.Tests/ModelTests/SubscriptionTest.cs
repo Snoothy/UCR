@@ -24,7 +24,8 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             _context = new Context();
             _profileName = "Test";
-            _context.ProfilesManager.AddProfile(_profileName);
+            var profile = _context.ProfilesManager.CreateProfile(_profileName, null, null);
+            _context.ProfilesManager.AddProfile(profile);
             _profile = _context.Profiles[0];
         }
 
@@ -43,7 +44,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         {
             var mapping = _profile.AddMapping("Button");
             var plugin = new ButtonToButton();
-            mapping.AddPlugin(plugin, null);
+            mapping.AddPlugin(plugin);
 
             Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
 

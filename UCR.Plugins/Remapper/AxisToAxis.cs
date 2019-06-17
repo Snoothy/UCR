@@ -7,21 +7,21 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to Axis")]
+    [Plugin("Axis to Axis", Group = "Axis", Description = "Map from one axis to another")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin
     {
-        [PluginGui("Invert", ColumnOrder = 0)]
+        [PluginGui("Invert", Order = 0)]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear", ColumnOrder = 3)]
+        [PluginGui("Linear", Order = 3)]
         public bool Linear { get; set; }
 
-        [PluginGui("Dead zone", ColumnOrder = 1)]
+        [PluginGui("Dead zone", Order = 1)]
         public int DeadZone { get; set; }
 
-        [PluginGui("Sensitivity", ColumnOrder = 2)]
+        [PluginGui("Sensitivity", Order = 2)]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

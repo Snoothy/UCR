@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="HidWizards.UCR.Views.Controls.WindowBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="32" d:DesignWidth="800">
+    <Grid>
+        <Grid Background="{StaticResource PrimaryHueDarkBrush}" 
+              MouseLeftButtonDown="Bar_OnMouseLeftButtonDown" 
+              MouseLeftButtonUp="Bar_OnMouseLeftButtonUp" 
+              MouseDown="Bar_OnMouseDown"
+              MouseMove="Bar_OnMouseMove">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Image Width="24" Height="24" Margin="4" Source="pack://application:,,,/Resources/UCR_24.png"/>
+                <TextBlock FontSize="13" Margin="4 8" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Title}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                <StackPanel Orientation="Horizontal" ToolTip="The current active profile" Margin="20 4 4 4">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=ActiveProfileTextBlock, Path=Text.Length}" Value="0">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <materialDesign:PackIcon Kind="Account" Height="16" Width="16" Margin="4" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                    <TextBlock x:Name="ActiveProfileTextBlock" FontSize="13" Margin="4" Text="{Binding ActiveProfileBreadCrumbs}" Foreground="{StaticResource PrimaryHueDarkForegroundBrush}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Right" Height="auto" VerticalAlignment="Top" Width="auto">
+                <Button Style="{StaticResource MaterialDesignFlatRedBarButton}"
+                        Padding="12 0"
+                        Click="Close_OnClick">
+                    <materialDesign:PackIcon Kind="WindowClose" Height="16" Width="16"/>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFlatBarButton}"
+                        Padding="12 0"
+                        Click="Resize_OnClick">
+                    <materialDesign:PackIcon Kind="WindowMaximize" Height="16" Width="16" />
+                </Button>
+                <Button Style="{StaticResource MaterialDesignFlatBarButton}"
+                        Padding="12 0"
+                        Click="Minimize_OnClick">
+                    <materialDesign:PackIcon Kind="WindowMinimize" Margin="0 8 0 0" Height="16" Width="16" />
+                </Button>
+            </StackPanel>
+        </Grid>   
+    </Grid>
+</UserControl>

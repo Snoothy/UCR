@@ -5,13 +5,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-### Changed
+### Added
+- Material design
+- Quick access button to add new profile
+- Profile overview in the main window
+- Added save button to profile window
 
+### Changed
+- `Button to Axis` parameters changed to two axis values and option for initialization
+- Redesigned main window dashboard
+- Redesigned profile window
+- Show active profile in process bar
+- Replaced menu with toolbar in main window
+- Replaced dialog windows with proper dialogs
+- Replaced menu with toolbar in profile window
 - UCR Unblocker now uses the current directory as default
 - Sensitivity to Axis Merger plugin added
 
-### Fixed
+### Removed
+- Removed states
 
+### Fixed
 - Sum Mode in Axis Merger plugin no longer overflows
 - Unblocking no longer crashes if the UCR path has spaces
 
@@ -23,7 +37,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Plugin updates are now of type short instead of long. Some operations are performed using int, to avoid wrap-around or crashes.
 - Subscription and Bind Mode callbacks are now executed as Tasks and are an Action<short> rather than dynamic
 - Default blocking to true while UCR GUI does not support selecting block
-
 
 ## [0.6.0] - 2018-12-03
 

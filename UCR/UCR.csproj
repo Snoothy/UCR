@@ -56,6 +56,12 @@
     <ApplicationIcon>UCR.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.1.1345, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.5.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -63,6 +69,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
@@ -86,6 +93,7 @@
     </ApplicationDefinition>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
+    <Compile Include="Utilities\Converter\InverseBooleanConverter.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
@@ -94,65 +102,84 @@
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
+    <Compile Include="ViewModels\Controls\DeviceSelectControlViewModel.cs" />
+    <Compile Include="ViewModels\Dashboard\AddDevicesDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
-    <Compile Include="ViewModels\DeviceViewModels\DeviceGroupViewModel.cs" />
+    <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
+    <Compile Include="ViewModels\Dashboard\ProfileDeviceListControlViewModel.cs" />
+    <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\AddMappingPluginDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginGroupViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginPropertyViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\PluginToolboxViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
-    <Compile Include="Views\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\DeviceListControl.xaml.cs">
-      <DependentUpon>DeviceListControl.xaml</DependentUpon>
+    <Compile Include="Views\Controls\DeviceSelectControl.xaml.cs">
+      <DependentUpon>DeviceSelectControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\MappingControl.xaml.cs">
-      <DependentUpon>MappingControl.xaml</DependentUpon>
+    <Compile Include="Views\Controls\MappingCardControl.xaml.cs">
+      <DependentUpon>MappingCardControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginControl.xaml.cs">
+    <Compile Include="Views\Controls\Plugin\PluginControl.xaml.cs">
       <DependentUpon>PluginControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PluginGuiTemplateSelector.cs" />
-    <Compile Include="Views\Controls\PreviewControlTemplateSelector.cs" />
-    <Compile Include="Views\Controls\PluginViewTemplateSelector.cs" />
-    <Compile Include="ViewModels\DeviceViewModels\DeviceListControlViewModel.cs" />
+    <Compile Include="Views\Controls\Plugin\PluginGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Plugin\PluginPropertyControl.xaml.cs">
+      <DependentUpon>PluginPropertyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Plugin\PluginPropertyListControl.xaml.cs">
+      <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Plugin\PluginViewTemplateSelector.cs" />
     <Compile Include="Views\Controls\EnumControl.xaml.cs">
       <DependentUpon>EnumControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\PreviewControl.xaml.cs">
-      <DependentUpon>PreviewControl.xaml</DependentUpon>
+    <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
+      <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\preview\MomentaryConverter.cs" />
-    <Compile Include="Views\Controls\preview\RangeConverter.cs" />
-    <Compile Include="Views\Controls\StateControl.xaml.cs">
-      <DependentUpon>StateControl.xaml</DependentUpon>
+    <Compile Include="Views\Controls\WindowBar.xaml.cs">
+      <DependentUpon>WindowBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DeviceViews\DeviceListWindow.xaml.cs">
-      <DependentUpon>DeviceListWindow.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\DeviceViewModels\DeviceListWindowViewModel.cs" />
-    <Compile Include="Views\HelpWindow.xaml.cs">
-      <DependentUpon>HelpWindow.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\AddDevicesDialog.xaml.cs">
+      <DependentUpon>AddDevicesDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\DeviceGroupComboBoxItem.cs" />
-    <Compile Include="Views\ProfileViews\PluginDialog.xaml.cs">
-      <DependentUpon>PluginDialog.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\AddMappingPluginDialog.xaml.cs">
+      <DependentUpon>AddMappingPluginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\ProfileDialog.xaml.cs">
-      <DependentUpon>ProfileDialog.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\BoolDialog.xaml.cs">
+      <DependentUpon>BoolDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml.cs">
-      <DependentUpon>ProfileDeviceGroupWindow.xaml</DependentUpon>
+    <Compile Include="ViewModels\Dialogs\DecisionDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\DecisionDialog.xaml.cs">
+      <DependentUpon>DecisionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileViews\ProfileStateWindow.xaml.cs">
-      <DependentUpon>ProfileStateWindow.xaml</DependentUpon>
+    <Compile Include="Utilities\Validators\NotEmptyValidationRule.cs" />
+    <Compile Include="Views\Dialogs\CreateProfileDialog.xaml.cs">
+      <DependentUpon>CreateProfileDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TextDialog.xaml.cs">
+    <Compile Include="Views\Dialogs\StringDialog.xaml.cs">
+      <DependentUpon>StringDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\Dialogs\BoolDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\StringDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\HelpDialog.xaml.cs">
+      <DependentUpon>HelpDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\TextDialog.xaml.cs">
       <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -166,32 +193,31 @@
     <Compile Include="Views\ProfileViews\ProfileWindow.xaml.cs">
       <DependentUpon>ProfileWindow.xaml</DependentUpon>
     </Compile>
-    <DesignData Include="SampleData\DeviceListControlSampleData.xaml">
-      <SubType>Designer</SubType>
-    </DesignData>
     <DesignData Include="SampleData\ProfileViewModelSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
     <DesignData Include="SampleData\MappingControlSampleData.xaml">
       <SubType>Designer</SubType>
     </DesignData>
-    <Page Include="Views\AboutWindow.xaml">
+    <DesignData Include="SampleData\DashboardSampleData.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+    </DesignData>
+    <Page Include="SampleData\CreateProfileDialogSampleData.xaml">
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\DeviceListControl.xaml">
+    <Page Include="Views\Controls\DeviceSelectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\MappingControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\Controls\MappingCardControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\PluginControl.xaml">
+    <Page Include="Views\Controls\Plugin\PluginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,39 +225,55 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Controls\PreviewControl.xaml">
+    <Page Include="Views\Controls\Plugin\PluginPropertyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\StateControl.xaml">
+    <Page Include="Views\Controls\Plugin\PluginPropertyListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DeviceViews\DeviceListWindow.xaml">
+    <Page Include="Views\Controls\ProfileDeviceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\HelpWindow.xaml">
+    <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProfileViews\PluginDialog.xaml">
+    <Page Include="Views\Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ProfileViews\ProfileDialog.xaml">
+    <Page Include="Views\Dialogs\AddDevicesDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ProfileViews\ProfileDeviceGroupWindow.xaml">
+    <Page Include="Views\Dialogs\AddMappingPluginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProfileViews\ProfileStateWindow.xaml">
+    <Page Include="Views\Dialogs\BoolDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TextDialog.xaml">
+    <Page Include="Views\Dialogs\DecisionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\CreateProfileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialogs\StringDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\HelpDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\TextDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -293,7 +335,12 @@
   <ItemGroup>
     <Resource Include="UCR.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\UCR_24.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,13 +5,13 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Buttons to Axis")]
+    [Plugin("Buttons to Axis", Group = "Axis", Description = "Map two buttons to one axis")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button (Low)")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button (High)")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class ButtonsToAxis : Plugin
     {
-        [PluginGui("Invert", ColumnOrder = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
         public override void Update(params short[] values)

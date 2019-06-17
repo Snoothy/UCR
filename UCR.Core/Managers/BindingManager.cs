@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Annotations;
@@ -28,7 +29,7 @@ namespace HidWizards.UCR.Core.Managers
         }
 
         private static readonly double BindModeTime = 5000.0;
-        private static readonly int BindModeTick = 10;
+        private static readonly int BindModeTick = 20;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
         private List<Device> _deviceList;
@@ -51,13 +52,13 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (_deviceList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
-            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding))
+            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding.DeviceIoType))
             {
                 _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
                 _deviceList.Add(device);
             }
 
-            BindingTimer = new DispatcherTimer();
+            BindingTimer = new DispatcherTimer(DispatcherPriority.Render);
             BindingTimer.Tick += BindingTimerOnTick;
             BindingTimer.Interval = TimeSpan.FromMilliseconds(BindModeTick);
             BindModeProgress = BindModeTime;

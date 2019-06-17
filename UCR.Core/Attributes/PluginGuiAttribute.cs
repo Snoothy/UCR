@@ -5,29 +5,29 @@ namespace HidWizards.UCR.Core.Attributes
     [AttributeUsage(AttributeTargets.Property)]
     public class PluginGuiAttribute : Attribute
     {
-        private string name;
-        private int rowOrder;
-        private int columnOrder;
+        private readonly string _name;
+        private int _order;
+        private string _group;
 
         public PluginGuiAttribute(string name)
         {
-            this.name = name;
-            rowOrder = 0;
-            columnOrder = 0;
+            _name = name;
+            _order = 0;
+            _group = null;
         }
 
-        public virtual string Name => name;
+        public virtual string Name => _name;
 
-        public virtual int RowOrder
+        public virtual int Order
         {
-            get => rowOrder;
-            set => rowOrder = value;
+            get => _order;
+            set => _order = value;
         }
 
-        public virtual int ColumnOrder
+        public virtual string Group
         {
-            get => columnOrder;
-            set => columnOrder = value;
+            get => _group;
+            set => _group = value;
         }
     }
 }

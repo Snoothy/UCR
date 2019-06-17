@@ -7,28 +7,29 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis Merger")]
+    [Plugin("Axis Merger", Group = "Axis", Description = "Merge two axes into one output axis")]
     [PluginInput(DeviceBindingCategory.Range, "Axis high")]
     [PluginInput(DeviceBindingCategory.Range, "Axis low")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
+	[PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
     public class AxisMerger : Plugin
     {
-        [PluginGui("Dead zone", ColumnOrder = 1)]
+        [PluginGui("Dead zone", Order = 3)]
         public int DeadZone { get; set; }
 
-        [PluginGui("Mode", ColumnOrder = 0)]
+        [PluginGui("Mode", Order = 0)]
         public AxisMergerMode Mode { get; set; }
 
-        [PluginGui("Invert high", RowOrder = 1)]
+        [PluginGui("Invert high", Order = 1)]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", RowOrder = 1, ColumnOrder = 2)]
+        [PluginGui("Invert low", Order = 2)]
         public bool InvertLow { get; set; }
 
-        [PluginGui("Linear", RowOrder = 2, ColumnOrder = 1)]
+        [PluginGui("Linear", Order = 1, Group = "Sensitivity")]
         public bool Linear { get; set; }
 
-        [PluginGui("Sensitivity", RowOrder = 2, ColumnOrder = 2)]
+        [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

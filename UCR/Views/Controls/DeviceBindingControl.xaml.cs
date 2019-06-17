@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,7 +34,6 @@ namespace HidWizards.UCR.Views.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (DeviceBinding == null) return; // TODO Error logging
-            DeviceBindingLabel.Header = Label;
             ReloadGui();
             HasLoaded = true;
         }
@@ -53,7 +53,7 @@ namespace HidWizards.UCR.Views.Controls
         private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
-            var device = DeviceBinding.Profile.GetDevice(DeviceBinding);
+            var device = GetSelectedDevice();
             if (device == null) return;
             BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
         }
@@ -71,6 +71,7 @@ namespace HidWizards.UCR.Views.Controls
                     if (Category != null && deviceBindingNode.DeviceBinding.DeviceBindingCategory != Category) continue;
                     cmd = new RelayCommand(c =>
                     {
+                        DeviceBinding.SetDeviceGuid(GetSelectedDevice().Guid);
                         DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
                     });
                 }
@@ -105,9 +106,15 @@ namespace HidWizards.UCR.Views.Controls
         private void DeviceNumberBox_OnSelected(object sender, RoutedEventArgs e)
         {
             if (!HasLoaded) return;
-            if (DeviceNumberBox.SelectedItem == null) return;
-            DeviceBinding.SetDeviceGuid(((ComboBoxItemViewModel)DeviceNumberBox.SelectedItem).Value);
+            if (DeviceSelectionBox.SelectedItem == null) return;
+            DeviceBinding.SetDeviceGuid(GetSelectedDevice().Guid);
             LoadContextMenu();
+        }
+
+        private Device GetSelectedDevice()
+        {
+            Guid guid = ((ComboBoxItemViewModel) DeviceSelectionBox.SelectedItem).Value;
+            return DeviceBinding.Profile.GetDevice(DeviceBinding.DeviceIoType, guid);
         }
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)

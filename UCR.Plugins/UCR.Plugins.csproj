@@ -55,7 +55,6 @@
     <Compile Include="Remapper\ButtonsToAxis.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
-    <Compile Include="State\ButtonToState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
