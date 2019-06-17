@@ -14,6 +14,10 @@ namespace HidWizards.UCR.ViewModels.Controls
         public string Title { get; set; }
         public ObservableCollection<DeviceViewModel> Devices { get; set; }
 
+        public DeviceSelectControlViewModel()
+        {
+        }
+
         public DeviceSelectControlViewModel(string title, List<DeviceGroup> devices)
         {
             Title = title;
