@@ -19,10 +19,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Replaced menu with toolbar in main window
 - Replaced dialog windows with proper dialogs
 - Replaced menu with toolbar in profile window
+- UCR Unblocker now uses the current directory as default
+- Sensitivity to Axis Merger plugin added
 
 ### Removed
 - Removed states
-- UCR Unblocker now uses the current directory as default
 
 ### Fixed
 - Sum Mode in Axis Merger plugin no longer overflows

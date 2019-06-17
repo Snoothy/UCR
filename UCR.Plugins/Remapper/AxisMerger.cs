@@ -11,6 +11,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginInput(DeviceBindingCategory.Range, "Axis high")]
     [PluginInput(DeviceBindingCategory.Range, "Axis low")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
+	[PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
     public class AxisMerger : Plugin
     {
         [PluginGui("Dead zone", Order = 3)]
@@ -25,7 +26,14 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert low", Order = 2)]
         public bool InvertLow { get; set; }
 
+        [PluginGui("Linear", Order = 1, Group = "Sensitivity")]
+        public bool Linear { get; set; }
+
+        [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
+        public int Sensitivity { get; set; }
+
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public enum AxisMergerMode
         {
@@ -37,6 +45,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         public AxisMerger()
         {
             DeadZone = 0;
+            Sensitivity = 100;
         }
 
         public override void InitializeCacheValues()
@@ -73,12 +82,17 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);
             }
+
+            if (Sensitivity != 100) valueOutput = _sensitivityHelper.ApplyRangeSensitivity(valueOutput);
+
             WriteOutput(0, valueOutput);
         }
         
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+            _sensitivityHelper.Percentage = Sensitivity;
+            _sensitivityHelper.IsLinear = Linear;
         }
     }
 }
