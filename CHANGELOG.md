@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Quick access button to add new profile
 - Profile overview in the main window
 - Added save button to profile window
+- Add ButtonToEvent plugin
 
 ### Changed
 - `Button to Axis` parameters changed to two axis values and option for initialization
