@@ -21,7 +21,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Dead zone")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Anti Dead zone")]
+        [PluginGui("Anti Dead zone %")]
         public int AntiDeadZone { get; set; }
 
         [PluginGui("Sensitivity")]
