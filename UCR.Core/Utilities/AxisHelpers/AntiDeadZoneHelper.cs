@@ -47,20 +47,21 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
             else
             {
                 _antiDeadzoneStart = Constants.AxisMaxValue * (_percentage * 0.01);
-                _scaleFactor = Constants.AxisMaxValue / (Constants.AxisMaxValue - _antiDeadzoneStart);
+                _scaleFactor = (Constants.AxisMaxValue - _antiDeadzoneStart) / Constants.AxisMaxValue;
             }
         }
 
         public short ApplyRangeAntiDeadZone(short value)
         {
-            var wideVal = Functions.WideAbs(value);
-            if (wideVal < Math.Round(_antiDeadzoneStart))
+            if (value == 0)
             {
                 return 0;
             }
+            var wideVal = Functions.WideAbs(value);
 
             var sign = Math.Sign(value);
-            var adjustedValue = (wideVal - _antiDeadzoneStart) * _scaleFactor;
+            //var adjustedValue = (wideVal - _antiDeadzoneStart) * _scaleFactor;
+            var adjustedValue = _antiDeadzoneStart + (wideVal * _scaleFactor);
             var newValue = (int) Math.Round(adjustedValue * sign);
             if (newValue < -32768) newValue = -32768;   // ToDo: Negative values can go up to -32777 (9 over), can this be improved?
             //Debug.WriteLine($"Pre-DZ: {value}, Post-DZ: {newValue}, Cutoff: {_deadzoneCutoff}");
