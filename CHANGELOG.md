@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Replaced menu with toolbar in profile window
 - UCR Unblocker now uses the current directory as default
 - Sensitivity to Axis Merger plugin added
+- Naming of plugin options changed to clarify valid values
 
 ### Removed
 - Removed states

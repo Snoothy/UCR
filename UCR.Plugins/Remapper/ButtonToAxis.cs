@@ -10,14 +10,14 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis", Group = "Axis")]
     public class ButtonToAxis : Plugin
     {
-        [PluginGui("Axis on release", Order = 0, Group = "Axis")] 
+        [PluginGui("Axis % on press (-100..100)", Group = "Axis")]
+        public double RangePressed { get; set; }
+
+        [PluginGui("Axis % on release (-100..100)", Group = "Axis")]
         public double Range { get; set; }
 
-        [PluginGui("Initialize axis", Order = 0)]
+        [PluginGui("Initialize to release value on activate")]
         public bool Initialize { get; set; }
-
-        [PluginGui("Axis when pressed", Order = 1, Group = "Axis")]
-        public double RangePressed { get; set; }
 
         public ButtonToAxis()
         {

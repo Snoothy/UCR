@@ -12,16 +12,16 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin
     {
-        [PluginGui("Invert", Order = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear", Order = 3)]
+        [PluginGui("Linear")]
         public bool Linear { get; set; }
 
-        [PluginGui("Dead zone", Order = 1)]
+        [PluginGui("Dead zone %")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Sensitivity", Order = 2)]
+        [PluginGui("Sensitivity %")]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
