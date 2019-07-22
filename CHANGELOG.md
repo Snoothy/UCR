@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added save button to profile window
 - Added Anti-Deadzone helper
 - Added Anti-Deadzone option to AxisToAxis plugin
+- Added ButtonToEvent plugin
 
 ### Changed
 - `Button to Axis` parameters changed to two axis values and option for initialization
