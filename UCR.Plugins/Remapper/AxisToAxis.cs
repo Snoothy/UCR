@@ -12,24 +12,29 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisToAxis : Plugin
     {
-        [PluginGui("Invert", Order = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear", Order = 3)]
+        [PluginGui("Linear")]
         public bool Linear { get; set; }
 
-        [PluginGui("Dead zone", Order = 1)]
+        [PluginGui("Dead zone")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Sensitivity", Order = 2)]
+        [PluginGui("Anti Dead zone %")]
+        public int AntiDeadZone { get; set; }
+
+        [PluginGui("Sensitivity")]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly AntiDeadZoneHelper _antiDeadZoneHelper = new AntiDeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public AxisToAxis()
         {
             DeadZone = 0;
+            AntiDeadZone = 0;
             Sensitivity = 100;
         }
 
@@ -43,6 +48,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             var value = values[0];
             if (Invert) value = Functions.Invert(value);
             if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
+            if (AntiDeadZone != 0) value = _antiDeadZoneHelper.ApplyRangeAntiDeadZone(value);
             if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
             WriteOutput(0, value);
         }
@@ -50,6 +56,7 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+            _antiDeadZoneHelper.Percentage = AntiDeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
         }
