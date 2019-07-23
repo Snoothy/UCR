@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -59,6 +60,19 @@ namespace HidWizards.UCR.Plugins.Remapper
             _antiDeadZoneHelper.Percentage = AntiDeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                    if (value > 100.0) return new PropertyValidationResult(false, "Value must be 100 or less");
+                    if (value < 0.0) return new PropertyValidationResult(false, "Value must be 0 or more");
+                    break;
+            }
+            
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

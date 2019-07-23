@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models.Binding;
@@ -284,5 +286,10 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
+
+        public virtual PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            return PropertyValidationResult.ValidResult;
+        }
     }
 }

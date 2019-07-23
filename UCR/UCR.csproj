@@ -94,6 +94,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\Converter\InverseBooleanConverter.cs" />
+    <Compile Include="Utilities\DataContextBindingProxy.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Views\Controls\Plugin\PluginPropertyControl.xaml.cs">
       <DependentUpon>PluginPropertyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Plugin\PluginPropertyDependencyObject.cs" />
     <Compile Include="Views\Controls\Plugin\PluginPropertyListControl.xaml.cs">
       <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
     </Compile>
