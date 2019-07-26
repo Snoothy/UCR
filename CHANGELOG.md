@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 - Sum Mode in Axis Merger plugin no longer overflows
 - Unblocking no longer crashes if the UCR path has spaces
+- Bind Mode button now only responds to mouse down and not mouse up (Fixes binding Space bar re-triggering Bind Mode on release)
 
 ## [0.7.0] - 2019-01-03
 
