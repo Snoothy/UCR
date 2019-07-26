@@ -1,4 +1,5 @@
-﻿using HidWizards.UCR.Core.Attributes;
+﻿using System.Reflection;
+using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
@@ -38,5 +39,16 @@ namespace HidWizards.UCR.Plugins.Remapper
                     : Functions.GetRangeFromPercentage((short)RangePressed));
         }
 
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(Range):
+                case nameof(RangePressed):
+                    return InputValidation.ValidateRange(value, -100.0, 100.0);
+            }
+
+            return PropertyValidationResult.ValidResult;
+        }
     }
 }

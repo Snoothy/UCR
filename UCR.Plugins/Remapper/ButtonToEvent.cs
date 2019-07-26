@@ -5,7 +5,7 @@ using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Button to Event", Group = "Event", Description = "Remap a Button to a Event")]
+    [Plugin("Button to Event", Group = "Event", Description = "Remap a Button to an Event")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]
     [PluginOutput(DeviceBindingCategory.Event, "Event")]
     public class ButtonToEvent : Plugin

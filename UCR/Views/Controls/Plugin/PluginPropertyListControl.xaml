@@ -48,10 +48,17 @@
                 <plugin:PluginPropertyControl>
                     <plugin:PluginPropertyControl.PropertyContent>
                         <TextBox Width="50" Height="25" PreviewTextInput="DecimalValidationTextBox">
+                            <TextBox.Resources>
+                                <utilities:DataContextBindingProxy x:Key="DecimalBindingProxy" Data="{Binding}"/>
+                            </TextBox.Resources>
                             <TextBox.Text>
                                 <Binding Path="Property" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <validators:DecimalBindingValidator/>
+                                        <validators:DecimalBindingValidator>
+                                            <validators:DecimalBindingValidator.PluginPropertyDependencyObject>
+                                                <plugin:PluginPropertyDependencyObject PluginProperty="{Binding Data.PluginProperty, Source={StaticResource DecimalBindingProxy}}"/>
+                                            </validators:DecimalBindingValidator.PluginPropertyDependencyObject>
+                                        </validators:DecimalBindingValidator>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>

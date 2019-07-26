@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 {
@@ -41,11 +37,8 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 
         public short ApplyRangeSensitivity(short value)
         {
-            //var sensitivityPercent = (sensitivity / 100.0);
             if (IsLinear) return Functions.ClampAxisRange((int) Math.Round(value * _scaleFactor));
 
-            //var sens = _scaleFactor / 100d;
-            //double AxisRange = 1d * (Constants.AxisMaxValue - Constants.AxisMinValue);
             // Map value to -1 .. 1
             double val11 = (((value - Constants.AxisMinValue) / _axisRange) * 2d) - 1d;
             // calculate (Sensitivity * Value) + ( (1-Sensitivity) * Value^3 )

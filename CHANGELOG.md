@@ -13,8 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added Anti-Deadzone helper
 - Added Anti-Deadzone option to AxisToAxis plugin
 - Added ButtonToEvent plugin
+- Added input validation for plugin values
 
 ### Changed
+- Updated to IOWrapper v0.10.2
 - `Button to Axis` parameters changed to two axis values and option for initialization
 - Redesigned main window dashboard
 - Redesigned profile window

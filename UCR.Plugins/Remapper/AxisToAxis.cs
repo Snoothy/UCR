@@ -11,21 +11,23 @@ namespace HidWizards.UCR.Plugins.Remapper
     [Plugin("Axis to Axis", Group = "Axis", Description = "Map from one axis to another")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
+    [PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
+    [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxisToAxis : Plugin
     {
         [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear")]
+        [PluginGui("Linear", Group = "Sensitivity", Order = 1)]
         public bool Linear { get; set; }
 
-        [PluginGui("Dead zone")]
+        [PluginGui("Percentage", Group = "Dead zone", Order = 0)]
         public int DeadZone { get; set; }
 
-        [PluginGui("Anti Dead zone %")]
+        [PluginGui("Anti-dead zone", Group = "Dead zone")]
         public int AntiDeadZone { get; set; }
 
-        [PluginGui("Sensitivity")]
+        [PluginGui("Percentage", Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
@@ -67,9 +69,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             switch (propertyInfo.Name)
             {
                 case nameof(DeadZone):
-                    if (value > 100.0) return new PropertyValidationResult(false, "Value must be 100 or less");
-                    if (value < 0.0) return new PropertyValidationResult(false, "Value must be 0 or more");
-                    break;
+                case nameof(AntiDeadZone):
+                    return InputValidation.ValidatePercentage(value);
             }
             
             return PropertyValidationResult.ValidResult;

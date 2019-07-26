@@ -101,6 +101,7 @@
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Utilities\Functions.cs" />
+    <Compile Include="Utilities\InputValidation.cs" />
     <Compile Include="Utilities\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
