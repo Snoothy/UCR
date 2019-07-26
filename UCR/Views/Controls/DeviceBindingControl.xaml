@@ -41,7 +41,7 @@
                     IsEnabled="{Binding BindingEnabled}"
                     Name="BindButton" 
                     Margin="0" 
-                    Click="BindButton_OnClick" 
+                    PreviewMouseDown="BindButton_OnClick" 
                     MinWidth="175" 
                     Width="Auto"
                     materialDesign:ButtonProgressAssist.Value="{Binding PreviewValue}"
@@ -60,7 +60,7 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-                <Button Grid.Column="1" IsEnabled="{Binding BindingEnabled}" Margin="0" Click="BindMenuButton_OnClick" 
+                <Button Grid.Column="1" IsEnabled="{Binding BindingEnabled}" Margin="0" PreviewMouseDown="BindMenuButton_OnClick" 
                         Width="40" 
                         Padding="0"
                         Style="{StaticResource MaterialDesignRaisedButton}"
