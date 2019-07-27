@@ -43,6 +43,7 @@ class Build : NukeBuild
     AbsolutePath UcrOutputDirectory => RootDirectory / "UCR" / "bin" / Configuration;
     AbsolutePath TestDirectory => RootDirectory / "UCR.Tests";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+    AbsolutePath DependencyDirectory => Solution.Directory / "dependencies";
 
     Target CleanArtifacts => _ => _
         .Executes(() =>
@@ -62,12 +63,16 @@ class Build : NukeBuild
             EnsureExistingDirectory(RootDirectory / "Plugins");
         });
 
-    Target RestoreSubmodules => _ => _
+    Target InitSubmodules => _ => _
         .Executes(() =>
         {
             Git("submodule init");
             Git("submodule update");
+        });
 
+    Target RestoreSubmodules => _ => _
+        .Executes(() =>
+        {
             NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
         });
 
@@ -82,14 +87,18 @@ class Build : NukeBuild
                     .SetTargets("Restore","Rebuild")
                     .SetConfiguration(Configuration)
             );
+
+            EnsureCleanDirectory(DependencyDirectory);
+            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", DependencyDirectory, DirectoryExistsPolicy.Merge);
         });
 
     Target InitProject => _ => _
+        .DependsOn(InitSubmodules)
         .DependsOn(RestoreSubmodules)
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", Solution.Directory / "dependencies", DirectoryExistsPolicy.Merge);
+            
         });
 
     Target Restore => _ => _
