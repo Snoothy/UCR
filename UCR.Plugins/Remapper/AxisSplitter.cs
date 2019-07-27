@@ -1,4 +1,5 @@
-﻿using HidWizards.UCR.Core.Attributes;
+﻿using System.Reflection;
+using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
@@ -6,16 +7,16 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis Splitter")]
+    [Plugin("Axis Splitter", Group = "Axis", Description = "Split one axis into two new axes")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis high")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis low")]
     public class AxisSplitter : Plugin
     {
-        [PluginGui("Invert high", RowOrder = 1)]
+        [PluginGui("Invert high", Order = 1)]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", RowOrder = 2)]
+        [PluginGui("Invert low", Order = 2)]
         public bool InvertLow { get; set; }
 
         [PluginGui("Dead zone")]
@@ -50,6 +51,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                    return InputValidation.ValidatePercentage(value);
+            }
+
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

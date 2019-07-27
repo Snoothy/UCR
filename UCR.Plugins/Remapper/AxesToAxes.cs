@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -7,34 +8,36 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axes to Axes")]
+    [Plugin("Axes to Axes", Group = "Axis", Description = "Map from joystick to joystick")]
     [PluginInput(DeviceBindingCategory.Range, "X Axis")]
     [PluginInput(DeviceBindingCategory.Range, "Y Axis")]
-    [PluginOutput(DeviceBindingCategory.Range, "X Axis")]
-    [PluginOutput(DeviceBindingCategory.Range, "Y Axis")]
+    [PluginOutput(DeviceBindingCategory.Range, "X Axis", Group = "X axis")]
+    [PluginOutput(DeviceBindingCategory.Range, "Y Axis", Group = "Y axis")]
+    [PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
+    [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxesToAxes : Plugin
     {
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
-        private double _linearSenstitivityScaleFactor;
+        private double _linearSensitivityScaleFactor;
 
-        [PluginGui("Invert X", ColumnOrder = 0)]
+        [PluginGui("Invert X", Group = "X axis")]
         public bool InvertX { get; set; }
 
-        [PluginGui("Invert Y", ColumnOrder = 1)]
+        [PluginGui("Invert Y", Group = "Y axis")]
         public bool InvertY { get; set; }
 
-        [PluginGui("Sensitivity", ColumnOrder = 2)]
+        [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
-        [PluginGui("Linear", RowOrder = 0, ColumnOrder = 2)]
+        [PluginGui("Linear", Order = 0, Group = "Sensitivity")]
         public bool Linear { get; set; }
 
-        [PluginGui("Dead zone", RowOrder = 1, ColumnOrder = 0)]
+        [PluginGui("Percentage", Order = 0, Group = "Dead zone")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Circular", RowOrder = 1, ColumnOrder = 2)]
+        [PluginGui("Circular", Order = 1, Group = "Dead zone")]
         public bool CircularDz { get; set; }
 
 
@@ -54,7 +57,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             _deadZoneHelper.Percentage = DeadZone;
             _circularDeadZoneHelper.Percentage = DeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
-            _linearSenstitivityScaleFactor = ((double)Sensitivity / 100);
+            _linearSensitivityScaleFactor = ((double)Sensitivity / 100);
         }
 
         public override void Update(params short[] values)
@@ -77,8 +80,8 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 if (Linear)
                 {
-                    outputValues[0] = (short) (outputValues[0] * _linearSenstitivityScaleFactor);
-                    outputValues[1] = (short) (outputValues[1] * _linearSenstitivityScaleFactor);
+                    outputValues[0] = (short) (outputValues[0] * _linearSensitivityScaleFactor);
+                    outputValues[1] = (short) (outputValues[1] * _linearSensitivityScaleFactor);
                 }
                 else
                 {
@@ -95,6 +98,17 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             WriteOutput(0, outputValues[0]);
             WriteOutput(1, outputValues[1]);
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                    return InputValidation.ValidatePercentage(value);
+            }
+
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

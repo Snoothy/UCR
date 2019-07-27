@@ -64,14 +64,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\PluginAttribute.cs" />
+    <Compile Include="Attributes\PluginSettingsGroupAttribue.cs" />
     <Compile Include="Attributes\PluginGuiAttribute.cs" />
+    <Compile Include="Attributes\PluginGroupAttribue.cs" />
     <Compile Include="Attributes\PluginOutput.cs" />
     <Compile Include="Attributes\PluginInput.cs" />
     <Compile Include="Attributes\PluginIoAttribute.cs" />
     <Compile Include="Managers\BindingManager.cs" />
     <Compile Include="Managers\SubscriptionsManager.cs" />
     <Compile Include="Models\Binding\DeviceBindingNode.cs" />
-    <Compile Include="Managers\DeviceGroupsManager.cs" />
     <Compile Include="Managers\DevicesManager.cs" />
     <Compile Include="Managers\ProfilesManager.cs" />
     <Compile Include="Models\CallbackMultiplexer.cs" />
@@ -82,8 +83,9 @@
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Managers\PluginsManager.cs" />
     <Compile Include="Models\PluginProperty.cs" />
+    <Compile Include="Models\PluginPropertyGroup.cs" />
     <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\State.cs" />
+    <Compile Include="Models\PropertyValidationResult.cs" />
     <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
     <Compile Include="Models\Subscription\MappingSubscription.cs" />
@@ -93,11 +95,13 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\AxisHelpers\CircularDeadZoneHelper.cs" />
+    <Compile Include="Utilities\AxisHelpers\AntiDeadZoneHelper.cs" />
     <Compile Include="Utilities\AxisHelpers\DeadZoneHelper.cs" />
     <Compile Include="Utilities\AxisHelpers\SensitivityHelper.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Utilities\Functions.cs" />
+    <Compile Include="Utilities\InputValidation.cs" />
     <Compile Include="Utilities\Logger.cs" />
   </ItemGroup>
   <ItemGroup>

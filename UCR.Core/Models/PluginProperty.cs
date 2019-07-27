@@ -9,8 +9,8 @@ namespace HidWizards.UCR.Core.Models
     {
         public string Name { get; }
         public Plugin Plugin { get; }
-        public int RowOrder { get; }
-        public int ColumnOrder { get; }
+        public int Order { get; }
+        public string Group { get; }
 
         public PropertyInfo PropertyInfo { get; }
         public dynamic Property
@@ -29,18 +29,23 @@ namespace HidWizards.UCR.Core.Models
             }
         }
 
-        public PluginProperty(Plugin plugin, PropertyInfo propertyInfo, string name, int rowOrder = 0, int columnOrder = 0)
+        public PluginProperty(Plugin plugin, PropertyInfo propertyInfo, string name, int order = 0, string group = null)
         {
             Plugin = plugin;
             PropertyInfo = propertyInfo;
             Name = name;
-            RowOrder = rowOrder;
-            ColumnOrder = columnOrder;
+            Order = order;
+            Group = group;
         }
 
         public int CompareTo(PluginProperty other)
         {
-            return RowOrder.CompareTo(other.RowOrder);
+            return Order.CompareTo(other.Order);
+        }
+
+        public PropertyValidationResult Validate(dynamic value)
+        {
+            return Plugin.Validate(PropertyInfo, value);
         }
     }
 }

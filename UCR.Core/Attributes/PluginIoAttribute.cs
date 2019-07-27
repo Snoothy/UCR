@@ -5,23 +5,17 @@ using HidWizards.UCR.Core.Models.Binding;
 namespace HidWizards.UCR.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class PluginIoAttribute : Attribute
+    public class PluginIoAttribute : PluginGroupAttribute
     {
-        private DeviceIoType deviceIoType;
-        private DeviceBindingCategory deviceBindingCategory;
-        private string name;
+        public virtual DeviceIoType DeviceIoType { get; }
+        public virtual DeviceBindingCategory DeviceBindingCategory { get; }
+        public override string Name { get; set; }
 
         public PluginIoAttribute(DeviceIoType deviceIoType, DeviceBindingCategory deviceBindingCategory, string name)
         {
-            this.deviceIoType = deviceIoType;
-            this.deviceBindingCategory = deviceBindingCategory;
-            this.name = name;
+            DeviceIoType = deviceIoType;
+            DeviceBindingCategory = deviceBindingCategory;
+            Name = name;
         }
-
-        public virtual DeviceIoType DeviceIoType => deviceIoType;
-
-        public virtual DeviceBindingCategory DeviceBindingCategory => deviceBindingCategory;
-
-        public virtual string Name => name;
     }
 }

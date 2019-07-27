@@ -22,14 +22,11 @@ namespace HidWizards.UCR.Core
 
         /* Persistence */
         public List<Profile> Profiles { get; set; }
-        public List<DeviceGroup> InputGroups { get; set; }
-        public List<DeviceGroup> OutputGroups { get; set; }
 
         /* Runtime */
         [XmlIgnore] public Profile ActiveProfile { get; set; }
         [XmlIgnore] public ProfilesManager ProfilesManager { get; set; }
         [XmlIgnore] public DevicesManager DevicesManager { get; set; }
-        [XmlIgnore] public DeviceGroupsManager DeviceGroupsManager { get; set; }
         [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore] public PluginsManager PluginManager { get; set; }
         [XmlIgnore] public BindingManager BindingManager { get; set; }
@@ -51,13 +48,18 @@ namespace HidWizards.UCR.Core
         {
             IsNotSaved = false;
             Profiles = new List<Profile>();
-            InputGroups = new List<DeviceGroup>();
-            OutputGroups = new List<DeviceGroup>();
 
-            IOController = new IOController();
+            try
+            {
+                IOController = new IOController();
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Logger.Error("IOWrapper provider directory not found", e);
+            }
+            
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
-            DeviceGroupsManager = new DeviceGroupsManager(this, InputGroups, OutputGroups);
             SubscriptionsManager = new SubscriptionsManager(this);
             PluginManager = new PluginsManager(PluginPath);
             BindingManager = new BindingManager(this);

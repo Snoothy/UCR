@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.IO;
 using HidWizards.UCR.Utilities;
 
 namespace UCR.FileHandler
@@ -8,8 +8,25 @@ namespace UCR.FileHandler
     {
         static int Main(string[] args)
         {
-            var success = FileUnblockManager.UnblockAllProgramFiles(args[0]);
+            String directory;
+
+            try
+            {
+                directory = args[0];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                directory = Directory.GetCurrentDirectory();
+            }
+
+            var success = FileUnblockManager.UnblockAllProgramFiles(directory);
+
             if (!success) return -1;
+
+            Console.WriteLine("Successfully unblocked all files in " + directory);
+            Console.WriteLine("Press any key to close...");
+
+            Console.ReadKey();
 
             return 0;
         }

@@ -24,7 +24,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
 
         private Device GetDevice()
         {
-            return Profile.GetDevice(DeviceBinding);
+            return Profile.GetDevice(DeviceBinding.DeviceIoType, DeviceBinding.DeviceGuid);
         }
     }
 }

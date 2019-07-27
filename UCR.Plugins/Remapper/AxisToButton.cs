@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -7,16 +8,16 @@ using HidWizards.UCR.Core.Utilities.AxisHelpers;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis to Button")]
+    [Plugin("Axis to Button", Group = "Button", Description = "Map from one axis to two buttons")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Momentary, "Button high")]
     [PluginOutput(DeviceBindingCategory.Momentary, "Button low")]
     public class AxisToButton : Plugin
     {
-        [PluginGui("Invert", ColumnOrder = 0)]
+        [PluginGui("Invert", Order = 0)]
         public bool Invert { get; set; }
 
-        [PluginGui("Dead zone", ColumnOrder = 1)]
+        [PluginGui("Dead zone", Order = 1)]
         public int DeadZone { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
@@ -55,6 +56,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                    return InputValidation.ValidatePercentage(value);
+            }
+
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

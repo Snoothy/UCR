@@ -1,17 +1,19 @@
 image: Visual Studio 2017
 
 install:
-- choco install gitversion.portable -pre -y
-- cmd: dotnet tool install --global dotnet-sonarscanner
-- ps: .\build.ps1 InitProject
+  - choco install gitversion.portable -pre -y
+  - cmd: dotnet tool install --global dotnet-sonarscanner
+  - git submodule update --init --recursive
 
 before_build:
+  - ps: nuget restore submodules\IOWrapper\IOWrapper.sln
+  - ps: .\build.ps1 InitProject
   - nuget restore
   - ps: gitversion /l console /output buildserver /updateAssemblyInfo
 
 build_script:
-- ps: .\build.ps1 clean -configuration Release
-- ps: .\build.ps1 artifacts -configuration Release -codeanalysis true
+  - ps: .\build.ps1 clean -configuration Release
+  - ps: .\build.ps1 artifacts -configuration Release -codeanalysis true
 
 artifacts:
-- path: 'artifacts\*.zip'
+  - path: 'artifacts\*.zip'

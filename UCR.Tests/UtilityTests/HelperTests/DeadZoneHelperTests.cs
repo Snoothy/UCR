@@ -59,12 +59,13 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
             return helper.ApplyRangeDeadZone(inputValue);
         }
 
-        [TestCase(101, TestName = "DeadZoneHelper (101): Percentages over 100 should throw an exception")]
-        [TestCase(-1, TestName = "DeadZoneHelper (-1): Percentages below 0 should throw an exception")]
-        public void DeadZoneValidationTest(int percentage)
+        [TestCase(101, ExpectedResult = 100, TestName = "DeadZoneHelper (101): Percentages over 100 should clamp to 100")]
+        [TestCase(-1, ExpectedResult = 0, TestName = "DeadZoneHelper (-1): Percentages below 0 should clamp to 0")]
+        public long DeadZoneValidationTest(int percentage)
         {
             var helper = new DeadZoneHelper();
-            Assert.Throws<ArgumentOutOfRangeException>(() => helper.Percentage = percentage);
+            helper.Percentage = percentage;
+            return helper.Percentage;
         }
     }
 }

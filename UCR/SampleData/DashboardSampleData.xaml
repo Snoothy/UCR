@@ -1,0 +1,14 @@
+﻿<dashboard:DashboardViewModel xmlns:viewModels="clr-namespace:HidWizards.UCR.ViewModels"
+                             xmlns:models="clr-namespace:HidWizards.UCR.Core.Models;assembly=UCR.Core"
+                             xmlns:profileViewModels="clr-namespace:HidWizards.UCR.ViewModels.ProfileViewModels"
+                             xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard">
+    <dashboard:DashboardViewModel.ProfileList>
+        <dashboard:ProfileItem Title="Test">
+            <dashboard:ProfileItem.Items>
+                <dashboard:ProfileItem Title="Child"></dashboard:ProfileItem>
+            </dashboard:ProfileItem.Items>
+        </dashboard:ProfileItem>
+        <dashboard:ProfileItem Title="Test"/>
+        <dashboard:ProfileItem Title="Test"/>
+    </dashboard:DashboardViewModel.ProfileList>
+</dashboard:DashboardViewModel>

@@ -5,6 +5,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.8.0] - 2019-07-27
+
+### Added
+- Material design
+- Quick access button to add new profile
+- Profile overview in the main window
+- Added save button to profile window
+- Added Anti-Deadzone helper
+- Added Anti-Deadzone option to AxisToAxis plugin
+- Added ButtonToEvent plugin
+- Added input validation for plugin values
+
+### Changed
+- Updated to IOWrapper v0.10.5
+- `Button to Axis` parameters changed to two axis values and option for initialization
+- Redesigned main window dashboard
+- Redesigned profile window
+- Show active profile in process bar
+- Replaced menu with toolbar in main window
+- Replaced dialog windows with proper dialogs
+- Replaced menu with toolbar in profile window
+- UCR Unblocker now uses the current directory as default
+- Sensitivity to Axis Merger plugin added
+- Improved circular deadzone calculation
+
+### Removed
+- Removed states
+
+### Fixed
+- Sum Mode in Axis Merger plugin no longer overflows
+- Unblocking no longer crashes if the UCR path has spaces
+- Bind Mode button now only responds to mouse down and not mouse up (Fixes binding Space bar re-triggering Bind Mode on release)
+
 ## [0.7.0] - 2019-01-03
 
 ### Changed

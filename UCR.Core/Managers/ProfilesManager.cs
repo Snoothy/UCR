@@ -18,16 +18,9 @@ namespace HidWizards.UCR.Core.Managers
             _profiles = profiles;
         }
 
-        public Profile CreateProfile()
+        public Profile CreateProfile(string title, List<Device> inputDevices, List<Device> outputDevices)
         {
-            return Profile.CreateProfile(_context, "");
-        }
-
-        public bool AddProfile(string title)
-        {
-            _profiles.Add(Profile.CreateProfile(_context, title));
-            _context.ContextChanged();
-            return true;
+            return Profile.CreateProfile(_context, title, inputDevices ?? new List<Device>(), outputDevices ?? new List<Device>());
         }
 
         public bool AddProfile(Profile newProfile, Profile parentProfile = null)
