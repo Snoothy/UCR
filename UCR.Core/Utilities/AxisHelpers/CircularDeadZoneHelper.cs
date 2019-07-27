@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 {
@@ -45,26 +46,13 @@ namespace HidWizards.UCR.Core.Utilities.AxisHelpers
 
         public short[] ApplyRangeDeadZone(short[] values)
         {
-            var x = values[0];
-            var y = values[1];
+            var vector = new Vector(values[0], values[1]);
+            var originalLength = vector.Length;
+            if (originalLength <= _deadzoneRadius) return new short[]{ 0, 0 };
+            var newLength = (originalLength - _deadzoneRadius) / (Constants.AxisMaxValue - _deadzoneRadius);
+            var result = vector * (newLength / originalLength) * Constants.AxisMaxValue;
 
-            var inputRadius = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-            var inputAngle = Math.Atan2(x, y);
-            if (inputRadius < _deadzoneRadius)
-            {
-                return new short[] { 0, 0 };
-            }
-            var adjustedRadius = inputRadius - _deadzoneRadius;
-            var outputRadius = adjustedRadius * _scaleFactor;
-
-            var outX = (int)(outputRadius * Math.Sin(inputAngle));
-            var outY = (int)(outputRadius * Math.Cos(inputAngle));
-            if (outX == -32769) outX = -32768;
-            if (outY == -32769) outY = -32768;
-
-            var output = new[] { (short)outX, (short)outY };
-            return output;
-
+            return new[] { Functions.ClampAxisRange((int)result.X), Functions.ClampAxisRange((int)result.Y) };
         }
     }
 }

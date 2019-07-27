@@ -99,5 +99,16 @@ namespace HidWizards.UCR.Tests.UtilityTests.HelperTests
             var result = helper.ApplyRangeDeadZone(new short[] { -16383, -16383 });
             Assert.AreNotEqual(new short[] { 0, 0 }, result);
         }
+
+        [TestCase(short.MinValue, short.MinValue, 50,
+            TestName = "CircularDeadZoneHelper (50): Max negative range no overflow")]
+        [TestCase(short.MaxValue, short.MaxValue, 50,
+            TestName = "CircularDeadZoneHelper (50): Max positive range no overflow")]
+        public void CircularDzMaxRange(short x, short y, int percentage)
+        {
+            var helper = new CircularDeadZoneHelper { Percentage = percentage };
+            var result = helper.ApplyRangeDeadZone(new short[] { x, y });
+            Assert.AreEqual(new short[] { x, y }, result);
+        }
     }
 }
