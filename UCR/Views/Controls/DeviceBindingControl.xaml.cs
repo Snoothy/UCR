@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Utilities.Commands;
@@ -119,6 +121,11 @@ namespace HidWizards.UCR.Views.Controls
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (e is KeyboardEventArgs && !((KeyEventArgs)e).Key.Equals(Key.Space))
+            {
+                e.Handled = true;
+                return;
+            }
             if (DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input))
             {
                 if (DeviceBinding.IsInBindMode) return;
