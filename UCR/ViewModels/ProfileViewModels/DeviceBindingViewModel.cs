@@ -128,7 +128,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
             foreach (var deviceConfiguration in deviceConfigurationList)
             {
-                Devices.Add(new ComboBoxItemViewModel(deviceConfiguration.Device.GetFullTitleForProfile(DeviceBinding.Profile), deviceConfiguration.Device.Guid));
+                Devices.Add(new ComboBoxItemViewModel(deviceConfiguration.GetFullTitleForProfile(DeviceBinding.Profile), deviceConfiguration.Device.Guid));
             }
 
             SetSelectDevice();

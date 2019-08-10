@@ -62,13 +62,6 @@ namespace HidWizards.UCR.Core.Models
 
         #endregion
 
-        public string GetFullTitleForProfile(Profile profile)
-        {
-            if (profile == null || Profile.Guid == profile.Guid) return Title;
-
-            return $"{Title} (Inherited from {Profile.Title})";
-        }
-
         private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
         {
             var result = new List<DeviceBindingNode>();

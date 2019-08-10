@@ -7,7 +7,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 {
     public class DeviceItem : INotifyPropertyChanged
     {
-        public string Title => DeviceConfiguration.ConfigurationName ?? DeviceConfiguration.Device.GetFullTitleForProfile(Profile);
+        public string Title => DeviceConfiguration.GetFullTitleForProfile(Profile);
 
         public string ProviderName => DeviceConfiguration.Device.ProviderName;
 

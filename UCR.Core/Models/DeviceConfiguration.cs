@@ -43,5 +43,13 @@ namespace HidWizards.UCR.Core.Models
             var availableDevices = Device.Profile.Context.DevicesManager.GetAvailableDevicesListFromSameProvider(deviceIoType, Device);
             return availableDevices.Where(d => !d.Equals(Device)).ToList();
         }
+
+        public string GetFullTitleForProfile(Profile profile)
+        {
+            var title = ConfigurationName ?? Device.Title;
+            if (profile == null || Device.Profile.Guid == profile.Guid) return ConfigurationName ?? Device.Title;
+
+            return $"{title} (Inherited from {Device.Profile.Title})";
+        }
     }
 }
