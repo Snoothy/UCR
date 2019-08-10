@@ -53,9 +53,9 @@ namespace HidWizards.UCR.Views.Controls
         private void BuildContextMenu()
         {
             BindMenu = new ObservableCollection<ContextMenuItem>();
-            var device = GetSelectedDevice();
-            if (device == null) return;
-            BindMenu = BuildMenu(device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
+            var deviceConfiguration = GetSelectedDeviceConfiguration();
+            if (deviceConfiguration == null) return;
+            BindMenu = BuildMenu(deviceConfiguration.Device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
         }
 
         private ObservableCollection<ContextMenuItem> BuildMenu(List<DeviceBindingNode> deviceBindingNodes)
@@ -71,7 +71,7 @@ namespace HidWizards.UCR.Views.Controls
                     if (Category != null && deviceBindingNode.DeviceBinding.DeviceBindingCategory != Category) continue;
                     cmd = new RelayCommand(c =>
                     {
-                        DeviceBinding.SetDeviceGuid(GetSelectedDevice().Guid);
+                        DeviceBinding.SetDeviceGuid(GetSelectedDeviceConfiguration().Device.Guid);
                         DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
                     });
                 }
@@ -107,14 +107,14 @@ namespace HidWizards.UCR.Views.Controls
         {
             if (!HasLoaded) return;
             if (DeviceSelectionBox.SelectedItem == null) return;
-            DeviceBinding.SetDeviceGuid(GetSelectedDevice().Guid);
+            DeviceBinding.SetDeviceGuid(GetSelectedDeviceConfiguration().Device.Guid);
             LoadContextMenu();
         }
 
-        private Device GetSelectedDevice()
+        private DeviceConfiguration GetSelectedDeviceConfiguration()
         {
             Guid guid = ((ComboBoxItemViewModel) DeviceSelectionBox.SelectedItem).Value;
-            return DeviceBinding.Profile.GetDevice(DeviceBinding.DeviceIoType, guid);
+            return DeviceBinding.Profile.GetDeviceConfiguration(DeviceBinding.DeviceIoType, guid);
         }
 
         private void BindButton_OnClick(object sender, RoutedEventArgs e)

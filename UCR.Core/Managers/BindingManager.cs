@@ -52,10 +52,10 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (_deviceList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
-            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding.DeviceIoType))
+            foreach (var deviceConfiguration in deviceBinding.Profile.GetDeviceConfigurationList(deviceBinding.DeviceIoType))
             {
-                _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
-                _deviceList.Add(device);
+                _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(deviceConfiguration.Device), GetDeviceDescriptor(deviceConfiguration.Device), InputChanged);
+                _deviceList.Add(deviceConfiguration.Device);
             }
 
             BindingTimer = new DispatcherTimer(DispatcherPriority.Render);

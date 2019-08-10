@@ -4,15 +4,15 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 {
     public class DeviceItem
     {
-        public string Title => Device.GetFullTitleForProfile(Profile);
-        public string ProviderName => Device.ProviderName;
+        public string Title => DeviceConfiguration.ConfigurationName ?? DeviceConfiguration.Device.GetFullTitleForProfile(Profile);
+        public string ProviderName => DeviceConfiguration.Device.ProviderName;
 
-        public Device Device { get; set; }
+        public DeviceConfiguration DeviceConfiguration { get; set; }
         private Profile Profile { get; set; }
 
-        public DeviceItem(Device device, Profile profile)
+        public DeviceItem(DeviceConfiguration deviceConfiguration, Profile profile)
         {
-            Device = device;
+            DeviceConfiguration = deviceConfiguration;
             Profile = profile;
         }
     }

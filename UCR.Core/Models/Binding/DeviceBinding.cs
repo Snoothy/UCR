@@ -129,7 +129,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         
         public string BoundName()
         {
-            return Profile.GetDevice(DeviceIoType, DeviceGuid)?.GetBindingName(this) ?? "Device unavailable";
+            return Profile.GetDeviceConfiguration(DeviceIoType, DeviceGuid)?.Device.GetBindingName(this) ?? "Device unavailable";
         }
 
         public static DeviceBindingCategory MapCategory(BindingCategory bindingInfoCategory)

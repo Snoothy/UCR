@@ -107,7 +107,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel) await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile);
 
             ReloadProfileTree();
@@ -121,7 +124,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile, profileItem.Profile);
 
             ReloadProfileTree();

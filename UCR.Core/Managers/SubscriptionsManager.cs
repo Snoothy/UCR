@@ -139,9 +139,13 @@ namespace HidWizards.UCR.Core.Managers
 
             // Output devices
             var profileOutputDevices = new List<DeviceSubscription>();
-            foreach (var device in profile.OutputDevices)
+            foreach (var deviceConfiguration in profile.OutputDeviceConfigurations)
             {
-                profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                profileOutputDevices.Add(state.AddOutputDevice(deviceConfiguration.Device, profile));
+                foreach (var shadowDevice in deviceConfiguration.ShadowDevices)
+                {
+                    profileOutputDevices.Add(state.AddOutputDevice(shadowDevice, profile));
+                }
             }
 
             state.AddMappings(profile, profileOutputDevices);
