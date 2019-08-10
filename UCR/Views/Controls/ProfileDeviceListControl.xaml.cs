@@ -28,7 +28,7 @@ namespace HidWizards.UCR.Views.Controls
             var viewModel = GetViewModel();
             if (viewModel == null) return;
 
-            viewModel.SelectedDevice = GetSelectedDevice()?.DeviceConfiguration;
+            viewModel.SelectedDeviceConfiguration = GetSelectedDevice();
         }
 
         private DeviceItem GetSelectedDevice()

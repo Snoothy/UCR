@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HidWizards.UCR.Core.Models
 {
@@ -21,6 +18,30 @@ namespace HidWizards.UCR.Core.Models
             Device = device;
             ConfigurationName = null;
             ShadowDevices = new List<Device>();
+        }
+
+        public void ChangeConfigurationName(string name)
+        {
+            Device.Profile.Context.ContextChanged();
+            if (string.IsNullOrEmpty(name))
+            {
+                ConfigurationName = null;
+                return;
+            }
+
+            ConfigurationName = name;
+        }
+
+        public void ChangeShadowDevices(List<Device> shadowDevices)
+        {
+            Device.Profile.Context.ContextChanged();
+            ShadowDevices = shadowDevices;
+        }
+
+        public List<Device> getAvailableShadowDevices(DeviceIoType deviceIoType)
+        {
+            var availableDevices = Device.Profile.Context.DevicesManager.GetAvailableDevicesListFromSameProvider(deviceIoType, Device);
+            return availableDevices.Where(d => !d.Equals(Device)).ToList();
         }
     }
 }

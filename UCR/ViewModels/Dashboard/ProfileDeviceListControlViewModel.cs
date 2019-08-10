@@ -16,15 +16,15 @@ namespace HidWizards.UCR.ViewModels.Dashboard
     public class ProfileDeviceListControlViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<DeviceItem> Devices { get; set; }
-        public bool IsRemoveEnabled => CanRemoveDevice(SelectedDevice);
+        public bool IsRemoveEnabled => CanRemoveDevice();
         public bool IsConfigurationEnabled => CanManageDeviceConfiguration();
-        private DeviceConfiguration _device;
-        public DeviceConfiguration SelectedDevice
+        private DeviceItem _deviceConfiguration;
+        public DeviceItem SelectedDeviceConfiguration
         {
-            get => _device;
+            get => _deviceConfiguration;
             set
             {
-                _device = value;
+                _deviceConfiguration = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsRemoveEnabled));
                 OnPropertyChanged(nameof(IsConfigurationEnabled));
@@ -49,10 +49,10 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             }
         }
 
-        private bool CanRemoveDevice(DeviceConfiguration deviceConfiguration)
+        private bool CanRemoveDevice()
         {
-            if (deviceConfiguration == null) return false;
-            return _profile.CanRemoveDeviceConfiguration(deviceConfiguration);
+            if (SelectedDeviceConfiguration == null) return false;
+            return _profile.CanRemoveDeviceConfiguration(SelectedDeviceConfiguration.DeviceConfiguration);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -90,14 +90,23 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             OnPropertyChanged(nameof(Devices));
         }
 
-        public void ManageDeviceConfiguration()
+        public async void ManageDeviceConfiguration()
         {
-            throw new NotImplementedException();
+            var deviceList = _profile.GetMissingDeviceList(_deviceIoType);
+            var dialog = new ManageDeviceConfigurationDialog(SelectedDeviceConfiguration.DeviceConfiguration, _deviceIoType);
+            var result = (ManageDeviceConfigurationViewModel)await DialogHost.Show(dialog, "RootDialog");
+            if (!result.HasChanged) return;
+
+            SelectedDeviceConfiguration.DeviceConfiguration.ChangeConfigurationName(result.DeviceConfigurationName);
+            SelectedDeviceConfiguration.DeviceConfiguration.ChangeShadowDevices(result.GetSelectedShadowDevices());
+
+            SelectedDeviceConfiguration.TitleChanged();
+            OnPropertyChanged(nameof(Devices));
         }
 
         private bool CanManageDeviceConfiguration()
         {
-            if (SelectedDevice == null) return false;
+            if (SelectedDeviceConfiguration == null) return false;
             return true;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.Core.Managers
@@ -33,6 +34,12 @@ namespace HidWizards.UCR.Core.Managers
                 deviceGroupList.Add(deviceGroup);
             }
             return deviceGroupList;
+        }
+
+        public List<Device> GetAvailableDevicesListFromSameProvider(DeviceIoType type, Device device)
+        {
+            var availableDeviceList = GetAvailableDeviceList(type);
+            return availableDeviceList.SelectMany(deviceGroup => deviceGroup.Devices).Where(d => d.ProviderName.Equals(device.ProviderName)).ToList();
         }
     }
 }

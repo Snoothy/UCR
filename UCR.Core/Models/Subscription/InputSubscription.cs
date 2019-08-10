@@ -20,7 +20,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
             DeviceBindingSubscriptionGuid = Guid.NewGuid();
             IsOverwritten = false;
             // TODO Support shadow devices
-            DeviceSubscription = new DeviceSubscription(GetDeviceConfiguration().Device, profile);
+            DeviceSubscription = new DeviceSubscription(GetDeviceConfiguration()?.Device, profile);
         }
 
         private DeviceConfiguration GetDeviceConfiguration()
