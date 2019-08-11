@@ -93,6 +93,7 @@ namespace HidWizards.UCR.Core.Utilities
 
         public static short GetRangeFromPercentage(short percentage)
         {
+            if (percentage == -100) return Constants.AxisMinValue;
             return (short) (Constants.AxisMaxValue * (percentage / 100.0));
         }
     }
