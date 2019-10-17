@@ -145,6 +145,7 @@ class Build : NukeBuild
     Target Compile => _ => _
         .DependsOn(Restore)
         .DependsOn(StartCodeAnalysis)
+        .DependsOn(InitProject)
         .Executes(() =>
         {
             MSBuild(s => s
