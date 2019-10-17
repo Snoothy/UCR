@@ -117,10 +117,13 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(MSBuildBinPath)\msbuild.exe" /t:restore $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln /v:q
-"$(MSBuildBinPath)\msbuild.exe" $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln /v:q</PreBuildEvent>
+"$(MSBuildBinPath)\msbuild.exe" $(SolutionDir)\submodules\IOWrapper\IOWrapper.sln /v:q
+md "$(SolutionDir)\dependencies"
+xcopy /Y /S "$(SolutionDir)\submodules\IOWrapper\Artifacts" "$(SolutionDir)\dependencies"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /S "$(SolutionDir)\submodules\IOWrapper\Artifacts" "$(SolutionDir)\dependencies"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
