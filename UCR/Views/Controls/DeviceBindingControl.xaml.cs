@@ -71,7 +71,7 @@ namespace HidWizards.UCR.Views.Controls
                     if (Category != null && deviceBindingNode.DeviceBinding.DeviceBindingCategory != Category) continue;
                     cmd = new RelayCommand(c =>
                     {
-                        DeviceBinding.SetDeviceGuid(GetSelectedDeviceConfiguration().Device.Guid);
+                        DeviceBinding.SetDeviceConfigurationGuid(GetSelectedDeviceConfiguration().Guid);
                         DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
                     });
                 }
@@ -107,7 +107,7 @@ namespace HidWizards.UCR.Views.Controls
         {
             if (!HasLoaded) return;
             if (DeviceSelectionBox.SelectedItem == null) return;
-            DeviceBinding.SetDeviceGuid(GetSelectedDeviceConfiguration().Device.Guid);
+            DeviceBinding.SetDeviceConfigurationGuid(GetSelectedDeviceConfiguration().Guid);
             LoadContextMenu();
         }
 

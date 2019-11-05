@@ -53,6 +53,11 @@ namespace HidWizards.UCR.Core.Managers
             {
                 _profiles.Add(newProfile);
             }
+
+            // TODO Fix Configuration Guid and referenced DeviceBinding Guids
+            //newProfile.InputDeviceConfigurations.ForEach(configuration => configuration.Guid = Guid.NewGuid());
+            //newProfile.OutputDeviceConfigurations.ForEach(configuration => configuration.Guid = Guid.NewGuid());
+
             _context.ContextChanged();
 
             return true;

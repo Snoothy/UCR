@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -6,6 +7,7 @@ namespace HidWizards.UCR.Core.Models
 {
     public class DeviceConfiguration
     {
+        public Guid Guid { get; set; }
         public Device Device { get; set; }
         public string ConfigurationName { get; set; }
         public List<Device> ShadowDevices { get; set; }
@@ -15,9 +17,10 @@ namespace HidWizards.UCR.Core.Models
 
         public DeviceConfiguration()
         {
+            Guid = Guid.NewGuid();
         }
 
-        public DeviceConfiguration(Device device)
+        public DeviceConfiguration(Device device) : this()
         {
             Device = device;
             ConfigurationName = null;

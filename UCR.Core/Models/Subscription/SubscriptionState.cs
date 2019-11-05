@@ -9,7 +9,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public Profile ActiveProfile { get; }
         public bool IsActive { get; set; }
 
-        public List<DeviceSubscription> OutputDeviceSubscriptions { get; }
+        public List<DeviceConfigurationSubscription> OutputDeviceConfigurationSubscriptions { get; }
         public List<MappingSubscription> MappingSubscriptions { get; set; }
 
 
@@ -17,19 +17,18 @@ namespace HidWizards.UCR.Core.Models.Subscription
         {
             StateGuid = Guid.NewGuid();
             ActiveProfile = profile;
-            OutputDeviceSubscriptions = new List<DeviceSubscription>();
+            OutputDeviceConfigurationSubscriptions = new List<DeviceConfigurationSubscription>();
             MappingSubscriptions = new List<MappingSubscription>();
             IsActive = false;
         }
 
-        public DeviceSubscription AddOutputDevice(Device device, Profile profile)
+        public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)
         {
-            var deviceSubscription = new DeviceSubscription(device, profile);
-            OutputDeviceSubscriptions.Add(deviceSubscription);
-            return deviceSubscription;
+            var deviceSubscription = new DeviceConfigurationSubscription(deviceConfiguration);
+            OutputDeviceConfigurationSubscriptions.Add(deviceSubscription);
         }
         
-        public void AddMappings(Profile profile, List<DeviceSubscription> profileOutputDevices)
+        public void AddMappings(Profile profile, List<DeviceConfigurationSubscription> profileOutputDevices)
         {
             var profileMappings = new List<MappingSubscription>();
 

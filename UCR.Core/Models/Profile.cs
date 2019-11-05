@@ -143,10 +143,10 @@ namespace HidWizards.UCR.Core.Models
 
         #region Device
 
-        public DeviceConfiguration GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceGuid)
+        public DeviceConfiguration GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceConfigurationGuid)
         {
             var deviceList = GetDeviceConfigurationList(deviceIoType);
-            return deviceList.FirstOrDefault(configuration => configuration.Device.Guid == deviceGuid);
+            return deviceList.FirstOrDefault(configuration => configuration.Guid == deviceConfigurationGuid);
         }
 
         public List<DeviceConfiguration> GetDeviceConfigurationList(DeviceIoType deviceIoType)

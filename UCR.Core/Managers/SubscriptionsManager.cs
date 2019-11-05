@@ -112,9 +112,14 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
+            foreach (var deviceConfigurationSubscription in state.OutputDeviceConfigurationSubscriptions)
             {
-                success &= UnsubscribeOutput(state, deviceSubscription);
+                foreach (var shadowDeviceSubscription in deviceConfigurationSubscription.ShadowDeviceSubscriptions)
+                {
+                    success &= UnsubscribeOutput(state, shadowDeviceSubscription);
+                }
+                
+                success &= UnsubscribeOutput(state, deviceConfigurationSubscription.DeviceSubscription);
             }
 
             SubscriptionState = null;
@@ -139,14 +144,10 @@ namespace HidWizards.UCR.Core.Managers
 
             foreach (var deviceConfiguration in profile.OutputDeviceConfigurations)
             {
-                state.AddOutputDevice(deviceConfiguration.Device, profile);
-                foreach (var shadowDevice in deviceConfiguration.ShadowDevices)
-                {
-                    state.AddOutputDevice(shadowDevice, profile);
-                }
+                state.AddOutputDeviceConfiguration(deviceConfiguration);
             }
 
-            state.AddMappings(profile, state.OutputDeviceSubscriptions);
+            state.AddMappings(profile, state.OutputDeviceConfigurationSubscriptions);
             
             return success;
         }
@@ -157,9 +158,14 @@ namespace HidWizards.UCR.Core.Managers
             var success = true;
             if (state.IsActive) return true;
 
-            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
+            foreach (var deviceConfigurationSubscription in state.OutputDeviceConfigurationSubscriptions)
             {
-                success &= SubscribeOutput(state, deviceSubscription);
+                success &= SubscribeOutput(state, deviceConfigurationSubscription.DeviceSubscription);
+
+                foreach (var shadowDeviceSubscription in deviceConfigurationSubscription.ShadowDeviceSubscriptions)
+                {
+                    success &= SubscribeOutput(state, shadowDeviceSubscription);
+                }
             }
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
@@ -201,7 +207,11 @@ namespace HidWizards.UCR.Core.Managers
                 Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{deviceSubscription.Device.LogName()}}}");
                 return false;
             }
-            return _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
+            var success = _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
+
+            if (!success) Logger.Error($"Failed to subscribe output device. Provider might be unavailable: {{{deviceSubscription.Device.LogName()}}}");
+
+            return success;
         }
 
         private bool UnsubscribeOutput(SubscriptionState state, DeviceSubscription deviceSubscription)

@@ -10,7 +10,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public Guid SubscriptionStateGuid { get; set; }
         public List<OutputSubscription> OutputSubscriptions { get; set; }
 
-        public PluginSubscription(Mapping mapping, Plugin plugin, Guid subscriptionStateGuid, List<DeviceSubscription> outputDeviceSubscriptions)
+        public PluginSubscription(Mapping mapping, Plugin plugin, Guid subscriptionStateGuid, List<DeviceConfigurationSubscription> outputDeviceConfigurations)
         {
             Plugin = plugin;
             SubscriptionStateGuid = subscriptionStateGuid;
@@ -20,9 +20,14 @@ namespace HidWizards.UCR.Core.Models.Subscription
             {
                 if (!deviceBinding.IsBound) continue;
                 
-                // TODO Bind shadow device if applicable
-                var outputDeviceSubscription = outputDeviceSubscriptions.FirstOrDefault(d => d.Device.Guid == deviceBinding.DeviceGuid);
-                OutputSubscriptions.Add(new OutputSubscription(deviceBinding, subscriptionStateGuid, outputDeviceSubscription));
+                var deviceConfigurationSubscription = outputDeviceConfigurations.FirstOrDefault(configuration => configuration.DeviceConfiguration.Guid == deviceBinding.DeviceConfigurationGuid);
+                if (deviceConfigurationSubscription == null) continue;
+
+                var deviceConfiguration = mapping.IsShadowMapping
+                    ? deviceConfigurationSubscription.ShadowDeviceSubscriptions[mapping.ShadowDeviceNumber]
+                    : deviceConfigurationSubscription.DeviceSubscription;
+
+                OutputSubscriptions.Add(new OutputSubscription(deviceBinding, subscriptionStateGuid, deviceConfiguration));
             }
         }
     }
