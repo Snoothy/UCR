@@ -85,8 +85,8 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            _context.OnActiveProfileChangedEvent(profile);
             ProfileActive = true;
+            _context.OnActiveProfileChangedEvent(profile);
         }
 
         public bool DeactivateProfile()
@@ -137,18 +137,16 @@ namespace HidWizards.UCR.Core.Managers
                 success &= PopulateSubscriptionStateForProfile(state, profile.ParentProfile);
             }
 
-            // Output devices
-            var profileOutputDevices = new List<DeviceSubscription>();
             foreach (var deviceConfiguration in profile.OutputDeviceConfigurations)
             {
-                profileOutputDevices.Add(state.AddOutputDevice(deviceConfiguration.Device, profile));
+                state.AddOutputDevice(deviceConfiguration.Device, profile);
                 foreach (var shadowDevice in deviceConfiguration.ShadowDevices)
                 {
-                    profileOutputDevices.Add(state.AddOutputDevice(shadowDevice, profile));
+                    state.AddOutputDevice(shadowDevice, profile);
                 }
             }
 
-            state.AddMappings(profile, profileOutputDevices);
+            state.AddMappings(profile, state.OutputDeviceSubscriptions);
             
             return success;
         }

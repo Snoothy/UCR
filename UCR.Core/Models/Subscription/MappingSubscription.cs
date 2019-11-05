@@ -23,7 +23,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
             PluginSubscriptions = new List<PluginSubscription>();
             foreach (var mappingPlugin in Mapping.Plugins)
             {
-                PluginSubscriptions.Add(new PluginSubscription(mappingPlugin, subscriptionStateGuid, profileOutputDevices));
+                PluginSubscriptions.Add(new PluginSubscription(Mapping, mappingPlugin, subscriptionStateGuid, profileOutputDevices));
             }
         }
     }

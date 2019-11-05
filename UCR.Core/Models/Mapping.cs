@@ -17,6 +17,10 @@ namespace HidWizards.UCR.Core.Models
         private Profile Profile { get; set; }
         private List<short> InputCache { get; set; }
         private List<CallbackMultiplexer> Multiplexer { get; set; }
+        
+
+        internal bool IsShadowMapping { get; set; }
+        internal int ShadowDeviceNumber { get; set; }
 
         [XmlIgnore]
         public string FullTitle
@@ -33,6 +37,9 @@ namespace HidWizards.UCR.Core.Models
             Guid = Guid.NewGuid();
             DeviceBindings = new List<DeviceBinding>();
             Plugins = new List<Plugin>();
+            
+            IsShadowMapping = false;
+            ShadowDeviceNumber = 0;
         }
 
         public Mapping(Profile profile, string title) : this()

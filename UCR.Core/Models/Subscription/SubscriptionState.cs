@@ -39,7 +39,15 @@ namespace HidWizards.UCR.Core.Models.Subscription
             }
 
             OverrideParentMappings(profileMappings);
+
             MappingSubscriptions.AddRange(profileMappings);
+            MappingSubscriptions.AddRange(AddShadowMappings(profileMappings));
+        }
+
+        private List<MappingSubscription> AddShadowMappings(List<MappingSubscription> profileMappings)
+        {
+            // TODO Implement for shadow devices
+            return new List<MappingSubscription>();
         }
 
         private void OverrideParentMappings(List<MappingSubscription> profileMappingSubscriptions)

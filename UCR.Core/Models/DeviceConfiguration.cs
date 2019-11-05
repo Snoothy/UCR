@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace HidWizards.UCR.Core.Models
 {
@@ -8,6 +9,9 @@ namespace HidWizards.UCR.Core.Models
         public Device Device { get; set; }
         public string ConfigurationName { get; set; }
         public List<Device> ShadowDevices { get; set; }
+
+        [XmlIgnore] 
+        public int DeviceCount => 1 + ShadowDevices.Count;
 
         public DeviceConfiguration()
         {
