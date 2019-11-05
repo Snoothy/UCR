@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
 
@@ -9,7 +10,6 @@ namespace HidWizards.UCR.Core.Models
     {
         /* Persistence */
         public string Title { get; set; }
-        public Guid Guid { get; set; }
         public List<DeviceBinding> DeviceBindings { get; set; }
         public List<Plugin> Plugins { get; set; }
 
@@ -21,6 +21,25 @@ namespace HidWizards.UCR.Core.Models
 
         internal bool IsShadowMapping { get; set; }
         internal int ShadowDeviceNumber { get; set; }
+        internal int PossibleShadowClones => CountPossibleShadowClones();
+
+        private int CountPossibleShadowClones()
+        {
+            var usedDeviceConfigurations = new List<DeviceConfiguration>();
+
+            foreach (var deviceBinding in DeviceBindings)
+            {
+                if (!deviceBinding.IsBound) continue;
+
+                usedDeviceConfigurations.Add(Profile.GetDeviceConfiguration(DeviceIoType.Input, deviceBinding.DeviceConfigurationGuid));
+            }
+
+            if (usedDeviceConfigurations.Count == 0) return 0;
+
+            return usedDeviceConfigurations
+                .Select(deviceConfiguration => deviceConfiguration.ShadowDevices)
+                .Max(shadowDevices => shadowDevices.Count);
+        }
 
         [XmlIgnore]
         public string FullTitle
@@ -34,7 +53,6 @@ namespace HidWizards.UCR.Core.Models
 
         public Mapping()
         {
-            Guid = Guid.NewGuid();
             DeviceBindings = new List<DeviceBinding>();
             Plugins = new List<Plugin>();
             
@@ -154,6 +172,18 @@ namespace HidWizards.UCR.Core.Models
 
         #endregion
 
+
+        internal Mapping CreateShadowClone(int shadowCloneNumber)
+        {
+            var clonedMapping = Context.DeepXmlClone<Mapping>(this);
+            clonedMapping.Title = $"{clonedMapping.Title} (Shadow {shadowCloneNumber})";
+            clonedMapping.IsShadowMapping = true;
+            clonedMapping.ShadowDeviceNumber = shadowCloneNumber;
+            clonedMapping.Profile = Profile;
+            clonedMapping.PostLoad(Profile.Context, Profile);
+
+            return clonedMapping;
+        }
 
         internal void PostLoad(Context context, Profile profile = null)
         {

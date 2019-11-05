@@ -95,7 +95,6 @@ namespace HidWizards.UCR.Tests.ModelTests
                 var newDeviceBindings = newcontext.Profiles[0].Mappings[0].DeviceBindings;
                 Assert.That(newMapping.Title, Is.EqualTo(mapping.Title));
                 Assert.That(newMapping.Plugins.Count, Is.EqualTo(mapping.Plugins.Count));
-                Assert.That(newMapping.Guid, Is.EqualTo(mapping.Guid));
                 Assert.That(newMapping.Plugins[0].Outputs.Count, Is.EqualTo(1));
 
                 for (var j = 0; j < mapping.DeviceBindings.Count; j++)

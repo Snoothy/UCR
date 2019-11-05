@@ -40,13 +40,35 @@ namespace HidWizards.UCR.Core.Models.Subscription
             OverrideParentMappings(profileMappings);
 
             MappingSubscriptions.AddRange(profileMappings);
-            MappingSubscriptions.AddRange(AddShadowMappings(profileMappings));
+            MappingSubscriptions.AddRange(AddShadowMappings(profile, profileMappings, profileOutputDevices));
         }
 
-        private List<MappingSubscription> AddShadowMappings(List<MappingSubscription> profileMappings)
+        private List<MappingSubscription> AddShadowMappings(Profile profile, List<MappingSubscription> profileMappings, List<DeviceConfigurationSubscription> profileOutputDevices)
         {
-            // TODO Implement for shadow devices
-            return new List<MappingSubscription>();
+            var result = new List<MappingSubscription>();
+
+            foreach (var mappingSubscription in profileMappings)
+            {
+                var shadowClones = mappingSubscription.Mapping.PossibleShadowClones;
+                if (shadowClones == 0) continue;
+                
+
+                result.AddRange(CloneMappingSubscription(profile, mappingSubscription, profileOutputDevices, shadowClones));
+            }
+
+            return result;
+        }
+
+        private List<MappingSubscription> CloneMappingSubscription(Profile profile, MappingSubscription mappingSubscription, List<DeviceConfigurationSubscription> profileOutputDevices, int shadowClones)
+        {
+            var result = new List<MappingSubscription>();
+
+            for (var i = 0; i < shadowClones; i++)
+            {
+                result.Add(new MappingSubscription(profile, mappingSubscription.Mapping.CreateShadowClone(i), StateGuid, profileOutputDevices));
+            }
+
+            return result;
         }
 
         private void OverrideParentMappings(List<MappingSubscription> profileMappingSubscriptions)
