@@ -95,7 +95,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             var deviceList = _profile.GetMissingDeviceList(_deviceIoType);
             var dialog = new ManageDeviceConfigurationDialog(SelectedDeviceConfiguration.DeviceConfiguration, _deviceIoType);
             var result = (ManageDeviceConfigurationViewModel)await DialogHost.Show(dialog, "RootDialog");
-            if (!result.HasChanged) return;
+            if (result == null || !result.HasChanged) return;
 
             SelectedDeviceConfiguration.DeviceConfiguration.ChangeConfigurationName(result.DeviceConfigurationName);
             SelectedDeviceConfiguration.DeviceConfiguration.ChangeShadowDevices(result.GetSelectedShadowDevices());
