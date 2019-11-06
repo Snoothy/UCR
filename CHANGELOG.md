@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 
 - Child profiles now properly inherit all parent devices. Fixes crash on activating profile
+- IOWrapper device list is now refreshed every time devices are queried
+
+### Changed
+
+- Updated to IOWrapper v0.10.6
 
 ## [0.8.0] - 2019-07-27
 

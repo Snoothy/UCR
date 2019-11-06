@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Annotations;

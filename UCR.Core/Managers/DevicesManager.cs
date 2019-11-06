@@ -19,6 +19,7 @@ namespace HidWizards.UCR.Core.Managers
         /// <param name="type"></param>
         public List<DeviceGroup> GetAvailableDeviceList(DeviceIoType type)
         {
+            _context.IOController.RefreshDevices();
             var deviceGroupList = new List<DeviceGroup>();
             var providerList = type == DeviceIoType.Input
                 ? _context.IOController.GetInputList()
