@@ -1,10 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using HidWizards.UCR.Core;
 using HidWizards.UCR.ViewModels.Dashboard;
-using HidWizards.UCR.Views.Dialogs;
-using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.Views.Controls
 {
@@ -32,7 +28,7 @@ namespace HidWizards.UCR.Views.Controls
             var viewModel = GetViewModel();
             if (viewModel == null) return;
 
-            viewModel.SelectedDevice = GetSelectedDevice()?.Device;
+            viewModel.SelectedDeviceConfiguration = GetSelectedDevice();
         }
 
         private DeviceItem GetSelectedDevice()
@@ -43,6 +39,11 @@ namespace HidWizards.UCR.Views.Controls
         private ProfileDeviceListControlViewModel GetViewModel()
         {
             return DataContext as ProfileDeviceListControlViewModel;
+        }
+
+        private void ManageDeviceConfiguration_OnClick(object sender, RoutedEventArgs e)
+        {
+            GetViewModel().ManageDeviceConfiguration();
         }
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="Managers\ProfilesManager.cs" />
     <Compile Include="Models\CallbackMultiplexer.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceConfiguration.cs" />
     <Compile Include="Models\DeviceGroup.cs" />
     <Compile Include="Models\Binding\DeviceBinding.cs" />
     <Compile Include="Models\Mapping.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Models\PluginPropertyGroup.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\PropertyValidationResult.cs" />
+    <Compile Include="Models\Subscription\DeviceConfigurationSubscription.cs" />
     <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
     <Compile Include="Models\Subscription\MappingSubscription.cs" />

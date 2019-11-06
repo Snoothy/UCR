@@ -14,7 +14,6 @@ namespace HidWizards.UCR.Tests.FactoryTests
             var providerName = "Test provider";
             var deviceNumber = 0.ToString();
             var device = DeviceFactory.CreateDevice(title, providerName, deviceNumber);
-            Assert.That(device.Guid, Is.Not.EqualTo(Guid.Empty));
             Assert.That(device.Title, Is.EqualTo(title));
             Assert.That(device.ProviderName, Is.EqualTo(providerName));
             Assert.That(device.DeviceHandle, Is.EqualTo(deviceNumber));

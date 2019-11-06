@@ -95,7 +95,6 @@ namespace HidWizards.UCR.Tests.ModelTests
                 var newDeviceBindings = newcontext.Profiles[0].Mappings[0].DeviceBindings;
                 Assert.That(newMapping.Title, Is.EqualTo(mapping.Title));
                 Assert.That(newMapping.Plugins.Count, Is.EqualTo(mapping.Plugins.Count));
-                Assert.That(newMapping.Guid, Is.EqualTo(mapping.Guid));
                 Assert.That(newMapping.Plugins[0].Outputs.Count, Is.EqualTo(1));
 
                 for (var j = 0; j < mapping.DeviceBindings.Count; j++)
@@ -105,7 +104,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                     Assert.That(newDeviceBindings[j].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
                     Assert.That(newDeviceBindings[j].Guid, Is.Not.EqualTo(deviceBindings[j].Guid));
                     Assert.That(newDeviceBindings[j].IsBound, Is.EqualTo(deviceBindings[j].IsBound));
-                    Assert.That(newDeviceBindings[j].DeviceGuid, Is.EqualTo(deviceBindings[j].DeviceGuid));
+                    Assert.That(newDeviceBindings[j].DeviceConfigurationGuid, Is.EqualTo(deviceBindings[j].DeviceConfigurationGuid));
                     Assert.That(newDeviceBindings[j].KeyType, Is.EqualTo(deviceBindings[j].KeyType));
                     Assert.That(newDeviceBindings[j].KeyValue, Is.EqualTo(deviceBindings[j].KeyValue));
                     Assert.That(newDeviceBindings[j].KeySubValue, Is.EqualTo(deviceBindings[j].KeySubValue));
@@ -117,7 +116,7 @@ namespace HidWizards.UCR.Tests.ModelTests
 
         private static void SetDeviceBindingValues(DeviceBinding deviceBinding, int value)
         {
-            deviceBinding.DeviceGuid = Guid.NewGuid();
+            deviceBinding.DeviceConfigurationGuid = Guid.NewGuid();
             deviceBinding.KeyType = value;
             deviceBinding.KeyValue = value;
             deviceBinding.KeySubValue = value;

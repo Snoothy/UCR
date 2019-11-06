@@ -31,7 +31,7 @@ namespace HidWizards.UCR.Core.Managers
         private static readonly int BindModeTick = 20;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Context _context;
-        private List<Device> _deviceList;
+        private List<DeviceConfiguration> _deviceConfigurationList;
         private DeviceBinding _deviceBinding;
         private DispatcherTimer BindingTimer;
         private readonly object bindmodeLock = new object();
@@ -43,18 +43,18 @@ namespace HidWizards.UCR.Core.Managers
         public BindingManager(Context context)
         {
             _context = context;
-            _deviceList = new List<Device>();
+            _deviceConfigurationList = new List<DeviceConfiguration>();
             Logger.Debug($"Start bind mode");
         }
 
         public void BeginBindMode(DeviceBinding deviceBinding)
         {
-            if (_deviceList.Count > 0) EndBindMode();
+            if (_deviceConfigurationList.Count > 0) EndBindMode();
             _deviceBinding = deviceBinding;
-            foreach (var device in deviceBinding.Profile.GetDeviceList(deviceBinding.DeviceIoType))
+            foreach (var deviceConfiguration in deviceBinding.Profile.GetDeviceConfigurationList(deviceBinding.DeviceIoType))
             {
-                _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(device), GetDeviceDescriptor(device), InputChanged);
-                _deviceList.Add(device);
+                _context.IOController.SetDetectionMode(DetectionMode.Bind, GetProviderDescriptor(deviceConfiguration.Device), GetDeviceDescriptor(deviceConfiguration.Device), InputChanged);
+                _deviceConfigurationList.Add(deviceConfiguration);
             }
 
             BindingTimer = new DispatcherTimer(DispatcherPriority.Render);
@@ -81,13 +81,13 @@ namespace HidWizards.UCR.Core.Managers
                 EndBindModeHandler?.Invoke(_deviceBinding);
                 BindingTimer.Stop();
 
-                foreach (var device in _deviceList)
+                foreach (var deviceConfiguration in _deviceConfigurationList)
                 {
-                    _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(device),
-                        GetDeviceDescriptor(device));
+                    _context.IOController.SetDetectionMode(DetectionMode.Subscription, GetProviderDescriptor(deviceConfiguration.Device),
+                        GetDeviceDescriptor(deviceConfiguration.Device));
                 }
 
-                _deviceList = new List<Device>();
+                _deviceConfigurationList = new List<DeviceConfiguration>();
                 BindingTimer.Stop();
                 bindmodeActive = false;
             }
@@ -115,8 +115,8 @@ namespace HidWizards.UCR.Core.Managers
             if (!DeviceBinding.MapCategory(bindingReport.Category).Equals(_deviceBinding.DeviceBindingCategory)) return;
             if (!IsInputValid(bindingReport.Category, value)) return;
 
-            var device = FindDevice(providerDescriptor, deviceDescriptor);
-            _deviceBinding.SetDeviceGuid(device.Guid);
+            var deviceConfiguration = FindDeviceConfiguration(providerDescriptor, deviceDescriptor);
+            _deviceBinding.SetDeviceConfigurationGuid(deviceConfiguration.Guid);
             _deviceBinding.SetKeyTypeValue((int)bindingReport.BindingDescriptor.Type, bindingReport.BindingDescriptor.Index, bindingReport.BindingDescriptor.SubIndex);
             EndBindMode();
         }
@@ -139,11 +139,11 @@ namespace HidWizards.UCR.Core.Managers
             }
         }
 
-        private Device FindDevice(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor)
+        private DeviceConfiguration FindDeviceConfiguration(ProviderDescriptor providerDescriptor, DeviceDescriptor deviceDescriptor)
         {
-            return _deviceList.Find(d => d.ProviderName == providerDescriptor.ProviderName
-                                         && d.DeviceHandle == deviceDescriptor.DeviceHandle
-                                         && d.DeviceNumber == deviceDescriptor.DeviceInstance
+            return _deviceConfigurationList.Find(deviceConfiguration => deviceConfiguration.Device.ProviderName == providerDescriptor.ProviderName
+                                         && deviceConfiguration.Device.DeviceHandle == deviceDescriptor.DeviceHandle
+                                         && deviceConfiguration.Device.DeviceNumber == deviceDescriptor.DeviceInstance
             );
         }
 

@@ -29,7 +29,7 @@ namespace HidWizards.UCR.Core.Models.Binding
             }
         }
         // Index in its device list
-        public Guid DeviceGuid { get; set; }
+        public Guid DeviceConfigurationGuid { get; set; }
         // Subscription key
         public int KeyType { get; set; }
         public int KeyValue { get; set; }
@@ -103,7 +103,7 @@ namespace HidWizards.UCR.Core.Models.Binding
 
         public DeviceBinding(DeviceBinding deviceBinding)
         {
-            DeviceGuid = deviceBinding.DeviceGuid;
+            DeviceConfigurationGuid = deviceBinding.DeviceConfigurationGuid;
             KeyType = deviceBinding.KeyType;
             KeyValue = deviceBinding.KeyValue;
             Profile = deviceBinding.Profile;
@@ -112,9 +112,9 @@ namespace HidWizards.UCR.Core.Models.Binding
             IsBound = deviceBinding.IsBound;
         }
 
-        public void SetDeviceGuid(Guid deviceGuid)
+        public void SetDeviceConfigurationGuid(Guid deviceConfigurationGuid)
         {
-            DeviceGuid = deviceGuid;
+            DeviceConfigurationGuid = deviceConfigurationGuid;
             Profile.Context.ContextChanged();
         }
 
@@ -129,7 +129,7 @@ namespace HidWizards.UCR.Core.Models.Binding
         
         public string BoundName()
         {
-            return Profile.GetDevice(DeviceIoType, DeviceGuid)?.GetBindingName(this) ?? "Device unavailable";
+            return Profile.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device.GetBindingName(this) ?? "Device unavailable";
         }
 
         public static DeviceBindingCategory MapCategory(BindingCategory bindingInfoCategory)

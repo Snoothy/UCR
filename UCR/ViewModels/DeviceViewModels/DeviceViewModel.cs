@@ -19,7 +19,18 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
         public bool Checked { get; set; }
 
         public Visibility SeparatorVisibility => FirstElement ? Visibility.Collapsed : Visibility.Visible;
-        public bool FirstElement { get; set; }
+        private bool _firstElement;
+
+        public bool FirstElement
+        {
+            get => _firstElement;
+            set
+            {
+                _firstElement = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SeparatorVisibility));
+            }
+        }
 
         public Device Device { get; }
 
@@ -32,6 +43,11 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
             Device = device;
             Title = device.Title;
             ProviderName = device.ProviderName;
+        }
+
+        public DeviceViewModel(Device device, bool selected) : this(device)
+        {
+            Checked = selected;
         }
 
         public void ToggleSelection()

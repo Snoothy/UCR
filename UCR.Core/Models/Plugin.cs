@@ -165,7 +165,7 @@ namespace HidWizards.UCR.Core.Models
             for (var i = 0; i < split; i++)
             {
                 deviceBindings[i].IsBound = deviceBindings[i + split].IsBound;
-                deviceBindings[i].DeviceGuid = deviceBindings[i + split].DeviceGuid;
+                deviceBindings[i].DeviceConfigurationGuid = deviceBindings[i + split].DeviceConfigurationGuid;
                 deviceBindings[i].KeyType = deviceBindings[i + split].KeyType;
                 deviceBindings[i].KeyValue = deviceBindings[i + split].KeyValue;
                 deviceBindings[i].KeySubValue = deviceBindings[i + split].KeySubValue;

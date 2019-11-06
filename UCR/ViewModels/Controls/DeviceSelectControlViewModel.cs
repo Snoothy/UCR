@@ -24,6 +24,13 @@ namespace HidWizards.UCR.ViewModels.Controls
             Devices = GetDeviceList(devices);
         }
 
+        public DeviceSelectControlViewModel(string title, List<DeviceViewModel> devices)
+        {
+            Title = title;
+            Devices = new ObservableCollection<DeviceViewModel>(devices);
+            if (Devices.Count != 0) Devices[0].FirstElement = true;
+        }
+
         public List<DeviceViewModel> GetSelectedDevices()
         {
             return Devices.Where(d => d.Checked).ToList();

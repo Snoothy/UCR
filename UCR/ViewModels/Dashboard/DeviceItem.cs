@@ -1,19 +1,36 @@
-﻿using HidWizards.UCR.Core.Models;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using HidWizards.UCR.Core.Annotations;
+using HidWizards.UCR.Core.Models;
 
 namespace HidWizards.UCR.ViewModels.Dashboard
 {
-    public class DeviceItem
+    public class DeviceItem : INotifyPropertyChanged
     {
-        public string Title => Device.GetFullTitleForProfile(Profile);
-        public string ProviderName => Device.ProviderName;
+        public string Title => DeviceConfiguration.GetFullTitleForProfile(Profile);
 
-        public Device Device { get; set; }
+        public string ProviderName => DeviceConfiguration.Device.ProviderName;
+
+        public DeviceConfiguration DeviceConfiguration { get; set; }
         private Profile Profile { get; set; }
 
-        public DeviceItem(Device device, Profile profile)
+        public DeviceItem(DeviceConfiguration deviceConfiguration, Profile profile)
         {
-            Device = device;
+            DeviceConfiguration = deviceConfiguration;
             Profile = profile;
+        }
+
+        public void TitleChanged()
+        {
+            OnPropertyChanged(nameof(Title));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

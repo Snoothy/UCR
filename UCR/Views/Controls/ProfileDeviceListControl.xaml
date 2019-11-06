@@ -54,6 +54,12 @@
                     IsEnabled="{Binding IsRemoveEnabled}">
                     <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>
                 </Button>
+                <Button ToolTip="Manage device configuration"
+                        Style="{StaticResource MaterialDesignCardButton}"
+                        Click="ManageDeviceConfiguration_OnClick"
+                        IsEnabled="{Binding IsConfigurationEnabled}">
+                    <materialDesign:PackIcon Kind="Cog" Width="20" Height="20"/>
+                </Button>
                 <Button ToolTip="Add device"
                         Style="{StaticResource MaterialDesignCardButton}"
                         Click="AddDevice_OnClick">

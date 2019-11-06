@@ -18,7 +18,6 @@ namespace HidWizards.UCR.Core.Models
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         /* Persistence */
-        public Guid Guid { get; set; }
         public string Title { get; set; }
         public string ProviderName { get; set; }
         public string DeviceHandle { get; set; }
@@ -33,22 +32,15 @@ namespace HidWizards.UCR.Core.Models
 
         public Device()
         {
-            Guid = Guid.NewGuid();
         }
 
-        public Device(Guid guid)
-        {
-            Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
-        }
-
-        public Device(Device device) : this(device.Guid)
+        public Device(Device device)
         {
             Title = device.Title;
             DeviceHandle = device.DeviceHandle;
             ProviderName = device.ProviderName;
             DeviceNumber = device.DeviceNumber;
             DeviceBindingMenu = device.DeviceBindingMenu;
-            Guid = device.Guid;
         }
 
         public Device(DeviceReport device, ProviderReport providerReport, DeviceIoType type) : this()
@@ -61,13 +53,6 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
-
-        public string GetFullTitleForProfile(Profile profile)
-        {
-            if (profile == null || Profile.Guid == profile.Guid) return Title;
-
-            return $"{Title} (Inherited from {Profile.Title})";
-        }
 
         private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
         {

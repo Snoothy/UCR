@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="HidWizards.UCR.Views.Controls.DeviceAddRemoveControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Header="{Binding TitleLeft}"  Margin="0 0 4 0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="-9">
+                <ItemsControl ItemsSource="{Binding AvailableDevices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="8 0">
+                                <Separator Margin="0" Visibility="{Binding SeparatorVisibility}" Style="{StaticResource MaterialDesignSeparator}"/>
+                                <Grid Width="Auto" MouseDown="Device_OnAddDevice">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0 12">
+                                        <TextBlock Text="{Binding Title}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                        <TextBlock Text="{Binding ProviderName}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4 0 0 0">
+                                        <materialDesign:PackIcon Kind="Plus" Width="20" Height="20"/>
+                                    </StackPanel>
+                                    <materialDesign:Ripple Grid.Column="0" Grid.ColumnSpan="2" Feedback="{DynamicResource MaterialDesignFlatButtonRipple}" ToolTip="{Binding Title}"/>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
+
+        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Header="{Binding TitleRight}" Grid.Column="1" Margin="4 0 0 0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="-9">
+                <ItemsControl ItemsSource="{Binding ShadowDevices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="8 0">
+                                <Separator Margin="0" Visibility="{Binding SeparatorVisibility}" Style="{StaticResource MaterialDesignSeparator}"/>
+                                <Grid Width="Auto" MouseDown="Device_OnRemoveDevice">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0 12">
+                                        <TextBlock Text="{Binding Title}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                        <TextBlock Text="{Binding ProviderName}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4 0 0 0">
+                                        <materialDesign:PackIcon Kind="Trash" Width="20" Height="20"/>
+                                    </StackPanel>
+                                    <materialDesign:Ripple Grid.Column="0" Grid.ColumnSpan="2" Feedback="{DynamicResource MaterialDesignFlatButtonRipple}" ToolTip="{Binding Title}"/>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
+</UserControl>
