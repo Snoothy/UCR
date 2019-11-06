@@ -9,19 +9,19 @@
              xmlns:controls="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="600"
+             d:DesignHeight="450" d:DesignWidth="800"
              
              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpf:DialogHost}},Path=ActualHeight}"
              Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpf:DialogHost}},Path=ActualWidth}"
              MaxHeight="800"
-             MaxWidth="600"
+             MaxWidth="800"
              Margin="-16"
              Padding="16"
              Background="{DynamicResource MaterialDesignPaper}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Margin="16" Grid.Column="0">
             <Grid.RowDefinitions>
@@ -37,6 +37,9 @@
                     <Binding Path="DeviceConfigurationName" UpdateSourceTrigger="PropertyChanged"/>
                 </TextBox.Text>
             </TextBox>
+            <StackPanel Grid.Row="1">
+                <TextBlock Text=""/>
+            </StackPanel>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2"
                     Margin="0 16 0 0">
                 <Button IsDefault="True" 
@@ -53,6 +56,6 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <controls:DeviceSelectControl Grid.Column="1" Margin="8" DataContext="{Binding ShadowDevices}"/>
+        <controls:DeviceAddRemoveControl Grid.Column="1" Margin="8" DataContext="{Binding ShadowDevices}"/>
     </Grid>
 </UserControl>

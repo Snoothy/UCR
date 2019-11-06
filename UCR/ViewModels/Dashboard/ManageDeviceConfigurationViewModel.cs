@@ -18,7 +18,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         public string DeviceConfigurationName { get; set; }
 
-        public DeviceSelectControlViewModel ShadowDevices { get; set; }
+        public DeviceAddRemoveControlViewModel ShadowDevices { get; set; }
         public ManageDeviceConfigurationViewModel ViewModel { get; set; }
 
         public bool HasChanged => _changed;
@@ -38,27 +38,37 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             _deviceConfiguration = deviceConfiguration;
             _deviceIoType = deviceIoType;
             DeviceConfigurationName = _deviceConfiguration.ConfigurationName;
-            ShadowDevices = new DeviceSelectControlViewModel("Shadow Devices", GetAllShadowDevices());
+            ShadowDevices = new DeviceAddRemoveControlViewModel("Available Devices", "Selected Shadow Devices", GetAllShadowDevices());
             _changed = true;
         }
 
         public List<Device> GetSelectedShadowDevices()
         {
-            return ShadowDevices.Devices.Where(d => d.Checked).Select(d => d.Device).ToList();
+            return ShadowDevices.ShadowDevices.Select(d => d.Device).ToList();
         }
 
         private List<DeviceViewModel> GetAllShadowDevices()
         {
             var deviceViewModels = new List<DeviceViewModel>();
 
+            foreach (var shadowDevice in _deviceConfiguration.ShadowDevices)
+            {
+                deviceViewModels.Add(new DeviceViewModel(shadowDevice, true));
+            }
+
             foreach (var shadowDevice in _deviceConfiguration.getAvailableShadowDevices(_deviceIoType))
             {
-                var deviceViewModel = new DeviceViewModel(shadowDevice);
-                deviceViewModel.Checked = _deviceConfiguration.ShadowDevices.Contains(shadowDevice);
-                deviceViewModels.Add(deviceViewModel);
+                if (ShadowDeviceAlreadySelected(shadowDevice, deviceViewModels)) continue;
+
+                deviceViewModels.Add(new DeviceViewModel(shadowDevice));
             }
 
             return deviceViewModels;
+        }
+
+        private bool ShadowDeviceAlreadySelected(Device shadowDevice, List<DeviceViewModel> list)
+        {
+            return list.Select(d => d.Device).ToList().Contains(shadowDevice);
         }
     }
 }

@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added Shadow devices
+
+### Fixed
+
+- Child profiles now properly inherit all parent devices. Fixes crash on activating profile
+
 ## [0.8.0] - 2019-07-27
 
 ### Added
