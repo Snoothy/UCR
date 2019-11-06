@@ -58,12 +58,14 @@ namespace HidWizards.UCR.Views.Controls
             var deviceConfiguration = GetSelectedDeviceConfiguration();
             if (deviceConfiguration == null) return;
             BindMenu = BuildMenu(deviceConfiguration.Device.GetDeviceBindingMenu(DeviceBinding.Profile.Context, DeviceBinding.DeviceIoType));
+            BindMenu.Add(CreateClearCommandMenuItem());
         }
 
         private ObservableCollection<ContextMenuItem> BuildMenu(List<DeviceBindingNode> deviceBindingNodes)
         {
             var menuList = new ObservableCollection<ContextMenuItem>();
             if (deviceBindingNodes == null) return menuList;
+
             foreach (var deviceBindingNode in deviceBindingNodes)
             {
                 
@@ -85,6 +87,12 @@ namespace HidWizards.UCR.Views.Controls
                 
             }
             return menuList;
+        }
+
+        private ContextMenuItem CreateClearCommandMenuItem()
+        {
+            var clearCommand = new RelayCommand(c => { DeviceBinding.ClearBinding(); });
+            return new ContextMenuItem("Clear binding", null, clearCommand);
         }
 
         public DeviceBinding DeviceBinding

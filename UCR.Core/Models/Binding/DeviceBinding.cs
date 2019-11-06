@@ -163,6 +163,16 @@ namespace HidWizards.UCR.Core.Models.Binding
             IsInBindMode = true;
         }
 
+        public void ClearBinding()
+        {
+            KeyType = 0;
+            KeyValue = 0;
+            KeySubValue = 0;
+            DeviceConfigurationGuid = Guid.Empty;
+            IsBound = false;
+            Profile.Context.ContextChanged();
+        }
+
         private void OnEndBindModeHandler(DeviceBinding deviceBinding)
         {
             if (deviceBinding.Guid != Guid) return;
