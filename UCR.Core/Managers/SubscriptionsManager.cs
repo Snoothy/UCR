@@ -172,7 +172,7 @@ namespace HidWizards.UCR.Core.Managers
             {
                 if (mappingSubscription.Overriden) continue;
 
-                mappingSubscription.Mapping.PrepareMapping();
+                mappingSubscription.Mapping.PrepareMapping(state.FilterRuntimeDictionary);
 
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {

@@ -30,8 +30,7 @@ namespace HidWizards.UCR.Core.Models
         public Context Context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
-        internal ConcurrentDictionary<Guid, bool> StateDictionary { get; set; }
-        
+
         #region Constructors
 
         public Profile()
@@ -117,7 +116,7 @@ namespace HidWizards.UCR.Core.Models
 
         internal void PrepareProfile()
         {
-            StateDictionary = new ConcurrentDictionary<Guid, bool>();
+            
         }
 
         #endregion
@@ -203,7 +202,6 @@ namespace HidWizards.UCR.Core.Models
             return success;
         }
 
-
         public bool CanRemoveDeviceConfiguration(DeviceConfiguration device)
         {
             return InputDeviceConfigurations.Contains(device) || OutputDeviceConfigurations.Contains(device);
@@ -236,6 +234,26 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
+
+        public HashSet<string> GetFilters()
+        {
+            var result = ParentProfile != null
+                ? ParentProfile.GetFilters()
+                : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (var mapping in Mappings)
+            {
+                foreach (var plugin in mapping.Plugins)
+                {
+                    foreach (var filter in plugin.Filters)
+                    {
+                        result.Add(filter.Name);
+                    }
+                }
+            }
+
+            return result;
+        }
 
         #region Helpers
 

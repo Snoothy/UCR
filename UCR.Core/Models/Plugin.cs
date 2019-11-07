@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -15,15 +16,17 @@ namespace HidWizards.UCR.Core.Models
     {
         /* Persistence */
         public List<DeviceBinding> Outputs { get; }
+        public List<Filter> Filters { get; set; }
         
         /* Runtime */
         internal Profile Profile { get; set; }
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
         private List<PluginPropertyGroup> _pluginPropertyGroups;
+        internal Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
 
         #region Properties
-        
+
         [XmlIgnore]
         public List<IODefinition> InputCategories
         {
@@ -82,6 +85,8 @@ namespace HidWizards.UCR.Core.Models
             {
                 Outputs.Add(new DeviceBinding(null, Profile, DeviceIoType.Output));
             }
+
+            Filters = new List<Filter>();
         }
 
         #region Life cycle
@@ -128,8 +133,46 @@ namespace HidWizards.UCR.Core.Models
             return Outputs[number].CurrentValue;
         }
 
+        protected void WriteFilterState(string filterName, bool value)
+        {
+            FilterRuntimeDictionary[filterName.ToLower()] = value;
+        }
+
         #endregion
-        
+
+        #region Filters
+
+        internal Filter AddFilter(string name, bool negative = false)
+        {
+            var existingFilter = Filters.Find(f => string.Equals(f.Name, name, StringComparison.CurrentCultureIgnoreCase));
+
+            if (existingFilter != null)
+            {
+                existingFilter.Negative = negative;
+                ContextChanged();
+                return existingFilter;
+            }
+            
+            var filter = new Filter()
+            {
+                Name = name,
+                Negative = negative
+            };
+            
+            Filters.Add(filter);
+            ContextChanged();
+            return filter;
+        }
+
+        internal bool RemoveFilter(Filter filter)
+        {
+            var success = Filters.Remove(filter);
+            if (success) ContextChanged();
+            return success;
+        }
+
+        #endregion
+
         public void SetProfile(Profile profile)
         {
             Profile = profile;
@@ -290,6 +333,19 @@ namespace HidWizards.UCR.Core.Models
         public virtual PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {
             return PropertyValidationResult.ValidResult;
+        }
+
+        public bool IsFiltered(Dictionary<string, bool> filterRuntimeDictionary)
+        {
+            if (Filters.Count == 0) return false;
+
+            foreach (var filter in Filters)
+            {
+                filterRuntimeDictionary.TryGetValue(filter.Name.ToLower(), out var filterValue);
+                if (!(filterValue ^ filter.Negative)) return true;
+            }
+
+            return false;
         }
     }
 }

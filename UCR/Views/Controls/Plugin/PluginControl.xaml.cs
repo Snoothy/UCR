@@ -17,5 +17,11 @@ namespace HidWizards.UCR.Views.Controls.Plugin
             var plugin = DataContext as PluginViewModel;
             plugin?.Remove();
         }
+
+        private void AddFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as PluginViewModel;
+            viewModel?.AddFilter();
+        }
     }
 }

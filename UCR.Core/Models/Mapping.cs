@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -22,6 +23,7 @@ namespace HidWizards.UCR.Core.Models
         internal bool IsShadowMapping { get; set; }
         internal int ShadowDeviceNumber { get; set; }
         internal int PossibleShadowClones => CountPossibleShadowClones();
+        private Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
 
         private int CountPossibleShadowClones()
         {
@@ -83,7 +85,7 @@ namespace HidWizards.UCR.Core.Models
             return result;
         }
 
-        internal void PrepareMapping()
+        internal void PrepareMapping(Dictionary<string, bool> filterRuntimeDictionary)
         {
             InputCache = new List<short>();
             DeviceBindings.ForEach(_ => InputCache.Add(0));
@@ -95,6 +97,9 @@ namespace HidWizards.UCR.Core.Models
                 DeviceBindings[i].Callback = cm.Update;
                 DeviceBindings[i].CurrentValue = 0;
             }
+
+            FilterRuntimeDictionary = filterRuntimeDictionary;
+            Plugins.ForEach(p => p.FilterRuntimeDictionary = filterRuntimeDictionary);
         }
 
         internal Mapping GetOverridenMapping()
@@ -111,6 +116,7 @@ namespace HidWizards.UCR.Core.Models
                 {
                     return mapping;
                 }
+
                 parentProfile = parentProfile?.ParentProfile;
                 if (parentProfile != null) list.AddRange(parentProfile.Mappings);
             }
@@ -122,7 +128,8 @@ namespace HidWizards.UCR.Core.Models
         {
             foreach (var plugin in Plugins)
             {
-                // TODO Surround with Filter check or do pre plugin update
+                if (plugin.IsFiltered(FilterRuntimeDictionary)) continue;
+                
                 plugin.Update(InputCache.ToArray());
             }
         }
@@ -198,15 +205,5 @@ namespace HidWizards.UCR.Core.Models
                 plugin.PostLoad(context, profile);
             }
         }
-
-        internal void InitializeMappings(int amount)
-        {
-            DeviceBindings = new List<DeviceBinding>();
-            for (var i = 0; i < amount; i++)
-            {
-                DeviceBindings.Add(new DeviceBinding(Update, Profile, DeviceIoType.Input));
-            }
-        }
-
     }
 }

@@ -26,6 +26,12 @@
                                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
                                Text="{Binding Plugin.PluginName}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button ToolTip="Add filter"
+                                materialDesign:ColorZoneAssist.Mode="Standard"
+                                Style="{StaticResource MaterialDesignCardButton}"
+                                Click="AddFilter_OnClick">
+                            <materialDesign:PackIcon Kind="Filter" Width="20" Height="20"/>
+                        </Button>
                         <Button ToolTip="Remove plugin"
                                 materialDesign:ColorZoneAssist.Mode="Standard"
                                 Style="{StaticResource MaterialDesignCardButton}"
