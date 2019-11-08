@@ -46,8 +46,7 @@
         </GroupBox.HeaderTemplate>
         <StackPanel x:Name="PluginContent">
             <ItemsControl ItemsSource="{Binding Filters}"
-                     IsEnabled="{Binding CanAddFilter}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                      ScrollViewer.CanContentScroll="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -68,6 +67,15 @@
                             <materialDesign:Chip.Icon>
                                 <materialDesign:PackIcon Kind="{Binding ChipIcon}" materialDesign:ColorZoneAssist.Mode="Standard"/>
                             </materialDesign:Chip.Icon>
+                            <materialDesign:Chip.Style>
+                                <Style TargetType="materialDesign:Chip">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value=".26" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:Chip.Style>
                         </materialDesign:Chip>
                         
                     </DataTemplate>
