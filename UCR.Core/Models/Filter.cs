@@ -12,5 +12,9 @@ namespace HidWizards.UCR.Core.Models
         public string Name { get; set; }
         public bool Negative { get; set; }
 
+        public static string GetShadowName(string name, int shadowCloneNumber)
+        {
+            return $"{name}-shadow-{shadowCloneNumber}";
+        }
     }
 }

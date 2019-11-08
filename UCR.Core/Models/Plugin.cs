@@ -24,6 +24,7 @@ namespace HidWizards.UCR.Core.Models
         private List<IODefinition> _outputCategories;
         private List<PluginPropertyGroup> _pluginPropertyGroups;
         internal Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
+        internal Mapping RuntimeMapping { get; set; }
 
         #region Properties
 
@@ -135,12 +136,21 @@ namespace HidWizards.UCR.Core.Models
 
         protected void WriteFilterState(string filterName, bool value)
         {
-            FilterRuntimeDictionary[filterName.ToLower()] = value;
+            FilterRuntimeDictionary[GetFilterName(filterName)] = value;
         }
 
         protected void ToggleFilterState(string filterName)
         {
-            FilterRuntimeDictionary[filterName.ToLower()] = !FilterRuntimeDictionary[filterName.ToLower()];
+            var filter = GetFilterName(filterName);
+            FilterRuntimeDictionary[filter] = !FilterRuntimeDictionary[filter];
+        }
+
+        private string GetFilterName(string filterName)
+        {
+            var filter = filterName.ToLower();
+            return RuntimeMapping.IsShadowMapping 
+                ? Filter.GetShadowName(filter, RuntimeMapping.ShadowDeviceNumber) 
+                : filter;
         }
 
         #endregion

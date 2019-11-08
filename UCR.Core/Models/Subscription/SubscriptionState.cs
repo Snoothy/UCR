@@ -23,10 +23,6 @@ namespace HidWizards.UCR.Core.Models.Subscription
             IsActive = false;
 
             FilterRuntimeDictionary = new Dictionary<string, bool>();
-            foreach (var filter in profile.GetFilters())
-            {
-                FilterRuntimeDictionary.Add(filter.ToLower(), false);
-            }
         }
 
         public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)

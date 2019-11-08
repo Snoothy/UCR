@@ -101,6 +101,7 @@ namespace HidWizards.UCR.Core.Models
 
             FilterRuntimeDictionary = filterRuntimeDictionary;
             Plugins.ForEach(p => p.FilterRuntimeDictionary = filterRuntimeDictionary);
+            Plugins.ForEach(p => p.RuntimeMapping = this);
         }
 
         internal Mapping GetOverridenMapping()
@@ -189,6 +190,11 @@ namespace HidWizards.UCR.Core.Models
             clonedMapping.ShadowDeviceNumber = shadowCloneNumber;
             clonedMapping.Profile = Profile;
             clonedMapping.PostLoad(Profile.Context, Profile);
+
+            foreach (var plugin in clonedMapping.Plugins)
+            {
+                plugin.Filters.ForEach(f => f.Name = Filter.GetShadowName(f.Name, shadowCloneNumber));
+            }
 
             return clonedMapping;
         }

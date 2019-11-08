@@ -55,6 +55,13 @@ namespace HidWizards.UCR.Core.Managers
             }
             Logger.Debug("Successfully populated subscription state");
 
+            if (!ConfigureFiltersForState(state, profile))
+            {
+                Logger.Error("Failed to configure filters for profile successfully");
+                return false;
+            }
+            Logger.Debug("Successfully configured filters for subscription state");
+
             if (!ActivateSubscriptionState(state))
             {
                 Logger.Error("Failed to activate profile successfully");
@@ -150,6 +157,25 @@ namespace HidWizards.UCR.Core.Managers
             state.AddMappings(profile, state.OutputDeviceConfigurationSubscriptions);
             
             return success;
+        }
+        private bool ConfigureFiltersForState(SubscriptionState state, Profile profile)
+        {
+            var uniqueFilters = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (var mappingSubscription in state.MappingSubscriptions)
+            {
+                foreach (var plugin in mappingSubscription.Mapping.Plugins)
+                {
+                    plugin.Filters.ForEach(filter => uniqueFilters.Add(filter.Name));
+                }
+            }
+
+            foreach (var uniqueFilter in uniqueFilters)
+            {
+                state.FilterRuntimeDictionary.Add(uniqueFilter.ToLower(), false);
+            }
+
+            return true;
         }
 
         // Subscribes the backend when it is built
