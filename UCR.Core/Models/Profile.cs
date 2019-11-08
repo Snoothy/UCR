@@ -219,9 +219,7 @@ namespace HidWizards.UCR.Core.Models
         public bool AddPlugin(Mapping mapping, Plugin plugin)
         {
             if (!Mappings.Contains(mapping)) return false;
-            plugin.Profile = this;
-            mapping.Plugins.Add(plugin);
-            Context.ContextChanged();
+            mapping.AddPlugin(plugin);
             return true;
         }
 
