@@ -15,6 +15,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
         public ObservableCollection<PluginPropertyGroupViewModel> PluginPropertyGroups { get; set; }
         public bool CanRemove => !MappingViewModel.ProfileViewModel.Profile.IsActive() && MappingViewModel.Plugins.Count > 1;
+        public bool CanAddFilter => !MappingViewModel.ProfileViewModel.Profile.IsActive();
         public ObservableCollection<FilterViewModel> Filters { get; set; }
 
         public PluginViewModel(MappingViewModel mappingViewModel, Plugin plugin)
@@ -45,6 +46,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         private void ContextOnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(CanRemove));
+            OnPropertyChanged(nameof(CanAddFilter));
         }
 
         public void Remove()
@@ -104,6 +106,11 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public void RemoveFilter(FilterViewModel filterViewModel)
         {
             if (Plugin.RemoveFilter(filterViewModel.Filter)) Filters.Remove(filterViewModel);
+        }
+
+        public void ToggleFilter(FilterViewModel filterViewModel)
+        {
+            Plugin.ToggleFilter(filterViewModel.Filter);
         }
     }
 }

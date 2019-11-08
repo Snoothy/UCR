@@ -29,7 +29,8 @@
                         <Button ToolTip="Add filter"
                                 materialDesign:ColorZoneAssist.Mode="Standard"
                                 Style="{StaticResource MaterialDesignCardButton}"
-                                Click="AddFilter_OnClick">
+                                Click="AddFilter_OnClick"
+                                IsEnabled="{Binding CanAddFilter}">
                             <materialDesign:PackIcon Kind="Filter" Width="20" Height="20"/>
                         </Button>
                         <Button ToolTip="Remove plugin"
@@ -43,7 +44,35 @@
                 </Grid>
             </DataTemplate>
         </GroupBox.HeaderTemplate>
-        <StackPanel>
+        <StackPanel x:Name="PluginContent">
+            <ItemsControl ItemsSource="{Binding Filters}"
+                     IsEnabled="{Binding CanAddFilter}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                     ScrollViewer.CanContentScroll="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" IsItemsHost="True" MaxWidth="{Binding ActualWidth, ElementName=PluginContent}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <materialDesign:Chip
+                            Content="{Binding Name}"
+                            IsDeletable="True"
+                            IsEnabled="{Binding IsEnabled}"
+                            Margin="0 0 8 8"
+                            Click="Filter_OnClick"
+                            DeleteClick="Filter_OnDeleteClick"
+                            ToolTip="Toggle filter"
+                            DeleteToolTip="Delete filter">
+                            <materialDesign:Chip.Icon>
+                                <materialDesign:PackIcon Kind="{Binding ChipIcon}" materialDesign:ColorZoneAssist.Mode="Standard"/>
+                            </materialDesign:Chip.Icon>
+                        </materialDesign:Chip>
+                        
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

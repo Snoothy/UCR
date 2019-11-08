@@ -33,7 +33,8 @@ namespace HidWizards.UCR.Core.Models
             {
                 if (!deviceBinding.IsBound) continue;
 
-                usedDeviceConfigurations.Add(Profile.GetDeviceConfiguration(DeviceIoType.Input, deviceBinding.DeviceConfigurationGuid));
+                var deviceConfiguration = Profile.GetDeviceConfiguration(DeviceIoType.Input, deviceBinding.DeviceConfigurationGuid);
+                if (deviceConfiguration != null) usedDeviceConfigurations.Add(deviceConfiguration);
             }
 
             if (usedDeviceConfigurations.Count == 0) return 0;

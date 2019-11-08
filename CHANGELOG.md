@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Added Shadow devices
 - Added option to clear bindings
+- Added Filters for plugins
+- `Button to Filter`: Allows toggling of filters using a button
 
 ### Fixed
 

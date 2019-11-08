@@ -138,6 +138,11 @@ namespace HidWizards.UCR.Core.Models
             FilterRuntimeDictionary[filterName.ToLower()] = value;
         }
 
+        protected void ToggleFilterState(string filterName)
+        {
+            FilterRuntimeDictionary[filterName.ToLower()] = !FilterRuntimeDictionary[filterName.ToLower()];
+        }
+
         #endregion
 
         #region Filters
@@ -169,6 +174,12 @@ namespace HidWizards.UCR.Core.Models
             var success = Filters.Remove(filter);
             if (success) ContextChanged();
             return success;
+        }
+
+        internal void ToggleFilter(Filter filter)
+        {
+            var existingFilter = Filters.Find(f => string.Equals(f.Name, filter.Name, StringComparison.InvariantCultureIgnoreCase));
+            if (existingFilter != null) AddFilter(existingFilter.Name, !existingFilter.Negative);
         }
 
         #endregion
