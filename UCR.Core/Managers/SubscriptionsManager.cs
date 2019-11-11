@@ -172,7 +172,7 @@ namespace HidWizards.UCR.Core.Managers
 
             foreach (var uniqueFilter in uniqueFilters)
             {
-                state.FilterRuntimeDictionary.Add(uniqueFilter.ToLower(), false);
+                state.FilterState.FilterRuntimeDictionary.Add(uniqueFilter.ToLower(), false);
             }
 
             return true;
@@ -198,7 +198,7 @@ namespace HidWizards.UCR.Core.Managers
             {
                 if (mappingSubscription.Overriden) continue;
 
-                mappingSubscription.Mapping.PrepareMapping(state.FilterRuntimeDictionary);
+                mappingSubscription.Mapping.PrepareMapping(state.FilterState);
 
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {

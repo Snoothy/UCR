@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Subscription;
 
 namespace HidWizards.UCR.Core.Models
 {
@@ -23,7 +24,7 @@ namespace HidWizards.UCR.Core.Models
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
         private List<PluginPropertyGroup> _pluginPropertyGroups;
-        internal Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
+        internal FilterState FilterState { get; set; }
         internal Mapping RuntimeMapping { get; set; }
 
         #region Properties
@@ -136,13 +137,12 @@ namespace HidWizards.UCR.Core.Models
 
         protected void WriteFilterState(string filterName, bool value)
         {
-            FilterRuntimeDictionary[GetFilterName(filterName)] = value;
+            RuntimeMapping.FilterState.SetFilterState(GetFilterName(filterName), value);
         }
 
         protected void ToggleFilterState(string filterName)
         {
-            var filter = GetFilterName(filterName);
-            FilterRuntimeDictionary[filter] = !FilterRuntimeDictionary[filter];
+            RuntimeMapping.FilterState.ToggleFilterState(GetFilterName(filterName));
         }
 
         private string GetFilterName(string filterName)
@@ -356,13 +356,13 @@ namespace HidWizards.UCR.Core.Models
             return PropertyValidationResult.ValidResult;
         }
 
-        public bool IsFiltered(Dictionary<string, bool> filterRuntimeDictionary)
+        public bool IsFiltered()
         {
             if (Filters.Count == 0) return false;
 
             foreach (var filter in Filters)
             {
-                filterRuntimeDictionary.TryGetValue(filter.Name.ToLower(), out var filterValue);
+                RuntimeMapping.FilterState.FilterRuntimeDictionary.TryGetValue(filter.Name.ToLower(), out var filterValue);
                 if (!(filterValue ^ filter.Negative)) return true;
             }
 

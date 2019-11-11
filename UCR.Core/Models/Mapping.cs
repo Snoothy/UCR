@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Subscription;
 
 namespace HidWizards.UCR.Core.Models
 {
@@ -23,7 +24,7 @@ namespace HidWizards.UCR.Core.Models
         internal bool IsShadowMapping { get; set; }
         internal int ShadowDeviceNumber { get; set; }
         internal int PossibleShadowClones => CountPossibleShadowClones();
-        private Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
+        internal FilterState FilterState { get; set; }
 
         private int CountPossibleShadowClones()
         {
@@ -86,7 +87,7 @@ namespace HidWizards.UCR.Core.Models
             return result;
         }
 
-        internal void PrepareMapping(Dictionary<string, bool> filterRuntimeDictionary)
+        internal void PrepareMapping(FilterState filterState)
         {
             InputCache = new List<short>();
             DeviceBindings.ForEach(_ => InputCache.Add(0));
@@ -99,8 +100,7 @@ namespace HidWizards.UCR.Core.Models
                 DeviceBindings[i].CurrentValue = 0;
             }
 
-            FilterRuntimeDictionary = filterRuntimeDictionary;
-            Plugins.ForEach(p => p.FilterRuntimeDictionary = filterRuntimeDictionary);
+            FilterState = filterState;
             Plugins.ForEach(p => p.RuntimeMapping = this);
         }
 
@@ -130,7 +130,7 @@ namespace HidWizards.UCR.Core.Models
         {
             foreach (var plugin in Plugins)
             {
-                if (plugin.IsFiltered(FilterRuntimeDictionary)) continue;
+                if (plugin.IsFiltered()) continue;
                 
                 plugin.Update(InputCache.ToArray());
             }

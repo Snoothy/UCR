@@ -12,7 +12,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
 
         public List<DeviceConfigurationSubscription> OutputDeviceConfigurationSubscriptions { get; }
         public List<MappingSubscription> MappingSubscriptions { get; set; }
-        public  Dictionary<string, bool> FilterRuntimeDictionary { get; set; }
+        public FilterState FilterState { get; set; }
 
         public SubscriptionState(Profile profile)
         {
@@ -22,7 +22,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
             MappingSubscriptions = new List<MappingSubscription>();
             IsActive = false;
 
-            FilterRuntimeDictionary = new Dictionary<string, bool>();
+            FilterState = new FilterState();
         }
 
         public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)

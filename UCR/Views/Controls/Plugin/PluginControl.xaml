@@ -57,7 +57,7 @@
                     <DataTemplate>
                         <materialDesign:Chip
                             Content="{Binding Name}"
-                            IsDeletable="True"
+                            IsDeletable="{Binding IsEnabled}"
                             IsEnabled="{Binding IsEnabled}"
                             Margin="0 0 8 8"
                             Click="Filter_OnClick"
@@ -71,7 +71,7 @@
                                 <Style TargetType="materialDesign:Chip">
                                     <Style.Triggers>
                                         <Trigger Property="IsEnabled" Value="False">
-                                            <Setter Property="Opacity" Value=".26" />
+                                            <Setter Property="Opacity" Value="{Binding ChipOpacity}" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
