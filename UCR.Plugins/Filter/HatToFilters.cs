@@ -21,16 +21,16 @@ namespace HidWizards.UCR.Plugins.Remapper
         public string DefaultFilterName { get; set; } = string.Empty;
 
         [PluginGui("Direction 1 Filter name")]
-        public string Filter1Name { get; set; }
+        public string Filter1Name { get; set; } = string.Empty;
 
         [PluginGui("Direction 2 Filter name")]
-        public string Filter2Name { get; set; }
+        public string Filter2Name { get; set; } = string.Empty;
 
         [PluginGui("Direction 3 Filter name")]
-        public string Filter3Name { get; set; }
+        public string Filter3Name { get; set; } = string.Empty;
 
         [PluginGui("Direction 4 Filter name")]
-        public string Filter4Name { get; set; }
+        public string Filter4Name { get; set; } = string.Empty;
 
         public override void InitializeCacheValues()
         {
