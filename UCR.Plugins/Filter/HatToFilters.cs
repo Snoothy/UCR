@@ -6,7 +6,7 @@ using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Hat Filters", Group = "Filter", Description = "Set one of four filter states using a Hat Switch / D-Pad")]
+    [Plugin("Hat Filters", Group = "Filter", Description = "Set one of four filter states (Plus default) using a Hat Switch / D-Pad. Ignores diagonals")]
     [PluginInput(DeviceBindingCategory.Momentary, "Direction 1")]
     [PluginInput(DeviceBindingCategory.Momentary, "Direction 2")]
     [PluginInput(DeviceBindingCategory.Momentary, "Direction 3")]

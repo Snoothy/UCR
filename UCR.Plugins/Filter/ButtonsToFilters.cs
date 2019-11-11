@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Buttons to Filters", Group = "Filter", Description = "Change to one of three filter states using two buttons")]
+    [Plugin("Buttons to Filters", Group = "Filter", Description = "Change to one of three filter states (Plus default) using two buttons")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button 1")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button 2")]
     public class ButtonsToFilters : Plugin
