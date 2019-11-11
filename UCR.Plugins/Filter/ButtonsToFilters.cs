@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -11,6 +12,8 @@ namespace HidWizards.UCR.Plugins.Remapper
     public class ButtonsToFilters : Plugin
     {
         private short[] _buttonStates = {0, 0};
+        private Dictionary<int, string> _filterNames;
+        private int _currentDirection = -1;
 
         [PluginGui("Default Filter name (Optional)")]
         public string DefaultFilterName { get; set; } = string.Empty;
@@ -24,12 +27,9 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Buttons 1+2 Filter name")]
         public string Filter12Name { get; set; }
 
-        public ButtonsToFilters()
-        {
-        }
-
         public override void InitializeCacheValues()
         {
+            _filterNames = new Dictionary<int, string> { { -1, DefaultFilterName }, { 0, Filter1Name }, { 1, Filter2Name }, { 2, Filter12Name } };
             ChangeState();
         }
 
@@ -41,45 +41,34 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         private void ChangeState()
         {
+            var newFilter = -1;
             if (_buttonStates[0] == 1 && _buttonStates[1] != 1)
             {
-                if (DefaultFilterName != "")
-                {
-                    WriteFilterState(DefaultFilterName, false);
-                }
-                WriteFilterState(Filter12Name, false);
-                WriteFilterState(Filter2Name, false);
-                WriteFilterState(Filter1Name, true);
+                newFilter = 0;
             }
             else if (_buttonStates[0] != 1 && _buttonStates[1] == 1)
             {
-                if (DefaultFilterName != "")
-                {
-                    WriteFilterState(DefaultFilterName, false);
-                }
-                WriteFilterState(Filter1Name, false);
-                WriteFilterState(Filter12Name, false);
-                WriteFilterState(Filter2Name, true);
+                newFilter = 1;
             }
             else if (_buttonStates[0] == 1 && _buttonStates[1] == 1)
             {
-                if (DefaultFilterName != "")
-                {
-                    WriteFilterState(DefaultFilterName, false);
-                }
-                WriteFilterState(Filter1Name, false);
-                WriteFilterState(Filter2Name, false);
-                WriteFilterState(Filter12Name, true);
+                newFilter = 2;
             }
-            else
+            SetFilterActive(newFilter);
+        }
+
+        private void SetFilterActive(int direction)
+        {
+            SetFilterState(_currentDirection, false);
+            _currentDirection = direction;
+            SetFilterState(_currentDirection, true);
+        }
+
+        private void SetFilterState(int direction, bool state)
+        {
+            if (_filterNames[direction] != "")
             {
-                WriteFilterState(Filter1Name, false);
-                WriteFilterState(Filter2Name, false);
-                WriteFilterState(Filter12Name, false);
-                if (DefaultFilterName != "")
-                {
-                    WriteFilterState(DefaultFilterName, true);
-                }
+                WriteFilterState(_filterNames[direction], state);
             }
         }
     }
