@@ -51,6 +51,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             {
                 if (direction != -1 && _buttonStates[i] == 1)
                 {
+                    // If the new direction is a diagonal, set default
                     direction = -1;
                     break;
                 }
