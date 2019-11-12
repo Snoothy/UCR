@@ -13,23 +13,16 @@ namespace HidWizards.UCR.Plugins.Remapper
         public string FilterName { get; set; }
 
         [PluginGui("Button down filter state")]
-        public FilterState FilterStateDown { get; set; }
+        public FilterMode FilterStateDown { get; set; }
 
         [PluginGui("Button up filter state")]
-        public FilterState FilterStateUp { get; set; }
+        public FilterMode FilterStateUp { get; set; }
 
-        public enum FilterState
-        {
-            Active,
-            Inactive,
-            Toggle,
-            Unchanged
-        }
 
         public ButtonToFilter()
         {
-            FilterStateDown = FilterState.Active;
-            FilterStateUp = FilterState.Inactive;
+            FilterStateDown = FilterMode.Active;
+            FilterStateUp = FilterMode.Inactive;
         }
 
         public override void Update(params short[] values)
@@ -37,20 +30,20 @@ namespace HidWizards.UCR.Plugins.Remapper
             ChangeState(values[0] == 0 ? FilterStateUp : FilterStateDown);
         }
 
-        private void ChangeState(FilterState filterState)
+        private void ChangeState(FilterMode filterState)
         {
             switch (filterState)
             {
-                case FilterState.Active:
+                case FilterMode.Active:
                     WriteFilterState(FilterName, true);
                     break;
-                case FilterState.Inactive:
+                case FilterMode.Inactive:
                     WriteFilterState(FilterName, false);
                     break;
-                case FilterState.Toggle:
+                case FilterMode.Toggle:
                     ToggleFilterState(FilterName);
                     break;
-                case FilterState.Unchanged:
+                case FilterMode.Unchanged:
                     break;
             }
         }

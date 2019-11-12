@@ -80,6 +80,14 @@ namespace HidWizards.UCR.Core.Models
             public string GroupName;
         }
 
+        public enum FilterMode
+        {
+            Active,
+            Inactive,
+            Toggle,
+            Unchanged
+        }
+
         protected Plugin()
         {
             Outputs = new List<DeviceBinding>();
