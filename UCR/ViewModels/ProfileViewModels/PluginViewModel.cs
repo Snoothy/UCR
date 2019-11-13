@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using HidWizards.UCR.Core.Annotations;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Views.Dialogs;
+using MaterialDesignThemes.Wpf;
 
 namespace HidWizards.UCR.ViewModels.ProfileViewModels
 {
@@ -13,6 +15,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public ObservableCollection<DeviceBindingViewModel> DeviceBindings { get; set; }
         public ObservableCollection<PluginPropertyGroupViewModel> PluginPropertyGroups { get; set; }
         public bool CanRemove => !MappingViewModel.ProfileViewModel.Profile.IsActive() && MappingViewModel.Plugins.Count > 1;
+        public bool CanAddFilter => !MappingViewModel.ProfileViewModel.Profile.IsActive();
+        public ObservableCollection<FilterViewModel> Filters { get; set; }
 
         public PluginViewModel(MappingViewModel mappingViewModel, Plugin plugin)
         {
@@ -22,6 +26,16 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             mappingViewModel.Plugins.CollectionChanged += Plugins_CollectionChanged;
             PopulateDeviceBindingsViewModels();
             PopulatePluginProperties();
+            PopulateFilterViewModels();
+        }
+
+        private void PopulateFilterViewModels()
+        {
+            Filters = new ObservableCollection<FilterViewModel>();
+            foreach (var filter in Plugin.Filters)
+            {
+                Filters.Add(new FilterViewModel(this, filter));
+            }
         }
 
         private void Plugins_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -32,6 +46,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         private void ContextOnActiveProfileChangedEvent(Profile profile)
         {
             OnPropertyChanged(nameof(CanRemove));
+            OnPropertyChanged(nameof(CanAddFilter));
         }
 
         public void Remove()
@@ -76,6 +91,26 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public async void AddFilter()
+        {
+            var dialog = new StringDialog("Add filter", "Filter name", "");
+            var result = (bool?)await DialogHost.Show(dialog, MappingViewModel.ProfileViewModel.ProfileDialogIdentifier);
+            if (result == null || !result.Value) return;
+
+            var filterViewModel = new FilterViewModel(this, Plugin.AddFilter(dialog.Value));
+            Filters.Add(filterViewModel);
+        }
+
+        public void RemoveFilter(FilterViewModel filterViewModel)
+        {
+            if (Plugin.RemoveFilter(filterViewModel.Filter)) Filters.Remove(filterViewModel);
+        }
+
+        public void ToggleFilter(FilterViewModel filterViewModel)
+        {
+            Plugin.ToggleFilter(filterViewModel.Filter);
         }
     }
 }

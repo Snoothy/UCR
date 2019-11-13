@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace HidWizards.UCR.Core.Models.Subscription
@@ -11,7 +12,7 @@ namespace HidWizards.UCR.Core.Models.Subscription
 
         public List<DeviceConfigurationSubscription> OutputDeviceConfigurationSubscriptions { get; }
         public List<MappingSubscription> MappingSubscriptions { get; set; }
-
+        public FilterState FilterState { get; set; }
 
         public SubscriptionState(Profile profile)
         {
@@ -20,6 +21,8 @@ namespace HidWizards.UCR.Core.Models.Subscription
             OutputDeviceConfigurationSubscriptions = new List<DeviceConfigurationSubscription>();
             MappingSubscriptions = new List<MappingSubscription>();
             IsActive = false;
+
+            FilterState = new FilterState();
         }
 
         public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)

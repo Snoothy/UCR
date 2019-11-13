@@ -26,6 +26,13 @@
                                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
                                Text="{Binding Plugin.PluginName}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button ToolTip="Add filter"
+                                materialDesign:ColorZoneAssist.Mode="Standard"
+                                Style="{StaticResource MaterialDesignCardButton}"
+                                Click="AddFilter_OnClick"
+                                IsEnabled="{Binding CanAddFilter}">
+                            <materialDesign:PackIcon Kind="Filter" Width="20" Height="20"/>
+                        </Button>
                         <Button ToolTip="Remove plugin"
                                 materialDesign:ColorZoneAssist.Mode="Standard"
                                 Style="{StaticResource MaterialDesignCardButton}"
@@ -37,7 +44,43 @@
                 </Grid>
             </DataTemplate>
         </GroupBox.HeaderTemplate>
-        <StackPanel>
+        <StackPanel x:Name="PluginContent">
+            <ItemsControl ItemsSource="{Binding Filters}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                     ScrollViewer.CanContentScroll="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" IsItemsHost="True" MaxWidth="{Binding ActualWidth, ElementName=PluginContent}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <materialDesign:Chip
+                            Content="{Binding Name}"
+                            IsDeletable="{Binding IsEnabled}"
+                            IsEnabled="{Binding IsEnabled}"
+                            Margin="0 0 8 8"
+                            Click="Filter_OnClick"
+                            DeleteClick="Filter_OnDeleteClick"
+                            ToolTip="Toggle filter"
+                            DeleteToolTip="Delete filter">
+                            <materialDesign:Chip.Icon>
+                                <materialDesign:PackIcon Kind="{Binding ChipIcon}" materialDesign:ColorZoneAssist.Mode="Standard"/>
+                            </materialDesign:Chip.Icon>
+                            <materialDesign:Chip.Style>
+                                <Style TargetType="materialDesign:Chip">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="{Binding ChipOpacity}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:Chip.Style>
+                        </materialDesign:Chip>
+                        
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

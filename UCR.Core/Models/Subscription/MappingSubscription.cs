@@ -18,8 +18,9 @@ namespace HidWizards.UCR.Core.Models.Subscription
             foreach (var mappingDeviceBinding in Mapping.DeviceBindings)
             {
                 if (!mappingDeviceBinding.IsBound) continue;
-                
-                DeviceBindingSubscriptions.Add(new InputSubscription(mapping, mappingDeviceBinding, profile, subscriptionStateGuid));
+
+                var inputSubscription = new InputSubscription(mapping, mappingDeviceBinding, profile, subscriptionStateGuid);
+                if (inputSubscription.DeviceSubscription != null) DeviceBindingSubscriptions.Add(inputSubscription);
             }
 
             PluginSubscriptions = new List<PluginSubscription>();

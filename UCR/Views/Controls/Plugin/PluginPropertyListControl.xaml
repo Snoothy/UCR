@@ -69,7 +69,7 @@
             <DataTemplate x:Key="StringTemplate">
                 <plugin:PluginPropertyControl>
                     <plugin:PluginPropertyControl.PropertyContent>
-                        <TextBox Width="100" Height="25" Text="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Width="200" Height="25" Text="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </plugin:PluginPropertyControl.PropertyContent>
                 </plugin:PluginPropertyControl>
             </DataTemplate>

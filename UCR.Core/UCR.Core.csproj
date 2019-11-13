@@ -80,6 +80,7 @@
     <Compile Include="Models\DeviceConfiguration.cs" />
     <Compile Include="Models\DeviceGroup.cs" />
     <Compile Include="Models\Binding\DeviceBinding.cs" />
+    <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\Mapping.cs" />
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Managers\PluginsManager.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\PropertyValidationResult.cs" />
     <Compile Include="Models\Subscription\DeviceConfigurationSubscription.cs" />
+    <Compile Include="Models\Subscription\FilterState.cs" />
     <Compile Include="Models\Subscription\InputSubscription.cs" />
     <Compile Include="Models\Subscription\DeviceSubscription.cs" />
     <Compile Include="Models\Subscription\MappingSubscription.cs" />

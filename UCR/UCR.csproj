@@ -116,6 +116,7 @@
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\AddMappingPluginDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />

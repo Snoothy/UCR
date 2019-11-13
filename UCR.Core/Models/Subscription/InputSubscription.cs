@@ -19,8 +19,10 @@ namespace HidWizards.UCR.Core.Models.Subscription
             SubscriptionStateGuid = subscriptionStateGuid;
             DeviceBindingSubscriptionGuid = Guid.NewGuid();
             IsOverwritten = false;
-            
+
             var deviceConfiguration = GetDeviceConfiguration();
+            if (deviceConfiguration == null) return;
+
             var device = mapping.IsShadowMapping
                 ? deviceConfiguration.ShadowDevices[mapping.ShadowDeviceNumber]
                 : deviceConfiguration.Device;

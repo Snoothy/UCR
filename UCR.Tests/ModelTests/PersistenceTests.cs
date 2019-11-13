@@ -78,8 +78,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             profile.AddPlugin(mapping, new ButtonToButton());
             profile.AddPlugin(mapping, new ButtonToButton());
 
-            var bindingCount = 10;
-            mapping.InitializeMappings(bindingCount);
+            var bindingCount = profile.Mappings[0].DeviceBindings.Count;
             for (var i = 0; i < bindingCount; i++)
             {
                 SetDeviceBindingValues(profile.Mappings[0].DeviceBindings[i], i + 1);
