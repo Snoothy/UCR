@@ -1,11 +1,10 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
 
-namespace HidWizards.UCR.Plugins.Remapper
+namespace HidWizards.UCR.Plugins.Filter
 {
     [Plugin("Axis to Filter", Group = "Filter", Description = "Change filter state using an axis")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]

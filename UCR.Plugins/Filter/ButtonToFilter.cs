@@ -1,9 +1,8 @@
-﻿using System;
-using HidWizards.UCR.Core.Attributes;
+﻿using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 
-namespace HidWizards.UCR.Plugins.Remapper
+namespace HidWizards.UCR.Plugins.Filter
 {
     [Plugin("Button to Filter", Group = "Filter", Description = "Change filter state using a button")]
     [PluginInput(DeviceBindingCategory.Momentary, "Button")]
