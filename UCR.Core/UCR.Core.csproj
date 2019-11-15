@@ -72,6 +72,7 @@
     <Compile Include="Attributes\PluginIoAttribute.cs" />
     <Compile Include="Managers\BindingManager.cs" />
     <Compile Include="Managers\SubscriptionsManager.cs" />
+    <Compile Include="Models\Binding\DeviceBindingInfo.cs" />
     <Compile Include="Models\Binding\DeviceBindingNode.cs" />
     <Compile Include="Managers\DevicesManager.cs" />
     <Compile Include="Managers\ProfilesManager.cs" />

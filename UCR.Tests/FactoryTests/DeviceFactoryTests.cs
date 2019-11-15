@@ -12,11 +12,11 @@ namespace HidWizards.UCR.Tests.FactoryTests
         {
             var title = "Test device";
             var providerName = "Test provider";
-            var deviceNumber = 0.ToString();
-            var device = DeviceFactory.CreateDevice(title, providerName, deviceNumber);
+            var deviceNumber = 0;
+            var device = DeviceFactory.CreateDevice(title, providerName, deviceNumber.ToString(), deviceNumber);
             Assert.That(device.Title, Is.EqualTo(title));
             Assert.That(device.ProviderName, Is.EqualTo(providerName));
-            Assert.That(device.DeviceHandle, Is.EqualTo(deviceNumber));
+            Assert.That(device.DeviceHandle, Is.EqualTo(deviceNumber.ToString()));
         }
 
         [Test]

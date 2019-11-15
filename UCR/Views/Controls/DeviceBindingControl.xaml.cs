@@ -68,17 +68,17 @@ namespace HidWizards.UCR.Views.Controls
 
             foreach (var deviceBindingNode in deviceBindingNodes)
             {
-                
                 RelayCommand cmd = null;
                 if (deviceBindingNode.IsBinding)
                 {
-                    if (Category != null && deviceBindingNode.DeviceBinding.DeviceBindingCategory != Category) continue;
+                    if (Category != null && deviceBindingNode.DeviceBindingInfo.DeviceBindingCategory != Category) continue;
                     cmd = new RelayCommand(c =>
                     {
                         DeviceBinding.SetDeviceConfigurationGuid(GetSelectedDeviceConfiguration().Guid);
-                        DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBinding.KeyType, deviceBindingNode.DeviceBinding.KeyValue, deviceBindingNode.DeviceBinding.KeySubValue);
+                        DeviceBinding.SetKeyTypeValue(deviceBindingNode.DeviceBindingInfo.KeyType, deviceBindingNode.DeviceBindingInfo.KeyValue, deviceBindingNode.DeviceBindingInfo.KeySubValue);
                     });
                 }
+
                 var menu = new ContextMenuItem(deviceBindingNode.Title, BuildMenu(deviceBindingNode.ChildrenNodes), cmd);
                 if (deviceBindingNode.IsBinding || !deviceBindingNode.IsBinding && menu.Children.Count > 0)
                 {
@@ -86,6 +86,7 @@ namespace HidWizards.UCR.Views.Controls
                 }
                 
             }
+
             return menuList;
         }
 
