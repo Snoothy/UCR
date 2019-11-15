@@ -78,8 +78,8 @@
     <Compile Include="Managers\ProfilesManager.cs" />
     <Compile Include="Models\CallbackMultiplexer.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceCache.cs" />
     <Compile Include="Models\DeviceConfiguration.cs" />
-    <Compile Include="Models\DeviceGroup.cs" />
     <Compile Include="Models\Binding\DeviceBinding.cs" />
     <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\Mapping.cs" />

@@ -216,7 +216,16 @@ namespace HidWizards.UCR.Core.Managers
         private bool SubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
-            return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
+            try
+            {
+                return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state,
+                    deviceBindingSubscription));
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Failed to subscribe input: {e.Message}");
+                return false;
+            }
         }
 
         private bool UnsubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)

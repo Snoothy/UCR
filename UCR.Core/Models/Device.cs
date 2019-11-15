@@ -27,6 +27,7 @@ namespace HidWizards.UCR.Core.Models
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
         [XmlIgnore] public Profile Profile { get; set; }
+        [XmlIgnore] public bool IsCache { get; set; }
 
         #region Constructors
 
@@ -49,6 +50,17 @@ namespace HidWizards.UCR.Core.Models
             DeviceHandle = device.DeviceDescriptor.DeviceHandle;
             DeviceNumber = device.DeviceDescriptor.DeviceInstance;
             DeviceBindingMenu = deviceBindingMenu;
+            IsCache = false;
+        }
+
+        public Device(DeviceCache deviceCache)
+        {
+            Title = deviceCache.Title;
+            ProviderName = deviceCache.ProviderName;
+            DeviceHandle = deviceCache.DeviceHandle;
+            DeviceNumber = deviceCache.DeviceNumber;
+            DeviceBindingMenu = deviceCache.DeviceBindingMenu;
+            IsCache = true;
         }
 
         #endregion
@@ -83,6 +95,19 @@ namespace HidWizards.UCR.Core.Models
                    deviceBindingNode.DeviceBindingInfo.KeyType == deviceBinding.KeyType &&
                    deviceBindingNode.DeviceBindingInfo.KeySubValue == deviceBinding.KeySubValue &&
                    deviceBindingNode.DeviceBindingInfo.KeyValue == deviceBinding.KeyValue;
+        }
+
+        public List<DeviceBindingNode> GetDeviceBindingMenu()
+        {
+            if (DeviceBindingMenu != null && DeviceBindingMenu.Count != 0) return DeviceBindingMenu;
+
+            return new List<DeviceBindingNode>
+            {
+                new DeviceBindingNode()
+                {
+                    Title = "Device not connected",
+                }
+            };
         }
 
         public List<DeviceBindingNode> GetDeviceBindingMenu(Context context, DeviceIoType type)
