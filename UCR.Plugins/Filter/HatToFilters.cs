@@ -17,19 +17,19 @@ namespace HidWizards.UCR.Plugins.Remapper
         private Dictionary<int, string> _filterNames;
         private int _currentDirection = -1;
 
-        [PluginGui("Default Filter name (Optional)")]
+        [PluginGui("Active Filter when no Directions held, or on diagonal (Optional)")]
         public string DefaultFilterName { get; set; } = string.Empty;
 
-        [PluginGui("Direction 1 Filter name")]
+        [PluginGui("Active Filter when Direction 1 held")]
         public string Filter1Name { get; set; } = string.Empty;
 
-        [PluginGui("Direction 2 Filter name")]
+        [PluginGui("Active Filter when Direction 2 held")]
         public string Filter2Name { get; set; } = string.Empty;
 
-        [PluginGui("Direction 3 Filter name")]
+        [PluginGui("Active Filter when Direction 3 held")]
         public string Filter3Name { get; set; } = string.Empty;
 
-        [PluginGui("Direction 4 Filter name")]
+        [PluginGui("Active Filter when Direction 4 held")]
         public string Filter4Name { get; set; } = string.Empty;
 
         public override void InitializeCacheValues()

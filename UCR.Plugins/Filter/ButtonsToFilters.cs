@@ -16,21 +16,21 @@ namespace HidWizards.UCR.Plugins.Remapper
         private Dictionary<int, string> _filterNames;
         private int _currentDirection = -1;
 
-        [PluginGui("Default Filter name (Optional)")]
+        [PluginGui("Active Filter when no Buttons held (Optional)")]
         public string DefaultFilterName { get; set; } = string.Empty;
 
-        [PluginGui("Button 1 Filter name")]
+        [PluginGui("Active Filter when Button 1 held")]
         public string Filter1Name { get; set; } = string.Empty;
 
-        [PluginGui("Button 2 Filter name")]
+        [PluginGui("Active Filter when Button 2 held")]
         public string Filter2Name { get; set; } = string.Empty;
 
-        [PluginGui("Buttons 1+2 Filter name")]
-        public string Filter12Name { get; set; } = string.Empty;
+        [PluginGui("Active Filter when both Buttons held")]
+        public string Filter3Name { get; set; } = string.Empty;
 
         public override void InitializeCacheValues()
         {
-            _filterNames = new Dictionary<int, string> { { -1, DefaultFilterName }, { 0, Filter1Name }, { 1, Filter2Name }, { 2, Filter12Name } };
+            _filterNames = new Dictionary<int, string> { { -1, DefaultFilterName }, { 0, Filter1Name }, { 1, Filter2Name }, { 2, Filter3Name } };
             ChangeState();
         }
 
