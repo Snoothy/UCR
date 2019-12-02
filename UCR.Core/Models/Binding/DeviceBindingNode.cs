@@ -7,7 +7,7 @@ namespace HidWizards.UCR.Core.Models.Binding
     {
         [XmlAttribute]
         public string Title { get; set; }
-        public bool IsBinding => ChildrenNodes == null || ChildrenNodes.Count == 0;
+        public bool IsBinding => DeviceBindingInfo != null && (ChildrenNodes == null || ChildrenNodes.Count == 0);
         public List<DeviceBindingNode> ChildrenNodes { get; set; }
         public DeviceBindingInfo DeviceBindingInfo { get; set; }
     }

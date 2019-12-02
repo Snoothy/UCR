@@ -19,7 +19,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void BlankContext()
         {
             var context = new Context();
-            context.SaveContext();
+            context.SaveContext(null);
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
@@ -27,7 +27,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                 Assert.That(newcontext.IsNotSaved, Is.False);
                 Assert.That(newcontext.ActiveProfile, Is.Null);
                 Assert.That(newcontext.Profiles, Is.Not.Null.And.Empty);
-                newcontext.SaveContext();
+                newcontext.SaveContext(null);
             }
         }
 
@@ -39,7 +39,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var childProfile = context.ProfilesManager.CreateProfile("Child Profile", null, null);
             context.ProfilesManager.AddProfile(profile);
             context.Profiles[0].AddChildProfile(childProfile);
-            context.SaveContext();
+            context.SaveContext(null);
 
             Assert.That(context.Profiles.Count, Is.EqualTo(1));
             Assert.That(context.Profiles[0].ChildProfiles.Count, Is.EqualTo(1));
@@ -61,7 +61,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                     Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
                 Assert.That(newcontext.Profiles[0].ChildProfiles[0].Mappings.Count,
                     Is.EqualTo(context.Profiles[0].ChildProfiles[0].Mappings.Count));
-                newcontext.SaveContext();
+                context.SaveContext(null);
             }
         }
 

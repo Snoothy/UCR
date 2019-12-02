@@ -111,7 +111,7 @@ namespace HidWizards.UCR.Core.Models
 
         public bool Deactivate()
         {
-            return Context.SubscriptionsManager.DeactivateProfile();
+            return Context.SubscriptionsManager.DeactivateCurrentProfile();
         }
 
         internal void PrepareProfile()
@@ -162,6 +162,7 @@ namespace HidWizards.UCR.Core.Models
 
         public List<Device> GetMissingDeviceList(DeviceIoType deviceIoType)
         {
+            Context.DevicesManager.RefreshDeviceList();
             var availableDeviceList = Context.DevicesManager.GetAvailableDeviceList(deviceIoType);
             var profileDeviceList = GetDeviceConfigurationList(deviceIoType);
 

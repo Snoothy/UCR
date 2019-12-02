@@ -9,6 +9,7 @@ using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
 using HidWizards.UCR.Core.Utilities;
+using Newtonsoft.Json;
 
 namespace HidWizards.UCR.Core.Managers
 {
@@ -31,7 +32,6 @@ namespace HidWizards.UCR.Core.Managers
         public List<Device> GetAvailableDeviceList(DeviceIoType type, bool includeCache = true)
         {
             var result = new List<Device>();
-            _context.IOController.RefreshDevices();
             var providerList = type == DeviceIoType.Input
                 ? _context.IOController.GetInputList()
                 : _context.IOController.GetOutputList();
@@ -57,6 +57,11 @@ namespace HidWizards.UCR.Core.Managers
             return result;
         }
 
+        public void RefreshDeviceList()
+        {
+            _context.IOController.RefreshDevices();
+        }
+
         public List<Device> GetAvailableDevicesListFromSameProvider(DeviceIoType type, Device device)
         {
             var availableDeviceList = GetAvailableDeviceList(type);
@@ -64,21 +69,21 @@ namespace HidWizards.UCR.Core.Managers
         }
 
 
-        public List<DeviceBindingNode> GetDeviceBindingMenu(Device device, DeviceIoType type)
+        public List<DeviceBindingNode> GetDeviceBindingMenu(Device device, DeviceIoType type, bool includeCache = true)
         {
-            var availableDeviceList = GetAvailableDeviceList(type);
+            var availableDeviceList = GetAvailableDeviceList(type, includeCache);
 
             try
             {
                 return availableDeviceList.Find(d => d.DeviceHandle == device.DeviceHandle).GetDeviceBindingMenu();
             }
-            catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
+            catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException || ex is NullReferenceException)
             {
                 return new List<DeviceBindingNode>
                 {
                     new DeviceBindingNode()
                     {
-                        Title = "Device not connected",
+                        Title = "Device not connected"
                     }
                 };
             }
@@ -127,8 +132,9 @@ namespace HidWizards.UCR.Core.Managers
         public bool UpdateDeviceCache()
         {
             var success = true;
+            RefreshDeviceList();
             var availableDeviceList = GetAvailableDeviceList(DeviceIoType.Input, false);
-
+            
             foreach (var device in availableDeviceList)
             {
                 success &= SaveDeviceCache(device);
@@ -139,7 +145,7 @@ namespace HidWizards.UCR.Core.Managers
 
         private bool SaveDeviceCache(Device device)
         {
-            var serializer = GetXmlSerializer();
+            var serializer = new JsonSerializer();
             Directory.CreateDirectory(GetProviderCacheDirectory(device.ProviderName));
             using (var streamWriter = new StreamWriter(GetDeviceCachePath(device)))
             {
@@ -149,7 +155,7 @@ namespace HidWizards.UCR.Core.Managers
                     ProviderName = device.ProviderName,
                     DeviceHandle = device.DeviceHandle,
                     DeviceNumber = device.DeviceNumber,
-                    DeviceBindingMenu = GetDeviceBindingMenu(device, DeviceIoType.Input)
+                    DeviceBindingMenu = GetDeviceBindingMenu(device, DeviceIoType.Input, false)
                 };
 
                 serializer.Serialize(streamWriter, deviceCache);
@@ -166,7 +172,7 @@ namespace HidWizards.UCR.Core.Managers
             string[] deviceCacheFiles;
             try
             {
-                deviceCacheFiles = Directory.GetFiles(GetProviderCacheDirectory(provider), "*.xml",
+                deviceCacheFiles = Directory.GetFiles(GetProviderCacheDirectory(provider), "*.json",
                     SearchOption.TopDirectoryOnly);
             }
             catch (DirectoryNotFoundException)
@@ -189,14 +195,14 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(devicePath)) return null;
 
-            var serializer = GetXmlSerializer();
-
             try
             {
-                using (var fileStream = new FileStream(devicePath, FileMode.Open))
+                using (var fileStream = new FileStream(devicePath, FileMode.Open))  
                 {
-                    var deviceCache = (DeviceCache) serializer.Deserialize(fileStream);
-                    return new Device(deviceCache);
+                    using (var reader = new StreamReader(fileStream))
+                    {
+                        return new Device(JsonConvert.DeserializeObject<DeviceCache>(reader.ReadToEnd()));
+                    }
                 }
             }
             catch (IOException e)
@@ -222,17 +228,12 @@ namespace HidWizards.UCR.Core.Managers
 
         private static string GetDeviceCachePath(Device device)
         {
-            return $"{GetProviderCacheDirectory(device.ProviderName)}\\{device.GetHashCode()}.xml";
+            return $"{GetProviderCacheDirectory(device.ProviderName)}\\{device.GetHashCode()}.json";
         }
 
         private static string GetProviderCacheDirectory(string provider)
         {
             return $".\\Cache\\{provider}\\";
-        }
-
-        private static XmlSerializer GetXmlSerializer()
-        {
-            return new XmlSerializer(typeof(DeviceCache));
         }
 
         #endregion

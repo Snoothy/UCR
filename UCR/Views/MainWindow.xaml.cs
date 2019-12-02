@@ -94,7 +94,7 @@ namespace HidWizards.UCR.Views
         {
             if (Context.ActiveProfile == null) return;
             
-            if (!Context.SubscriptionsManager.DeactivateProfile())
+            if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);

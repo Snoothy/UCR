@@ -42,8 +42,10 @@ namespace HidWizards.UCR.Core.Managers
             return SubscriptionState?.ActiveProfile;
         }
 
-        public bool ActivateProfile(Profile profile)
+        public bool ActivateProfile(Profile profile, bool refreshDevices = true)
         {
+            if (refreshDevices) _context.IOController.RefreshDevices();
+
             Logger.Debug($"Activating profile: {{{profile.ProfileBreadCrumbs()}}}");
             if (SubscriptionState?.ActiveProfile?.Guid == profile.Guid) return true;
 
@@ -65,11 +67,12 @@ namespace HidWizards.UCR.Core.Managers
             if (!ActivateSubscriptionState(state))
             {
                 Logger.Error("Failed to activate profile successfully");
+                DeactivateProfile(state);
                 return false;
             }
             Logger.Debug("SubscriptionState successfully activated");
 
-            if (!DeactivateProfile()) Logger.Error("Failed to deactivate previous profile successfully");
+            if (!DeactivateCurrentProfile()) Logger.Error("Failed to deactivate previous profile successfully");
             
             FinalizeNewState(profile, state);
 
@@ -96,13 +99,26 @@ namespace HidWizards.UCR.Core.Managers
             _context.OnActiveProfileChangedEvent(profile);
         }
 
-        public bool DeactivateProfile()
+        public bool DeactivateCurrentProfile()
         {
             if (SubscriptionState == null) return true;
-            var success = true;
+            
             var state = SubscriptionState;
-
             if (!state.IsActive) return true;
+
+            var success = DeactivateProfile(state);
+
+            SubscriptionState = null;
+            _context.ActiveProfile = null;
+            _context.OnActiveProfileChangedEvent(null);
+            ProfileActive = false;
+
+            return success;
+        }
+
+        public bool DeactivateProfile(SubscriptionState state)
+        {
+            var success = true;
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
             {
@@ -125,14 +141,9 @@ namespace HidWizards.UCR.Core.Managers
                 {
                     success &= UnsubscribeOutput(state, shadowDeviceSubscription);
                 }
-                
+
                 success &= UnsubscribeOutput(state, deviceConfigurationSubscription.DeviceSubscription);
             }
-
-            SubscriptionState = null;
-            _context.ActiveProfile = null;
-            _context.OnActiveProfileChangedEvent(null);
-            ProfileActive = false;
 
             return success;
         }
@@ -329,7 +340,7 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (SubscriptionState != null)
             {
-                DeactivateProfile();
+                DeactivateCurrentProfile();
             }
         }
 

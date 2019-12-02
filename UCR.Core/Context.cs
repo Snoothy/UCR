@@ -107,8 +107,6 @@ namespace HidWizards.UCR.Core
             }
             IsNotSaved = false;
 
-            DevicesManager.UpdateDeviceCache();
-
             return true;
         }
 
