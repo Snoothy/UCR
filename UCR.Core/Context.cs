@@ -106,6 +106,7 @@ namespace HidWizards.UCR.Core
                 serializer.Serialize(streamWriter, this);
             }
             IsNotSaved = false;
+
             return true;
         }
 

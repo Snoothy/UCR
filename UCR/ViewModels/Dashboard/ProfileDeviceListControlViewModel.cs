@@ -92,7 +92,6 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         public async void ManageDeviceConfiguration()
         {
-            var deviceList = _profile.GetMissingDeviceList(_deviceIoType);
             var dialog = new ManageDeviceConfigurationDialog(SelectedDeviceConfiguration.DeviceConfiguration, _deviceIoType);
             var result = (ManageDeviceConfigurationViewModel)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.HasChanged) return;

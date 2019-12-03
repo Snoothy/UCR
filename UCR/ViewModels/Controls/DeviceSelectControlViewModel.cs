@@ -18,12 +18,6 @@ namespace HidWizards.UCR.ViewModels.Controls
         {
         }
 
-        public DeviceSelectControlViewModel(string title, List<DeviceGroup> devices)
-        {
-            Title = title;
-            Devices = GetDeviceList(devices);
-        }
-
         public DeviceSelectControlViewModel(string title, List<DeviceViewModel> devices)
         {
             Title = title;
@@ -49,23 +43,6 @@ namespace HidWizards.UCR.ViewModels.Controls
             if (result.Count > 0) result[0].FirstElement = true;
 
             Devices = result;
-        }
-
-        private ObservableCollection<DeviceViewModel> GetDeviceList(List<DeviceGroup> devices)
-        {
-            var result = new ObservableCollection<DeviceViewModel>();
-
-            foreach (var deviceGroup in devices)
-            {
-                foreach (var device in deviceGroup.Devices)
-                {
-                    result.Add(new DeviceViewModel(device));
-                }
-            }
-
-            if (result.Count > 0) result[0].FirstElement = true;
-
-            return result;
         }
     }
 }
