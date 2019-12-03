@@ -16,7 +16,9 @@ namespace HidWizards.UCR.Core.Models
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /* Persistence */
+        [XmlAttribute]
         public string Title { get; set; }
+        [XmlAttribute]
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Mapping> Mappings { get; set; }

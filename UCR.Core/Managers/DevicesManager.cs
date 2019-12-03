@@ -115,7 +115,8 @@ namespace HidWizards.UCR.Core.Managers
                             KeyType = (int)bindingInfo.BindingDescriptor.Type,
                             KeyValue = bindingInfo.BindingDescriptor.Index,
                             KeySubValue = bindingInfo.BindingDescriptor.SubIndex,
-                            DeviceBindingCategory = DeviceBinding.MapCategory(bindingInfo.Category)
+                            DeviceBindingCategory = DeviceBinding.MapCategory(bindingInfo.Category),
+                            Blockable = bindingInfo.Blockable
                         }
                     };
 

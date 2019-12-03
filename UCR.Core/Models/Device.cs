@@ -18,9 +18,13 @@ namespace HidWizards.UCR.Core.Models
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         /* Persistence */
+        [XmlAttribute]
         public string Title { get; set; }
+        [XmlAttribute]
         public string ProviderName { get; set; }
+        [XmlAttribute]
         public string DeviceHandle { get; set; }
+        [XmlAttribute]
         public int DeviceNumber { get; set; }
 
         /* Runtime */

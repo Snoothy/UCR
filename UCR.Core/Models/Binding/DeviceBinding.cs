@@ -19,6 +19,7 @@ namespace HidWizards.UCR.Core.Models.Binding
     {
         /* Persistence */
         private bool _isBound;
+        [XmlAttribute]
         public bool IsBound
         {
             get => _isBound;
@@ -29,11 +30,18 @@ namespace HidWizards.UCR.Core.Models.Binding
             }
         }
         // Index in its device list
+        [XmlAttribute]
         public Guid DeviceConfigurationGuid { get; set; }
         // Subscription key
+        [XmlAttribute]
         public int KeyType { get; set; }
+        [XmlAttribute]
         public int KeyValue { get; set; }
+        [XmlAttribute]
         public int KeySubValue { get; set; }
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool Block { get; set; }
 
         /* Runtime */
         [XmlIgnore]
@@ -101,20 +109,17 @@ namespace HidWizards.UCR.Core.Models.Binding
             IsBound = false;
         }
 
-        public DeviceBinding(DeviceBinding deviceBinding)
-        {
-            DeviceConfigurationGuid = deviceBinding.DeviceConfigurationGuid;
-            KeyType = deviceBinding.KeyType;
-            KeyValue = deviceBinding.KeyValue;
-            Profile = deviceBinding.Profile;
-            Callback = deviceBinding.Callback;
-            Guid = deviceBinding.Guid;
-            IsBound = deviceBinding.IsBound;
-        }
-
         public void SetDeviceConfigurationGuid(Guid deviceConfigurationGuid)
         {
             DeviceConfigurationGuid = deviceConfigurationGuid;
+            if (Block && !IsBlockable()) Block = false;
+            Profile.Context.ContextChanged();
+            OnPropertyChanged(nameof(DeviceConfigurationGuid));
+        }
+
+        public void SetBlock(bool block)
+        {
+            Block = block;
             Profile.Context.ContextChanged();
         }
 
@@ -130,6 +135,32 @@ namespace HidWizards.UCR.Core.Models.Binding
         public string BoundName()
         {
             return Profile.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device.GetBindingName(this) ?? "Device unavailable";
+        }
+
+        public bool IsBlockable()
+        {
+            var device = Profile.GetDeviceConfiguration(DeviceIoType, DeviceConfigurationGuid)?.Device;
+            if (device == null) return false;
+
+            var deviceBindingNodes = Profile.Context.DevicesManager.GetDeviceBindingMenu(device, DeviceIoType);
+
+            var searchList = deviceBindingNodes;
+
+            while (searchList.Count > 0)
+            {
+                var node = searchList[0];
+                searchList.RemoveAt(0);
+
+                if (node.IsBinding)
+                {
+                    var info = node.DeviceBindingInfo;
+                    if (info.KeyType == KeyType && info.KeyValue == KeyValue && info.KeySubValue == KeySubValue) return info.Blockable;
+                }
+
+                if (node.ChildrenNodes != null) searchList.AddRange(node.ChildrenNodes);
+            }
+
+            return false;
         }
 
         public static DeviceBindingCategory MapCategory(BindingCategory bindingInfoCategory)

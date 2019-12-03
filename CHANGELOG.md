@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - `Button to Filter`: Allows toggling of a filter using a button
 - `Axis to Filter`: Allows toggling of a filter using an axis
 - Added device cache allowing configuration of disconnected devices
+- Added per input blocking for supported providers
 
 ### Fixed
 
