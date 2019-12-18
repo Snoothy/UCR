@@ -13,6 +13,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - `Button to Filter`: Allows toggling of a filter using a button
 - `Axis to Filter`: Allows toggling of a filter using an axis
 - Added device cache allowing configuration of disconnected devices
+- Provider Report now contains `ErrorMessage` property
+If the provider is not live, this should contain a string indicating why
+- [Tobii Provider] If IsLive is false, now reports reason in ErrorMessage
+- [SpaceMouse provider] IsLive is always true, as HID is always present
+- [MIDI provider] IsLive is always true, as MIDI is always present
+- [TitanOne Provider] IsLive now reflects connected status of device
+- [TitanOne Provider] Reports 0 devices if IsLive is false
+- [vJoy Provider] IsLive now reflects whether driver is installed
+- [Interception Provider] IsLive is false if no devices are found, assumes driver is not installed
 
 ### Fixed
 
@@ -21,7 +30,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Updated to IOWrapper v0.10.6
+- Updated to IOWrapper v0.11.2
+- [Interception Provider] Blockable property of BindingDescriptor now indicates if input is blockable or not  
+This is controlled by whether BlockingEnabled in the settings file is true or not
+- [XInput Provider] Only show Xinput devices in ProviderReport that are currently connected
+- [DS4WindowsApi Provider] Only show DS4 devices in ProviderReport that are currently connected
+- [SpaceMouse Provider] Only show SpaceMouse devices in ProviderReport that are currently connected
+- [Tobii Provider] IsLive now reflects state of driver
+- [Tobii Provider] Only show Tobii devices in ProviderReport that are currently connected
+- [ViGEm Provider] Do not show devices if Bus Driver not installed
+
+### Removed
+
+- [Interception Provider] BlockingControlledByUi setting removed
 
 ## [0.8.0] - 2019-07-27
 
