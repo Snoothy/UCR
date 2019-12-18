@@ -52,9 +52,10 @@
     <Compile Include="Remapper\AxisSplitter.cs" />
     <Compile Include="Remapper\AxesToAxes.cs" />
     <Compile Include="Remapper\AxisInitializer.cs" />
+    <Compile Include="Remapper\AxisToButton.cs" />
     <Compile Include="Remapper\ButtonToEvent.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
-    <Compile Include="Remapper\AxisToButton.cs" />
+    <Compile Include="Remapper\AxisToButtons.cs" />
     <Compile Include="Remapper\ButtonsToAxis.cs" />
     <Compile Include="Remapper\ButtonToAxis.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />

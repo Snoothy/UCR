@@ -9,6 +9,11 @@ namespace HidWizards.UCR.Core.Utilities
             return ValidateRange(value, 0.0, 100.0);
         }
 
+        public static PropertyValidationResult ValidateSignedPercentage(double value)
+        {
+            return ValidateRange(value, -100.0, 100.0);
+        }
+
         public static PropertyValidationResult ValidateRange(double value, double min, double max)
         {
             if (value > max) return new PropertyValidationResult(false, $"Value must be {max} or less");
