@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - `Button to Filter`: Allows toggling of a filter using a button
 - `Axis to Filter`: Allows toggling of a filter using an axis
 - Added device cache allowing configuration of disconnected devices
+- Added new AxisToButton plugin with differing values for press and release
 
 ### Fixed
 
@@ -22,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Updated to IOWrapper v0.10.6
+- AxisToButton is now called AxisToButtons
 
 ## [0.8.0] - 2019-07-27
 
