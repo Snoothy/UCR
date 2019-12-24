@@ -284,7 +284,8 @@ namespace HidWizards.UCR.Core.Managers
                 DeviceDescriptor = GetDeviceDescriptor(device),
                 SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBindingSubscription.DeviceBindingSubscriptionGuid, state.StateGuid),
                 BindingDescriptor = GetBindingDescriptor(deviceBindingSubscription.DeviceBinding),
-                Callback = deviceBindingSubscription.DeviceBinding.Callback
+                Callback = deviceBindingSubscription.DeviceBinding.Callback,
+                Block = deviceBindingSubscription.DeviceBinding.Block
             };
         }
 

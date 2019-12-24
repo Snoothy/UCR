@@ -11,6 +11,7 @@ namespace HidWizards.UCR.Core.Models
     public class Mapping
     {
         /* Persistence */
+        [XmlAttribute]
         public string Title { get; set; }
         public List<DeviceBinding> DeviceBindings { get; set; }
         public List<Plugin> Plugins { get; set; }

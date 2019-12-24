@@ -18,6 +18,8 @@ namespace HidWizards.UCR.Core.Models.Binding
         public int KeySubValue { get; set; }
         [XmlAttribute]
         public DeviceBindingCategory DeviceBindingCategory { get; set; }
+        [XmlAttribute]
+        public bool Blockable { get; set; }
 
     }
 }

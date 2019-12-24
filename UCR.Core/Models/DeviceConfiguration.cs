@@ -7,8 +7,10 @@ namespace HidWizards.UCR.Core.Models
 {
     public class DeviceConfiguration
     {
+        [XmlAttribute]
         public Guid Guid { get; set; }
         public Device Device { get; set; }
+        [XmlAttribute]
         public string ConfigurationName { get; set; }
         public List<Device> ShadowDevices { get; set; }
 
