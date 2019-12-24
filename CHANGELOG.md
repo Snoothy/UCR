@@ -13,8 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - `Button to Filter`: Allows toggling of a filter using a button
 - `Axis to Filter`: Allows toggling of a filter using an axis
 - Added device cache allowing configuration of disconnected devices
-- Provider Report now contains `ErrorMessage` property
-If the provider is not live, this should contain a string indicating why
+- Provider Report now contains `ErrorMessage` property. If the provider is not live, this should contain a string indicating why
 - [Tobii Provider] If IsLive is false, now reports reason in ErrorMessage
 - [SpaceMouse provider] IsLive is always true, as HID is always present
 - [MIDI provider] IsLive is always true, as MIDI is always present
@@ -31,8 +30,7 @@ If the provider is not live, this should contain a string indicating why
 ### Changed
 
 - Updated to IOWrapper v0.11.2
-- [Interception Provider] Blockable property of BindingDescriptor now indicates if input is blockable or not  
-This is controlled by whether BlockingEnabled in the settings file is true or not
+- [Interception Provider] Blockable property of BindingDescriptor now indicates if input is blockable or not. This is controlled by whether BlockingEnabled in the settings file is true or not
 - [XInput Provider] Only show Xinput devices in ProviderReport that are currently connected
 - [DS4WindowsApi Provider] Only show DS4 devices in ProviderReport that are currently connected
 - [SpaceMouse Provider] Only show SpaceMouse devices in ProviderReport that are currently connected
