@@ -12,19 +12,27 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public bool IsOverwritten { get; set; }
         public DeviceSubscription DeviceSubscription { get; }
 
-        public InputSubscription(DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid)
+        public InputSubscription(Mapping mapping, DeviceBinding deviceBinding, Profile profile, Guid subscriptionStateGuid)
         {
             DeviceBinding = deviceBinding;
             Profile = profile;
             SubscriptionStateGuid = subscriptionStateGuid;
             DeviceBindingSubscriptionGuid = Guid.NewGuid();
             IsOverwritten = false;
-            DeviceSubscription = new DeviceSubscription(GetDevice(), profile);
+
+            var deviceConfiguration = GetDeviceConfiguration();
+            if (deviceConfiguration == null) return;
+
+            var device = mapping.IsShadowMapping
+                ? deviceConfiguration.ShadowDevices[mapping.ShadowDeviceNumber]
+                : deviceConfiguration.Device;
+            
+            DeviceSubscription = new DeviceSubscription(device);
         }
 
-        private Device GetDevice()
+        private DeviceConfiguration GetDeviceConfiguration()
         {
-            return Profile.GetDevice(DeviceBinding.DeviceIoType, DeviceBinding.DeviceGuid);
+            return Profile.GetDeviceConfiguration(DeviceBinding.DeviceIoType, DeviceBinding.DeviceConfigurationGuid);
         }
     }
 }

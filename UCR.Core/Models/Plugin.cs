@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models.Binding;
+using HidWizards.UCR.Core.Models.Subscription;
 
 namespace HidWizards.UCR.Core.Models
 {
@@ -15,15 +17,18 @@ namespace HidWizards.UCR.Core.Models
     {
         /* Persistence */
         public List<DeviceBinding> Outputs { get; }
+        public List<Filter> Filters { get; set; }
         
         /* Runtime */
         internal Profile Profile { get; set; }
         private List<IODefinition> _inputCategories;
         private List<IODefinition> _outputCategories;
         private List<PluginPropertyGroup> _pluginPropertyGroups;
+        internal FilterState FilterState { get; set; }
+        internal Mapping RuntimeMapping { get; set; }
 
         #region Properties
-        
+
         [XmlIgnore]
         public List<IODefinition> InputCategories
         {
@@ -75,6 +80,14 @@ namespace HidWizards.UCR.Core.Models
             public string GroupName;
         }
 
+        public enum FilterMode
+        {
+            Active,
+            Inactive,
+            Toggle,
+            Unchanged
+        }
+
         protected Plugin()
         {
             Outputs = new List<DeviceBinding>();
@@ -82,6 +95,8 @@ namespace HidWizards.UCR.Core.Models
             {
                 Outputs.Add(new DeviceBinding(null, Profile, DeviceIoType.Output));
             }
+
+            Filters = new List<Filter>();
         }
 
         #region Life cycle
@@ -128,8 +143,65 @@ namespace HidWizards.UCR.Core.Models
             return Outputs[number].CurrentValue;
         }
 
+        protected void WriteFilterState(string filterName, bool value)
+        {
+            RuntimeMapping.FilterState.SetFilterState(GetFilterName(filterName), value);
+        }
+
+        protected void ToggleFilterState(string filterName)
+        {
+            RuntimeMapping.FilterState.ToggleFilterState(GetFilterName(filterName));
+        }
+
+        private string GetFilterName(string filterName)
+        {
+            var filter = filterName.ToLower();
+            return RuntimeMapping.IsShadowMapping 
+                ? Filter.GetShadowName(filter, RuntimeMapping.ShadowDeviceNumber) 
+                : filter;
+        }
+
         #endregion
-        
+
+        #region Filters
+
+        internal Filter AddFilter(string name, bool negative = false)
+        {
+            var existingFilter = Filters.Find(f => string.Equals(f.Name, name, StringComparison.CurrentCultureIgnoreCase));
+
+            if (existingFilter != null)
+            {
+                existingFilter.Negative = negative;
+                ContextChanged();
+                return existingFilter;
+            }
+            
+            var filter = new Filter()
+            {
+                Name = name,
+                Negative = negative
+            };
+            
+            Filters.Add(filter);
+            ContextChanged();
+            return filter;
+        }
+
+        internal bool RemoveFilter(Filter filter)
+        {
+            var success = Filters.Remove(filter);
+            if (success) ContextChanged();
+            return success;
+        }
+
+        internal void ToggleFilter(Filter filter)
+        {
+            var existingFilter = Filters.Find(f => string.Equals(f.Name, filter.Name, StringComparison.InvariantCultureIgnoreCase));
+            if (existingFilter != null) AddFilter(existingFilter.Name, !existingFilter.Negative);
+        }
+
+        #endregion
+
         public void SetProfile(Profile profile)
         {
             Profile = profile;
@@ -165,7 +237,7 @@ namespace HidWizards.UCR.Core.Models
             for (var i = 0; i < split; i++)
             {
                 deviceBindings[i].IsBound = deviceBindings[i + split].IsBound;
-                deviceBindings[i].DeviceGuid = deviceBindings[i + split].DeviceGuid;
+                deviceBindings[i].DeviceConfigurationGuid = deviceBindings[i + split].DeviceConfigurationGuid;
                 deviceBindings[i].KeyType = deviceBindings[i + split].KeyType;
                 deviceBindings[i].KeyValue = deviceBindings[i + split].KeyValue;
                 deviceBindings[i].KeySubValue = deviceBindings[i + split].KeySubValue;
@@ -290,6 +362,19 @@ namespace HidWizards.UCR.Core.Models
         public virtual PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
         {
             return PropertyValidationResult.ValidResult;
+        }
+
+        public bool IsFiltered()
+        {
+            if (Filters.Count == 0) return false;
+
+            foreach (var filter in Filters)
+            {
+                RuntimeMapping.FilterState.FilterRuntimeDictionary.TryGetValue(filter.Name.ToLower(), out var filterValue);
+                if (!(filterValue ^ filter.Negative)) return true;
+            }
+
+            return false;
         }
     }
 }

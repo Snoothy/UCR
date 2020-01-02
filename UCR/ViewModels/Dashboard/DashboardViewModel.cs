@@ -57,16 +57,16 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private void BuildDeviceLists()
         {
-            InputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input), DeviceIoType.Input);
-            OutputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output), DeviceIoType.Output);
+            InputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDeviceConfigurations(SelectedProfileItem.Profile, DeviceIoType.Input), DeviceIoType.Input);
+            OutputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDeviceConfigurations(SelectedProfileItem.Profile, DeviceIoType.Output), DeviceIoType.Output);
 
             OnPropertyChanged(nameof(InputDeviceControlViewModel));
             OnPropertyChanged(nameof(OutputDeviceControlViewModel));
         }
 
-        private List<Device> GetDevices(Profile profile, DeviceIoType deviceIoType)
+        private List<DeviceConfiguration> GetDeviceConfigurations(Profile profile, DeviceIoType deviceIoType)
         {
-            return SelectedProfileItem.Profile.GetDeviceList(deviceIoType);
+            return SelectedProfileItem.Profile.GetDeviceConfigurationList(deviceIoType);
         }
 
         private void OnActiveProfileChangedEvent(Profile profile)

@@ -16,16 +16,18 @@ namespace HidWizards.UCR.ViewModels.Dashboard
     public class ProfileDeviceListControlViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<DeviceItem> Devices { get; set; }
-        public bool IsRemoveEnabled => CanRemoveDevice(SelectedDevice);
-        private Device _device;
-        public Device SelectedDevice
+        public bool IsRemoveEnabled => CanRemoveDevice();
+        public bool IsConfigurationEnabled => CanManageDeviceConfiguration();
+        private DeviceItem _deviceConfiguration;
+        public DeviceItem SelectedDeviceConfiguration
         {
-            get => _device;
+            get => _deviceConfiguration;
             set
             {
-                _device = value;
+                _deviceConfiguration = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsRemoveEnabled));
+                OnPropertyChanged(nameof(IsConfigurationEnabled));
             }
         }
 
@@ -36,7 +38,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         {
         }
 
-        public ProfileDeviceListControlViewModel(Profile profile, List<Device> devices, DeviceIoType deviceIoType)
+        public ProfileDeviceListControlViewModel(Profile profile, List<DeviceConfiguration> devices, DeviceIoType deviceIoType)
         {
             _profile = profile;
             _deviceIoType = deviceIoType;
@@ -47,10 +49,10 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             }
         }
 
-        private bool CanRemoveDevice(Device device)
+        private bool CanRemoveDevice()
         {
-            if (device == null) return false;
-            return _profile.CanRemoveDevice(device);
+            if (SelectedDeviceConfiguration == null) return false;
+            return _profile.CanRemoveDeviceConfiguration(SelectedDeviceConfiguration.DeviceConfiguration);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -63,11 +65,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         public async void RemoveDevice(DeviceItem deviceItem)
         {
-            var dialog = new BoolDialog("Remove device", $"Are you sure you want to remove {deviceItem.Device.Title} from {deviceItem.Device.Profile.Title}?");
+            var dialog = new BoolDialog("Remove device", $"Are you sure you want to remove {deviceItem.Title} from {deviceItem.DeviceConfiguration.Device.Profile.Title}?");
             var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || !result.Value) return;
 
-            _profile.RemoveDevice(deviceItem.Device);
+            _profile.RemoveDeviceConfiguration(deviceItem.DeviceConfiguration);
             Devices.Remove(deviceItem);
             OnPropertyChanged(nameof(Devices));
         }
@@ -79,12 +81,32 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             var result = (AddDevicesDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
             if (result?.Devices == null) return;
 
-            _profile.AddDevices(result.Devices.GetSelectedDevices().Select(d => d.Device).ToList(), _deviceIoType);
-            foreach (var deviceViewModel in result.Devices.GetSelectedDevices())
+            var deviceConfigurations = result.Devices.GetSelectedDevices().Select(d => new DeviceConfiguration(d.Device)).ToList();
+            _profile.AddDeviceConfigurations(deviceConfigurations, _deviceIoType);
+            foreach (var deviceConfiguration in deviceConfigurations)
             {
-                Devices.Add(new DeviceItem(deviceViewModel.Device, _profile));
+                Devices.Add(new DeviceItem(deviceConfiguration, _profile));
             }
             OnPropertyChanged(nameof(Devices));
+        }
+
+        public async void ManageDeviceConfiguration()
+        {
+            var dialog = new ManageDeviceConfigurationDialog(SelectedDeviceConfiguration.DeviceConfiguration, _deviceIoType);
+            var result = (ManageDeviceConfigurationViewModel)await DialogHost.Show(dialog, "RootDialog");
+            if (result == null || !result.HasChanged) return;
+
+            SelectedDeviceConfiguration.DeviceConfiguration.ChangeConfigurationName(result.DeviceConfigurationName);
+            SelectedDeviceConfiguration.DeviceConfiguration.ChangeShadowDevices(result.GetSelectedShadowDevices());
+
+            SelectedDeviceConfiguration.TitleChanged();
+            OnPropertyChanged(nameof(Devices));
+        }
+
+        private bool CanManageDeviceConfiguration()
+        {
+            if (SelectedDeviceConfiguration == null) return false;
+            return true;
         }
     }
 }

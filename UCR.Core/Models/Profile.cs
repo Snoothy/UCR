@@ -16,13 +16,15 @@ namespace HidWizards.UCR.Core.Models
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /* Persistence */
+        [XmlAttribute]
         public string Title { get; set; }
+        [XmlAttribute]
         public Guid Guid { get; set; }
         public List<Profile> ChildProfiles { get; set; }
         public List<Mapping> Mappings { get; set; }
 
-        public List<Device> InputDevices { get; set; }
-        public List<Device> OutputDevices { get; set; }
+        public List<DeviceConfiguration> InputDeviceConfigurations { get; set; }
+        public List<DeviceConfiguration> OutputDeviceConfigurations { get; set; }
 
 
         /* Runtime */
@@ -30,8 +32,7 @@ namespace HidWizards.UCR.Core.Models
         public Context Context;
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
-        internal ConcurrentDictionary<Guid, bool> StateDictionary { get; set; }
-        
+
         #region Constructors
 
         public Profile()
@@ -50,8 +51,8 @@ namespace HidWizards.UCR.Core.Models
             Guid = Guid.NewGuid();
             ChildProfiles = new List<Profile>();
             Mappings = new List<Mapping>();
-            InputDevices = new List<Device>();
-            OutputDevices = new List<Device>();
+            InputDeviceConfigurations = new List<DeviceConfiguration>();
+            OutputDeviceConfigurations = new List<DeviceConfiguration>();
         }
 
         public Profile(Context context, Profile parentProfile = null) : this(context)
@@ -63,14 +64,14 @@ namespace HidWizards.UCR.Core.Models
 
         #region Actions
 
-        public static Profile CreateProfile(Context context, string title, List<Device> inputDevices,
-            List<Device> outputDevices, Profile parent = null)
+        public static Profile CreateProfile(Context context, string title, List<DeviceConfiguration> inputDevices,
+            List<DeviceConfiguration> outputDevices, Profile parent = null)
         {
             var profile = new Profile(context, parent)
             {
                 Title = title,
-                InputDevices = inputDevices,
-                OutputDevices = outputDevices
+                InputDeviceConfigurations = inputDevices ?? new List<DeviceConfiguration>(),
+                OutputDeviceConfigurations = outputDevices ?? new List<DeviceConfiguration>()
             };
 
             return profile;
@@ -112,12 +113,12 @@ namespace HidWizards.UCR.Core.Models
 
         public bool Deactivate()
         {
-            return Context.SubscriptionsManager.DeactivateProfile();
+            return Context.SubscriptionsManager.DeactivateCurrentProfile();
         }
 
         internal void PrepareProfile()
         {
-            StateDictionary = new ConcurrentDictionary<Guid, bool>();
+            
         }
 
         #endregion
@@ -143,19 +144,19 @@ namespace HidWizards.UCR.Core.Models
 
         #region Device
 
-        public Device GetDevice(DeviceIoType deviceIoType, Guid deviceGuid)
+        public DeviceConfiguration GetDeviceConfiguration(DeviceIoType deviceIoType, Guid deviceConfigurationGuid)
         {
-            var deviceList = GetDeviceList(deviceIoType);
-            return deviceList.FirstOrDefault(d => d.Guid == deviceGuid);
+            var deviceList = GetDeviceConfigurationList(deviceIoType);
+            return deviceList.FirstOrDefault(configuration => configuration.Guid == deviceConfigurationGuid);
         }
 
-        public List<Device> GetDeviceList(DeviceIoType deviceIoType)
+        public List<DeviceConfiguration> GetDeviceConfigurationList(DeviceIoType deviceIoType)
         {
-            var result = new List<Device>();
-            if (ParentProfile != null) result.AddRange(ParentProfile.GetDeviceList(deviceIoType));
+            var result = new List<DeviceConfiguration>();
+            if (ParentProfile != null) result.AddRange(ParentProfile.GetDeviceConfigurationList(deviceIoType));
 
-            var devices = deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
-            devices.ForEach(d => d.Profile = this);
+            var devices = deviceIoType == DeviceIoType.Input ? InputDeviceConfigurations : OutputDeviceConfigurations;
+            devices.ForEach(d => d.Device.Profile = this);
             result.AddRange(devices);
 
             return result;
@@ -163,49 +164,44 @@ namespace HidWizards.UCR.Core.Models
 
         public List<Device> GetMissingDeviceList(DeviceIoType deviceIoType)
         {
-            var availableDeviceGroupList = Context.DevicesManager.GetAvailableDeviceList(deviceIoType);
-            var availableDeviceList = new List<Device>();
-            var profileDeviceList = GetDeviceList(deviceIoType);
+            Context.DevicesManager.RefreshDeviceList();
+            var availableDeviceList = Context.DevicesManager.GetAvailableDeviceList(deviceIoType);
+            var profileDeviceList = GetDeviceConfigurationList(deviceIoType);
 
-            foreach (var deviceGroup in availableDeviceGroupList)
+            foreach (var deviceConfiguration in profileDeviceList)
             {
-                availableDeviceList.AddRange(deviceGroup.Devices);
-            }
-
-            foreach (var device in profileDeviceList)
-            {
-                availableDeviceList.RemoveAll(d => d.Equals(device));
+                availableDeviceList.RemoveAll(d => d.Equals(deviceConfiguration.Device));
             }
 
             return availableDeviceList;
         }
 
-        public void AddDevices(List<Device> devices, DeviceIoType deviceIoType)
+        public void AddDeviceConfigurations(List<DeviceConfiguration> deviceConfigurations, DeviceIoType deviceIoType)
         {
-            devices.ForEach(d => d.Profile = this);
-            var deviceList = deviceIoType == DeviceIoType.Input ? InputDevices : OutputDevices;
-            deviceList.AddRange(devices);
-            OnPropertyChanged(deviceIoType == DeviceIoType.Input ? nameof(InputDevices) : nameof(OutputDevices));
+            deviceConfigurations.ForEach(configuration => configuration.Device.Profile = this);
+            var deviceList = deviceIoType == DeviceIoType.Input ? InputDeviceConfigurations : OutputDeviceConfigurations;
+
+            deviceList.AddRange(deviceConfigurations);
+            OnPropertyChanged(deviceIoType == DeviceIoType.Input ? nameof(InputDeviceConfigurations) : nameof(OutputDeviceConfigurations));
             Context.ContextChanged();
         }
 
-        public bool RemoveDevice(Device device)
+        public bool RemoveDeviceConfiguration(DeviceConfiguration device)
         {
-            var success = InputDevices.Remove(device) || OutputDevices.Remove(device);
+            var success = InputDeviceConfigurations.Remove(device) || OutputDeviceConfigurations.Remove(device);
             if (success)
             {
-                OnPropertyChanged(nameof(InputDevices));
-                OnPropertyChanged(nameof(OutputDevices));
+                OnPropertyChanged(nameof(InputDeviceConfigurations));
+                OnPropertyChanged(nameof(OutputDeviceConfigurations));
                 Context.ContextChanged();
             }
 
             return success;
         }
 
-
-        public bool CanRemoveDevice(Device device)
+        public bool CanRemoveDeviceConfiguration(DeviceConfiguration device)
         {
-            return InputDevices.Contains(device) || OutputDevices.Contains(device);
+            return InputDeviceConfigurations.Contains(device) || OutputDeviceConfigurations.Contains(device);
 
         }
         #endregion
@@ -220,9 +216,7 @@ namespace HidWizards.UCR.Core.Models
         public bool AddPlugin(Mapping mapping, Plugin plugin)
         {
             if (!Mappings.Contains(mapping)) return false;
-            plugin.Profile = this;
-            mapping.Plugins.Add(plugin);
-            Context.ContextChanged();
+            mapping.AddPlugin(plugin);
             return true;
         }
 
@@ -235,6 +229,26 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
+
+        public HashSet<string> GetFilters()
+        {
+            var result = ParentProfile != null
+                ? ParentProfile.GetFilters()
+                : new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (var mapping in Mappings)
+            {
+                foreach (var plugin in mapping.Plugins)
+                {
+                    foreach (var filter in plugin.Filters)
+                    {
+                        result.Add(filter.Name);
+                    }
+                }
+            }
+
+            return result;
+        }
 
         #region Helpers
 

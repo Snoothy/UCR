@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -70,6 +71,19 @@
                 </Button>
             </Grid>
         </StackPanel>
-        <plugin:PluginPropertyListControl Grid.Row="2" Grid.Column="0" Margin="0 8 0 0" Grid.ColumnSpan="2" DataContext="{Binding PluginPropertyGroup}" Visibility="{Binding ShowPropertyList}"/>
+
+        <Grid  Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="8 16 8 0" Visibility="{Binding ShowBlock}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Text="Block" Margin="0 12" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+            <ToggleButton Grid.Row="0" Grid.Column="1" IsChecked="{Binding Block, Mode=TwoWay}" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
+        </Grid>
+
+        <plugin:PluginPropertyListControl Grid.Row="3" Grid.Column="0" Margin="0 8 0 0" Grid.ColumnSpan="2" DataContext="{Binding PluginPropertyGroup}" Visibility="{Binding ShowPropertyList}"/>
     </Grid>
 </UserControl>

@@ -94,7 +94,7 @@ namespace HidWizards.UCR.Views
         {
             if (Context.ActiveProfile == null) return;
             
-            if (!Context.SubscriptionsManager.DeactivateProfile())
+            if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -107,7 +107,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel) await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile);
 
             ReloadProfileTree();
@@ -121,7 +124,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile, profileItem.Profile);
 
             ReloadProfileTree();

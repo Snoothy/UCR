@@ -18,100 +18,57 @@ namespace HidWizards.UCR.Core.Models
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         /* Persistence */
-        public Guid Guid { get; set; }
+        [XmlAttribute]
         public string Title { get; set; }
+        [XmlAttribute]
         public string ProviderName { get; set; }
+        [XmlAttribute]
         public string DeviceHandle { get; set; }
+        [XmlAttribute]
         public int DeviceNumber { get; set; }
 
         /* Runtime */
         [XmlIgnore]
         private List<DeviceBindingNode> DeviceBindingMenu { get; set; }
         [XmlIgnore] public Profile Profile { get; set; }
+        [XmlIgnore] public bool IsCache { get; set; }
 
         #region Constructors
 
         public Device()
         {
-            Guid = Guid.NewGuid();
         }
 
-        public Device(Guid guid)
+        public Device(string title, string providerName, string deviceHandle, int deviceNumber)
         {
-            Guid = (guid == Guid.Empty) ? Guid.NewGuid() : guid;
+            Title = title;
+            ProviderName = providerName;
+            DeviceHandle = deviceHandle;
+            DeviceNumber = deviceNumber;
         }
 
-        public Device(Device device) : this(device.Guid)
-        {
-            Title = device.Title;
-            DeviceHandle = device.DeviceHandle;
-            ProviderName = device.ProviderName;
-            DeviceNumber = device.DeviceNumber;
-            DeviceBindingMenu = device.DeviceBindingMenu;
-            Guid = device.Guid;
-        }
-
-        public Device(DeviceReport device, ProviderReport providerReport, DeviceIoType type) : this()
+        public Device(DeviceReport device, ProviderReport providerReport, List<DeviceBindingNode> deviceBindingMenu) : this()
         {
             Title = device.DeviceName;
             ProviderName = providerReport.ProviderDescriptor.ProviderName;
             DeviceHandle = device.DeviceDescriptor.DeviceHandle;
             DeviceNumber = device.DeviceDescriptor.DeviceInstance;
-            DeviceBindingMenu = GetDeviceBindingMenu(device.Nodes, type);
+            DeviceBindingMenu = deviceBindingMenu;
+            IsCache = false;
+        }
+
+        public Device(DeviceCache deviceCache)
+        {
+            Title = deviceCache.Title;
+            ProviderName = deviceCache.ProviderName;
+            DeviceHandle = deviceCache.DeviceHandle;
+            DeviceNumber = deviceCache.DeviceNumber;
+            DeviceBindingMenu = deviceCache.DeviceBindingMenu;
+            IsCache = true;
         }
 
         #endregion
-
-        public string GetFullTitleForProfile(Profile profile)
-        {
-            if (profile == null || Profile.Guid == profile.Guid) return Title;
-
-            return $"{Title} (Inherited from {Profile.Title})";
-        }
-
-        private static List<DeviceBindingNode> GetDeviceBindingMenu(List<DeviceReportNode> deviceNodes, DeviceIoType type)
-        {
-            var result = new List<DeviceBindingNode>();
-            if (deviceNodes == null) return result;
-
-            foreach (var deviceNode in deviceNodes)
-            {
-                var groupNode = new DeviceBindingNode()
-                {
-                    Title = deviceNode.Title,
-                    IsBinding = false,
-                    ChildrenNodes = GetDeviceBindingMenu(deviceNode.Nodes, type),
-                };
-                
-                foreach (var bindingInfo in deviceNode.Bindings)
-                {
-                    var bindingNode = new DeviceBindingNode()
-                    {
-                        Title = bindingInfo.Title,
-                        IsBinding = true,
-                        DeviceBinding = new DeviceBinding(null,null,type)
-                        {
-                            IsBound = false,
-                            KeyType = (int)bindingInfo.BindingDescriptor.Type,
-                            KeyValue = bindingInfo.BindingDescriptor.Index,
-                            KeySubValue = bindingInfo.BindingDescriptor.SubIndex,
-                            DeviceBindingCategory = DeviceBinding.MapCategory(bindingInfo.Category)
-                            // TODO Extract to class instead of using DeviceBinding?
-                        }
-
-                    };
-                    if (groupNode.ChildrenNodes == null)
-                    {
-                        groupNode.ChildrenNodes = new List<DeviceBindingNode>();
-                    }
-
-                    groupNode.ChildrenNodes.Add(bindingNode);
-                }
-                result.Add(groupNode);
-            }
-            return result.Count != 0 ? result : null;
-        }
-
+        
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
@@ -139,48 +96,29 @@ namespace HidWizards.UCR.Core.Models
         private static bool deviceBindingMatchesNode(DeviceBinding deviceBinding, DeviceBindingNode deviceBindingNode)
         {
             return deviceBindingNode.IsBinding && 
-                   deviceBindingNode.DeviceBinding.KeyType == deviceBinding.KeyType &&
-                   deviceBindingNode.DeviceBinding.KeySubValue == deviceBinding.KeySubValue &&
-                   deviceBindingNode.DeviceBinding.KeyValue == deviceBinding.KeyValue;
+                   deviceBindingNode.DeviceBindingInfo.KeyType == deviceBinding.KeyType &&
+                   deviceBindingNode.DeviceBindingInfo.KeySubValue == deviceBinding.KeySubValue &&
+                   deviceBindingNode.DeviceBindingInfo.KeyValue == deviceBinding.KeyValue;
         }
 
-        public static List<Device> CopyDeviceList(List<Device> devicelist)
+        public List<DeviceBindingNode> GetDeviceBindingMenu()
         {
-            var newDevicelist = new List<Device>();
-            if (devicelist == null) return newDevicelist;
-            foreach (var device in devicelist)
-            {
-                newDevicelist.Add(new Device(device));
+            if (DeviceBindingMenu != null && DeviceBindingMenu.Count != 0) return DeviceBindingMenu;
 
-            }
-            return newDevicelist;
+            return new List<DeviceBindingNode>
+            {
+                new DeviceBindingNode()
+                {
+                    Title = "Device not connected",
+                }
+            };
         }
 
         public List<DeviceBindingNode> GetDeviceBindingMenu(Context context, DeviceIoType type)
         {
-            if (DeviceBindingMenu == null || DeviceBindingMenu.Count == 0)
-            {
-                var ioController = context.IOController;
-                var list = type == DeviceIoType.Input
-                    ? ioController.GetInputList()
-                    : ioController.GetOutputList();
-                try
-                {
-                    DeviceBindingMenu = GetDeviceBindingMenu(list[ProviderName]?.Devices.Find(d => d.DeviceDescriptor.DeviceHandle == DeviceHandle)?.Nodes, type);
-                }
-                catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
-                {
-                    return new List<DeviceBindingNode>
-                    {
-                        new DeviceBindingNode()
-                        {
-                            Title = "Device not connected",
-                            IsBinding = false
-                        }
-                    };
-                }
-            }
-            return DeviceBindingMenu;
+            if (DeviceBindingMenu != null && DeviceBindingMenu.Count != 0) return DeviceBindingMenu;
+
+            return context.DevicesManager.GetDeviceBindingMenu(this, type);
         }
 
         public string LogName()

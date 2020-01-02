@@ -32,7 +32,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         [Test]
         public void TestEmptyProfile()
         {
-            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
+            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile, false));
 
             var state = getSubscriptionState();
             Assert.IsTrue(state.IsActive);
@@ -46,7 +46,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var plugin = new ButtonToButton();
             mapping.AddPlugin(plugin);
 
-            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile));
+            Assert.IsTrue(_context.SubscriptionsManager.ActivateProfile(_profile, false));
 
             var state = getSubscriptionState();
             Assert.IsTrue(state.IsActive);

@@ -103,17 +103,20 @@
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
+    <Compile Include="ViewModels\Controls\DeviceAddRemoveControlViewModel.cs" />
     <Compile Include="ViewModels\Controls\DeviceSelectControlViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\AddDevicesDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
+    <Compile Include="ViewModels\Dashboard\ManageDeviceConfigurationViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileDeviceListControlViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\AddMappingPluginDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />
@@ -125,6 +128,9 @@
     <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DeviceAddRemoveControl.xaml.cs">
+      <DependentUpon>DeviceAddRemoveControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\DeviceSelectControl.xaml.cs">
       <DependentUpon>DeviceSelectControl.xaml</DependentUpon>
@@ -166,6 +172,9 @@
       <DependentUpon>BoolDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\DecisionDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\ManageDeviceConfigurationDialog.xaml.cs">
+      <DependentUpon>ManageDeviceConfigurationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\DecisionDialog.xaml.cs">
       <DependentUpon>DecisionDialog.xaml</DependentUpon>
     </Compile>
@@ -210,6 +219,10 @@
     <Page Include="Views\Controls\DeviceBindingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DeviceAddRemoveControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\DeviceSelectControl.xaml">
       <SubType>Designer</SubType>
@@ -258,6 +271,10 @@
     <Page Include="Views\Dialogs\BoolDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ManageDeviceConfigurationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\DecisionDialog.xaml">
       <SubType>Designer</SubType>

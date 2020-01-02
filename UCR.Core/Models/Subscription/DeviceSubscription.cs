@@ -6,13 +6,11 @@ namespace HidWizards.UCR.Core.Models.Subscription
     {
         public Guid DeviceSubscriptionGuid { get; }
         public Device Device { get; }
-        public Profile Profile { get; }
 
-        public DeviceSubscription(Device device, Profile profile)
+        public DeviceSubscription(Device device)
         {
             DeviceSubscriptionGuid = Guid.NewGuid();
             Device = device;
-            Profile = profile;
         }
     }
 }

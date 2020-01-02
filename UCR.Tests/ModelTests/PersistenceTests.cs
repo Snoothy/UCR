@@ -19,7 +19,7 @@ namespace HidWizards.UCR.Tests.ModelTests
         public void BlankContext()
         {
             var context = new Context();
-            context.SaveContext();
+            context.SaveContext(null);
 
             for (var i = 0; i < _saveReloadTimes; i++)
             {
@@ -27,7 +27,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                 Assert.That(newcontext.IsNotSaved, Is.False);
                 Assert.That(newcontext.ActiveProfile, Is.Null);
                 Assert.That(newcontext.Profiles, Is.Not.Null.And.Empty);
-                newcontext.SaveContext();
+                newcontext.SaveContext(null);
             }
         }
 
@@ -39,7 +39,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             var childProfile = context.ProfilesManager.CreateProfile("Child Profile", null, null);
             context.ProfilesManager.AddProfile(profile);
             context.Profiles[0].AddChildProfile(childProfile);
-            context.SaveContext();
+            context.SaveContext(null);
 
             Assert.That(context.Profiles.Count, Is.EqualTo(1));
             Assert.That(context.Profiles[0].ChildProfiles.Count, Is.EqualTo(1));
@@ -61,7 +61,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                     Is.EqualTo(context.Profiles[0].ChildProfiles[0].Guid));
                 Assert.That(newcontext.Profiles[0].ChildProfiles[0].Mappings.Count,
                     Is.EqualTo(context.Profiles[0].ChildProfiles[0].Mappings.Count));
-                newcontext.SaveContext();
+                context.SaveContext(null);
             }
         }
 
@@ -78,8 +78,7 @@ namespace HidWizards.UCR.Tests.ModelTests
             profile.AddPlugin(mapping, new ButtonToButton());
             profile.AddPlugin(mapping, new ButtonToButton());
 
-            var bindingCount = 10;
-            mapping.InitializeMappings(bindingCount);
+            var bindingCount = profile.Mappings[0].DeviceBindings.Count;
             for (var i = 0; i < bindingCount; i++)
             {
                 SetDeviceBindingValues(profile.Mappings[0].DeviceBindings[i], i + 1);
@@ -95,7 +94,6 @@ namespace HidWizards.UCR.Tests.ModelTests
                 var newDeviceBindings = newcontext.Profiles[0].Mappings[0].DeviceBindings;
                 Assert.That(newMapping.Title, Is.EqualTo(mapping.Title));
                 Assert.That(newMapping.Plugins.Count, Is.EqualTo(mapping.Plugins.Count));
-                Assert.That(newMapping.Guid, Is.EqualTo(mapping.Guid));
                 Assert.That(newMapping.Plugins[0].Outputs.Count, Is.EqualTo(1));
 
                 for (var j = 0; j < mapping.DeviceBindings.Count; j++)
@@ -105,7 +103,7 @@ namespace HidWizards.UCR.Tests.ModelTests
                     Assert.That(newDeviceBindings[j].DeviceIoType, Is.EqualTo(DeviceIoType.Input));
                     Assert.That(newDeviceBindings[j].Guid, Is.Not.EqualTo(deviceBindings[j].Guid));
                     Assert.That(newDeviceBindings[j].IsBound, Is.EqualTo(deviceBindings[j].IsBound));
-                    Assert.That(newDeviceBindings[j].DeviceGuid, Is.EqualTo(deviceBindings[j].DeviceGuid));
+                    Assert.That(newDeviceBindings[j].DeviceConfigurationGuid, Is.EqualTo(deviceBindings[j].DeviceConfigurationGuid));
                     Assert.That(newDeviceBindings[j].KeyType, Is.EqualTo(deviceBindings[j].KeyType));
                     Assert.That(newDeviceBindings[j].KeyValue, Is.EqualTo(deviceBindings[j].KeyValue));
                     Assert.That(newDeviceBindings[j].KeySubValue, Is.EqualTo(deviceBindings[j].KeySubValue));
@@ -117,7 +115,7 @@ namespace HidWizards.UCR.Tests.ModelTests
 
         private static void SetDeviceBindingValues(DeviceBinding deviceBinding, int value)
         {
-            deviceBinding.DeviceGuid = Guid.NewGuid();
+            deviceBinding.DeviceConfigurationGuid = Guid.NewGuid();
             deviceBinding.KeyType = value;
             deviceBinding.KeyValue = value;
             deviceBinding.KeySubValue = value;
