@@ -2,10 +2,13 @@ assembly-versioning-scheme: MajorMinorPatchTag
 mode: ContinuousDelivery
 branches:
   master:
+    regex: ^master
     mode: ContinuousDelivery
     tag: alpha
     increment: none
+    track-merge-target: true
   develop:
+    regex: ^dev(elop)?(ment)?$
     mode: ContinuousDelivery
     tag: alpha-rc
     increment: Patch
