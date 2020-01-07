@@ -108,6 +108,8 @@ namespace HidWizards.UCR.Core.Managers
 
             var success = DeactivateProfile(state);
 
+            state.Deactivate();
+
             SubscriptionState = null;
             _context.ActiveProfile = null;
             _context.OnActiveProfileChangedEvent(null);
@@ -217,7 +219,7 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            state.IsActive = true;
+            state.Activate();
             return success;
         }
 

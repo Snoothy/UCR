@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HidWizards.UCR.Core.Models.Subscription
 {
@@ -13,6 +16,12 @@ namespace HidWizards.UCR.Core.Models.Subscription
         public List<DeviceConfigurationSubscription> OutputDeviceConfigurationSubscriptions { get; }
         public List<MappingSubscription> MappingSubscriptions { get; set; }
         public FilterState FilterState { get; set; }
+        public List<Plugin> FixedUpdatePlugins { get; set; }
+        
+        // Fixed update
+        private Stopwatch Stopwatch { get; }
+        public CancellationTokenSource CancellationTokenSource { get; set; }
+        private bool HasFixedUpdatePlugins => FixedUpdatePlugins.Count > 0;
 
         public SubscriptionState(Profile profile)
         {
@@ -23,6 +32,8 @@ namespace HidWizards.UCR.Core.Models.Subscription
             IsActive = false;
 
             FilterState = new FilterState();
+            FixedUpdatePlugins = new List<Plugin>();
+            Stopwatch = new Stopwatch();
         }
 
         public void AddOutputDeviceConfiguration(DeviceConfiguration deviceConfiguration)
@@ -44,6 +55,71 @@ namespace HidWizards.UCR.Core.Models.Subscription
 
             MappingSubscriptions.AddRange(profileMappings);
             MappingSubscriptions.AddRange(AddShadowMappings(profile, profileMappings, profileOutputDevices));
+
+            RegisterFixedUpdatePlugins();
+        }
+
+        public void Activate()
+        {
+            if (HasFixedUpdatePlugins)
+            {
+                CancellationTokenSource = new CancellationTokenSource();
+                var task = Task.Factory.StartNew(UpdatePlugins, CancellationTokenSource.Token);
+            }
+
+            IsActive = true;
+        }
+
+        private void UpdatePlugins()
+        {
+            Stopwatch.Start();
+            var lastUpdate = Stopwatch.ElapsedMilliseconds;
+            long delta = 8;
+
+            while (!CancellationTokenSource.IsCancellationRequested)
+            {
+                if (Stopwatch.ElapsedMilliseconds - lastUpdate < 8)
+                {
+                    Thread.Sleep(4);
+                    continue;
+                }
+
+                delta = Stopwatch.ElapsedMilliseconds - lastUpdate;
+
+                foreach (var plugin in FixedUpdatePlugins)
+                {
+                    plugin.FixedUpdate(delta);
+                }
+
+                
+                lastUpdate = Stopwatch.ElapsedMilliseconds;
+            }
+        }
+
+        public void Deactivate()
+        {
+            if (HasFixedUpdatePlugins)
+            {
+                Stopwatch.Reset();
+                CancellationTokenSource.Cancel();
+            }
+
+            IsActive = false;
+        }
+
+        private void RegisterFixedUpdatePlugins()
+        {
+            foreach (var mappingSubscription in MappingSubscriptions)
+            {
+                if (mappingSubscription.Overriden) continue;
+
+                foreach (var pluginSubscription in mappingSubscription.PluginSubscriptions)
+                {
+                    if (!pluginSubscription.Plugin.HasFixedUpdate) continue;
+
+                    FixedUpdatePlugins.Add(pluginSubscription.Plugin);
+                }
+            }
         }
 
         private List<MappingSubscription> AddShadowMappings(Profile profile, List<MappingSubscription> profileMappings, List<DeviceConfigurationSubscription> profileOutputDevices)

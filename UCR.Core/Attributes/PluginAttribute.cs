@@ -9,6 +9,7 @@ namespace HidWizards.UCR.Core.Attributes
         public string Description { get; set; }
         public string Group { get; set; }
         public bool Disabled { get; set; }
+        public bool FixedUpdate { get; set; }
 
         public PluginAttribute(string name)
         {

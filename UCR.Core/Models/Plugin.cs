@@ -70,6 +70,8 @@ namespace HidWizards.UCR.Core.Models
         public string Group => GetPluginAttribute().Group;
         [XmlIgnore]
         public bool IsDisabled => GetPluginAttribute().Disabled;
+        [XmlIgnore]
+        public bool HasFixedUpdate => GetPluginAttribute().FixedUpdate;
 
         #endregion
 
@@ -120,6 +122,11 @@ namespace HidWizards.UCR.Core.Models
         }
 
         public virtual void Update(params short[] values)
+        {
+
+        }
+
+        public virtual void FixedUpdate(long deltaMillis)
         {
 
         }
