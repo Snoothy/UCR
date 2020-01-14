@@ -96,5 +96,12 @@ namespace HidWizards.UCR.Core.Utilities
             if ((short)percentage == -100) return Constants.AxisMinValue;
             return (short) (Constants.AxisMaxValue * (percentage / 100.0));
         }
+
+        public static double GetPercentageFromRange(short value)
+        {
+            const double scaleFactor = 100D / 65535;
+            if (value == Constants.AxisMaxValue) return 100;
+            return (value + 32768) * scaleFactor;
+        }
     }
 }

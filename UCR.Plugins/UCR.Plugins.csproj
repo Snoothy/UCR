@@ -52,6 +52,7 @@
     <Compile Include="Remapper\AxisSplitter.cs" />
     <Compile Include="Remapper\AxesToAxes.cs" />
     <Compile Include="Remapper\AxisInitializer.cs" />
+    <Compile Include="Remapper\AxesToAxisDynamicSensitivity.cs" />
     <Compile Include="Remapper\ButtonToEvent.cs" />
     <Compile Include="Remapper\AxisToAxis.cs" />
     <Compile Include="Remapper\AxisToButton.cs" />
