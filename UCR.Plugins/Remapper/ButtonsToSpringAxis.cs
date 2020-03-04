@@ -116,6 +116,8 @@ namespace HidWizards.UCR.Plugins.Remapper
                     return InputValidation.ValidateRange(value, -100, 100);
                 case nameof(Damping):
                     return InputValidation.ValidatePercentage(value);
+                case nameof(Weight):
+                    return InputValidation.ValidateNotZero(value);
             }
 
             return PropertyValidationResult.ValidResult;
