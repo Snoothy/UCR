@@ -335,13 +335,13 @@ namespace HidWizards.UCR.Views
             StopProfileStrip.Enabled = false;
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
-            TrayIcon.Click += TrayIcon_OnClick;
+            TrayIcon.DoubleClick += TrayIcon_OnDoubleClick;
             TrayIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
             TrayIcon.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { StopProfileStrip });
             TrayIcon.Visible = true;
         }
 
-        private void TrayIcon_OnClick(object sender, EventArgs e)
+        private void TrayIcon_OnDoubleClick(object sender, EventArgs e)
         {
             this.Show();
         }
