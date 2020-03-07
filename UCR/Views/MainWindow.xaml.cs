@@ -26,7 +26,9 @@ namespace HidWizards.UCR.Views
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
-
+        private System.Windows.Forms.NotifyIcon TrayIcon = new System.Windows.Forms.NotifyIcon();
+        private System.Windows.Forms.ToolStripItem StopProfileStrip = new System.Windows.Forms.ToolStripButton();
+        
         enum CloseState
         {
             None,
@@ -40,6 +42,7 @@ namespace HidWizards.UCR.Views
             DataContext = _dashboardViewModel;
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
+            InitTrayIcon();
             InitializeComponent();
         }
 
@@ -88,6 +91,7 @@ namespace HidWizards.UCR.Views
                 // TODO Move to dialog
                 MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+            else StopProfileStrip.Enabled = true;
         }
 
         private void DeactivateProfile(object sender, RoutedEventArgs e)
@@ -99,6 +103,19 @@ namespace HidWizards.UCR.Views
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+            else StopProfileStrip.Enabled = false;
+        }
+
+        private void DeactivateProfile(object sender, EventArgs e)
+        {
+            if (Context.ActiveProfile == null) return;
+
+            if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
+            {
+                // TODO Move to dialog
+                MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else StopProfileStrip.Enabled = false;
         }
 
         private async void AddProfile(object sender, RoutedEventArgs e)
@@ -284,6 +301,11 @@ namespace HidWizards.UCR.Views
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
+            if (Context.StartHidden)
+            {
+                this.Hide();
+                Context.StartHidden = false;
+            }
             return IntPtr.Zero;
         }
 
@@ -305,6 +327,24 @@ namespace HidWizards.UCR.Views
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
 
+        private void InitTrayIcon()
+        {
+            StopProfileStrip.Text = "Stop Current Profile";
+            StopProfileStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            StopProfileStrip.Click += DeactivateProfile;
+            StopProfileStrip.Enabled = false;
+            TrayIcon.Text = "Universal Control Remapper";
+            TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
+            TrayIcon.Click += TrayIcon_OnClick;
+            TrayIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+            TrayIcon.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { StopProfileStrip });
+            TrayIcon.Visible = true;
+        }
+
+        private void TrayIcon_OnClick(object sender, EventArgs e)
+        {
+            this.Show();
+        }
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new AboutDialog();
