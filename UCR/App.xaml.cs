@@ -35,8 +35,8 @@ namespace HidWizards.UCR
                 InitializeUcr();
                 CheckForBlockedDll();
 
-                context.ParseCommandLineArguments(e.Args);
                 var mw = new MainWindow(context);
+                context.ParseCommandLineArguments(e.Args);
                 if (!context.StartHidden) mw.Show();
                 else context.StartHidden = false;
             }
