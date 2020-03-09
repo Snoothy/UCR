@@ -28,6 +28,7 @@ namespace HidWizards.UCR.Core.Managers
         }
 
         internal SubscriptionState SubscriptionState { get; set; }
+        private Profile LastProfile;
         private readonly Context _context;
 
         public SubscriptionsManager(Context context)
@@ -40,6 +41,11 @@ namespace HidWizards.UCR.Core.Managers
         public Profile GetActiveProfile()
         {
             return SubscriptionState?.ActiveProfile;
+        }
+
+        public bool ActivateLastProfile()
+        {
+            return ActivateProfile(LastProfile);
         }
 
         public bool ActivateProfile(Profile profile, bool refreshDevices = true)
@@ -83,6 +89,7 @@ namespace HidWizards.UCR.Core.Managers
         {
             // Set new active profile
             SubscriptionState = subscriptionState;
+            LastProfile = profile;
             _context.ActiveProfile = profile;
 
             // Activate plugins

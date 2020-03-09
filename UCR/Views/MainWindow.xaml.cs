@@ -27,8 +27,11 @@ namespace HidWizards.UCR.Views
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
         private System.Windows.Forms.NotifyIcon TrayIcon = new System.Windows.Forms.NotifyIcon();
-        private System.Windows.Forms.ToolStripItem StopProfileStrip = new System.Windows.Forms.ToolStripButton();
-        
+        private System.Windows.Forms.ToolStripItem ShowStrip = new System.Windows.Forms.ToolStripMenuItem();
+        private System.Windows.Forms.ToolStripItem StartLastProfileStrip = new System.Windows.Forms.ToolStripMenuItem();
+        private System.Windows.Forms.ToolStripItem StopProfileStrip = new System.Windows.Forms.ToolStripMenuItem();
+        private System.Windows.Forms.ToolStripItem ExitStrip = new System.Windows.Forms.ToolStripMenuItem();
+
         enum CloseState
         {
             None,
@@ -91,7 +94,6 @@ namespace HidWizards.UCR.Views
                 // TODO Move to dialog
                 MessageBox.Show("The Profile could not be activated, see the log for more details", "Profile failed to activate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else StopProfileStrip.Enabled = true;
         }
 
         private void DeactivateProfile(object sender, RoutedEventArgs e)
@@ -103,7 +105,6 @@ namespace HidWizards.UCR.Views
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else StopProfileStrip.Enabled = false;
         }
 
         private void DeactivateProfile(object sender, EventArgs e)
@@ -115,7 +116,6 @@ namespace HidWizards.UCR.Views
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else StopProfileStrip.Enabled = false;
         }
 
         private async void AddProfile(object sender, RoutedEventArgs e)
@@ -282,6 +282,7 @@ namespace HidWizards.UCR.Views
                         break;
                 }
             }
+            TrayIcon.Visible = false;
         }
         
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -329,21 +330,70 @@ namespace HidWizards.UCR.Views
 
         private void InitTrayIcon()
         {
-            StopProfileStrip.Text = "Stop Current Profile";
+            ShowStrip.Text = "Show";
+            ShowStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            ShowStrip.Click += ShowStrip_Click;
+
+            StartLastProfileStrip.Text = "Activate Last Profile";
+            StartLastProfileStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            StartLastProfileStrip.Click += StartLastProfileStrip_Click;
+            StartLastProfileStrip.Enabled = false;
+
+            StopProfileStrip.Text = "Stop Active Profile";
             StopProfileStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             StopProfileStrip.Click += DeactivateProfile;
             StopProfileStrip.Enabled = false;
+
+            ExitStrip.Text = "Exit";
+            ExitStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            ExitStrip.Click += ExitStrip_Click;
+
+            Context.ActiveProfileChangedEvent += Context_ActiveProfileChangedEvent;
+
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
             TrayIcon.DoubleClick += TrayIcon_OnDoubleClick;
             TrayIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-            TrayIcon.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { StopProfileStrip });
+            TrayIcon.ContextMenuStrip.ShowCheckMargin = false;
+            TrayIcon.ContextMenuStrip.ShowImageMargin = false;
+            TrayIcon.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ShowStrip, new System.Windows.Forms.ToolStripSeparator(), StartLastProfileStrip, StopProfileStrip, new System.Windows.Forms.ToolStripSeparator(), ExitStrip });
             TrayIcon.Visible = true;
+        }
+
+        private void Context_ActiveProfileChangedEvent(Profile profile)
+        {
+            if(profile == null)
+            {
+                StopProfileStrip.Enabled = false;
+            }
+            else
+            {
+                StopProfileStrip.Enabled = true;
+                StartLastProfileStrip.Text = $"Activate Last Profile: {profile.Title}";
+                StartLastProfileStrip.Enabled = true;
+            }
+        }
+
+        private void ExitStrip_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void StartLastProfileStrip_Click(object sender, EventArgs e)
+        {
+            Context.SubscriptionsManager.ActivateLastProfile();
+            StopProfileStrip.Enabled = true;
+        }
+
+        private void ShowStrip_Click(object sender, EventArgs e)
+        {
+            Show();
+            Activate();
         }
 
         private void TrayIcon_OnDoubleClick(object sender, EventArgs e)
         {
-            this.Show();
+            Show();
         }
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
