@@ -36,7 +36,7 @@ namespace HidWizards.UCR.Core
         
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
-        internal bool StartHidden { get; set; }
+        internal bool Minimized { get; set; }
         private OptionSet options;
 
         public Context()
@@ -48,7 +48,7 @@ namespace HidWizards.UCR.Core
         private void Init()
         {
             IsNotSaved = false;
-            StartHidden = false;
+            Minimized = false;
             Profiles = new List<Profile>();
 
             try
@@ -71,7 +71,7 @@ namespace HidWizards.UCR.Core
         {
             options = new OptionSet {
                 { "p|profile=", "The profile to search for", FindAndLoadProfile },
-                { "h|hidden", "Start with main window hidden", x => StartHidden=true }
+                { "h|hidden", "Minimize to system tray", x => Minimized=true }
             };
         }
 

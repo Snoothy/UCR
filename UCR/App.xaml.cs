@@ -37,8 +37,8 @@ namespace HidWizards.UCR
 
                 var mw = new MainWindow(context);
                 context.ParseCommandLineArguments(e.Args);
-                if (!context.StartHidden) mw.Show();
-                else context.StartHidden = false;
+                if (!context.Minimized) mw.Show();
+                else context.Minimized = false;
             }
             else
             {

@@ -302,10 +302,10 @@ namespace HidWizards.UCR.Views
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
-            if (Context.StartHidden)
+            if (Context.Minimized)
             {
                 this.Hide();
-                Context.StartHidden = false;
+                Context.Minimized = false;
             }
             return IntPtr.Zero;
         }

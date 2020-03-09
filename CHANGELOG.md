@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added option to clear bindings
 - Added Filters for plugins
 - Added System Tray Icon
-- Added Start Hidden CLI Argument
+- Added Minimized mode CLI Argument (-h|hidden)
 - `Button to Filter`: Allows toggling of a filter using a button
 - `Axis to Filter`: Allows toggling of a filter using an axis
 - Added device cache allowing configuration of disconnected devices
