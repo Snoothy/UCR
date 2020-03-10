@@ -26,7 +26,7 @@ namespace HidWizards.UCR.Views
         private UCRTrayIcon TrayIcon;
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
-        private Dictionary<Guid, ProfileWindow> ProfileWindows;
+        internal Dictionary<Guid, ProfileWindow> ProfileWindows;
 
         enum CloseState
         {
