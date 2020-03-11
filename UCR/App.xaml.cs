@@ -19,6 +19,7 @@ namespace HidWizards.UCR
         private Context context;
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
+        private bool StartMinimized;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -36,15 +37,20 @@ namespace HidWizards.UCR
                 CheckForBlockedDll();
 
                 var mw = new MainWindow(context);
+                context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
                 context.ParseCommandLineArguments(e.Args);
-                if (!context.Minimized) mw.Show();
-                else context.Minimized = false;
+                if (!StartMinimized) mw.Show();
             }
             else
             {
                 SendArgs(string.Join(";", e.Args));
                 Current.Shutdown();
             }
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            StartMinimized = true;
         }
 
         private void InitializeUcr()

@@ -37,10 +37,13 @@ namespace HidWizards.UCR.Utilities
 
             _parent = parent;
             _parent.Context.ActiveProfileChangedEvent += Context_ActiveProfileChangedEvent;
+            _parent.Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
 
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             TrayIcon.DoubleClick += TrayIcon_OnDoubleClick;
+            TrayIcon.BalloonTipTitle = "UCR Hidden";
+            TrayIcon.BalloonTipText = "UCR has been minimized to the system tray. Double-click the icon to restore, or right click for more options.";
             TrayIcon.ContextMenuStrip = new ContextMenuStrip();
             TrayIcon.ContextMenuStrip.ShowCheckMargin = false;
             TrayIcon.ContextMenuStrip.ShowImageMargin = false;
@@ -65,6 +68,11 @@ namespace HidWizards.UCR.Utilities
                 StartLastProfileStrip.Text = $"Activate Last Profile: {profile.Title}";
                 StartLastProfileStrip.Enabled = true;
             }
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            TrayIcon.ShowBalloonTip(5000);
         }
 
         private void ExitStrip_Click(object sender, EventArgs e)

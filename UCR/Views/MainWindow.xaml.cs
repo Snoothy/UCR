@@ -42,6 +42,7 @@ namespace HidWizards.UCR.Views
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             TrayIcon = new UCRTrayIcon(this);
+            Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
             InitializeComponent();
         }
 
@@ -287,11 +288,6 @@ namespace HidWizards.UCR.Views
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
-            if (Context.Minimized)
-            {
-                this.Hide();
-                Context.Minimized = false;
-            }
             return IntPtr.Zero;
         }
 
@@ -329,6 +325,11 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            Hide();
         }
     }
 }
