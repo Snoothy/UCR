@@ -79,12 +79,14 @@ namespace HidWizards.UCR.Utilities
         private void ShowStrip_Click(object sender, EventArgs e)
         {
             _parent.Show();
+            _parent.WindowState = System.Windows.WindowState.Normal;
             _parent.Activate();
         }
 
         private void TrayIcon_OnDoubleClick(object sender, EventArgs e)
         {
             _parent.Show();
+            _parent.WindowState = System.Windows.WindowState.Normal;
             _parent.Activate();
         }
     }

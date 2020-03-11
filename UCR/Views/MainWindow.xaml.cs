@@ -148,7 +148,7 @@ namespace HidWizards.UCR.Views
 
             if (ProfileWindows.TryGetValue(profileItem.Profile.Guid, out var profileWindow))
             {
-                void FocusAction() => profileWindow.Focus();
+                void FocusAction() { profileWindow.WindowState = WindowState.Normal; profileWindow.Focus(); }
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
