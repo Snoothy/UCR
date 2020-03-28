@@ -159,6 +159,9 @@
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -255,6 +258,10 @@
     <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\SettingsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

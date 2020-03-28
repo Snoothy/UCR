@@ -30,6 +30,7 @@ namespace HidWizards.UCR.Core
         [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore] public PluginsManager PluginManager { get; set; }
         [XmlIgnore] public BindingManager BindingManager { get; set; }
+        [XmlIgnore] public SettingsManager SettingsManager { get; set; }
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
@@ -58,6 +59,7 @@ namespace HidWizards.UCR.Core
                 Logger.Error("IOWrapper provider directory not found", e);
             }
             
+            SettingsManager = new SettingsManager();
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             SubscriptionsManager = new SubscriptionsManager(this);

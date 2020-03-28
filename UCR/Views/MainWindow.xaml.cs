@@ -305,6 +305,12 @@ namespace HidWizards.UCR.Views
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
 
+        private async void Settings_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SettingsDialog();
+            await DialogHost.Show(dialog, "RootDialog");
+        }
+
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new AboutDialog();
