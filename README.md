@@ -61,17 +61,17 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 
 - Xbox 360 controllers (XInput)
 - DirectInput controllers, includes gamepads, racing wheels, HOTAS, etc.
-- Keyboard (using [interception](https://github.com/oblitum/Interception))
-- Mouse (using [interception](https://github.com/oblitum/Interception))
+- Keyboard (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
+- Mouse (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
 - Tobii Eye tracker
 
 ### Supported output ###
 
-- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/nefarius/ViGEm))
-- Dualshock 4 controller (using [ViGEm](https://github.com/nefarius/ViGEm))
-- DirectInput controller (using [vJoy](https://github.com/shauleiz/vJoy))
-- Keyboard (using [interception](https://github.com/oblitum/Interception))
-- Mouse (using [interception](https://github.com/oblitum/Interception))
+- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/Snoothy/UCR/wiki/Core_ViGEm))
+- Dualshock 4 controller (using [ViGEm](https://github.com/Snoothy/UCR/wiki/Core_ViGEm))
+- DirectInput controller (using [vJoy](https://github.com/Snoothy/UCR/wiki/Core_vJoyInterfaceWrap))
+- Keyboard (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
+- Mouse (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
 
 ## Building and Contributing ##
 It is required to run the build script before building with Visual Studio. Run `.\build.ps1 InitProject` from powershell to initialize the required dependencies. All subsequent builds can be done from Visual Studio 2017.
