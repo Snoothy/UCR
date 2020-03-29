@@ -22,7 +22,8 @@ namespace HidWizards.UCR.Views
 
     public partial class MainWindow : Window
     {
-        private Context Context { get; set; }
+        internal Context Context { get; set; }
+        private UCRTrayIcon TrayIcon;
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
@@ -40,6 +41,8 @@ namespace HidWizards.UCR.Views
             DataContext = _dashboardViewModel;
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
+            TrayIcon = new UCRTrayIcon(this);
+            Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
             InitializeComponent();
         }
 
@@ -90,7 +93,7 @@ namespace HidWizards.UCR.Views
             }
         }
 
-        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        internal void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
             
@@ -146,7 +149,7 @@ namespace HidWizards.UCR.Views
 
             if (ProfileWindows.TryGetValue(profileItem.Profile.Guid, out var profileWindow))
             {
-                void FocusAction() => profileWindow.Focus();
+                void FocusAction() { profileWindow.WindowState = WindowState.Normal; profileWindow.Focus(); }
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
@@ -265,6 +268,7 @@ namespace HidWizards.UCR.Views
                         break;
                 }
             }
+            TrayIcon.Visible = false;
         }
         
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -304,7 +308,7 @@ namespace HidWizards.UCR.Views
             var error = Marshal.GetLastWin32Error();
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
-
+        
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new AboutDialog();
@@ -321,6 +325,11 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            Hide();
         }
     }
 }
