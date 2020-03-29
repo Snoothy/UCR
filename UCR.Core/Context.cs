@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -34,7 +34,8 @@ namespace HidWizards.UCR.Core
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
-        
+        public event Action MinimizedToTrayEvent;
+
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
         private OptionSet options;
@@ -70,7 +71,8 @@ namespace HidWizards.UCR.Core
         private void SetCommandLineOptions()
         {
             options = new OptionSet {
-                { "p|profile=", "The profile to search for", FindAndLoadProfile }
+                { "p|profile=", "The profile to search for", FindAndLoadProfile },
+                { "h|hidden", "Minimize to system tray", x => MinimizedToTrayEvent.Invoke() }
             };
         }
 
@@ -99,7 +101,7 @@ namespace HidWizards.UCR.Core
         }
 
         #region Persistence
-        
+
         public bool SaveContext(List<Type> pluginTypes = null)
         {
             var serializer = GetXmlSerializer(pluginTypes);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Media;
@@ -22,7 +22,8 @@ namespace HidWizards.UCR.Views
 
     public partial class MainWindow : Window
     {
-        private Context Context { get; set; }
+        internal Context Context { get; set; }
+        private UCRTrayIcon TrayIcon;
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
@@ -40,6 +41,8 @@ namespace HidWizards.UCR.Views
             DataContext = _dashboardViewModel;
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
+            TrayIcon = new UCRTrayIcon(this);
+            Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
             InitializeComponent();
         }
 
@@ -90,10 +93,10 @@ namespace HidWizards.UCR.Views
             }
         }
 
-        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        internal void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
-            
+
             if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
@@ -146,11 +149,11 @@ namespace HidWizards.UCR.Views
 
             if (ProfileWindows.TryGetValue(profileItem.Profile.Guid, out var profileWindow))
             {
-                void FocusAction() => profileWindow.Focus();
+                void FocusAction() { profileWindow.WindowState = WindowState.Normal; profileWindow.Focus(); }
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
-            
+
             OpenProfileWindow(profileItem.Profile);
         }
 
@@ -219,7 +222,7 @@ namespace HidWizards.UCR.Views
             if (CloseState.Closing.Equals(WindowCloseState))
             {
                 if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
-                
+
                 e.Cancel = true;
                 SystemSounds.Exclamation.Play();
                 return;
@@ -265,8 +268,9 @@ namespace HidWizards.UCR.Views
                         break;
                 }
             }
+            TrayIcon.Visible = false;
         }
-        
+
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Context.SaveContext();
@@ -280,7 +284,7 @@ namespace HidWizards.UCR.Views
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
-            
+
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
@@ -327,6 +331,11 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            Hide();
         }
     }
 }

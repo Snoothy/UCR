@@ -99,6 +99,7 @@
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
+    <Compile Include="Utilities\UCRTrayIcon.cs" />
     <Compile Include="Utilities\Validators\NumberBindingValidator.cs" />
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
@@ -384,7 +385,6 @@
   <ItemGroup>
     <Resource Include="Resources\UCR_24.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
