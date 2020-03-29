@@ -72,8 +72,13 @@ namespace HidWizards.UCR.Core
         {
             options = new OptionSet {
                 { "p|profile=", "The profile to search for", FindAndLoadProfile },
-                { "h|hidden", "Minimize to system tray", x => MinimizedToTrayEvent.Invoke() }
+                { "h|hidden", "Minimize to system tray", x => MinimizeToTray() }
             };
+        }
+        
+        public void MinimizeToTray()
+        {
+            MinimizedToTrayEvent.Invoke();
         }
 
         private void FindAndLoadProfile(string profileString)

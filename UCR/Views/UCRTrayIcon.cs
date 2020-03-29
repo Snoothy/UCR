@@ -1,13 +1,13 @@
-﻿using HidWizards.UCR.Core.Models;
-using HidWizards.UCR.Views;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using HidWizards.UCR.Core.Models;
 
-namespace HidWizards.UCR.Utilities
+namespace HidWizards.UCR.Views
 {
     class UCRTrayIcon
     {
         internal bool Visible { get { return TrayIcon.Visible; } set { TrayIcon.Visible = value; } }
+        public bool Minimized { get; private set; }
         private readonly MainWindow _parent;
         private readonly NotifyIcon TrayIcon = new NotifyIcon();
         private readonly ToolStripItem ShowStrip = new ToolStripMenuItem();
@@ -42,13 +42,13 @@ namespace HidWizards.UCR.Utilities
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             TrayIcon.DoubleClick += TrayIcon_OnDoubleClick;
-            TrayIcon.BalloonTipTitle = "UCR Hidden";
+            TrayIcon.BalloonTipTitle = "UCR is still running";
             TrayIcon.BalloonTipText = "UCR has been minimized to the system tray. Double-click the icon to restore, or right click for more options.";
             TrayIcon.ContextMenuStrip = new ContextMenuStrip();
             TrayIcon.ContextMenuStrip.ShowCheckMargin = false;
             TrayIcon.ContextMenuStrip.ShowImageMargin = false;
             TrayIcon.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { ShowStrip, new ToolStripSeparator(), StartLastProfileStrip, StopProfileStrip, new ToolStripSeparator(), ExitStrip });
-            TrayIcon.Visible = true;
+            TrayIcon.Visible = Minimized;
         }
 
         private void StopProfileStrip_Click(object sender, EventArgs e)
@@ -72,12 +72,19 @@ namespace HidWizards.UCR.Utilities
 
         private void Context_MinimizedToTrayEvent()
         {
+            Minimized = true;
+            TrayIcon.Visible = true;
             TrayIcon.ShowBalloonTip(5000);
         }
 
         private void ExitStrip_Click(object sender, EventArgs e)
         {
-            _parent.Close();
+            _parent.CloseWindow();
+            if (_parent.Context.IsNotSaved)
+            {
+                Minimized = false;
+                TrayIcon.Visible = false;
+            }
         }
 
         private void StartLastProfileStrip_Click(object sender, EventArgs e)
@@ -86,16 +93,20 @@ namespace HidWizards.UCR.Utilities
         }
         private void ShowStrip_Click(object sender, EventArgs e)
         {
-            _parent.Show();
-            _parent.WindowState = System.Windows.WindowState.Normal;
-            _parent.Activate();
+            ShowMainWindow();
         }
 
         private void TrayIcon_OnDoubleClick(object sender, EventArgs e)
         {
-            _parent.Show();
-            _parent.WindowState = System.Windows.WindowState.Normal;
-            _parent.Activate();
+            ShowMainWindow();
         }
+
+        public void ShowMainWindow()
+        {
+            _parent.ShowWindow();
+            Minimized = false;
+            TrayIcon.Visible = false;
+        }
+
     }
 }

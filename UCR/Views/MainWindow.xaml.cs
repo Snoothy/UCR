@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Core.Models.Settings;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
@@ -216,9 +217,32 @@ namespace HidWizards.UCR.Views
 
         #endregion Profile Actions
 
+        internal void ShowWindow()
+        {
+            if (CloseState.None.Equals(WindowCloseState)) Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        internal void CloseWindow()
+        {
+            if (Context.IsNotSaved)
+            {
+                ShowWindow();
+            }
+            Close();
+        }
+
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
+            if (SettingsCollection.MinimizeOnClose && !TrayIcon.Minimized && CloseState.None.Equals(WindowCloseState))
+            {
+                Context.MinimizeToTray();
+                e.Cancel = true;
+                return;
+            }
+            
             if (CloseState.Closing.Equals(WindowCloseState))
             {
                 if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
