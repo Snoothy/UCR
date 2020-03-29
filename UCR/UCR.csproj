@@ -99,7 +99,7 @@
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
-    <Compile Include="Utilities\UCRTrayIcon.cs" />
+    <Compile Include="Views\UCRTrayIcon.cs" />
     <Compile Include="Utilities\Validators\NumberBindingValidator.cs" />
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
@@ -127,6 +127,8 @@
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsPropertyViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
     </Compile>
@@ -157,8 +159,18 @@
     <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
       <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Settings\SettingsPropertyListControl.xaml.cs">
+      <DependentUpon>SettingsPropertyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsPropertyControl.xaml.cs">
+      <DependentUpon>SettingsPropertyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
@@ -253,9 +265,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\SettingsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

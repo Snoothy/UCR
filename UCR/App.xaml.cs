@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using HidWizards.UCR.Core;
+using HidWizards.UCR.Core.Models.Settings;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.Views;
@@ -39,6 +40,7 @@ namespace HidWizards.UCR
                 var mw = new MainWindow(context);
                 context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
                 context.ParseCommandLineArguments(e.Args);
+                if (!StartMinimized && SettingsCollection.LaunchMinimized) context.MinimizeToTray();
                 if (!StartMinimized) mw.Show();
             }
             else

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Media;
@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Core.Models.Settings;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
@@ -96,7 +97,7 @@ namespace HidWizards.UCR.Views
         internal void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
-            
+
             if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
@@ -153,7 +154,7 @@ namespace HidWizards.UCR.Views
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
-            
+
             OpenProfileWindow(profileItem.Profile);
         }
 
@@ -216,13 +217,36 @@ namespace HidWizards.UCR.Views
 
         #endregion Profile Actions
 
+        internal void ShowWindow()
+        {
+            if (CloseState.None.Equals(WindowCloseState)) Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        internal void CloseWindow()
+        {
+            if (Context.IsNotSaved)
+            {
+                ShowWindow();
+            }
+            Close();
+        }
+
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
+            if (SettingsCollection.MinimizeOnClose && !TrayIcon.Minimized && CloseState.None.Equals(WindowCloseState))
+            {
+                Context.MinimizeToTray();
+                e.Cancel = true;
+                return;
+            }
+            
             if (CloseState.Closing.Equals(WindowCloseState))
             {
                 if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
-                
+
                 e.Cancel = true;
                 SystemSounds.Exclamation.Play();
                 return;
@@ -270,7 +294,7 @@ namespace HidWizards.UCR.Views
             }
             TrayIcon.Visible = false;
         }
-        
+
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Context.SaveContext();
@@ -284,7 +308,7 @@ namespace HidWizards.UCR.Views
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
-            
+
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
@@ -308,7 +332,13 @@ namespace HidWizards.UCR.Views
             var error = Marshal.GetLastWin32Error();
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
-        
+
+        private async void Settings_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SettingsDialog(Context.SettingsManager);
+            await DialogHost.Show(dialog, "RootDialog");
+        }
+
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new AboutDialog();

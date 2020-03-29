@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,11 +30,12 @@ namespace HidWizards.UCR.Core
         [XmlIgnore] public SubscriptionsManager SubscriptionsManager { get; set; }
         [XmlIgnore] public PluginsManager PluginManager { get; set; }
         [XmlIgnore] public BindingManager BindingManager { get; set; }
+        [XmlIgnore] public SettingsManager SettingsManager { get; set; }
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
         public event Action MinimizedToTrayEvent;
-        
+
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
         private OptionSet options;
@@ -59,6 +60,7 @@ namespace HidWizards.UCR.Core
                 Logger.Error("IOWrapper provider directory not found", e);
             }
             
+            SettingsManager = new SettingsManager();
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             SubscriptionsManager = new SubscriptionsManager(this);
@@ -70,8 +72,13 @@ namespace HidWizards.UCR.Core
         {
             options = new OptionSet {
                 { "p|profile=", "The profile to search for", FindAndLoadProfile },
-                { "h|hidden", "Minimize to system tray", x => MinimizedToTrayEvent.Invoke() }
+                { "h|hidden", "Minimize to system tray", x => MinimizeToTray() }
             };
+        }
+        
+        public void MinimizeToTray()
+        {
+            MinimizedToTrayEvent.Invoke();
         }
 
         private void FindAndLoadProfile(string profileString)
@@ -99,7 +106,7 @@ namespace HidWizards.UCR.Core
         }
 
         #region Persistence
-        
+
         public bool SaveContext(List<Type> pluginTypes = null)
         {
             var serializer = GetXmlSerializer(pluginTypes);

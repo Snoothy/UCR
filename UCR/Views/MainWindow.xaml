@@ -89,6 +89,9 @@
                         <materialDesign:PackIcon Kind="Stop"/>
                     </Button>
                     <Separator />
+                    <Button ToolTip="Help" Click="Settings_OnClick">
+                        <materialDesign:PackIcon Kind="Settings"/>
+                    </Button>
                     <Button ToolTip="Help" Click="Help_OnClick">
                         <materialDesign:PackIcon Kind="Help"/>
                     </Button>
