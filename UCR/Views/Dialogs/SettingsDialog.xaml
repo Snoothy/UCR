@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:HidWizards.UCR.Views"
         xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:settings="clr-namespace:HidWizards.UCR.Views.Controls.Settings"
         mc:Ignorable="d"
         MaxHeight="800"
         Width="500">
@@ -15,10 +16,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Settings" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="0 0 0 8"/>
-        <StackPanel Grid.Row="1">
-
-        </StackPanel>
+        <TextBlock Text="Settings" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8"/>
+        <settings:SettingsPropertyListControl Grid.Row="1" DataContext="{Binding}" Margin="0"/>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2">
             <Button IsCancel="True" Margin="8 4 0 0" Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}"

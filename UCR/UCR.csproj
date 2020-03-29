@@ -126,6 +126,8 @@
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsPropertyViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
     </Compile>
@@ -155,6 +157,13 @@
     </Compile>
     <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
       <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Settings\SettingsPropertyListControl.xaml.cs">
+      <DependentUpon>SettingsPropertyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsPropertyControl.xaml.cs">
+      <DependentUpon>SettingsPropertyControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
@@ -254,6 +263,14 @@
     <Page Include="Views\Controls\ProfileDeviceListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
@@ -367,6 +384,7 @@
   <ItemGroup>
     <Resource Include="Resources\UCR_24.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

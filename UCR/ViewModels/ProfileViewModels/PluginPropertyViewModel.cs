@@ -13,7 +13,6 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
             set { PluginProperty.Property = value; }
         }
 
-        public Visibility SeparatorVisibility => LastElement ? Visibility.Collapsed : Visibility.Visible;
         public PluginProperty PluginProperty { get; set; }
 
         public bool LastElement { get; set; }

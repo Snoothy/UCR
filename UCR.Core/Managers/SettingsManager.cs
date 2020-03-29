@@ -24,7 +24,7 @@ namespace HidWizards.UCR.Core.Managers
         {
             var settingsProperties = new List<SettingsProperty>();
 
-            foreach (var propertyInfo in typeof(SettingsCollection).GetProperties(BindingFlags.Static))
+            foreach (var propertyInfo in typeof(SettingsCollection).GetProperties())
             {
                 var settingsProperty = new SettingsProperty(propertyInfo);
                 settingsProperty.PropertyChanged += SettingChanged;

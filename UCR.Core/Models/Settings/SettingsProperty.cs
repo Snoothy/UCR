@@ -16,7 +16,7 @@ namespace HidWizards.UCR.Core.Models.Settings
     {
         public string Title => GetSettingAttribute().Title;
         public string Description => GetSettingAttribute().Description;
-        private PropertyInfo PropertyInfo { get; set; }
+        public PropertyInfo PropertyInfo { get; }
 
         public dynamic Property
         {

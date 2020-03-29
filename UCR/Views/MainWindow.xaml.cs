@@ -307,7 +307,7 @@ namespace HidWizards.UCR.Views
 
         private async void Settings_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new SettingsDialog();
+            var dialog = new SettingsDialog(Context.SettingsManager);
             await DialogHost.Show(dialog, "RootDialog");
         }
 
