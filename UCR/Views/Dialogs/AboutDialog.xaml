@@ -15,8 +15,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="About" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="0 0 0 8"/>
-        <StackPanel Grid.Row="1">
+        <TextBlock Text="About" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8"/>
+        <StackPanel Grid.Row="1" Margin="8 8 8 0">
             <TextBlock Margin="0,0,0,5">Universal Control Remapper is created by HidWizards: <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/evilC">evilC</Hyperlink> and <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/Snoothy">Snoothy</Hyperlink></TextBlock>
             <TextBlock Margin="0,0,0,5" Name="VersionTextBlock"/>
 
@@ -24,7 +24,7 @@
 
             <TextBlock Margin="0,5,0,5">License</TextBlock>
         </StackPanel>
-        <Border Grid.Row="2" BorderThickness="1" BorderBrush="Black">
+        <Border Grid.Row="2" BorderThickness="1" BorderBrush="Black" Margin="8 0 8 8">
             <ScrollViewer>
             <TextBlock Padding="2" TextWrapping="Wrap" Background="White">
                 MIT License
