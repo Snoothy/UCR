@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Windows.Shell;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.Core;
 using HidWizards.UCR.Core.Annotations;
@@ -115,7 +114,6 @@ namespace HidWizards.UCR.Core
             {
                 serializer.Serialize(streamWriter, this);
             }
-            UpdateJumpList(this);
             IsNotSaved = false;
 
             return true;
@@ -138,7 +136,6 @@ namespace HidWizards.UCR.Core
                 Logger.Error("Failed to load context.xml", e);
                 context = new Context();
             }
-            UpdateJumpList(context);
             return context;
         }
 
@@ -164,26 +161,6 @@ namespace HidWizards.UCR.Core
         }
 
         #endregion
-
-        private static JumpTask CreateJumpTask(Profile profile)
-        {
-            JumpTask jumpTask = new JumpTask
-            {
-                ApplicationPath = System.Reflection.Assembly.GetEntryAssembly().Location,
-                Arguments = $"-p {profile.Title}",
-                Title = profile.Title,
-                CustomCategory = "Profiles",
-                WorkingDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
-            };
-            return jumpTask;
-        }
-
-        public static void UpdateJumpList(Context context)
-        {
-            JumpList jumpList = new JumpList();
-            context.Profiles.ForEach(x => jumpList.JumpItems.Add(CreateJumpTask(x)));
-            jumpList.Apply();
-        }
 
         private string GetVersion()
         {
