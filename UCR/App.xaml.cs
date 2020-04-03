@@ -69,6 +69,7 @@ namespace HidWizards.UCR
 
         private void InitializeUcr()
         {
+            System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
             new ResourceLoader().Load();
             context = Context.Load();
         }
