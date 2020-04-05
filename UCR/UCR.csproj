@@ -99,6 +99,7 @@
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
+    <Compile Include="Views\JumpList.cs" />
     <Compile Include="Views\UCRTrayIcon.cs" />
     <Compile Include="Utilities\Validators\NumberBindingValidator.cs" />
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />

@@ -101,6 +101,12 @@ namespace HidWizards.UCR.Views
             ShowMainWindow();
         }
 
+        public void ProfileRenamed(string oldTitle, string newTitle)
+        {
+            if (StartLastProfileStrip.Text == $"Activate Last Profile: {oldTitle}")
+                StartLastProfileStrip.Text = $"Activate Last Profile: {newTitle}";
+        }
+
         public void ShowMainWindow()
         {
             _parent.ShowWindow();

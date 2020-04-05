@@ -39,7 +39,6 @@ namespace HidWizards.UCR
 
                 var mw = new MainWindow(context);
                 context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
-                context.ActiveProfileChangedEvent += Context_ActiveProfileChangedEvent;
                 context.ParseCommandLineArguments(e.Args);
                 if (!StartMinimized && SettingsCollection.LaunchMinimized) context.MinimizeToTray();
                 if (!StartMinimized) mw.Show();
@@ -51,17 +50,6 @@ namespace HidWizards.UCR
             }
         }
 
-        private void Context_ActiveProfileChangedEvent(Core.Models.Profile profile)
-        {
-            if(profile != null)
-            System.Windows.Shell.JumpList.AddToRecentCategory(new System.Windows.Shell.JumpTask
-            {
-                Arguments = $"-p {profile.Title}",
-                Title = profile.Title,
-                WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
-            });
-        }
-
         private void Context_MinimizedToTrayEvent()
         {
             StartMinimized = true;
@@ -69,7 +57,6 @@ namespace HidWizards.UCR
 
         private void InitializeUcr()
         {
-            System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
             new ResourceLoader().Load();
             context = Context.Load();
         }

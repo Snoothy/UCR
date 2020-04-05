@@ -44,6 +44,7 @@ namespace HidWizards.UCR.Views
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             TrayIcon = new UCRTrayIcon(this);
             Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
+            JumpList.InitJumpList(context);
             InitializeComponent();
         }
 

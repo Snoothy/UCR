@@ -33,6 +33,11 @@ namespace HidWizards.UCR.Core.Models
         [XmlIgnore]
         public Profile ParentProfile { get; set; }
 
+        public delegate void ProfileRemoved(string title);
+        public static event ProfileRemoved ProfileRemovedEvent;
+        public delegate void ProfileRenamed(string oldTitle, string newTitle);
+        public static event ProfileRenamed ProfileRenamedEvent;
+
         #region Constructors
 
         public Profile()
@@ -88,6 +93,7 @@ namespace HidWizards.UCR.Core.Models
 
         public bool Rename(string title)
         {
+            ProfileRenamedEvent.Invoke(Title, title);
             Title = title;
             Context.ContextChanged();
             return true;
@@ -103,6 +109,7 @@ namespace HidWizards.UCR.Core.Models
             {
                 ParentProfile.ChildProfiles.Remove(this);
             }
+            ProfileRemovedEvent.Invoke(Title);
             Context.ContextChanged();
         }
 
