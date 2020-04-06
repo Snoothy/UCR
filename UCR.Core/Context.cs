@@ -35,6 +35,7 @@ namespace HidWizards.UCR.Core
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
         public event Action MinimizedToTrayEvent;
+        public event Action ContextSavedEvent;
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
@@ -114,6 +115,7 @@ namespace HidWizards.UCR.Core
             {
                 serializer.Serialize(streamWriter, this);
             }
+            ContextSavedEvent.Invoke();
             IsNotSaved = false;
 
             return true;

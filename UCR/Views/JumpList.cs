@@ -8,16 +8,22 @@ namespace HidWizards.UCR.Views
 {
     public static class JumpList
     {
-        private static System.Windows.Shell.JumpList jumpList;
+        private static System.Windows.Shell.JumpList jumpList, oldJumpList;
 
         public static void InitJumpList(Context context)
         {
             context.ActiveProfileChangedEvent += AddRecentProfile;
+            context.ContextSavedEvent += ContextSaved;
             Profile.ProfileRenamedEvent += ProfileRenamed;
             Profile.ProfileRemovedEvent += ProfileRemoved;
 
             jumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
-            if (jumpList == null) jumpList = new System.Windows.Shell.JumpList();
+            oldJumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
+            if (jumpList == null)
+            {
+                jumpList = new System.Windows.Shell.JumpList();
+                oldJumpList = new System.Windows.Shell.JumpList();
+            }
             System.Windows.Shell.JumpList.SetJumpList(Application.Current, jumpList);
         }
 
@@ -68,6 +74,16 @@ namespace HidWizards.UCR.Views
                 jumpList.JumpItems.RemoveAt(index);
                 jumpList.Apply();
             }
+        }
+        
+        public static void RestoreJumplist()
+        {
+            System.Windows.Shell.JumpList.SetJumpList(Application.Current, oldJumpList);
+        }
+
+        public static void ContextSaved()
+        {
+            oldJumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
         }
     }
 }

@@ -288,6 +288,7 @@ namespace HidWizards.UCR.Views
                         Close();
                         break;
                     case MessageBoxResult.No:
+                        JumpList.RestoreJumplist();
                         WindowCloseState = CloseState.ForceClose;
                         Close();
                         break;
