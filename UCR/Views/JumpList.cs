@@ -33,25 +33,18 @@ namespace HidWizards.UCR.Views
             if (!jumpList.JumpItems.Any(p => ((JumpTask)p).Title == profile.Title))
             {
                 if (jumpList.JumpItems.Count == 5) jumpList.JumpItems.RemoveAt(4);
-                jumpList.JumpItems.Insert(0, new JumpTask
-                {
-                    Arguments = $"-p {profile.Title}",
-                    Title = profile.Title,
-                    CustomCategory = "Recent Profiles",
-                    WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
-                });
             }
             else
             {
                 jumpList.JumpItems.RemoveAt(jumpList.JumpItems.FindIndex(p => ((JumpTask)p).Title == profile.Title));
-                jumpList.JumpItems.Insert(0, new JumpTask
-                {
-                    Arguments = $"-p {profile.Title}",
-                    Title = profile.Title,
-                    CustomCategory = "Recent Profiles",
-                    WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
-                });
             }
+            jumpList.JumpItems.Insert(0, new JumpTask
+            {
+                Arguments = $"-p {profile.Title}",
+                Title = profile.Title,
+                CustomCategory = "Recent Profiles",
+                WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
+            });
             jumpList.Apply();
         }
 
