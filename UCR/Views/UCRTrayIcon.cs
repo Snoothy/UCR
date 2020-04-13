@@ -39,6 +39,9 @@ namespace HidWizards.UCR.Views
             _parent.Context.ActiveProfileChangedEvent += Context_ActiveProfileChangedEvent;
             _parent.Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
 
+            Profile.ProfileRenamedEvent += ProfileRenamed;
+            Profile.ProfileRemovedEvent += ProfileRemoved;
+
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             TrayIcon.DoubleClick += TrayIcon_OnDoubleClick;
@@ -105,6 +108,14 @@ namespace HidWizards.UCR.Views
         {
             if (StartLastProfileStrip.Text == $"Activate Last Profile: {oldTitle}")
                 StartLastProfileStrip.Text = $"Activate Last Profile: {newTitle}";
+        }
+
+        public void ProfileRemoved(string title)
+        { if (StartLastProfileStrip.Text == $"Activate Last Profile: {title}")
+            {
+                StartLastProfileStrip.Text = "Activate Last Profile";
+                StartLastProfileStrip.Enabled = false;
+            }
         }
 
         public void ShowMainWindow()

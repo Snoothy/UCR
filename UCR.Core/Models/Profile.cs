@@ -93,14 +93,16 @@ namespace HidWizards.UCR.Core.Models
 
         public bool Rename(string title)
         {
-            ProfileRenamedEvent.Invoke(Title, title);
+            string oldTitle = Title;
             Title = title;
+            ProfileRenamedEvent.Invoke(oldTitle, Title);
             Context.ContextChanged();
             return true;
         }
 
         public void Remove()
         {
+            if(IsActive()) Deactivate();
             if (ParentProfile == null)
             {
                 Context.Profiles.Remove(this);
