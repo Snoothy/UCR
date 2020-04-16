@@ -52,6 +52,7 @@ namespace HidWizards.UCR.Core
         {
             IsNotSaved = false;
             Profiles = new List<Profile>();
+            RecentProfiles = new List<Guid>();
 
             try
             {
