@@ -21,10 +21,19 @@ namespace HidWizards.UCR.Views
             ShowStrip.DisplayStyle = ToolStripItemDisplayStyle.Text;
             ShowStrip.Click += ShowStrip_Click;
 
-            StartLastProfileStrip.Text = "Activate Last Profile";
+            
             StartLastProfileStrip.DisplayStyle = ToolStripItemDisplayStyle.Text;
             StartLastProfileStrip.Click += StartLastProfileStrip_Click;
-            StartLastProfileStrip.Enabled = false;
+            if (parent.Context.RecentProfiles.Count == 0)
+            {
+                StartLastProfileStrip.Text = "Activate Last Profile";
+                StartLastProfileStrip.Enabled = false;
+            }
+            else
+            {
+                StartLastProfileStrip.Text = $"Activate Last Profile {parent.Context.Profiles.Find(p=>p.Guid==parent.Context.RecentProfiles[0]).Title}";
+                StartLastProfileStrip.Enabled = true;
+            }
 
             StopProfileStrip.Text = "Stop Active Profile";
             StopProfileStrip.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -38,9 +47,7 @@ namespace HidWizards.UCR.Views
             _parent = parent;
             _parent.Context.ActiveProfileChangedEvent += Context_ActiveProfileChangedEvent;
             _parent.Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
-
-            Profile.ProfileRenamedEvent += ProfileRenamed;
-            Profile.ProfileRemovedEvent += ProfileRemoved;
+            _parent.Context.ContextChangedEvent += OnContextChanged;
 
             TrayIcon.Text = "Universal Control Remapper";
             TrayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -104,14 +111,13 @@ namespace HidWizards.UCR.Views
             ShowMainWindow();
         }
 
-        public void ProfileRenamed(string oldTitle, string newTitle)
+        public void OnContextChanged()
         {
-            if (StartLastProfileStrip.Text == $"Activate Last Profile: {oldTitle}")
-                StartLastProfileStrip.Text = $"Activate Last Profile: {newTitle}";
-        }
-
-        public void ProfileRemoved(string title)
-        { if (StartLastProfileStrip.Text == $"Activate Last Profile: {title}")
+            if (_parent.Context.RecentProfiles.Count != 0)
+            {
+                StartLastProfileStrip.Text = $"Activate Last Profile: {_parent.Context.Profiles.Find(p => p.Guid == _parent.Context.RecentProfiles[0]).Title}";
+            }
+            else
             {
                 StartLastProfileStrip.Text = "Activate Last Profile";
                 StartLastProfileStrip.Enabled = false;

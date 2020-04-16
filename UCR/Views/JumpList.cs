@@ -1,5 +1,6 @@
 ﻿using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Shell;
@@ -9,74 +10,66 @@ namespace HidWizards.UCR.Views
     public static class JumpList
     {
         private static System.Windows.Shell.JumpList jumpList, oldJumpList;
+        private static Context _context;
 
         public static void InitJumpList(Context context)
         {
-            context.ActiveProfileChangedEvent += AddRecentProfile;
-            context.ContextSavedEvent += ContextSaved;
-            Profile.ProfileRenamedEvent += ProfileRenamed;
-            Profile.ProfileRemovedEvent += ProfileRemoved;
+            _context = context;
+            _context.ActiveProfileChangedEvent += ActiveProfileChangedHandler;
+            _context.ContextChangedEvent += UpdateJumpList;
 
-            jumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
-            oldJumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
-            if (jumpList == null)
+            jumpList = new System.Windows.Shell.JumpList();
+            oldJumpList = new System.Windows.Shell.JumpList();
+            foreach(Guid guid in _context.RecentProfiles)
             {
-                jumpList = new System.Windows.Shell.JumpList();
-                oldJumpList = new System.Windows.Shell.JumpList();
+                Profile profile = _context.Profiles.Find(p => p.Guid == guid);
+                jumpList.JumpItems.Add(new JumpTask
+                {
+                    Arguments = $"-p {profile.Title}",
+                    Title = profile.Title,
+                    CustomCategory = "Recent Profiles",
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
+                });
             }
             System.Windows.Shell.JumpList.SetJumpList(Application.Current, jumpList);
         }
 
-        public static void AddRecentProfile(Profile profile)
+        private static void ActiveProfileChangedHandler(Profile profile)
         {
-            if (profile == null) return;
-            if (!jumpList.JumpItems.Any(p => ((JumpTask)p).Title == profile.Title))
+            UpdateJumpList();
+        }
+
+        private static void UpdateJumpList()
+        {
+            if (!_context.IsNotSaved) oldJumpList.JumpItems.Clear(); 
+            jumpList.JumpItems.Clear();
+            foreach (Guid guid in _context.RecentProfiles)
             {
-                if (jumpList.JumpItems.Count == 5) jumpList.JumpItems.RemoveAt(4);
+                Profile _profile = _context.Profiles.Find(p => p.Guid == guid);
+                jumpList.JumpItems.Add(new JumpTask
+                {
+                    Arguments = $"-p {_profile.Title}",
+                    Title = _profile.Title,
+                    CustomCategory = "Recent Profiles",
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
+                });
+                if (!_context.IsNotSaved)
+                {
+                    oldJumpList.JumpItems.Add(new JumpTask
+                    {
+                        Arguments = $"-p {_profile.Title}",
+                        Title = _profile.Title,
+                        CustomCategory = "Recent Profiles",
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
+                    });
+                }
             }
-            else
-            {
-                jumpList.JumpItems.RemoveAt(jumpList.JumpItems.FindIndex(p => ((JumpTask)p).Title == profile.Title));
-            }
-            jumpList.JumpItems.Insert(0, new JumpTask
-            {
-                Arguments = $"-p {profile.Title}",
-                Title = profile.Title,
-                CustomCategory = "Recent Profiles",
-                WorkingDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location)
-            });
             jumpList.Apply();
         }
 
-        public static void ProfileRenamed(string oldTitle, string newTitle)
+        public static void RestoreJumpList()
         {
-            int index;
-            if((index = jumpList.JumpItems.FindIndex(p => ((JumpTask)p).Title == oldTitle)) != -1)
-            {
-                ((JumpTask)jumpList.JumpItems[index]).Title = newTitle;
-                ((JumpTask)jumpList.JumpItems[index]).Arguments = $"-p {newTitle}";
-                jumpList.Apply();
-            }
-        }
-
-        public static void ProfileRemoved(string title)
-        {
-            int index;
-            if ((index = jumpList.JumpItems.FindIndex(p => ((JumpTask)p).Title == title)) != -1)
-            {
-                jumpList.JumpItems.RemoveAt(index);
-                jumpList.Apply();
-            }
-        }
-        
-        public static void RestoreJumplist()
-        {
-            System.Windows.Shell.JumpList.SetJumpList(Application.Current, oldJumpList);
-        }
-
-        public static void ContextSaved()
-        {
-            oldJumpList = System.Windows.Shell.JumpList.GetJumpList(Application.Current);
+            System.Windows.Shell.JumpList.SetJumpList(App.Current, oldJumpList);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             ProfileList = ProfileItem.GetProfileTree(context.Profiles);
             PropertyChanged += OnPropertyChanged;
             context.ActiveProfileChangedEvent += OnActiveProfileChangedEvent;
-            Profile.ProfileRenamedEvent += ProfileRenamed;
+            context.ContextChangedEvent += OnContextChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -82,7 +82,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void ProfileRenamed(string oldTitle, string newTitle)
+        private void OnContextChanged()
         {
             OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
         }

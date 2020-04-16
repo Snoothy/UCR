@@ -22,6 +22,7 @@ namespace HidWizards.UCR.Core
 
         /* Persistence */
         public List<Profile> Profiles { get; set; }
+        public List<Guid> RecentProfiles { get; set; }
 
         /* Runtime */
         [XmlIgnore] public Profile ActiveProfile { get; set; }
@@ -35,7 +36,7 @@ namespace HidWizards.UCR.Core
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
         public event Action MinimizedToTrayEvent;
-        public event Action ContextSavedEvent;
+        public event Action ContextChangedEvent;
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
@@ -104,6 +105,7 @@ namespace HidWizards.UCR.Core
         {
             Logger.Trace("Context changed");
             IsNotSaved = true;
+            ContextChangedEvent?.Invoke();
         }
 
         #region Persistence
@@ -115,7 +117,6 @@ namespace HidWizards.UCR.Core
             {
                 serializer.Serialize(streamWriter, this);
             }
-            ContextSavedEvent.Invoke();
             IsNotSaved = false;
 
             return true;
@@ -204,6 +205,18 @@ namespace HidWizards.UCR.Core
 
         public void OnActiveProfileChangedEvent(Profile profile)
         {
+            if(profile != null)
+            {
+                if(!RecentProfiles.Any(p => p == profile.Guid))
+                {
+                    if (RecentProfiles.Count() == 5) RecentProfiles.RemoveAt(4);
+                }
+                else
+                {
+                    RecentProfiles.Remove(profile.Guid);
+                }
+                RecentProfiles.Insert(0, profile.Guid);
+            }
             ActiveProfileChangedEvent?.Invoke(profile);
         }
     }
