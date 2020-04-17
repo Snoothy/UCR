@@ -206,18 +206,6 @@ namespace HidWizards.UCR.Core
 
         public void OnActiveProfileChangedEvent(Profile profile)
         {
-            if(profile != null)
-            {
-                if(!RecentProfiles.Any(p => p == profile.Guid))
-                {
-                    if (RecentProfiles.Count() == 5) RecentProfiles.RemoveAt(4);
-                }
-                else
-                {
-                    RecentProfiles.Remove(profile.Guid);
-                }
-                RecentProfiles.Insert(0, profile.Guid);
-            }
             ActiveProfileChangedEvent?.Invoke(profile);
         }
     }

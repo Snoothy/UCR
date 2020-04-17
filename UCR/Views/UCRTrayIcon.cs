@@ -31,7 +31,7 @@ namespace HidWizards.UCR.Views
             }
             else
             {
-                StartLastProfileStrip.Text = $"Activate Last Profile {parent.Context.Profiles.Find(p=>p.Guid==parent.Context.RecentProfiles[0]).Title}";
+                StartLastProfileStrip.Text = $"Activate Last Profile {parent.Context.ProfilesManager.FindProfile(_parent.Context.RecentProfiles[0]).Title}";
                 StartLastProfileStrip.Enabled = true;
             }
 
@@ -99,8 +99,9 @@ namespace HidWizards.UCR.Views
 
         private void StartLastProfileStrip_Click(object sender, EventArgs e)
         {
-            _parent.Context.SubscriptionsManager.ActivateLastProfile();
+            _parent.Context.ProfilesManager.FindProfile(_parent.Context.RecentProfiles[0]).ActivateProfile();
         }
+
         private void ShowStrip_Click(object sender, EventArgs e)
         {
             ShowMainWindow();
@@ -115,7 +116,7 @@ namespace HidWizards.UCR.Views
         {
             if (_parent.Context.RecentProfiles.Count != 0)
             {
-                StartLastProfileStrip.Text = $"Activate Last Profile: {_parent.Context.Profiles.Find(p => p.Guid == _parent.Context.RecentProfiles[0]).Title}";
+                StartLastProfileStrip.Text = $"Activate Last Profile: {_parent.Context.ProfilesManager.FindProfile(_parent.Context.RecentProfiles[0]).Title}";
             }
             else
             {

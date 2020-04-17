@@ -42,11 +42,6 @@ namespace HidWizards.UCR.Core.Managers
             return SubscriptionState?.ActiveProfile;
         }
 
-        public bool ActivateLastProfile()
-        {
-            return ActivateProfile(_context.Profiles.Find(p => p.Guid == _context.RecentProfiles[0]));
-        }
-
         public bool ActivateProfile(Profile profile, bool refreshDevices = true)
         {
             if (refreshDevices) _context.IOController.RefreshDevices();

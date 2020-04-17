@@ -22,7 +22,7 @@ namespace HidWizards.UCR.Views
             oldJumpList = new System.Windows.Shell.JumpList();
             foreach(Guid guid in _context.RecentProfiles)
             {
-                Profile profile = _context.Profiles.Find(p => p.Guid == guid);
+                Profile profile = _context.ProfilesManager.FindProfile(guid);
                 jumpList.JumpItems.Add(new JumpTask
                 {
                     Arguments = $"-p {profile.Title}",
@@ -45,7 +45,7 @@ namespace HidWizards.UCR.Views
             jumpList.JumpItems.Clear();
             foreach (Guid guid in _context.RecentProfiles)
             {
-                Profile _profile = _context.Profiles.Find(p => p.Guid == guid);
+                Profile _profile = _context.ProfilesManager.FindProfile(guid);
                 jumpList.JumpItems.Add(new JumpTask
                 {
                     Arguments = $"-p {_profile.Title}",
