@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - New setting: Minimize to tray on close
 - Added System Tray Icon
 - Added Hidden mode CLI Argument (-h|hidden)
+- Enable Axis Initializer plugin
 
 ## [0.9.0] - 2020-01-02
 

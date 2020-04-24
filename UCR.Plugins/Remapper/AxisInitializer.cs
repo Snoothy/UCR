@@ -5,7 +5,7 @@ using HidWizards.UCR.Core.Utilities;
 
 namespace HidWizards.UCR.Plugins.Remapper
 {
-    [Plugin("Axis Initializer", Disabled = true)]
+    [Plugin("Axis Initializer", Group = "Axis", Description = "Initialize an axis to a value on profile start")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisInitializer : Plugin
     {
