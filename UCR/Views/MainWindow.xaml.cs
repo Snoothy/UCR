@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -362,6 +363,10 @@ namespace HidWizards.UCR.Views
         private void Context_MinimizedToTrayEvent()
         {
             Hide();
+            foreach(ProfileWindow value in ProfileWindows.Values.ToArray())
+            {
+                value.Close();
+            }
         }
     }
 }
