@@ -22,6 +22,7 @@ namespace HidWizards.UCR.Core
 
         /* Persistence */
         public List<Profile> Profiles { get; set; }
+        public List<Guid> RecentProfiles { get; set; }
 
         /* Runtime */
         [XmlIgnore] public Profile ActiveProfile { get; set; }
@@ -35,6 +36,7 @@ namespace HidWizards.UCR.Core
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
         public event Action MinimizedToTrayEvent;
+        public event Action ContextChangedEvent;
 
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
@@ -50,6 +52,7 @@ namespace HidWizards.UCR.Core
         {
             IsNotSaved = false;
             Profiles = new List<Profile>();
+            RecentProfiles = new List<Guid>();
 
             try
             {
@@ -103,6 +106,7 @@ namespace HidWizards.UCR.Core
         {
             Logger.Trace("Context changed");
             IsNotSaved = true;
+            ContextChangedEvent?.Invoke();
         }
 
         #region Persistence

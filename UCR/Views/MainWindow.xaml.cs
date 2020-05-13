@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -44,6 +45,7 @@ namespace HidWizards.UCR.Views
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             TrayIcon = new UCRTrayIcon(this);
             Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
+            JumpList.InitJumpList(context);
             InitializeComponent();
         }
 
@@ -287,6 +289,7 @@ namespace HidWizards.UCR.Views
                         Close();
                         break;
                     case MessageBoxResult.No:
+                        JumpList.RestoreJumpList();
                         WindowCloseState = CloseState.ForceClose;
                         Close();
                         break;
@@ -360,6 +363,10 @@ namespace HidWizards.UCR.Views
         private void Context_MinimizedToTrayEvent()
         {
             Hide();
+            foreach(ProfileWindow value in ProfileWindows.Values.ToArray())
+            {
+                value.Close();
+            }
         }
     }
 }

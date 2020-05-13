@@ -16,6 +16,8 @@ namespace HidWizards.UCR.Core.Managers
         {
             _context = context;
             _profiles = profiles;
+
+            _context.ActiveProfileChangedEvent += OnActiveProfileChanged;
         }
 
         public Profile CreateProfile(string title, List<DeviceConfiguration> inputDevices, List<DeviceConfiguration> outputDevices)
@@ -97,6 +99,27 @@ namespace HidWizards.UCR.Core.Managers
             }
             if (foundProfile == null) Logger.Debug($"No profile found for {{{string.Join(",", search)}}}");
             return foundProfile;
+        }
+        
+        public Profile FindProfile(Guid guid)
+        {
+            return _context.Profiles.Find(p => p.Guid == guid);
+        }
+
+        public void OnActiveProfileChanged(Profile profile)
+        {
+            if (profile != null)
+            {
+                if (!_context.RecentProfiles.Any(p => p == profile.Guid))
+                {
+                    if (_context.RecentProfiles.Count() == 5) _context.RecentProfiles.RemoveAt(4);
+                }
+                else
+                {
+                    _context.RecentProfiles.Remove(profile.Guid);
+                }
+                _context.RecentProfiles.Insert(0, profile.Guid);
+            }
         }
     }
 }

@@ -103,7 +103,9 @@ namespace HidWizards.UCR.Core.Models
             {
                 ParentProfile.ChildProfiles.Remove(this);
             }
+            Context.RecentProfiles.Remove(Guid);
             Context.ContextChanged();
+            if (IsActive()) Deactivate();
         }
 
         public bool ActivateProfile()
