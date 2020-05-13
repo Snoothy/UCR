@@ -64,7 +64,15 @@ namespace HidWizards.UCR.Views
                     });
                 }
             }
-            jumpList.Apply();
+
+            try
+            {
+                jumpList.Apply();
+            }
+            catch (InvalidOperationException e)
+            {
+                // Unsupported through CLI
+            }
         }
 
         public static void RestoreJumpList()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,6 +9,7 @@ using HidWizards.UCR.Core.Models.Settings;
 using HidWizards.UCR.Core.Utilities;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.Views;
+using NamedPipeWrapper;
 using Application = System.Windows.Application;
 
 namespace HidWizards.UCR
@@ -21,6 +23,9 @@ namespace HidWizards.UCR
         private HidGuardianClient _hidGuardianClient;
         private SingleGlobalInstance mutex;
         private bool StartMinimized;
+
+        private NamedPipeServer<NamedPipeMessage> namedPipeServer;
+        private string NamedPipeName => "UCR_NamedPipe";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -36,6 +41,7 @@ namespace HidWizards.UCR
 
                 InitializeUcr();
                 CheckForBlockedDll();
+                StartNamedPipeServer();
 
                 var mw = new MainWindow(context);
                 context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
@@ -45,9 +51,33 @@ namespace HidWizards.UCR
             }
             else
             {
-                SendArgs(string.Join(";", e.Args));
+                SendIpcArgs(e.Args);
                 Current.Shutdown();
             }
+        }
+
+        private void StartNamedPipeServer()
+        {
+            namedPipeServer = new NamedPipeServer<NamedPipeMessage>(NamedPipeName);
+            namedPipeServer.ClientMessage += ServerOnClientMessage;
+            namedPipeServer.Start();
+        }
+
+        private void SendIpcArgs(IEnumerable<string> args)
+        {
+            var client = new NamedPipeClient<NamedPipeMessage>(NamedPipeName);
+            client.Start();
+            client.WaitForConnection();
+            client.PushMessage(new NamedPipeMessage()
+            {
+                Commands = new List<string>(args)
+            });
+            client.Stop();
+        }
+
+        private void ServerOnClientMessage(NamedPipeConnection<NamedPipeMessage, NamedPipeMessage> connection, NamedPipeMessage message)
+        {
+            context.ParseCommandLineArguments(message.Commands);
         }
 
         private void Context_MinimizedToTrayEvent()
@@ -96,51 +126,6 @@ namespace HidWizards.UCR
             return Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
         }
 
-        private void SendArgs(string args)
-        {
-            Logger.Info($"UCR is already running, sending args: {{{args}}}");
-            // Find the window with the name of the main form
-            var processes = GetProcesses();
-            processes = processes.Where(p => p.Id != Process.GetCurrentProcess().Id).ToArray();
-            if (processes.Length == 0) return;
-
-            IntPtr ptrCopyData = IntPtr.Zero;
-            try
-            {
-                // Create the data structure and fill with data
-                NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT
-                {
-                    dwData = new IntPtr(2),
-                    cbData = args.Length + 1,
-                    lpData = Marshal.StringToHGlobalAnsi(args)
-                };
-                // Just a number to identify the data type
-                // One extra byte for the \0 character
-
-                // Allocate memory for the data and copy
-                ptrCopyData = Marshal.AllocCoTaskMem(Marshal.SizeOf(copyData));
-                Marshal.StructureToPtr(copyData, ptrCopyData, false);
-
-                // Send the message
-                foreach (var proc in processes)
-                {
-                    if (proc.MainWindowHandle == IntPtr.Zero) continue;
-                    NativeMethods.SendMessage(proc.MainWindowHandle, NativeMethods.WM_COPYDATA, IntPtr.Zero, ptrCopyData);
-                }
-                    
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Unable to send args to existing process", e);
-            }
-            finally
-            {
-                // Free the allocated memory after the control has been returned
-                if (ptrCopyData != IntPtr.Zero)
-                    Marshal.FreeCoTaskMem(ptrCopyData);
-            }
-        }
-
         public void Dispose()
         {
             mutex.Dispose();
@@ -151,7 +136,7 @@ namespace HidWizards.UCR
         private void App_OnExit(object sender, ExitEventArgs e)
         {
             context?.DevicesManager.UpdateDeviceCache();
-
+            namedPipeServer?.Stop();
             Dispose();
         }
 
