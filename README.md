@@ -36,8 +36,11 @@ Documentation for Universal Control Remapper are hosted on GitHub at [https://gi
 
 
 ## Support / Discussion / Feedback
-
-Please **do not** use the UCR thread on the AutoHotkey forums. Either raise an issue on the [issue tracker](https://github.com/Snoothy/UCR/issues) or join us in the [HidWizards chat channel on Discord](https://discord.gg/MmnhQYQ)
+For general support, please join us in the [HidWizards chat channel on Discord](https://discord.gg/MmnhQYQ)  
+**Before coming into the Discord channel and asking for assistance, please be sure to read the [documentation](https://github.com/Snoothy/UCR/wiki), particularly the "Installation and Setup" and "Getting Started" sections**  
+**Also check the [Frequently Asked Questions page](https://github.com/Snoothy/UCR/wiki/Frequently-Asked-Questions)**  
+Please **do not** use the UCR thread on the AutoHotkey forums as this is a completely different project.  
+**For issues where you are fairly certain that it is a bug**, please raise an issue on the [issue tracker](https://github.com/Snoothy/UCR/issues). **Please try to avoid clogging up the issue tracker page with "XYZ does not work on my machine" type questions - this is likely an issue with you not following the documentation.**  
 
 
 
