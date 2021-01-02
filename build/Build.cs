@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
-using Nuke.Common.BuildServers;
+using Nuke.Common.CI.AppVeyor;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -80,8 +80,9 @@ class Build : NukeBuild
         .DependsOn(RestoreSubmodules)
         .Executes(() =>
         {
+            NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
             MSBuild(s => s
-                    .SetWorkingDirectory(IoWrapperDirectory)
+                    .SetProcessWorkingDirectory(IoWrapperDirectory)
                     .SetSolutionFile(IoWrapperSolution)
                     .SetVerbosity(MSBuildVerbosity.Quiet)
                     .SetTargets("Restore","Rebuild")
@@ -93,6 +94,9 @@ class Build : NukeBuild
         });
 
     Target InitProject => _ => _
+
+        
+
         .DependsOn(InitSubmodules)
         .DependsOn(RestoreSubmodules)
         .DependsOn(CompileSubmodules)
@@ -153,8 +157,8 @@ class Build : NukeBuild
                 .SetConfiguration(Configuration)
                 .SetVerbosity(MSBuildVerbosity.Normal)
                 // TODO This doesn't set all assembly versions
-                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
-                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
                 .SetInformationalVersion(GetFullSemanticVersion())
             );
         });
