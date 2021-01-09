@@ -80,7 +80,6 @@ class Build : NukeBuild
         .DependsOn(RestoreSubmodules)
         .Executes(() =>
         {
-            NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
             MSBuild(s => s
                     .SetProcessWorkingDirectory(IoWrapperDirectory)
                     .SetSolutionFile(IoWrapperSolution)
@@ -94,15 +93,12 @@ class Build : NukeBuild
         });
 
     Target InitProject => _ => _
-
-        
-
         .DependsOn(InitSubmodules)
         .DependsOn(RestoreSubmodules)
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            
+
         });
 
     Target Restore => _ => _
@@ -163,7 +159,7 @@ class Build : NukeBuild
             );
         });
 
-    Target EndCodeAnalysis => _ => _ 
+    Target EndCodeAnalysis => _ => _
     .OnlyWhenStatic(() => !string.IsNullOrEmpty(CodeAnalysis))
     .Executes(() =>
     {
@@ -179,7 +175,7 @@ class Build : NukeBuild
                 .EnableNoResults()
             );
         });
-    
+
     Target Artifacts => _ => _
         .DependsOn(CleanArtifacts)
         .DependsOn(EndCodeAnalysis)
@@ -188,10 +184,10 @@ class Build : NukeBuild
         {
             EnsureDirectory(ArtifactsDirectory);
             CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, DirectoryExistsPolicy.Merge);
-            
+
             CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
-    
+
     Target Changelog => _ => _
         .DependsOn(Versioning)
         .Executes(() =>
