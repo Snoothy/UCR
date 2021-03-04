@@ -83,7 +83,7 @@ namespace HidWizards.UCR.Plugins.Remapper
                     break;
             }
 
-            //does deadzone and sensitivity make sense for a merge? Kinda weird for abs merge and is more of a pothole and a speedbump for trim mode I just added, unless it were to be applied to inputs instead of outputs
+            //does deadzone and sensitivity make sense for a merge? Kinda weird for avg merge and is more of a pothole and a speedbump for primed merge mode I just added, unless it were to be applied to inputs instead of outputs
             if (DeadZone != 0)
             {
                 valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);
