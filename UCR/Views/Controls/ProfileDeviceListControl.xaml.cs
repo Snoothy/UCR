@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using HidWizards.UCR.ViewModels.Dashboard;
 
@@ -20,7 +22,7 @@ namespace HidWizards.UCR.Views.Controls
 
         private void RemoveDevice_OnClick(object sender, RoutedEventArgs e)
         {
-             GetViewModel().RemoveDevice(GetSelectedDevice());
+             GetViewModel().RemoveDevices(GetSelectedDevices());
         }
 
         private void DeviceList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -28,12 +30,12 @@ namespace HidWizards.UCR.Views.Controls
             var viewModel = GetViewModel();
             if (viewModel == null) return;
 
-            viewModel.SelectedDeviceConfiguration = GetSelectedDevice();
+            viewModel.SelectedDevicesConfigurations = GetSelectedDevices().ToList();
         }
 
-        private DeviceItem GetSelectedDevice()
+        private IEnumerable<DeviceItem> GetSelectedDevices()
         {
-            return (DeviceItem) DeviceList.SelectedItem;
+            return DeviceList.SelectedItems.OfType<DeviceItem>();
         }
 
         private ProfileDeviceListControlViewModel GetViewModel()

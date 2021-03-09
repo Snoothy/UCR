@@ -31,6 +31,19 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             }
         }
 
+        private List<DeviceItem> _devicesConfigurations;
+        public List<DeviceItem> SelectedDevicesConfigurations
+        {
+            get => _devicesConfigurations;
+            set
+            {
+                _devicesConfigurations = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsRemoveEnabled));
+                OnPropertyChanged(nameof(IsConfigurationEnabled));
+            }
+        }
+
         private readonly Profile _profile;
         private readonly DeviceIoType _deviceIoType;
 
@@ -51,8 +64,10 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private bool CanRemoveDevice()
         {
-            if (SelectedDeviceConfiguration == null) return false;
-            return _profile.CanRemoveDeviceConfiguration(SelectedDeviceConfiguration.DeviceConfiguration);
+            if (SelectedDevicesConfigurations == null || !SelectedDevicesConfigurations.Any()) return false;
+
+            return _profile.CanRemoveDeviceConfiguration(
+                SelectedDevicesConfigurations.Select(_ => _.DeviceConfiguration));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -63,14 +78,34 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public async void RemoveDevice(DeviceItem deviceItem)
+        public async void RemoveDevices(IEnumerable<DeviceItem> deviceItems)
         {
-            var dialog = new BoolDialog("Remove device", $"Are you sure you want to remove {deviceItem.Title} from {deviceItem.DeviceConfiguration.Device.Profile.Title}?");
-            var result = (bool?)await DialogHost.Show(dialog, "RootDialog");
-            if (result == null || !result.Value) return;
+            var profiles = deviceItems.GroupBy(_ => _.DeviceConfiguration.Device.Profile).ToArray();
 
-            _profile.RemoveDeviceConfiguration(deviceItem.DeviceConfiguration);
-            Devices.Remove(deviceItem);
+            if (profiles.Length > 1)
+                return;
+
+            foreach (var profile in profiles) {
+                var text = Environment.NewLine
+                         + Environment.NewLine
+                         + string.Join(Environment.NewLine, profile.Select(_ => _.Title))
+                         + Environment.NewLine
+                         + Environment.NewLine;
+
+                var dialog = new BoolDialog("Remove device",
+                    $"Are you sure you want to remove {text}from [{profile.Key.Title}] profile?");
+
+                var result = (bool?) await DialogHost.Show(dialog, "RootDialog");
+
+                if (result == null || !result.Value)
+                    return;
+
+                foreach (var deviceItem in profile) {
+                    _profile.RemoveDeviceConfiguration(deviceItem.DeviceConfiguration);
+                    Devices.Remove(deviceItem);
+                }
+            }
+
             OnPropertyChanged(nameof(Devices));
         }
 
