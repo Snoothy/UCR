@@ -33,10 +33,12 @@ namespace HidWizards.UCR.Core
 
         public delegate void ActiveProfileChanged(Profile profile);
         public event ActiveProfileChanged ActiveProfileChangedEvent;
-        
+
         internal bool IsNotSaved { get; private set; }
         internal IOController IOController { get; set; }
         private OptionSet options;
+
+        internal bool ShowTrayIcon { get; set; }
 
         public Context()
         {
@@ -57,7 +59,7 @@ namespace HidWizards.UCR.Core
             {
                 Logger.Error("IOWrapper provider directory not found", e);
             }
-            
+
             ProfilesManager = new ProfilesManager(this, Profiles);
             DevicesManager = new DevicesManager(this);
             SubscriptionsManager = new SubscriptionsManager(this);
@@ -68,7 +70,8 @@ namespace HidWizards.UCR.Core
         private void SetCommandLineOptions()
         {
             options = new OptionSet {
-                { "p|profile=", "The profile to search for", FindAndLoadProfile }
+                { "p|profile=", "The profile to search for", FindAndLoadProfile },
+                { "t|tray", "Run application hidden and show icon in taskbar", HiddenLaunch }
             };
         }
 
@@ -78,6 +81,12 @@ namespace HidWizards.UCR.Core
             var search = profileString.Split(',').ToList();
             var profile = ProfilesManager.FindProfile(search);
             if (profile != null) SubscriptionsManager.ActivateProfile(profile);
+        }
+
+        private void HiddenLaunch(string obj)
+        {
+            Logger.Debug("The application is running hidden, the icon on the taskbar");
+            SubscriptionsManager.SetHiddenLaunch();
         }
 
         public void ParseCommandLineArguments(IEnumerable<string> args)
@@ -97,7 +106,7 @@ namespace HidWizards.UCR.Core
         }
 
         #region Persistence
-        
+
         public bool SaveContext(List<Type> pluginTypes = null)
         {
             var serializer = GetXmlSerializer(pluginTypes);

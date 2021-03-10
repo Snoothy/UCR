@@ -79,6 +79,11 @@ namespace HidWizards.UCR.Core.Managers
             return true;
         }
 
+        public void SetHiddenLaunch()
+        {
+            _context.ShowTrayIcon = true;
+        }
+
         private void FinalizeNewState(Profile profile, SubscriptionState subscriptionState)
         {
             // Set new active profile
