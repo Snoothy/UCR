@@ -9,6 +9,8 @@ namespace HidWizards.UCR.ViewModels.Dashboard
     {
         public string Title => DeviceConfiguration.GetFullTitleForProfile(Profile);
 
+        public string DeviceHandle => DeviceConfiguration.GetShortDeviceHandleForProfile();
+
         public string ProviderName => DeviceConfiguration.Device.ProviderName;
 
         public DeviceConfiguration DeviceConfiguration { get; set; }

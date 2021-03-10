@@ -15,6 +15,7 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
     {
 
         public string Title { get; set; }
+        public string DeviceHandle { get; set; }
         public string ProviderName { get; set; }
         public bool Checked { get; set; }
 
@@ -43,6 +44,7 @@ namespace HidWizards.UCR.ViewModels.DeviceViewModels
             Device = device;
             Title = device.Title;
             ProviderName = device.ProviderName;
+            DeviceHandle = device.GetShortDeviceHandle();
         }
 
         public DeviceViewModel(Device device, bool selected) : this(device)

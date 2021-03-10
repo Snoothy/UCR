@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
 using HidWizards.IOWrapper.DataTransferObjects;
 using HidWizards.UCR.Core.Models.Binding;
@@ -68,7 +69,7 @@ namespace HidWizards.UCR.Core.Models
         }
 
         #endregion
-        
+
         public string GetBindingName(DeviceBinding deviceBinding)
         {
             if (!deviceBinding.IsBound) return "Not bound";
@@ -95,7 +96,7 @@ namespace HidWizards.UCR.Core.Models
 
         private static bool deviceBindingMatchesNode(DeviceBinding deviceBinding, DeviceBindingNode deviceBindingNode)
         {
-            return deviceBindingNode.IsBinding && 
+            return deviceBindingNode.IsBinding &&
                    deviceBindingNode.DeviceBindingInfo.KeyType == deviceBinding.KeyType &&
                    deviceBindingNode.DeviceBindingInfo.KeySubValue == deviceBinding.KeySubValue &&
                    deviceBindingNode.DeviceBindingInfo.KeyValue == deviceBinding.KeyValue;
@@ -142,6 +143,11 @@ namespace HidWizards.UCR.Core.Models
                 hashCode = (hashCode * 397) ^ DeviceNumber;
                 return hashCode;
             }
+        }
+
+        public string GetShortDeviceHandle()
+        {
+            return DeviceHandle.Split('\\').LastOrDefault();
         }
     }
 }

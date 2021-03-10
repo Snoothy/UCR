@@ -30,7 +30,7 @@
         
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="8 8 8 0" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="{Binding IoTypeName}"/>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-            <ComboBox Width="200" Margin="0 0 16 0" x:Name="DeviceSelectionBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
+            <ComboBox MinWidth="200" Width="Auto" Margin="0 0 16 0" x:Name="DeviceSelectionBox" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" IsEnabled="{Binding BindingEnabled}" DisplayMemberPath="Title" SelectedValuePath="Value" SelectionChanged="DeviceNumberBox_OnSelected"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

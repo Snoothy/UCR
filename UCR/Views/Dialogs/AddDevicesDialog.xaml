@@ -9,7 +9,7 @@
              xmlns:dashboard="clr-namespace:HidWizards.UCR.ViewModels.Dashboard"
              mc:Ignorable="d" 
              MaxHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:DialogHost}},Path=ActualHeight}"
-             Width="300"
+             Width="350"
              Margin="-16"
              Padding="16"
              d:DesignHeight="600" d:DesignWidth="300">
