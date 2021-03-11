@@ -199,10 +199,9 @@ namespace HidWizards.UCR.Core.Models
             return success;
         }
 
-        public bool CanRemoveDeviceConfiguration(DeviceConfiguration device)
+        public bool CanRemoveDeviceConfiguration(IEnumerable<DeviceConfiguration> device)
         {
-            return InputDeviceConfigurations.Contains(device) || OutputDeviceConfigurations.Contains(device);
-
+            return device.All(_ => InputDeviceConfigurations.Contains(_) || OutputDeviceConfigurations.Contains(_));
         }
         #endregion
 

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:HidWizards.UCR.Views.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="400">
     <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Header="{Binding Title}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="-9">
             <ItemsControl ItemsSource="{Binding Devices}">
@@ -21,6 +21,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Margin="0 12">
                                     <TextBlock Text="{Binding Title}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                    <TextBlock Text="{Binding DeviceHandle}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                                     <TextBlock Text="{Binding ProviderName}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4 0 0 0">

@@ -26,12 +26,14 @@ namespace HidWizards.UCR.Views
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
+        private System.Windows.Forms.NotifyIcon NotifyIcon;
 
         enum CloseState
         {
             None,
             Closing,
-            ForceClose
+            ForceClose,
+            NotifyMinimized
         }
 
         public MainWindow(Context context)
@@ -41,6 +43,13 @@ namespace HidWizards.UCR.Views
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
             InitializeComponent();
+
+            if (Context.ShowTrayIcon) {
+                SetTrayIcon();
+                WindowCloseState = CloseState.NotifyMinimized;
+                ShowInTaskbar    = false;
+                Visibility       = Visibility.Hidden;
+            }
         }
 
         /// <summary>
@@ -93,7 +102,7 @@ namespace HidWizards.UCR.Views
         private void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
-            
+
             if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
@@ -150,7 +159,7 @@ namespace HidWizards.UCR.Views
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
-            
+
             OpenProfileWindow(profileItem.Profile);
         }
 
@@ -216,10 +225,17 @@ namespace HidWizards.UCR.Views
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
+
+            if (CloseState.NotifyMinimized.Equals(WindowCloseState)) {
+                Hide();
+                e.Cancel = true;
+                return;
+            }
+
             if (CloseState.Closing.Equals(WindowCloseState))
             {
                 if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
-                
+
                 e.Cancel = true;
                 SystemSounds.Exclamation.Play();
                 return;
@@ -266,7 +282,7 @@ namespace HidWizards.UCR.Views
                 }
             }
         }
-        
+
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Context.SaveContext();
@@ -280,7 +296,7 @@ namespace HidWizards.UCR.Views
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
-            
+
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
@@ -321,6 +337,52 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void SetTrayIcon()
+        {
+            if (NotifyIcon != null)
+                return;
+
+            var resource =
+                Application.GetResourceStream(new Uri("pack://application:,,,/UCR.ico", UriKind.RelativeOrAbsolute));
+
+            if (resource == null)
+                return;
+
+            var iconStream = resource.Stream;
+
+            var menu = new System.Windows.Forms.ContextMenu(new[]
+                { new System.Windows.Forms.MenuItem("Close application", CloseApplication) });
+
+            NotifyIcon = new System.Windows.Forms.NotifyIcon {
+                Icon    = new System.Drawing.Icon(iconStream),
+                Visible = true,
+                ContextMenu = menu
+            };
+
+            NotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+        }
+
+        private void CloseApplication(object sender, EventArgs e)
+        {
+            WindowCloseState = CloseState.None;
+            Close();
+        }
+
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            Show();
+            WindowState   = WindowState.Normal;
+            ShowInTaskbar = true;
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                Hide();
+
+            base.OnStateChanged(e);
         }
     }
 }

@@ -13,6 +13,7 @@
             <DataTemplate x:Key="DeviceTemplate" DataType="{x:Type dashboard:DeviceItem}">
                 <StackPanel Margin="4">
                     <TextBlock Margin="4" Text="{Binding Title}" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                    <TextBlock Margin="4" Text="{Binding DeviceHandle}" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
                     <TextBlock Margin="4" Text="{Binding ProviderName}" Style="{StaticResource MaterialDesignCaptionTextBlock}" />
                 </StackPanel>
             </DataTemplate>

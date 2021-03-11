@@ -135,16 +135,10 @@ namespace HidWizards.UCR.Views.Controls
                 e.Handled = true;
                 return;
             }
-            if (DeviceBinding.DeviceIoType.Equals(DeviceIoType.Input))
-            {
-                if (DeviceBinding.IsInBindMode) return;
-                if (Category.HasValue) DeviceBinding.DeviceBindingCategory = Category.Value;
-                DeviceBinding.EnterBindMode();
-            }
-            else
-            {
-                OpenContextMenu();
-            }
+
+            if (DeviceBinding.IsInBindMode) return;
+            if (Category.HasValue) DeviceBinding.DeviceBindingCategory = Category.Value;
+            DeviceBinding.EnterBindMode();
         }
 
         private void BindMenuButton_OnClick(object sender, RoutedEventArgs e)

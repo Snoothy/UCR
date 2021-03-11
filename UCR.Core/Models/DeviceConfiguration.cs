@@ -14,7 +14,7 @@ namespace HidWizards.UCR.Core.Models
         public string ConfigurationName { get; set; }
         public List<Device> ShadowDevices { get; set; }
 
-        [XmlIgnore] 
+        [XmlIgnore]
         public int DeviceCount => 1 + ShadowDevices.Count;
 
         public DeviceConfiguration()
@@ -59,6 +59,11 @@ namespace HidWizards.UCR.Core.Models
             if (profile == null || Device.Profile.Guid == profile.Guid) return ConfigurationName ?? Device.Title;
 
             return $"{title} (Inherited from {Device.Profile.Title})";
+        }
+
+        public string GetShortDeviceHandleForProfile()
+        {
+            return Device.GetShortDeviceHandle();
         }
     }
 }
