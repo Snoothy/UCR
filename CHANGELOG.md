@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - Added primed axis merge mode to axis merge
+- Added Settings
+- New setting: Start minimized
+- New setting: Minimize to tray on close
+- Added System Tray Icon
+- Added Hidden mode CLI Argument (-h|hidden)
+- Added JumpList to task bar context menu for faster access to recent profiles 
+
+### Fixed
+
+- Sensitivity helper plugin now correctly applies curve
 
 ## [0.9.0] - 2020-01-02
 

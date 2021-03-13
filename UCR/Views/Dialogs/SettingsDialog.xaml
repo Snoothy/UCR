@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HidWizards.UCR.Views.Dialogs.HelpDialog"
+﻿<UserControl x:Class="HidWizards.UCR.Views.Dialogs.SettingsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,23 +6,18 @@
         xmlns:local="clr-namespace:HidWizards.UCR.Views"
         xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:settings="clr-namespace:HidWizards.UCR.Views.Controls.Settings"
         mc:Ignorable="d"
-        Height="200" Width="400">
+        MaxHeight="800"
+        Width="500">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Help" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8"/>
-        <TextBlock TextWrapping="Wrap" Grid.Row="1" Margin="8">
-            Documentation for using Universal Control Remapper (UCR) can be found on the Github <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/snoothy/ucr/wiki">wiki</Hyperlink>
-            <LineBreak/>
-            <LineBreak/>
-            Still need support?
-            <LineBreak/>
-            Join us on our <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://discord.gg/9s9whQ4">Discord channel</Hyperlink>
-        </TextBlock>
+        <TextBlock Text="Settings" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8"/>
+        <settings:SettingsPropertyListControl Grid.Row="1" DataContext="{Binding}" Margin="0"/>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2">
             <Button IsCancel="True" Margin="8 4 0 0" Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}"

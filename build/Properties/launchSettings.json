@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    ".build": {
+      "commandName": "Project",
+      "commandLineArgs": "initproject"
+    }
+  }
+}
