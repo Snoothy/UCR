@@ -6,12 +6,75 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Added
+
+- Added Settings
+- New setting: Start minimized
+- New setting: Minimize to tray on close
+- Added System Tray Icon
+- Added Hidden mode CLI Argument (-h|hidden)
+- Added JumpList to task bar context menu for faster access to recent profiles 
+
+### Fixed
+
+- Sensitivity helper plugin now correctly applies curve
+
+### Changed
+- Naming of plugin options changed to clarify valid values
+
+## [0.9.0] - 2020-01-02
+
+### Added
+
+- Added Shadow devices
+- Added option to clear bindings
+- Added Filters for plugins
+- `Button to Filter`: Allows toggling of a filter using a button
+- `Axis to Filter`: Allows toggling of a filter using an axis
+- Added device cache allowing configuration of disconnected devices
+- Added per input blocking for supported providers
+- Provider Report now contains `ErrorMessage` property. If the provider is not live, this should contain a string indicating why
+- [Tobii Provider] If IsLive is false, now reports reason in ErrorMessage
+- [SpaceMouse provider] IsLive is always true, as HID is always present
+- [MIDI provider] IsLive is always true, as MIDI is always present
+- [TitanOne Provider] IsLive now reflects connected status of device
+- [TitanOne Provider] Reports 0 devices if IsLive is false
+- [vJoy Provider] IsLive now reflects whether driver is installed
+- [Interception Provider] IsLive is false if no devices are found, assumes driver is not installed
+
+### Fixed
+
+- Child profiles now properly inherit all parent devices. Fixes crash on activating profile
+- IOWrapper device list is now refreshed every time devices are queried
+
+### Changed
+
+- Updated to IOWrapper v0.11.2
+- [Interception Provider] Blockable property of BindingDescriptor now indicates if input is blockable or not. This is controlled by whether BlockingEnabled in the settings file is true or not
+- [XInput Provider] Only show Xinput devices in ProviderReport that are currently connected
+- [DS4WindowsApi Provider] Only show DS4 devices in ProviderReport that are currently connected
+- [SpaceMouse Provider] Only show SpaceMouse devices in ProviderReport that are currently connected
+- [Tobii Provider] IsLive now reflects state of driver
+- [Tobii Provider] Only show Tobii devices in ProviderReport that are currently connected
+- [ViGEm Provider] Do not show devices if Bus Driver not installed
+
+### Removed
+
+- [Interception Provider] BlockingControlledByUi setting removed
+
+## [0.8.0] - 2019-07-27
+
+### Added
 - Material design
 - Quick access button to add new profile
 - Profile overview in the main window
 - Added save button to profile window
+- Added Anti-Deadzone helper
+- Added Anti-Deadzone option to AxisToAxis plugin
+- Added ButtonToEvent plugin
+- Added input validation for plugin values
 
 ### Changed
+- Updated to IOWrapper v0.10.5
 - `Button to Axis` parameters changed to two axis values and option for initialization
 - Redesigned main window dashboard
 - Redesigned profile window
@@ -21,7 +84,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Replaced menu with toolbar in profile window
 - UCR Unblocker now uses the current directory as default
 - Sensitivity to Axis Merger plugin added
-- Naming of plugin options changed to clarify valid values
+- Improved circular deadzone calculation
 
 ### Removed
 - Removed states
@@ -29,6 +92,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 - Sum Mode in Axis Merger plugin no longer overflows
 - Unblocking no longer crashes if the UCR path has spaces
+- Bind Mode button now only responds to mouse down and not mouse up (Fixes binding Space bar re-triggering Bind Mode on release)
 
 ## [0.7.0] - 2019-01-03
 

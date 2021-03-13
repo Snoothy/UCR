@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
-using Nuke.Common.BuildServers;
+using Nuke.Common.CI.AppVeyor;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -43,6 +43,7 @@ class Build : NukeBuild
     AbsolutePath UcrOutputDirectory => RootDirectory / "UCR" / "bin" / Configuration;
     AbsolutePath TestDirectory => RootDirectory / "UCR.Tests";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+    AbsolutePath DependencyDirectory => Solution.Directory / "dependencies";
 
     Target CleanArtifacts => _ => _
         .Executes(() =>
@@ -62,12 +63,16 @@ class Build : NukeBuild
             EnsureExistingDirectory(RootDirectory / "Plugins");
         });
 
-    Target RestoreSubmodules => _ => _
+    Target InitSubmodules => _ => _
         .Executes(() =>
         {
             Git("submodule init");
             Git("submodule update");
+        });
 
+    Target RestoreSubmodules => _ => _
+        .Executes(() =>
+        {
             NuGetTasks.NuGetRestore(s => s.SetTargetPath(IoWrapperSolution));
         });
 
@@ -82,14 +87,18 @@ class Build : NukeBuild
                     .SetTargets("Restore","Rebuild")
                     .SetConfiguration(Configuration)
             );
+
+            EnsureCleanDirectory(DependencyDirectory);
+            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", DependencyDirectory, DirectoryExistsPolicy.Merge);
         });
 
     Target InitProject => _ => _
+        .DependsOn(InitSubmodules)
         .DependsOn(RestoreSubmodules)
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            CopyDirectoryRecursively(IoWrapperDirectory / "Artifacts", Solution.Directory / "dependencies", DirectoryExistsPolicy.Merge);
+
         });
 
     Target Restore => _ => _
@@ -144,13 +153,13 @@ class Build : NukeBuild
                 .SetConfiguration(Configuration)
                 .SetVerbosity(MSBuildVerbosity.Normal)
                 // TODO This doesn't set all assembly versions
-                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
-                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
                 .SetInformationalVersion(GetFullSemanticVersion())
             );
         });
 
-    Target EndCodeAnalysis => _ => _ 
+    Target EndCodeAnalysis => _ => _
     .OnlyWhenStatic(() => !string.IsNullOrEmpty(CodeAnalysis))
     .Executes(() =>
     {
@@ -166,7 +175,7 @@ class Build : NukeBuild
                 .EnableNoResults()
             );
         });
-    
+
     Target Artifacts => _ => _
         .DependsOn(CleanArtifacts)
         .DependsOn(EndCodeAnalysis)
@@ -175,10 +184,10 @@ class Build : NukeBuild
         {
             EnsureDirectory(ArtifactsDirectory);
             CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, DirectoryExistsPolicy.Merge);
-            
+
             CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
-    
+
     Target Changelog => _ => _
         .DependsOn(Versioning)
         .Executes(() =>

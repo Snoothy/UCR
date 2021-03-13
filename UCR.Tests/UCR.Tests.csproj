@@ -49,6 +49,7 @@
     <Compile Include="FactoryTests\DeviceFactoryTests.cs" />
     <Compile Include="Factory\DeviceFactory.cs" />
     <Compile Include="UtilityTests\HelperTests\CircularDeadZoneHelperTests.cs" />
+    <Compile Include="UtilityTests\HelperTests\AntiDeadZoneHelperTests.cs" />
     <Compile Include="UtilityTests\HelperTests\DeadZoneHelperTests.cs" />
     <Compile Include="UtilityTests\FunctionTests\FunctionTests.cs" />
     <Compile Include="UtilityTests\HelperTests\SensitivityHelperTests.cs" />

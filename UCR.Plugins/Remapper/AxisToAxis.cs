@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -24,12 +25,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Sensitivity %")]
         public int Sensitivity { get; set; }
 
+        [PluginGui("Anti-dead zone %")]
+        public int AntiDeadZone { get; set; }
+
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
+        private readonly AntiDeadZoneHelper _antiDeadZoneHelper = new AntiDeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
 
         public AxisToAxis()
         {
             DeadZone = 0;
+            AntiDeadZone = 0;
             Sensitivity = 100;
         }
 
@@ -43,6 +49,7 @@ namespace HidWizards.UCR.Plugins.Remapper
             var value = values[0];
             if (Invert) value = Functions.Invert(value);
             if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
+            if (AntiDeadZone != 0) value = _antiDeadZoneHelper.ApplyRangeAntiDeadZone(value);
             if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
             WriteOutput(0, value);
         }
@@ -50,8 +57,21 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+            _antiDeadZoneHelper.Percentage = AntiDeadZone;
             _sensitivityHelper.Percentage = Sensitivity;
             _sensitivityHelper.IsLinear = Linear;
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                case nameof(AntiDeadZone):
+                    return InputValidation.ValidatePercentage(value);
+            }
+            
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

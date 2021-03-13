@@ -22,6 +22,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         public Visibility ShowPreview => DeviceBinding.IsInBindMode ? Visibility.Hidden : Visibility.Visible;
         public Visibility ShowBindMode => ShowPreview.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
         public Visibility ShowPropertyList => PluginPropertyGroup == null ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility ShowBlock => DeviceBinding.IsBlockable() ? Visibility.Visible : Visibility.Collapsed;
         public PluginPropertyGroupViewModel PluginPropertyGroup { get; set; }
         public long PreviewValue => GetPreviewValue();
         public bool ShowButtonPreview => DeviceBinding.IsInBindMode || DeviceBinding.Profile.IsActive();
@@ -62,6 +63,12 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                 OnPropertyChanged(nameof(PreviewValue));
                 OnPropertyChanged(nameof(ShowButtonPreview));
             }
+        }
+
+        public bool Block
+        {
+            get => DeviceBinding.Block;
+            set => DeviceBinding.SetBlock(value);
         }
 
         public string BindButtonText
@@ -124,11 +131,11 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
         
         public void LoadDeviceInputs()
         {
-            var devicelist = DeviceBinding.Profile.GetDeviceList(DeviceBinding.DeviceIoType);
+            var deviceConfigurationList = DeviceBinding.Profile.GetDeviceConfigurationList(DeviceBinding.DeviceIoType);
             Devices = new ObservableCollection<ComboBoxItemViewModel>();
-            foreach (var device in devicelist)
+            foreach (var deviceConfiguration in deviceConfigurationList)
             {
-                Devices.Add(new ComboBoxItemViewModel(device.GetFullTitleForProfile(DeviceBinding.Profile), device.Guid));
+                Devices.Add(new ComboBoxItemViewModel(deviceConfiguration.GetFullTitleForProfile(DeviceBinding.Profile), deviceConfiguration.Guid));
             }
 
             SetSelectDevice();
@@ -140,7 +147,7 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
             foreach (var comboBoxItem in Devices)
             {
-                if (comboBoxItem.Value == DeviceBinding.DeviceGuid)
+                if (comboBoxItem.Value == DeviceBinding.DeviceConfigurationGuid)
                 {
                     selectedDevice = comboBoxItem;
                     break;
@@ -170,8 +177,8 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
 
             CurrentValue = deviceBinding.CurrentValue;
 
-            if (propertyChangedEventArgs.PropertyName.Equals("IsBound")
-                || propertyChangedEventArgs.PropertyName.Equals("IsInBindMode"))
+            if (propertyChangedEventArgs.PropertyName.Equals(nameof(DeviceBinding.IsBound))
+                || propertyChangedEventArgs.PropertyName.Equals(nameof(DeviceBinding.IsInBindMode)))
             {
                 BindModeProgress = 0;
                 OnPropertyChanged(nameof(BindButtonText));
@@ -179,10 +186,18 @@ namespace HidWizards.UCR.ViewModels.ProfileViewModels
                 OnPropertyChanged(nameof(ShowBindMode));
             }
 
-            if (propertyChangedEventArgs.PropertyName.Equals("IsBound"))
+            if (propertyChangedEventArgs.PropertyName.Equals(nameof(DeviceBinding.IsBound)))
             {
                 SetSelectDevice();
                 OnPropertyChanged(nameof(SelectedDevice));
+                OnPropertyChanged(nameof(ShowBlock));
+                OnPropertyChanged(nameof(Block));
+            }
+            if (propertyChangedEventArgs.PropertyName.Equals(nameof(DeviceBinding.DeviceConfigurationGuid)))
+            {
+                OnPropertyChanged(nameof(BindButtonText));
+                OnPropertyChanged(nameof(ShowBlock));
+                OnPropertyChanged(nameof(Block));
             }
         }
         

@@ -45,6 +45,7 @@ namespace HidWizards.UCR.ViewModels.Dashboard
             ProfileList = ProfileItem.GetProfileTree(context.Profiles);
             PropertyChanged += OnPropertyChanged;
             context.ActiveProfileChangedEvent += OnActiveProfileChangedEvent;
+            context.ContextChangedEvent += OnContextChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -57,16 +58,16 @@ namespace HidWizards.UCR.ViewModels.Dashboard
 
         private void BuildDeviceLists()
         {
-            InputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Input), DeviceIoType.Input);
-            OutputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDevices(SelectedProfileItem.Profile, DeviceIoType.Output), DeviceIoType.Output);
+            InputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDeviceConfigurations(SelectedProfileItem.Profile, DeviceIoType.Input), DeviceIoType.Input);
+            OutputDeviceControlViewModel = new ProfileDeviceListControlViewModel(SelectedProfileItem.Profile, GetDeviceConfigurations(SelectedProfileItem.Profile, DeviceIoType.Output), DeviceIoType.Output);
 
             OnPropertyChanged(nameof(InputDeviceControlViewModel));
             OnPropertyChanged(nameof(OutputDeviceControlViewModel));
         }
 
-        private List<Device> GetDevices(Profile profile, DeviceIoType deviceIoType)
+        private List<DeviceConfiguration> GetDeviceConfigurations(Profile profile, DeviceIoType deviceIoType)
         {
-            return SelectedProfileItem.Profile.GetDeviceList(deviceIoType);
+            return SelectedProfileItem.Profile.GetDeviceConfigurationList(deviceIoType);
         }
 
         private void OnActiveProfileChangedEvent(Profile profile)
@@ -79,6 +80,11 @@ namespace HidWizards.UCR.ViewModels.Dashboard
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnContextChanged()
+        {
+            OnPropertyChanged(nameof(ActiveProfileBreadCrumbs));
         }
     }
 }

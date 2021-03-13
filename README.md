@@ -1,7 +1,7 @@
 <img src="icon.png" align="right" />
 
 # Universal Control Remapper
-[![GitHub release](https://img.shields.io/badge/release-v0.7.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.7.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.10.2-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases) [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/Snoothy/UCR?svg=true)](https://ci.appveyor.com/project/Snoothy/ucr) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Snoothy_UCR&metric=alert_status)](https://sonarcloud.io/dashboard?id=Snoothy_UCR)
+[![GitHub release](https://img.shields.io/badge/release-v0.9.0-blue.svg)](https://github.com/Snoothy/UCR/releases/tag/v0.9.0) [![IOWrapper version](https://img.shields.io/badge/IOWrapper-v0.11.2-blue.svg)](https://github.com/evilC/IOWrapper) [![license](https://img.shields.io/github/license/snoothy/ucr.svg)](https://github.com/Snoothy/UCR/blob/master/LICENSE) [![Github All Releases](https://img.shields.io/github/downloads/snoothy/ucr/total.svg)](https://github.com/Snoothy/UCR/releases) [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/Snoothy/UCR?svg=true)](https://ci.appveyor.com/project/Snoothy/ucr) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Snoothy_UCR&metric=alert_status)](https://sonarcloud.io/dashboard?id=Snoothy_UCR)
 
 Universal Control Remapper is a complete rewrite of the original [UCR](https://github.com/evilC/UCR), created in collaboration with [evilC](https://github.com/evilC/).
 
@@ -23,6 +23,7 @@ Universal Control Remapper is a Windows application which allows the end-user to
 ## Downloads ##
 
 The latest release of Universal Control Remapper can be [downloaded from GitHub](https://github.com/snoothy/ucr/releases) and with a number of basic plugins. Extra experimental or niche plugins can be found in the [UCR-Plugins repository](https://github.com/HidWizards/UCR-Plugins).
+You may also need to install other drivers etc, for example to allow creation of virtual Xbox or DirectInput controllers. See the [Providers page](https://github.com/Snoothy/UCR/wiki/Core-Providers) for details on these.
 
 Test builds, patches, updated components, new or enhanced plugins etc., are often posted to the UCR channel in the HidWizards Discord server linked below. If you encounter any problems, it is best to check this channel for pinned patches.
 
@@ -61,17 +62,17 @@ UCR supports input and output devices through plugins using the [IOWrapper](http
 
 - Xbox 360 controllers (XInput)
 - DirectInput controllers, includes gamepads, racing wheels, HOTAS, etc.
-- Keyboard (using [interception](https://github.com/oblitum/Interception))
-- Mouse (using [interception](https://github.com/oblitum/Interception))
+- Keyboard (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
+- Mouse (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
 - Tobii Eye tracker
 
 ### Supported output ###
 
-- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/nefarius/ViGEm))
-- Dualshock 4 controller (using [ViGEm](https://github.com/nefarius/ViGEm))
-- DirectInput controller (using [vJoy](https://github.com/shauleiz/vJoy))
-- Keyboard (using [interception](https://github.com/oblitum/Interception))
-- Mouse (using [interception](https://github.com/oblitum/Interception))
+- Xbox 360 controller (XInput) (using [ViGEm](https://github.com/Snoothy/UCR/wiki/Core_ViGEm))
+- Dualshock 4 controller (using [ViGEm](https://github.com/Snoothy/UCR/wiki/Core_ViGEm))
+- DirectInput controller (using [vJoy](https://github.com/Snoothy/UCR/wiki/Core_vJoyInterfaceWrap))
+- Keyboard (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
+- Mouse (using [interception](https://github.com/Snoothy/UCR/wiki/Core_Interception))
 
 ## Building and Contributing ##
 It is required to run the build script before building with Visual Studio. Run `.\build.ps1 InitProject` from powershell to initialize the required dependencies. All subsequent builds can be done from Visual Studio 2017.

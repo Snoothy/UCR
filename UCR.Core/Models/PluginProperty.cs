@@ -42,5 +42,10 @@ namespace HidWizards.UCR.Core.Models
         {
             return Order.CompareTo(other.Order);
         }
+
+        public PropertyValidationResult Validate(dynamic value)
+        {
+            return Plugin.Validate(PropertyInfo, value);
+        }
     }
 }

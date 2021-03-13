@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\UtilPack.NuGet.MSBuild.2.7.0\build\UtilPack.NuGet.MSBuild.props" Condition="Exists('..\packages\UtilPack.NuGet.MSBuild.2.7.0\build\UtilPack.NuGet.MSBuild.props')" />
+  <Import Project="..\packages\NuGetUtils.MSBuild.Exec.2.0.5\build\NuGetUtils.MSBuild.Exec.props" Condition="Exists('..\packages\NuGetUtils.MSBuild.Exec.2.0.5\build\NuGetUtils.MSBuild.Exec.props')" />
+  <Import Project="..\packages\GitVersionTask.5.5.1\build\GitVersionTask.props" Condition="Exists('..\packages\GitVersionTask.5.5.1\build\GitVersionTask.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -62,6 +63,9 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.1.1345, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.2.5.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="NamedPipeWrapper, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NamedPipeWrapper.1.5.0\lib\net40\NamedPipeWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -94,25 +98,32 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utilities\Commands\RelayCommand.cs" />
     <Compile Include="Utilities\Converter\InverseBooleanConverter.cs" />
+    <Compile Include="Utilities\DataContextBindingProxy.cs" />
     <Compile Include="Utilities\HidGuardianClient.cs" />
+    <Compile Include="Utilities\NamedPipeMessage.cs" />
     <Compile Include="Utilities\NativeMethods.cs" />
     <Compile Include="Utilities\ResourceLoader.cs" />
     <Compile Include="Utilities\SingleGlobalInstance.cs" />
+    <Compile Include="Views\JumpList.cs" />
+    <Compile Include="Views\UCRTrayIcon.cs" />
     <Compile Include="Utilities\Validators\NumberBindingValidator.cs" />
     <Compile Include="Utilities\Validators\DecimalBindingValidator.cs" />
     <Compile Include="ViewModels\ComboBoxItemViewModel.cs" />
     <Compile Include="ViewModels\ContextMenuItem.cs" />
+    <Compile Include="ViewModels\Controls\DeviceAddRemoveControlViewModel.cs" />
     <Compile Include="ViewModels\Controls\DeviceSelectControlViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\AddDevicesDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\CreateProfileDialogViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DeviceItem.cs" />
+    <Compile Include="ViewModels\Dashboard\ManageDeviceConfigurationViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileDeviceListControlViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\EnumerationExtension.cs" />
     <Compile Include="ViewModels\Dashboard\ProfileItem.cs" />
     <Compile Include="ViewModels\ProfileViewModels\AddMappingPluginDialogViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\DeviceBindingViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModels\FilterViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginGroupViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginItemViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\PluginPropertyGroupViewModel.cs" />
@@ -122,8 +133,13 @@
     <Compile Include="ViewModels\ProfileViewModels\MappingViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModels\SimplePluginViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsPropertyViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="Views\Controls\DeviceBindingControl.xaml.cs">
       <DependentUpon>DeviceBindingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DeviceAddRemoveControl.xaml.cs">
+      <DependentUpon>DeviceAddRemoveControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\DeviceSelectControl.xaml.cs">
       <DependentUpon>DeviceSelectControl.xaml</DependentUpon>
@@ -138,6 +154,7 @@
     <Compile Include="Views\Controls\Plugin\PluginPropertyControl.xaml.cs">
       <DependentUpon>PluginPropertyControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Plugin\PluginPropertyDependencyObject.cs" />
     <Compile Include="Views\Controls\Plugin\PluginPropertyListControl.xaml.cs">
       <DependentUpon>PluginPropertyListControl.xaml</DependentUpon>
     </Compile>
@@ -148,8 +165,18 @@
     <Compile Include="Views\Controls\ProfileDeviceListControl.xaml.cs">
       <DependentUpon>ProfileDeviceListControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsGuiTemplateSelector.cs" />
+    <Compile Include="Views\Controls\Settings\SettingsPropertyListControl.xaml.cs">
+      <DependentUpon>SettingsPropertyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Settings\SettingsPropertyControl.xaml.cs">
+      <DependentUpon>SettingsPropertyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
@@ -164,6 +191,9 @@
       <DependentUpon>BoolDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\DecisionDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\ManageDeviceConfigurationDialog.xaml.cs">
+      <DependentUpon>ManageDeviceConfigurationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\DecisionDialog.xaml.cs">
       <DependentUpon>DecisionDialog.xaml</DependentUpon>
     </Compile>
@@ -209,6 +239,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\DeviceAddRemoveControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\DeviceSelectControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,9 +271,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyListControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\Settings\SettingsPropertyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\SettingsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\AboutDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -256,6 +302,10 @@
     <Page Include="Views\Dialogs\BoolDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\ManageDeviceConfigurationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialogs\DecisionDialog.xaml">
       <SubType>Designer</SubType>
@@ -369,8 +419,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets'))" />
-    <Error Condition="!Exists('..\packages\UtilPack.NuGet.MSBuild.2.7.0\build\UtilPack.NuGet.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UtilPack.NuGet.MSBuild.2.7.0\build\UtilPack.NuGet.MSBuild.props'))" />
-    <Error Condition="!Exists('..\packages\GitVersionTask.4.0.0\build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.4.0.0\build\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.5.5.1\build\GitVersionTask.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.5.5.1\build\GitVersionTask.props'))" />
+    <Error Condition="!Exists('..\packages\GitVersionTask.5.5.1\build\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.5.5.1\build\GitVersionTask.targets'))" />
+    <Error Condition="!Exists('..\packages\NuGetUtils.MSBuild.Exec.2.0.5\build\NuGetUtils.MSBuild.Exec.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGetUtils.MSBuild.Exec.2.0.5\build\NuGetUtils.MSBuild.Exec.props'))" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>if exist "$(SolutionDir)dependencies\Providers"  xcopy /Y /S /i "$(SolutionDir)dependencies\Providers" "$(TargetDir)Providers"
@@ -381,5 +432,5 @@
     <PostBuildEvent>if exist "$(SolutionDir)UCR.FileHandler\bin\$(ConfigurationName)\"  xcopy /Y /S /i "$(SolutionDir)UCR.FileHandler\bin\$(ConfigurationName)" "$(TargetDir)"
 </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\GitVersionTask.4.0.0\build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.4.0.0\build\GitVersionTask.targets')" />
+  <Import Project="..\packages\GitVersionTask.5.5.1\build\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.5.5.1\build\GitVersionTask.targets')" />
 </Project>

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using HidWizards.UCR.Core;
 using HidWizards.UCR.Core.Models;
+using HidWizards.UCR.Core.Models.Settings;
 using HidWizards.UCR.Utilities;
 using HidWizards.UCR.ViewModels.Dashboard;
 using HidWizards.UCR.Views.Dialogs;
@@ -22,7 +24,8 @@ namespace HidWizards.UCR.Views
 
     public partial class MainWindow : Window
     {
-        private Context Context { get; set; }
+        internal Context Context { get; set; }
+        private UCRTrayIcon TrayIcon;
         private readonly DashboardViewModel _dashboardViewModel;
         private CloseState WindowCloseState { get; set; }
         private Dictionary<Guid, ProfileWindow> ProfileWindows;
@@ -40,6 +43,9 @@ namespace HidWizards.UCR.Views
             DataContext = _dashboardViewModel;
             Context = context;
             ProfileWindows = new Dictionary<Guid, ProfileWindow>();
+            TrayIcon = new UCRTrayIcon(this);
+            Context.MinimizedToTrayEvent += Context_MinimizedToTrayEvent;
+            JumpList.InitJumpList(context);
             InitializeComponent();
         }
 
@@ -90,11 +96,11 @@ namespace HidWizards.UCR.Views
             }
         }
 
-        private void DeactivateProfile(object sender, RoutedEventArgs e)
+        internal void DeactivateProfile(object sender, RoutedEventArgs e)
         {
             if (Context.ActiveProfile == null) return;
-            
-            if (!Context.SubscriptionsManager.DeactivateProfile())
+
+            if (!Context.SubscriptionsManager.DeactivateCurrentProfile())
             {
                 // TODO Move to dialog
                 MessageBox.Show("The active Profile could not be deactivated, see the log for more details", "Profile failed to deactivate!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -107,7 +113,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel) await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile);
 
             ReloadProfileTree();
@@ -121,7 +130,10 @@ namespace HidWizards.UCR.Views
             var result = (CreateProfileDialogViewModel)await DialogHost.Show(dialog, "RootDialog");
             if (result == null || string.IsNullOrEmpty(result.ProfileName)) return;
 
-            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, result.GetInputDevices(), result.GetOutputDevices());
+            var inputs = result.GetInputDevices().ConvertAll(d => new DeviceConfiguration(d));
+            var outputs = result.GetOutputDevices().ConvertAll(d => new DeviceConfiguration(d));
+
+            var profile = Context.ProfilesManager.CreateProfile(result.ProfileName, inputs, outputs);
             Context.ProfilesManager.AddProfile(profile, profileItem.Profile);
 
             ReloadProfileTree();
@@ -140,11 +152,11 @@ namespace HidWizards.UCR.Views
 
             if (ProfileWindows.TryGetValue(profileItem.Profile.Guid, out var profileWindow))
             {
-                void FocusAction() => profileWindow.Focus();
+                void FocusAction() { profileWindow.WindowState = WindowState.Normal; profileWindow.Focus(); }
                 Dispatcher.BeginInvoke((Action) FocusAction);
                 return;
             }
-            
+
             OpenProfileWindow(profileItem.Profile);
         }
 
@@ -207,13 +219,36 @@ namespace HidWizards.UCR.Views
 
         #endregion Profile Actions
 
+        internal void ShowWindow()
+        {
+            if (CloseState.None.Equals(WindowCloseState)) Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        internal void CloseWindow()
+        {
+            if (Context.IsNotSaved)
+            {
+                ShowWindow();
+            }
+            Close();
+        }
+
         private async void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             if (CloseState.ForceClose.Equals(WindowCloseState)) return;
+            if (SettingsCollection.MinimizeOnClose && !TrayIcon.Minimized && CloseState.None.Equals(WindowCloseState))
+            {
+                Context.MinimizeToTray();
+                e.Cancel = true;
+                return;
+            }
+            
             if (CloseState.Closing.Equals(WindowCloseState))
             {
                 if (WindowState.Equals(WindowState.Minimized)) WindowState = WindowState.Normal;
-                
+
                 e.Cancel = true;
                 SystemSounds.Exclamation.Play();
                 return;
@@ -254,13 +289,15 @@ namespace HidWizards.UCR.Views
                         Close();
                         break;
                     case MessageBoxResult.No:
+                        JumpList.RestoreJumpList();
                         WindowCloseState = CloseState.ForceClose;
                         Close();
                         break;
                 }
             }
+            TrayIcon.Visible = false;
         }
-        
+
         private void Save_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Context.SaveContext();
@@ -274,7 +311,7 @@ namespace HidWizards.UCR.Views
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg != NativeMethods.WM_COPYDATA) return IntPtr.Zero;
-            
+
             var data = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.COPYDATASTRUCT));
             var argsString = Marshal.PtrToStringAnsi(data.lpData);
             if (!string.IsNullOrEmpty(argsString)) Context.ParseCommandLineArguments(argsString.Split(';'));
@@ -299,6 +336,12 @@ namespace HidWizards.UCR.Views
             MessageBox.Show($"Enabling message handling failed with the error: {error}");
         }
 
+        private async void Settings_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SettingsDialog(Context.SettingsManager);
+            await DialogHost.Show(dialog, "RootDialog");
+        }
+
         private async void About_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new AboutDialog();
@@ -315,6 +358,15 @@ namespace HidWizards.UCR.Views
         {
             var treeView = sender as TreeView;
             _dashboardViewModel.SelectedProfileItem = treeView?.SelectedItem as ProfileItem;
+        }
+
+        private void Context_MinimizedToTrayEvent()
+        {
+            Hide();
+            foreach(ProfileWindow value in ProfileWindows.Values.ToArray())
+            {
+                value.Close();
+            }
         }
     }
 }

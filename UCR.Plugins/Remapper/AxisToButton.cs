@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -55,6 +56,17 @@ namespace HidWizards.UCR.Plugins.Remapper
         private void Initialize()
         {
             _deadZoneHelper.Percentage = DeadZone;
+        }
+
+        public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
+        {
+            switch (propertyInfo.Name)
+            {
+                case nameof(DeadZone):
+                    return InputValidation.ValidatePercentage(value);
+            }
+
+            return PropertyValidationResult.ValidResult;
         }
     }
 }

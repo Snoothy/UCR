@@ -42,8 +42,10 @@ namespace HidWizards.UCR.Core.Managers
             return SubscriptionState?.ActiveProfile;
         }
 
-        public bool ActivateProfile(Profile profile)
+        public bool ActivateProfile(Profile profile, bool refreshDevices = true)
         {
+            if (refreshDevices) _context.IOController.RefreshDevices();
+
             Logger.Debug($"Activating profile: {{{profile.ProfileBreadCrumbs()}}}");
             if (SubscriptionState?.ActiveProfile?.Guid == profile.Guid) return true;
 
@@ -55,14 +57,22 @@ namespace HidWizards.UCR.Core.Managers
             }
             Logger.Debug("Successfully populated subscription state");
 
+            if (!ConfigureFiltersForState(state, profile))
+            {
+                Logger.Error("Failed to configure filters for profile successfully");
+                return false;
+            }
+            Logger.Debug("Successfully configured filters for subscription state");
+
             if (!ActivateSubscriptionState(state))
             {
                 Logger.Error("Failed to activate profile successfully");
+                DeactivateProfile(state);
                 return false;
             }
             Logger.Debug("SubscriptionState successfully activated");
 
-            if (!DeactivateProfile()) Logger.Error("Failed to deactivate previous profile successfully");
+            if (!DeactivateCurrentProfile()) Logger.Error("Failed to deactivate previous profile successfully");
             
             FinalizeNewState(profile, state);
 
@@ -85,17 +95,30 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            _context.OnActiveProfileChangedEvent(profile);
             ProfileActive = true;
+            _context.OnActiveProfileChangedEvent(profile);
         }
 
-        public bool DeactivateProfile()
+        public bool DeactivateCurrentProfile()
         {
             if (SubscriptionState == null) return true;
-            var success = true;
+            
             var state = SubscriptionState;
-
             if (!state.IsActive) return true;
+
+            var success = DeactivateProfile(state);
+
+            SubscriptionState = null;
+            _context.ActiveProfile = null;
+            _context.OnActiveProfileChangedEvent(null);
+            ProfileActive = false;
+
+            return success;
+        }
+
+        public bool DeactivateProfile(SubscriptionState state)
+        {
+            var success = true;
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
             {
@@ -112,15 +135,15 @@ namespace HidWizards.UCR.Core.Managers
                 }
             }
 
-            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
+            foreach (var deviceConfigurationSubscription in state.OutputDeviceConfigurationSubscriptions)
             {
-                success &= UnsubscribeOutput(state, deviceSubscription);
-            }
+                foreach (var shadowDeviceSubscription in deviceConfigurationSubscription.ShadowDeviceSubscriptions)
+                {
+                    success &= UnsubscribeOutput(state, shadowDeviceSubscription);
+                }
 
-            SubscriptionState = null;
-            _context.ActiveProfile = null;
-            _context.OnActiveProfileChangedEvent(null);
-            ProfileActive = false;
+                success &= UnsubscribeOutput(state, deviceConfigurationSubscription.DeviceSubscription);
+            }
 
             return success;
         }
@@ -137,16 +160,33 @@ namespace HidWizards.UCR.Core.Managers
                 success &= PopulateSubscriptionStateForProfile(state, profile.ParentProfile);
             }
 
-            // Output devices
-            var profileOutputDevices = new List<DeviceSubscription>();
-            foreach (var device in profile.OutputDevices)
+            foreach (var deviceConfiguration in profile.OutputDeviceConfigurations)
             {
-                profileOutputDevices.Add(state.AddOutputDevice(device, profile));
+                state.AddOutputDeviceConfiguration(deviceConfiguration);
             }
 
-            state.AddMappings(profile, profileOutputDevices);
+            state.AddMappings(profile, state.OutputDeviceConfigurationSubscriptions);
             
             return success;
+        }
+        private bool ConfigureFiltersForState(SubscriptionState state, Profile profile)
+        {
+            var uniqueFilters = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach (var mappingSubscription in state.MappingSubscriptions)
+            {
+                foreach (var plugin in mappingSubscription.Mapping.Plugins)
+                {
+                    plugin.Filters.ForEach(filter => uniqueFilters.Add(filter.Name));
+                }
+            }
+
+            foreach (var uniqueFilter in uniqueFilters)
+            {
+                state.FilterState.FilterRuntimeDictionary.Add(uniqueFilter.ToLower(), false);
+            }
+
+            return true;
         }
 
         // Subscribes the backend when it is built
@@ -155,16 +195,21 @@ namespace HidWizards.UCR.Core.Managers
             var success = true;
             if (state.IsActive) return true;
 
-            foreach (var deviceSubscription in state.OutputDeviceSubscriptions)
+            foreach (var deviceConfigurationSubscription in state.OutputDeviceConfigurationSubscriptions)
             {
-                success &= SubscribeOutput(state, deviceSubscription);
+                success &= SubscribeOutput(state, deviceConfigurationSubscription.DeviceSubscription);
+
+                foreach (var shadowDeviceSubscription in deviceConfigurationSubscription.ShadowDeviceSubscriptions)
+                {
+                    success &= SubscribeOutput(state, shadowDeviceSubscription);
+                }
             }
 
             foreach (var mappingSubscription in state.MappingSubscriptions)
             {
                 if (mappingSubscription.Overriden) continue;
 
-                mappingSubscription.Mapping.PrepareMapping();
+                mappingSubscription.Mapping.PrepareMapping(state.FilterState);
 
                 foreach (var deviceBindingSubscription in mappingSubscription.DeviceBindingSubscriptions)
                 {
@@ -182,7 +227,16 @@ namespace HidWizards.UCR.Core.Managers
         private bool SubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
         {
             if (!deviceBindingSubscription.DeviceBinding.IsBound) return true;
-            return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state, deviceBindingSubscription));
+            try
+            {
+                return _context.IOController.SubscribeInput(GetInputSubscriptionRequest(state,
+                    deviceBindingSubscription));
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Failed to subscribe input: {e.Message}");
+                return false;
+            }
         }
 
         private bool UnsubscribeDeviceBindingInput(SubscriptionState state, InputSubscription deviceBindingSubscription)
@@ -199,7 +253,11 @@ namespace HidWizards.UCR.Core.Managers
                 Logger.Error($"Failed to subscribe output device. Providername or devicehandle missing from: {{{deviceSubscription.Device.LogName()}}}");
                 return false;
             }
-            return _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
+            var success = _context.IOController.SubscribeOutput(GetOutputSubscriptionRequest(state.StateGuid, deviceSubscription));
+
+            if (!success) Logger.Error($"Failed to subscribe output device. Provider might be unavailable: {{{deviceSubscription.Device.LogName()}}}");
+
+            return success;
         }
 
         private bool UnsubscribeOutput(SubscriptionState state, DeviceSubscription deviceSubscription)
@@ -226,7 +284,8 @@ namespace HidWizards.UCR.Core.Managers
                 DeviceDescriptor = GetDeviceDescriptor(device),
                 SubscriptionDescriptor = GetSubscriptionDescriptor(deviceBindingSubscription.DeviceBindingSubscriptionGuid, state.StateGuid),
                 BindingDescriptor = GetBindingDescriptor(deviceBindingSubscription.DeviceBinding),
-                Callback = deviceBindingSubscription.DeviceBinding.Callback
+                Callback = deviceBindingSubscription.DeviceBinding.Callback,
+                Block = deviceBindingSubscription.DeviceBinding.Block
             };
         }
 
@@ -282,7 +341,7 @@ namespace HidWizards.UCR.Core.Managers
         {
             if (SubscriptionState != null)
             {
-                DeactivateProfile();
+                DeactivateCurrentProfile();
             }
         }
 

@@ -7,15 +7,15 @@
         xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Height="180" Width="400">
+        Height="200" Width="400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Help" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="0 0 0 8"/>
-        <TextBlock TextWrapping="Wrap" Grid.Row="1">
+        <TextBlock Text="Help" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="8"/>
+        <TextBlock TextWrapping="Wrap" Grid.Row="1" Margin="8">
             Documentation for using Universal Control Remapper (UCR) can be found on the Github <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="https://github.com/snoothy/ucr/wiki">wiki</Hyperlink>
             <LineBreak/>
             <LineBreak/>
