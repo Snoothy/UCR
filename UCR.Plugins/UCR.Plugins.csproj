@@ -59,6 +59,9 @@
     <Compile Include="Remapper\ButtonToAxis.cs" />
     <Compile Include="Remapper\ButtonToButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remapper\Switch3WayToButtons.cs" />
+    <Compile Include="Remapper\SwitchToButtons.cs" />
+    <Compile Include="Remapper\SwitchToToggleButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UCR.Core\UCR.Core.csproj">
