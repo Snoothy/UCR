@@ -40,7 +40,8 @@ namespace HidWizards.UCR.Plugins.Remapper
         {
             Average,
             Greatest,
-            Sum
+            Sum,
+            Primed
         }
 
         public AxisMerger()
@@ -74,11 +75,15 @@ namespace HidWizards.UCR.Plugins.Remapper
                 case AxisMergerMode.Sum:
                     valueOutput = Functions.ClampAxisRange(valueHigh + valueLow);
                     break;
+                case AxisMergerMode.Primed:
+                    valueOutput = (short) (valueHigh - ((double) valueHigh / (valueLow < 0? Constants.AxisMinValue : Constants.AxisMaxValue ) - 1) * (double) valueLow);
+                    break;
                 default:
                     valueOutput = 0;
                     break;
             }
 
+            //does deadzone and sensitivity make sense for a merge? Kinda weird for avg merge and is more of a pothole and a speedbump for primed merge mode I just added, unless it were to be applied to inputs instead of outputs
             if (DeadZone != 0)
             {
                 valueOutput = _deadZoneHelper.ApplyRangeDeadZone(valueOutput);

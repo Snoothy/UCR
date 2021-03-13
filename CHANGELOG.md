@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
+- Added primed axis merge mode to axis merge
 - Added Settings
 - New setting: Start minimized
 - New setting: Minimize to tray on close
