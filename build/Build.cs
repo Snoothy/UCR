@@ -98,7 +98,7 @@ class Build : NukeBuild
         .DependsOn(CompileSubmodules)
         .Executes(() =>
         {
-            
+
         });
 
     Target Restore => _ => _
@@ -159,7 +159,7 @@ class Build : NukeBuild
             );
         });
 
-    Target EndCodeAnalysis => _ => _ 
+    Target EndCodeAnalysis => _ => _
     .OnlyWhenStatic(() => !string.IsNullOrEmpty(CodeAnalysis))
     .Executes(() =>
     {
@@ -175,7 +175,7 @@ class Build : NukeBuild
                 .EnableNoResults()
             );
         });
-    
+
     Target Artifacts => _ => _
         .DependsOn(CleanArtifacts)
         .DependsOn(EndCodeAnalysis)
@@ -184,10 +184,10 @@ class Build : NukeBuild
         {
             EnsureDirectory(ArtifactsDirectory);
             CopyDirectoryRecursively(UcrOutputDirectory, ArtifactsDirectory, DirectoryExistsPolicy.Merge);
-            
+
             CompressZip(ArtifactsDirectory, $"artifacts/UCR_{GetFullSemanticVersion()}.zip");
         });
-    
+
     Target Changelog => _ => _
         .DependsOn(Versioning)
         .Executes(() =>

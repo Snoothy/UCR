@@ -1,10 +1,12 @@
 assembly-versioning-scheme: MajorMinorPatchTag
 mode: ContinuousDelivery
+next-version: 0.9.0
 branches:
   master:
     mode: ContinuousDelivery
     tag: alpha
-    increment: none
+    increment: None
+    track-merge-target: true
   develop:
     mode: ContinuousDelivery
     tag: alpha-rc
