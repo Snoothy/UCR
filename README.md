@@ -23,6 +23,7 @@ Universal Control Remapper is a Windows application which allows the end-user to
 ## Downloads ##
 
 The latest release of Universal Control Remapper can be [downloaded from GitHub](https://github.com/snoothy/ucr/releases) and with a number of basic plugins. Extra experimental or niche plugins can be found in the [UCR-Plugins repository](https://github.com/HidWizards/UCR-Plugins).
+You may also need to install other drivers etc, for example to allow creation of virtual Xbox or DirectInput controllers. See the [Providers page](https://github.com/Snoothy/UCR/wiki/Core-Providers) for details on these.
 
 Test builds, patches, updated components, new or enhanced plugins etc., are often posted to the UCR channel in the HidWizards Discord server linked below. If you encounter any problems, it is best to check this channel for pinned patches.
 
