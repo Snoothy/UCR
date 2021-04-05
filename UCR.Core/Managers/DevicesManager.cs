@@ -75,7 +75,7 @@ namespace HidWizards.UCR.Core.Managers
 
             try
             {
-                return availableDeviceList.Find(d => d.DeviceHandle == device.DeviceHandle).GetDeviceBindingMenu();
+                return availableDeviceList.Find(d => d.DeviceHandle == device.DeviceHandle && d.DeviceNumber == device.DeviceNumber).GetDeviceBindingMenu();
             }
             catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException || ex is NullReferenceException)
             {
