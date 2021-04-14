@@ -10,6 +10,7 @@ before_build:
   - ps: nuget restore submodules\IOWrapper\IOWrapper.sln
   - ps: .\build.ps1 InitProject
   - nuget restore
+  - git gc
   - ps: gitversion /l console /output buildserver /updateAssemblyInfo
 
 build_script:
