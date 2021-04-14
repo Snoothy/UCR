@@ -9,7 +9,7 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
     public class AxisInitializer : Plugin
     {
-        [PluginGui("Percentage")]
+        [PluginGui("Initialize value (-100..100)")]
         public decimal Percentage { get; set; }
 
         public AxisInitializer()

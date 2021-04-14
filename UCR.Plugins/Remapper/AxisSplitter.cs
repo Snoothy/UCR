@@ -13,13 +13,13 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Range, "Axis low")]
     public class AxisSplitter : Plugin
     {
-        [PluginGui("Invert high", Order = 1)]
+        [PluginGui("Invert high")]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", Order = 2)]
+        [PluginGui("Invert low")]
         public bool InvertLow { get; set; }
 
-        [PluginGui("Dead zone")]
+        [PluginGui("Dead zone %")]
         public int DeadZone { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

@@ -14,10 +14,10 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginOutput(DeviceBindingCategory.Momentary, "Button low")]
     public class AxisToButton : Plugin
     {
-        [PluginGui("Invert", Order = 0)]
+        [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        [PluginGui("Dead zone", Order = 1)]
+        [PluginGui("Dead zone %")]
         public int DeadZone { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

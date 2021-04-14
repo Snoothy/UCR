@@ -15,22 +15,22 @@ namespace HidWizards.UCR.Plugins.Remapper
 	[PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
     public class AxisMerger : Plugin
     {
-        [PluginGui("Dead zone", Order = 3)]
+        [PluginGui("Dead zone %")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Mode", Order = 0)]
+        [PluginGui("Mode")]
         public AxisMergerMode Mode { get; set; }
 
-        [PluginGui("Invert high", Order = 1)]
+        [PluginGui("Invert high")]
         public bool InvertHigh { get; set; }
 
-        [PluginGui("Invert low", Order = 2)]
+        [PluginGui("Invert low")]
         public bool InvertLow { get; set; }
 
-        [PluginGui("Linear", Order = 1, Group = "Sensitivity")]
+        [PluginGui("Linear", Group = "Sensitivity")]
         public bool Linear { get; set; }
 
-        [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
+        [PluginGui("Sensitivity %", Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();

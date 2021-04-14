@@ -28,16 +28,16 @@ namespace HidWizards.UCR.Plugins.Remapper
         [PluginGui("Invert Y", Group = "Y axis")]
         public bool InvertY { get; set; }
 
-        [PluginGui("Percentage", Order = 0, Group = "Sensitivity")]
+        [PluginGui("Sensitivity %", Group = "Sensitivity")]
         public int Sensitivity { get; set; }
 
-        [PluginGui("Linear", Order = 0, Group = "Sensitivity")]
+        [PluginGui("Linear", Group = "Sensitivity")]
         public bool Linear { get; set; }
 
-        [PluginGui("Percentage", Order = 0, Group = "Dead zone")]
+        [PluginGui("Dead zone %", Group = "Dead zone")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Circular", Order = 1, Group = "Dead zone")]
+        [PluginGui("Circular", Group = "Dead zone")]
         public bool CircularDz { get; set; }
 
 

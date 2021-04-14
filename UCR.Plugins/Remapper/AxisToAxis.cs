@@ -11,24 +11,22 @@ namespace HidWizards.UCR.Plugins.Remapper
     [Plugin("Axis to Axis", Group = "Axis", Description = "Map from one axis to another")]
     [PluginInput(DeviceBindingCategory.Range, "Axis")]
     [PluginOutput(DeviceBindingCategory.Range, "Axis")]
-    [PluginSettingsGroup("Sensitivity", Group = "Sensitivity")]
-    [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxisToAxis : Plugin
     {
         [PluginGui("Invert")]
         public bool Invert { get; set; }
 
-        [PluginGui("Linear", Group = "Sensitivity", Order = 1)]
+        [PluginGui("Linear")]
         public bool Linear { get; set; }
 
-        [PluginGui("Percentage", Group = "Dead zone", Order = 0)]
+        [PluginGui("Dead zone %")]
         public int DeadZone { get; set; }
 
-        [PluginGui("Anti-dead zone", Group = "Dead zone")]
-        public int AntiDeadZone { get; set; }
-
-        [PluginGui("Percentage", Group = "Sensitivity")]
+        [PluginGui("Sensitivity %")]
         public int Sensitivity { get; set; }
+
+        [PluginGui("Anti-dead zone %")]
+        public int AntiDeadZone { get; set; }
 
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly AntiDeadZoneHelper _antiDeadZoneHelper = new AntiDeadZoneHelper();
