@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Reflection;
+using System.Threading;
+using System.Diagnostics;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -17,6 +19,52 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxesToAxes : Plugin
     {
+        [PluginGui("Centered-input watchdog")]
+        public bool CenterWatchdog { get; set; }
+        private const int WatchdogPeriodMs = 100;
+        private readonly object _watchdogLock = new object();
+        private Timer _watchdogTimer;
+        private bool _active, _centerObserved, _centerYObserved;
+        private object _activation;
+
+        public override void OnActivate()
+        {
+            lock (_watchdogLock)
+            {
+                StopWatchdog();
+                _active = true;
+                _activation = new object();
+                _watchdogTimer = new Timer(WatchdogTick, _activation, WatchdogPeriodMs, WatchdogPeriodMs);
+            }
+        }
+        public override void OnDeactivate() { lock (_watchdogLock) StopWatchdog(); }
+        private void StopWatchdog()
+        {
+            _active = false;
+            _centerObserved = false;
+            _centerYObserved = false;
+            _activation = null;
+            if (_watchdogTimer != null) _watchdogTimer.Dispose();
+            _watchdogTimer = null;
+        }
+        private void WatchdogTick(object activation)
+        {
+            lock (_watchdogLock)
+            {
+                if (!_active || activation != _activation || !CenterWatchdog || !(_centerObserved || _centerYObserved) || Filters.Count != 0) return;
+                try
+                {
+                    if (_centerObserved) WriteOutput(0, 0);
+                    if (_centerYObserved) WriteOutput(1, 0);
+                }
+                catch (Exception ex)
+                {
+                    StopWatchdog();
+                    Trace.TraceError("AxesToAxes watchdog stopped: {0}", ex);
+                }
+            }
+        }
+
         private readonly CircularDeadZoneHelper _circularDeadZoneHelper = new CircularDeadZoneHelper();
         private readonly DeadZoneHelper _deadZoneHelper = new DeadZoneHelper();
         private readonly SensitivityHelper _sensitivityHelper = new SensitivityHelper();
@@ -49,7 +97,12 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void InitializeCacheValues()
         {
-            Initialize();
+            lock (_watchdogLock)
+            {
+                _centerObserved = false;
+                _centerYObserved = false;
+                Initialize();
+            }
         }
 
         private void Initialize()
@@ -62,7 +115,11 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void Update(params short[] values)
         {
-            var outputValues = new short[] {values[0], values[1]};
+            lock (_watchdogLock)
+            {
+                _centerObserved = false;
+                _centerYObserved = false;
+                if (values == null || values.Length < 2) return;            var outputValues = new short[] {values[0], values[1]};
             if (DeadZone != 0)
             {
                 if (CircularDz)
@@ -98,6 +155,9 @@ namespace HidWizards.UCR.Plugins.Remapper
 
             WriteOutput(0, outputValues[0]);
             WriteOutput(1, outputValues[1]);
+                _centerObserved = _active && outputValues[0] == 0;
+                _centerYObserved = _active && outputValues[1] == 0;
+            }
         }
 
         public override PropertyValidationResult Validate(PropertyInfo propertyInfo, dynamic value)
