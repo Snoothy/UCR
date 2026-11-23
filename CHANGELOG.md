@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - New setting: Minimize to tray on close
 - Added System Tray Icon
 - Added Hidden mode CLI Argument (-h|hidden)
-- Added JumpList to task bar context menu for faster access to recent profiles 
+- Added JumpList to task bar context menu for faster access to recent profiles
+- Added an optional centered-input watchdog to Axis to Axis and Axes to Axes.
 
 ### Fixed
 
