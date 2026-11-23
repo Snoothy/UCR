@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Reflection;
+using System.Threading;
+using System.Diagnostics;
 using HidWizards.UCR.Core.Attributes;
 using HidWizards.UCR.Core.Models;
 using HidWizards.UCR.Core.Models.Binding;
@@ -15,6 +17,50 @@ namespace HidWizards.UCR.Plugins.Remapper
     [PluginSettingsGroup("Dead zone", Group = "Dead zone")]
     public class AxisToAxis : Plugin
     {
+        [PluginGui("Centered-input watchdog")]
+        public bool CenterWatchdog { get; set; }
+        private const int WatchdogPeriodMs = 100;
+        private readonly object _watchdogLock = new object();
+        private Timer _watchdogTimer;
+        private bool _active, _centerObserved;
+        private object _activation;
+
+        public override void OnActivate()
+        {
+            lock (_watchdogLock)
+            {
+                StopWatchdog();
+                _active = true;
+                _activation = new object();
+                _watchdogTimer = new Timer(WatchdogTick, _activation, WatchdogPeriodMs, WatchdogPeriodMs);
+            }
+        }
+        public override void OnDeactivate() { lock (_watchdogLock) StopWatchdog(); }
+        private void StopWatchdog()
+        {
+            _active = false;
+            _centerObserved = false;
+            _activation = null;
+            if (_watchdogTimer != null) _watchdogTimer.Dispose();
+            _watchdogTimer = null;
+        }
+        private void WatchdogTick(object activation)
+        {
+            lock (_watchdogLock)
+            {
+                if (!_active || activation != _activation || !CenterWatchdog || !(_centerObserved) || Filters.Count != 0) return;
+                try
+                {
+                    WriteOutput(0, 0);
+                }
+                catch (Exception ex)
+                {
+                    StopWatchdog();
+                    Trace.TraceError("AxisToAxis watchdog stopped: {0}", ex);
+                }
+            }
+        }
+
         [PluginGui("Invert")]
         public bool Invert { get; set; }
 
@@ -43,17 +89,26 @@ namespace HidWizards.UCR.Plugins.Remapper
 
         public override void InitializeCacheValues()
         {
-            Initialize();
+            lock (_watchdogLock)
+            {
+                _centerObserved = false;
+                Initialize();
+            }
         }
 
         public override void Update(params short[] values)
         {
-            var value = values[0];
+            lock (_watchdogLock)
+            {
+                _centerObserved = false;
+                if (values == null || values.Length < 1) return;            var value = values[0];
             if (Invert) value = Functions.Invert(value);
             if (DeadZone != 0) value = _deadZoneHelper.ApplyRangeDeadZone(value);
             if (AntiDeadZone != 0) value = _antiDeadZoneHelper.ApplyRangeAntiDeadZone(value);
             if (Sensitivity != 100) value = _sensitivityHelper.ApplyRangeSensitivity(value);
             WriteOutput(0, value);
+                _centerObserved = _active && value == 0;
+            }
         }
 
         private void Initialize()
